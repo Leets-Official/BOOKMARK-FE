@@ -18,7 +18,7 @@ export default tseslint.config(
       parserOptions: {
         sourceType: 'module', // ECMAScript 모듈 사용
         ecmaVersion: 'latest', // 최신 ECMAScript 버전 지원
-        ecmaFeatures: { jsx: true }, // JSX 지
+        ecmaFeatures: { jsx: true }, // JSX 지원
       },
     },
     settings: {
