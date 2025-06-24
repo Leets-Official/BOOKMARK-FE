@@ -38,7 +38,7 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules, // React Hooks 추천 규칙 적용
       'react/jsx-no-target-blank': 'off', // target="_blank" 보안 경고 비활성화
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      'prettier/prettier': ['error', { endOfLine: 'lf' }], // Prettier 규칙을 위반하면 ESLint에서 에러로 처리
+      'prettier/prettier': ['error', { endOfLine: 'auto' }], // Prettier 규칙을 위반하면 ESLint에서 에러로 처리
     },
   },
 );
