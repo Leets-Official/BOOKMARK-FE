@@ -1,3 +1,5 @@
+import { tv } from 'tailwind-variants';
+
 interface ModalProps {
   text: string;
   subText: string;
@@ -6,6 +8,16 @@ interface ModalProps {
   onCancel: () => void;
   onConfirm: () => void;
 }
+
+const modalButton = tv({
+  base: 'text-[14px] flex justify-center items-center w-[141px] h-[38px] rounded-[2px] cursor-pointer',
+  variants: {
+    variant: {
+      cancel: 'bg-white border-1 border-[#F5F5F5]',
+      confirm: 'bg-[#00A1FF] text-white',
+    },
+  },
+});
 
 const Modal = ({
   text,
@@ -29,16 +41,10 @@ const Modal = ({
           <div className='text-[12px] text-[#909090]'>{subText}</div>
         </div>
         <div className='text-sm flex justify-center items-center gap-[12px]'>
-          <div
-            className='text-[14px] bg-white flex justify-center items-center w-[141px] h-[38px] rounded-[2px] border-1 border-[#F5F5F5] cursor-pointer'
-            onClick={onCancel}
-          >
+          <div className={modalButton({ variant: 'cancel' })} onClick={onCancel}>
             {cancelButtonText}
           </div>
-          <div
-            className='text-[14px] bg-[#00A1FF] flex justify-center items-center w-[141px] h-[38px] rounded-[2px] cursor-pointer text-white'
-            onClick={onConfirm}
-          >
+          <div className={modalButton({ variant: 'confirm' })} onClick={onConfirm}>
             {confirmButtonText}
           </div>
         </div>
