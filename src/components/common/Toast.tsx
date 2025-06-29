@@ -14,7 +14,7 @@ const toast = tv({
   base: [
     'fixed top-[80px] left-1/2 -translate-x-1/2 w-60 h-10 rounded-3xl bg-white',
     'flex items-center justify-center shadow-md',
-    'text-base font-normal transition-opacity duration-300',
+    'text-base font-normal transition-opacity duration-500',
   ],
   // 조건부 스타일 정의
   variants: {
