@@ -1,10 +1,10 @@
-import Toast from '@/components/common/Toast';
+import Toast, { type ToastProps } from '@/components/common/Toast';
 import { useCallback, useState } from 'react';
 
-const Example = () => {
-  const [toast, setToast] = useState({ show: false, type: 'error', message: '' });
+const ToastExample = () => {
+  const [toast, setToast] = useState<ToastProps>({ show: false, type: 'error', message: '' });
 
-  const showToast = useCallback((type: any, message: string) => {
+  const showToast = useCallback((type: 'positive' | 'error', message: string) => {
     setToast({ show: true, type, message });
     setTimeout(() => {
       setToast((prev: any) => ({ ...prev, show: false }));
@@ -13,13 +13,10 @@ const Example = () => {
 
   return (
     <>
-      <button
-        className='bg-green-100 px-4 py-2'
-        onClick={() => showToast('positive', '성공했습니다!')}
-      >
+      <button className='bg-green-100' onClick={() => showToast('positive', '성공했습니다!')}>
         성공
       </button>
-      <button className='bg-red-100 px-4 py-2' onClick={() => showToast('error', '실패했습니다.')}>
+      <button className='bg-red-100' onClick={() => showToast('error', '실패했습니다.')}>
         실패
       </button>
       <div className='p-4'>
@@ -29,4 +26,4 @@ const Example = () => {
   );
 };
 
-export default Example;
+export default ToastExample;
