@@ -13,7 +13,7 @@ const toast = tv({
   // 기본 스타일 (항상 적용)
   base: [
     'fixed top-[80px] left-1/2 -translate-x-1/2 w-60 h-10 rounded-3xl bg-white',
-    'flex items-center justify-center shadow-md',
+    'flex items-center justify-center',
     'text-base font-normal transition-opacity duration-500',
   ],
   // 조건부 스타일 정의
