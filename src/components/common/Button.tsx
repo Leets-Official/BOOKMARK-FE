@@ -3,6 +3,12 @@ import { tv } from 'tailwind-variants'; // tailwind-variants 모듈
 import classNames from 'classnames'; // 조건부 클래스 조합할 때 사용
 
 // 버튼 스타일 변형 정의 (variant와 size에 따라 클래스 분기)
+
+import { tv } from 'tailwind-variants'; // tailwind-variants: 조건에 따라 Tailwind 클래스 조합 생성
+import classNames from 'classnames'; // classNames: 다수의 클래스 문자열을 깔끔하게 합치는 유틸
+
+// 버튼의 스타일 variant 및 크기 size에 따라 Tailwind 클래스를 자동으로 조합
+
 const buttonVariants = tv({
   variants: {
     variant: {
@@ -18,6 +24,7 @@ const buttonVariants = tv({
     },
   },
   defaultVariants: {
+
     variant: 'primary',
     size: 'md',
   },
@@ -48,12 +55,58 @@ const Button: React.FC<ButtonProps> = ({
       {...rest}
     >
       {/* 로딩 중이면 "Loading..." 텍스트 표시 */}
+
+    variant: 'primary', // 기본 스타일은 primary
+    size: 'md', // 기본 사이즈는 medium
+  },
+});
+
+// Button 컴포넌트에서 사용할 prop의 타입 정의
+interface ButtonProps {
+  children?: React.ReactNode; // 버튼 안에 들어갈 내용 (텍스트 or 아이콘 등)
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost'; // 버튼 스타일 종류
+  size?: 'sm' | 'md' | 'lg'; // 버튼 크기 종류
+  isLoading?: boolean; // 로딩 중 여부
+  icon?: React.ReactNode; // 버튼 왼쪽에 표시할 아이콘
+  className?: string; // 추가 클래스명 전달
+  onClick?: () => void; // 클릭 이벤트 핸들러
+  disabled?: boolean; // 비활성화 여부
+  type?: 'button' | 'submit' | 'reset'; // 버튼 타입
+}
+
+// 실제 버튼 컴포넌트 정의
+const Button = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  isLoading = false,
+  icon,
+  className = '',
+  onClick,
+  disabled = false,
+  type = 'button',
+}: ButtonProps) => {
+  return (
+    <button
+      type={type} // 기본값은 'button'
+      className={classNames(buttonVariants({ variant, size }), className)} // 동적 클래스 조합
+      onClick={onClick} // 클릭 시 실행할 함수
+      disabled={isLoading || disabled} // 로딩 중이거나 disabled면 비활성화
+    >
+      {/* 로딩 중이면 "Loading..."만 표시 */}
+
       {isLoading ? (
         <span>Loading...</span>
       ) : (
         <>
+
           {icon && <span className='mr-2'>{icon}</span>}
           {children}
+
+          {/* 아이콘이 있으면 왼쪽에 띄우고 여백 추가 */}
+          {icon && <span className="mr-2">{icon}</span>}
+          {children} {/* 버튼의 텍스트 or 내용 */}
+
         </>
       )}
     </button>
