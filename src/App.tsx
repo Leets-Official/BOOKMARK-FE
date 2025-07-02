@@ -1,5 +1,11 @@
+import InputExample from './example/InputExample';
+import ImageExample from './example/ImageExample';
 function App() {
-  return <div className='text-3xl font-bold underline bg-blue-300'>Hi</div>;
+  return (
+    <>
+      <InputExample />
+      <ImageExample />
+    </>
+  );
 }
-
 export default App;
