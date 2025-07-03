@@ -4,7 +4,7 @@ interface ImageProps {
   src: string;
   alt?: string;
   onClick?: () => void;
-  className?: string;
+  className: string;
 }
 
 const Image: React.FC<ImageProps> = ({ src, alt = 'image', onClick, className }) => {

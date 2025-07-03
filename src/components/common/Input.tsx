@@ -4,9 +4,8 @@ import React from 'react';
 interface InputProps {
   placeholder?: string;
   value: string;
-  // eslint-disable-next-line no-unused-vars
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  className?: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  className: string;
 }
 
 const Input: React.FC<InputProps> = ({ placeholder = '', value, onChange, className = '' }) => {
