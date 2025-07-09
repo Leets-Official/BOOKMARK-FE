@@ -1,14 +1,8 @@
-import ModalExample from './example/ModalExample';
-import InputExample from './example/InputExample';
-import ImageExample from './example/ImageExample';
+import { RouterProvider } from 'react-router-dom';
+import router from './Router';
 
 function App() {
-  return (
-    <div className='text-3xl font-bold underline bg-blue-300'>
-      <ModalExample />
-      <InputExample />
-      <ImageExample />
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
+
 export default App;
