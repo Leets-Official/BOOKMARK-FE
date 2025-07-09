@@ -6,9 +6,16 @@ interface InputProps {
   value: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   className: string;
+  onKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
-const Input: React.FC<InputProps> = ({ placeholder = '', value, onChange, className = '' }) => {
+const Input: React.FC<InputProps> = ({
+  placeholder = '',
+  value,
+  onChange,
+  className = '',
+  onKeyDown,
+}) => {
   return (
     <input
       type='text'
@@ -16,6 +23,7 @@ const Input: React.FC<InputProps> = ({ placeholder = '', value, onChange, classN
       value={value}
       onChange={onChange}
       className={className}
+      onKeyDown={onKeyDown}
     />
   );
 };
