@@ -5,7 +5,7 @@ interface InputProps {
   value: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   className: string;
-  onKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
 const Input: React.FC<InputProps> = ({
