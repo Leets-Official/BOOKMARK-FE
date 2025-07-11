@@ -2,6 +2,7 @@ import { tv } from 'tailwind-variants';
 import { motion } from 'framer-motion';
 
 interface ChipProps {
+  id: number;
   content: string;
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
@@ -48,12 +49,12 @@ const chipStyle = tv({
   ],
 });
 
-const Chip = ({ content, isSelected, type, onClick }: ChipProps) => {
+const Chip = ({ id, content, isSelected, type, onClick }: ChipProps) => {
   return (
     <motion.div
       className={chipStyle({ isSelected, type })}
       onClick={onClick}
-      layoutId='chip'
+      layoutId={`chip-${id}`}
       animate={{ scale: 1 }}
       transition={{ duration: 0.2 }}
       whileHover={{ scale: 1.05 }}

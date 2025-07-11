@@ -7,7 +7,7 @@ import TextField from '@/components/ui/TextField';
 import Button from '@/components/common/Button';
 import { Add } from '@/assets';
 import Chip from '@/components/common/Chip';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -30,6 +30,7 @@ const Container = tv({
 });
 
 interface ChipProps {
+  id: number;
   content: string;
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
@@ -40,14 +41,17 @@ const Save = () => {
   const [title, setTitle] = useState('');
   const [visibleChip, setVisibleChip] = useState(false);
   const [chipList, setChipList] = useState<ChipProps[]>([
-    { content: '카테고리', isSelected: false, type: 'category' },
-    { content: '카테고리', isSelected: false, type: 'category' },
-    { content: '카테고리', isSelected: false, type: 'category' },
-    { content: '카테고리', isSelected: false, type: 'category' },
-    { content: '카테고리', isSelected: false, type: 'category' },
-    { content: '카테고리', isSelected: false, type: 'category' },
-    { content: '카테고리', isSelected: false, type: 'category' },
-    { content: '카테고리', isSelected: false, type: 'category' },
+    { id: 0, content: '카테고리', isSelected: false, type: 'category' },
+    { id: 1, content: '카테고리', isSelected: false, type: 'category' },
+    { id: 2, content: '카테고리', isSelected: false, type: 'category' },
+    { id: 3, content: '카테고리', isSelected: false, type: 'category' },
+    { id: 4, content: '카테고리', isSelected: false, type: 'category' },
+    { id: 5, content: '카테고리', isSelected: false, type: 'category' },
+    { id: 6, content: '카테고리', isSelected: false, type: 'category' },
+    { id: 7, content: '카테고리', isSelected: false, type: 'category' },
+    { id: 8, content: '카테고리', isSelected: false, type: 'category' },
+    { id: 9, content: '카테고리', isSelected: false, type: 'category' },
+    { id: 10, content: '카테고리', isSelected: false, type: 'category' },
   ]);
 
   const onClick = () => {
@@ -60,9 +64,8 @@ const Save = () => {
     setVisibleChip(true);
   };
 
-  const handleChip = (index: number) => {
-    console.log(index);
-    setChipList(chipList.map((c, i) => (i === index ? { ...c, isSelected: !c.isSelected } : c)));
+  const handleChip = (id: number) => {
+    setChipList(chipList.map((c) => (c.id === id ? { ...c, isSelected: !c.isSelected } : c)));
   };
 
   console.log(title);
@@ -96,13 +99,14 @@ const Save = () => {
                 </div>
                 <div className='grid grid-cols-4 gap-2'>
                   <AnimatePresence>
-                    {chipList.map((chip, index) => (
+                    {chipList.map((chip) => (
                       <Chip
-                        key={index}
+                        key={chip.id}
+                        id={chip.id}
                         content={chip.content}
                         isSelected={chip.isSelected}
                         type={chip.type}
-                        onClick={() => handleChip(index)}
+                        onClick={() => handleChip(chip.id)}
                       />
                     ))}
                   </AnimatePresence>
