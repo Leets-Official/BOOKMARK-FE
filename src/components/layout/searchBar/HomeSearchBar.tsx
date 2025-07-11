@@ -15,7 +15,7 @@ const HomeSearchBar = () => {
     console.log(value);
   };
   return (
-    <div className='relative w-200'>
+    <div className='relative w-[100%]'>
       <Input
         value={value}
         onChange={onChange}
