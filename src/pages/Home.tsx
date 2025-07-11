@@ -6,28 +6,28 @@ import Card from '@/components/layout/card/Card';
 
 const rowVariants = {
   start: (direction: 'next' | 'prev') => ({
-    x: direction === 'next' ? 'calc(100%)' : 'calc(-100%)',
+    x: direction === 'next' ? '100%' : '-100%',
   }),
   variant: {
     x: 0,
   },
   end: (direction: 'next' | 'prev') => ({
-    x: direction === 'next' ? 'calc(-100%)' : 'calc(100%)',
+    x: direction === 'next' ? '-100%' : '100%',
   }),
 };
 
 const Home = () => {
-  const cardList = Array.from({ length: 18 }, (_, i) => ({
+  const cardList = Array.from({ length: 13 }, (_, i) => ({
     id: i + 1,
     title: `제목 ${i + 1}`,
   }));
 
   const [index, setIndex] = useState(0);
+  const [direction, setDirection] = useState<'next' | 'prev'>('next');
+  const [leaving, setLeaving] = useState(false);
   const maxIndex = Math.floor((cardList.length - 1) / 4);
   const cardLists = cardList.slice(index * 4, index * 4 + 4);
   const currentNum = `${index + 1} / ${maxIndex + 1}`;
-  const [leaving, setLeaving] = useState(false);
-  const [direction, setDirection] = useState<'next' | 'prev'>('next');
 
   const incraseIndex = () => {
     if (leaving) return;
