@@ -23,6 +23,7 @@ const TextField = ({ label, placeholder, maxLength, onSubmit }: TextFieldProps) 
 
   const resetContent = () => {
     setContent('');
+    onSubmit('');
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

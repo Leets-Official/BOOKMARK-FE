@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 import { motion } from 'framer-motion';
 
 interface ChipProps {
-  id: number;
+  id: string;
   content: string;
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
@@ -10,7 +10,7 @@ interface ChipProps {
 }
 
 const chipStyle = tv({
-  base: 'rounded-[100px] flex items-center justify-center border text-xs h-8 cursor-pointer',
+  base: 'rounded-[100px] flex items-center justify-center border text-xs h-8 cursor-pointer p-2',
   variants: {
     isSelected: { true: '', false: '' },
     type: { category: '', tag: '', suggestion: '' },
@@ -29,22 +29,22 @@ const chipStyle = tv({
     {
       type: 'tag',
       isSelected: true,
-      class: 'bg-grayBg border-black',
+      class: 'bg-grayBg border-black text-grayText',
     },
     {
       type: 'tag',
       isSelected: false,
-      class: 'bg-grayBg border-grayBorder',
+      class: 'bg-grayBg border-grayBorder text-grayText',
     },
     {
       type: 'suggestion',
       isSelected: true,
-      class: 'bg-lightPrimary border-primary',
+      class: 'bg-lightPrimary border-primary text-grayText',
     },
     {
       type: 'suggestion',
       isSelected: false,
-      class: 'bg-grayBg border-grayBorder',
+      class: 'bg-grayBg border-grayBorder text-grayText',
     },
   ],
 });
