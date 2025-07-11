@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Home, Search, SignUp, Save } from './pages';
-import App from './App';
+import { Home, Search, SignUp, Save } from '@/pages';
+import App from '@/App';
 
 const router = createBrowserRouter([
   {
@@ -10,6 +10,12 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <Home />,
+        children: [
+          {
+            path: 'save',
+            element: <Save />,
+          },
+        ],
       },
       {
         path: 'signup',
@@ -18,10 +24,6 @@ const router = createBrowserRouter([
       {
         path: 'search',
         element: <Search />,
-      },
-      {
-        path: 'save',
-        element: <Save />,
       },
     ],
   },

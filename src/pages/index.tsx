@@ -1,6 +1,6 @@
-import Home from './Home';
-import SignUp from './SignUp';
-import Search from './Search';
-import Save from './Save';
+import Home from '@/pages/Home';
+import SignUp from '@/pages/SignUp';
+import Search from '@/pages/Search';
+import Save from '@/pages/Save';
 
 export { Home, SignUp, Search, Save };

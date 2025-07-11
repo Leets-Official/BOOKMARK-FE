@@ -29,7 +29,7 @@ const Modal = ({
 }: ModalProps) => {
   return (
     <div
-      className='fixed inset-0 backdrop-blur-sm flex justify-center items-center z-100'
+      className='fixed inset-0 bg-black/50 flex justify-center items-center z-100'
       onClick={onCancel}
     >
       <div
