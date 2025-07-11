@@ -1,13 +1,15 @@
 import { tv } from 'tailwind-variants';
+import { motion } from 'framer-motion';
 
 interface ChipProps {
   content: string;
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
+  onClick: () => void;
 }
 
 const chipStyle = tv({
-  base: 'rounded-[100px] flex items-center justify-center border text-xs h-8',
+  base: 'rounded-[100px] flex items-center justify-center border text-xs h-8 cursor-pointer',
   variants: {
     isSelected: { true: '', false: '' },
     type: { category: '', tag: '', suggestion: '' },
@@ -46,11 +48,19 @@ const chipStyle = tv({
   ],
 });
 
-const Chip = ({ content, isSelected, type }: ChipProps) => {
+const Chip = ({ content, isSelected, type, onClick }: ChipProps) => {
   return (
-    <div className={chipStyle({ isSelected, type })}>
+    <motion.div
+      className={chipStyle({ isSelected, type })}
+      onClick={onClick}
+      layoutId='chip'
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.2 }}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
       {type === 'category' ? content : '#' + content}
-    </div>
+    </motion.div>
   );
 };
 

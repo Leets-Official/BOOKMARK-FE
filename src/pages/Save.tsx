@@ -7,6 +7,7 @@ import TextField from '@/components/ui/TextField';
 import Button from '@/components/common/Button';
 import { Add } from '@/assets';
 import Chip from '@/components/common/Chip';
+import { AnimatePresence } from 'framer-motion';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -28,10 +29,26 @@ const Container = tv({
   },
 });
 
+interface ChipProps {
+  content: string;
+  isSelected: boolean;
+  type: 'category' | 'tag' | 'suggestion';
+}
+
 const Save = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [visibleChip, setVisibleChip] = useState(false);
+  const [chipList, setChipList] = useState<ChipProps[]>([
+    { content: '카테고리', isSelected: false, type: 'category' },
+    { content: '카테고리', isSelected: false, type: 'category' },
+    { content: '카테고리', isSelected: false, type: 'category' },
+    { content: '카테고리', isSelected: false, type: 'category' },
+    { content: '카테고리', isSelected: false, type: 'category' },
+    { content: '카테고리', isSelected: false, type: 'category' },
+    { content: '카테고리', isSelected: false, type: 'category' },
+    { content: '카테고리', isSelected: false, type: 'category' },
+  ]);
 
   const onClick = () => {
     navigate(-1);
@@ -41,6 +58,11 @@ const Save = () => {
     setTitle(v);
     // 임시로 무조건 성공으로 처리
     setVisibleChip(true);
+  };
+
+  const handleChip = (index: number) => {
+    console.log(index);
+    setChipList(chipList.map((c, i) => (i === index ? { ...c, isSelected: !c.isSelected } : c)));
   };
 
   console.log(title);
@@ -62,7 +84,7 @@ const Save = () => {
           <div className='bg-white w-full rounded-[12px] shadow p-4'>
             {visibleChip ? (
               <div className='flex flex-col gap-2 pt-1'>
-                <div className='flex flex-row items-center justify-between'>
+                <div className='flex flex-row items-center justify-between mb-1'>
                   <p className='text-sm'>카테고리(파일)</p>
                   <Button
                     icon={<Add width={18} height={18} fill='#397FFF' />}
@@ -73,12 +95,17 @@ const Save = () => {
                   </Button>
                 </div>
                 <div className='grid grid-cols-4 gap-2'>
-                  <Chip content='카테고리' isSelected={false} type='category' />
-                  <Chip content='카테고리' isSelected={true} type='category' />
-                  <Chip content='태그' isSelected={false} type='tag' />
-                  <Chip content='태그' isSelected={true} type='tag' />
-                  <Chip content='제안' isSelected={false} type='suggestion' />
-                  <Chip content='제안' isSelected={true} type='suggestion' />
+                  <AnimatePresence>
+                    {chipList.map((chip, index) => (
+                      <Chip
+                        key={index}
+                        content={chip.content}
+                        isSelected={chip.isSelected}
+                        type={chip.type}
+                        onClick={() => handleChip(index)}
+                      />
+                    ))}
+                  </AnimatePresence>
                 </div>
                 {/* <div className='flex flex-row items-center justify-between bg-grayBg '>
                   <p className='text-[14px]'>태그</p>
