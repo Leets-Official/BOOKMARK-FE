@@ -33,8 +33,8 @@ const Save = () => {
     navigate(-1);
   };
 
-  const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+  const handleTitle = (v: string) => {
+    setTitle(v);
   };
 
   console.log(title);
@@ -46,7 +46,12 @@ const Save = () => {
         <div className='flex flex-col items-center justify-center gap-3 w-full p-4 pt-13'>
           <div className='bg-white w-full rounded-[12px] shadow p-4'>
             {/* <p className='text-[12px] font-medium'>링크입력</p> */}
-            <TextField label='링크입력' placeholder='제목을 입력해주세요' maxLength={10} />
+            <TextField
+              label='링크입력'
+              placeholder='제목을 입력해주세요'
+              maxLength={10}
+              onSubmit={handleTitle}
+            />
           </div>
           <div className='bg-white w-full rounded-[12px] shadow p-4'>
             <p className='text-[14px]'>카테고리, 태그</p>

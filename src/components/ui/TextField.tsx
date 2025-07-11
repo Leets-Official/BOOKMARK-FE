@@ -7,9 +7,11 @@ interface TextFieldProps {
   label: string;
   placeholder: string;
   maxLength: number;
+  //eslint-disable-next-line
+  onSubmit: (v: string) => void;
 }
 
-const TextField = ({ label, placeholder, maxLength }: TextFieldProps) => {
+const TextField = ({ label, placeholder, maxLength, onSubmit }: TextFieldProps) => {
   const [content, setContent] = useState('');
 
   const onChangeContent = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,6 +25,18 @@ const TextField = ({ label, placeholder, maxLength }: TextFieldProps) => {
     setContent('');
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && onSubmit) {
+      onSubmit(content);
+    }
+  };
+
+  const handleBlur = () => {
+    if (onSubmit) {
+      onSubmit(content);
+    }
+  };
+
   return (
     <div className='flex flex-col'>
       <p className='text-[12px] mb-2'>{label}</p>
@@ -32,6 +46,8 @@ const TextField = ({ label, placeholder, maxLength }: TextFieldProps) => {
           value={content}
           onChange={onChangeContent}
           className='w-full h-12 rounded-[12px] text-[14px] p-4 border border-grayBorder focus:border-blue-500 focus:ring-0 focus:ring-offset-0 focus:outline-none'
+          onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
         />
         {content && (
           <Button
