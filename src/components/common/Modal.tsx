@@ -37,10 +37,10 @@ const Modal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className='text-2xl flex flex-col gap-[8px]'>
-          <div className='text-[14px]'>{text}</div>
-          <div className='text-[12px] text-grayText'>{subText}</div>
+          <div className='text-sm'>{text}</div>
+          <div className='text-xs text-grayText'>{subText}</div>
         </div>
-        <div className='text-sm flex justify-center items-center gap-[12px]'>
+        <div className='text-sm flex justify-center items-center gap-3'>
           <div className={modalButton({ variant: 'cancel' })} onClick={onCancel}>
             {cancelButtonText}
           </div>

@@ -18,7 +18,7 @@ const Button = ({ children, isLoading, icon, className, onClick, disabled }: But
         'Loading...'
       ) : (
         <>
-          {icon && <span className='mr-2'>{icon}</span>}
+          {icon && <span>{icon}</span>}
           {children}
         </>
       )}
