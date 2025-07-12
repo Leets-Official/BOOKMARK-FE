@@ -7,6 +7,7 @@ import TextField from '@/components/ui/TextField';
 import CategoryTagSelector from '@/pages/save/CategoryTagSelector';
 import Memo from '@/pages/save/Memo';
 import Alarm from './Alarm';
+import Button from '@/components/common/Button';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -28,6 +29,16 @@ const Container = tv({
   },
 });
 
+const SaveButton = tv({
+  base: 'bg-blue text-base text-white text-center font-medium mb-12 p-4 w-[90%] rounded-[10px]',
+  variants: {
+    isDisabled: {
+      true: 'bg-lightBlueGray text-veryLightGray',
+      false: 'bg-blue text-white cursor-pointer',
+    },
+  },
+});
+
 export interface ChipProps {
   id: number;
   content: string;
@@ -42,6 +53,9 @@ const Save = () => {
   const [visibleCategory, setVisibleCategory] = useState(false);
   const [visibleTag, setVisibleTag] = useState(false);
   const [visibleMemoAndAlarm, setVisibleMemoAndAlarm] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
 
   // 더미 데이터
   const [categoryList, setCategoryList] = useState<ChipProps[]>([
@@ -71,6 +85,60 @@ const Save = () => {
     { id: 1, content: '제안', isSelected: false, type: 'suggestion' },
     { id: 2, content: '제안', isSelected: false, type: 'suggestion' },
   ]);
+
+  const dateOptions = [
+    {
+      id: 1,
+      name: '내일(금) 8/1',
+    },
+    {
+      id: 2,
+      name: '내일 모레(토) 8/2',
+    },
+    {
+      id: 3,
+      name: '8/3',
+    },
+    {
+      id: 4,
+      name: '8/4',
+    },
+    {
+      id: 5,
+      name: '8/5',
+    },
+    {
+      id: 6,
+      name: '8/6',
+    },
+  ];
+
+  const timeOptions = [
+    {
+      id: 1,
+      name: '10:00',
+    },
+    {
+      id: 2,
+      name: '11:00',
+    },
+    {
+      id: 3,
+      name: '12:00',
+    },
+    {
+      id: 4,
+      name: '13:00',
+    },
+    {
+      id: 5,
+      name: '14:00',
+    },
+    {
+      id: 6,
+      name: '15:00',
+    },
+  ];
 
   const onClick = () => {
     navigate(-1);
@@ -130,8 +198,10 @@ const Save = () => {
       suggestionList.filter((s) => s.isSelected).length > 0
     ) {
       setVisibleMemoAndAlarm(true);
+      setIsSaveButtonDisabled(false);
     } else {
       setVisibleMemoAndAlarm(false);
+      setIsSaveButtonDisabled(true);
       setMemo('');
     }
   }, [tagList, suggestionList]);
@@ -179,9 +249,26 @@ const Save = () => {
               addTag={addTag}
             />
             <Memo visible={visibleMemoAndAlarm} handleMemo={handleMemo} />
-            <Alarm visible={visibleMemoAndAlarm} />
+            <Alarm
+              visible={visibleMemoAndAlarm}
+              dateOptions={dateOptions}
+              timeOptions={timeOptions}
+              selectedDate={selectedDate}
+              selectedTime={selectedTime}
+              setSelectedDate={setSelectedDate}
+              setSelectedTime={setSelectedTime}
+            />
           </div>
         </div>
+        <Button
+          onClick={() => {
+            console.log('저장하기', title, memo, selectedDate, selectedTime);
+          }}
+          className={SaveButton({ isDisabled: isSaveButtonDisabled })}
+          disabled={isSaveButtonDisabled}
+        >
+          저장하기
+        </Button>
       </div>
     </div>
   );

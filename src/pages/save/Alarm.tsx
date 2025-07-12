@@ -7,67 +7,32 @@ import { useState } from 'react';
 
 interface AlarmProps {
   visible: boolean;
+  dateOptions: {
+    id: number;
+    name: string;
+  }[];
+  timeOptions: {
+    id: number;
+    name: string;
+  }[];
+  selectedDate: string;
+  selectedTime: string;
+  // eslint-disable-next-line no-unused-vars
+  setSelectedDate: (date: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  setSelectedTime: (time: string) => void;
 }
 
-const Alarm = ({ visible }: AlarmProps) => {
+const Alarm = ({
+  visible,
+  dateOptions,
+  timeOptions,
+  selectedDate,
+  selectedTime,
+  setSelectedDate,
+  setSelectedTime,
+}: AlarmProps) => {
   const [isOpenAlarmModal, setIsOpenAlarmModal] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
-
-  // 더미 데이터
-  const dateOptions = [
-    {
-      id: 1,
-      name: '내일(금) 8/1',
-    },
-    {
-      id: 2,
-      name: '내일 모레(토) 8/2',
-    },
-    {
-      id: 3,
-      name: '8/3',
-    },
-    {
-      id: 4,
-      name: '8/4',
-    },
-    {
-      id: 5,
-      name: '8/5',
-    },
-    {
-      id: 6,
-      name: '8/6',
-    },
-  ];
-
-  const timeOptions = [
-    {
-      id: 1,
-      name: '10:00',
-    },
-    {
-      id: 2,
-      name: '11:00',
-    },
-    {
-      id: 3,
-      name: '12:00',
-    },
-    {
-      id: 4,
-      name: '13:00',
-    },
-    {
-      id: 5,
-      name: '14:00',
-    },
-    {
-      id: 6,
-      name: '15:00',
-    },
-  ];
 
   const handleDate = (date: string) => {
     setSelectedDate(date);
