@@ -54,7 +54,7 @@ const Chip = ({ id, content, isSelected, type, onClick }: ChipProps) => {
     <motion.div
       className={chipStyle({ isSelected, type })}
       onClick={onClick}
-      layoutId={`chip-${id}`}
+      layoutId={`${id}`}
       animate={{ scale: 1 }}
       transition={{ duration: 0.2 }}
       whileHover={{ scale: 1.05 }}
