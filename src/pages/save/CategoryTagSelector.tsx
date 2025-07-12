@@ -200,6 +200,22 @@ const CategoryTagSelector = ({
               console.log(content);
             }}
           />
+          <div className='flex flex-wrap gap-2 m-0.5'>
+            {categoryList.map(
+              (category) =>
+                category.isSelected && (
+                  <Chip
+                    key={category.id}
+                    id={'Selected category' + category.id}
+                    content={category.content}
+                    isSelected={category.isSelected}
+                    type={category.type}
+                    onClick={() => handleCategory(category.id)}
+                    disabled={true}
+                  />
+                ),
+            )}
+          </div>
         </Modal>
       )}
 
@@ -212,7 +228,32 @@ const CategoryTagSelector = ({
           onConfirm={() => {
             setIsOpenTagModal(false);
           }}
-        />
+        >
+          <TextField
+            label='태그'
+            placeholder='추가할 태그를 입력해주세요.'
+            maxLength={10}
+            onSubmit={(content) => {
+              console.log(content);
+            }}
+          />
+          <div className='flex flex-wrap gap-2 m-0.5'>
+            {tagList.map(
+              (tag) =>
+                tag.isSelected && (
+                  <Chip
+                    key={tag.id}
+                    id={'Selected tag' + tag.id}
+                    content={tag.content}
+                    isSelected={tag.isSelected}
+                    type={tag.type}
+                    onClick={() => handleTag(tag.id)}
+                    disabled={true}
+                  />
+                ),
+            )}
+          </div>
+        </Modal>
       )}
     </div>
   );
