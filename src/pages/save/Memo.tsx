@@ -8,7 +8,6 @@ interface MemoProps {
 }
 
 const Memo = ({ visible, handleMemo }: MemoProps) => {
-  console.log(visible);
   return (
     <div className='bg-white w-full rounded-[12px] shadow p-4'>
       <AnimatePresence mode='wait'>

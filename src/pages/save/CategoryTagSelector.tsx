@@ -19,6 +19,10 @@ interface CategoryTagSelectorProps {
   handleTag: (id: number) => void;
   // eslint-disable-next-line no-unused-vars
   handleSuggestion: (id: number) => void;
+  // eslint-disable-next-line no-unused-vars
+  addCategory: (content: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  addTag: (content: string) => void;
 }
 
 const CategoryTagSelector = ({
@@ -30,7 +34,12 @@ const CategoryTagSelector = ({
   handleCategory,
   handleTag,
   handleSuggestion,
+  addCategory,
+  addTag,
 }: CategoryTagSelectorProps) => {
+  const [categoryContent, setCategoryContent] = useState('');
+  const [tagContent, setTagContent] = useState('');
+
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
   const [isOpenTagModal, setIsOpenTagModal] = useState(false);
 
@@ -39,6 +48,13 @@ const CategoryTagSelector = ({
   };
   const handleOpenTagModal = () => {
     setIsOpenTagModal((prev) => !prev);
+  };
+
+  const handleCategoryContent = (content: string) => {
+    setCategoryContent(content);
+  };
+  const handleTagContent = (content: string) => {
+    setTagContent(content);
   };
 
   return (
@@ -189,6 +205,7 @@ const CategoryTagSelector = ({
             setIsOpenCategoryModal(false);
           }}
           onConfirm={() => {
+            addCategory(categoryContent);
             setIsOpenCategoryModal(false);
           }}
         >
@@ -197,7 +214,7 @@ const CategoryTagSelector = ({
             placeholder='추가할 카테고리를 입력해주세요.'
             maxLength={10}
             onSubmit={(content) => {
-              console.log(content);
+              handleCategoryContent(content);
             }}
           />
           <div className='flex flex-wrap gap-2 m-0.5'>
@@ -226,6 +243,7 @@ const CategoryTagSelector = ({
             setIsOpenTagModal(false);
           }}
           onConfirm={() => {
+            addTag(tagContent);
             setIsOpenTagModal(false);
           }}
         >
@@ -234,7 +252,7 @@ const CategoryTagSelector = ({
             placeholder='추가할 태그를 입력해주세요.'
             maxLength={10}
             onSubmit={(content) => {
-              console.log(content);
+              handleTagContent(content);
             }}
           />
           <div className='flex flex-wrap gap-2 m-0.5'>

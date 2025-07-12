@@ -8,7 +8,7 @@ import CategoryTagSelector from '@/pages/save/CategoryTagSelector';
 import Memo from '@/pages/save/Memo';
 
 const Overlay = tv({
-  base: 'fixed inset-0 z-100 flex items-center justify-center overflow-y-scroll',
+  base: 'fixed inset-0 z-100 flex items-center justify-center',
   variants: {
     isMobile: {
       true: '',
@@ -18,7 +18,7 @@ const Overlay = tv({
 });
 
 const Container = tv({
-  base: 'flex flex-col items-center bg-grayBg',
+  base: 'flex flex-col items-center bg-grayBg overflow-y-auto hide-scrollbar',
   variants: {
     isMobile: {
       true: 'h-full w-full',
@@ -111,6 +111,19 @@ const Save = () => {
     }
   };
 
+  const addCategory = (content: string) => {
+    setCategoryList([
+      ...categoryList,
+      { id: categoryList.length, content, isSelected: true, type: 'category' },
+    ]);
+    setVisibleCategory(true);
+  };
+
+  const addTag = (content: string) => {
+    setTagList([...tagList, { id: tagList.length, content, isSelected: true, type: 'tag' }]);
+    setVisibleTag(true);
+  };
+
   const handleTag = (id: number) => {
     const newTagList = tagList.map((t) => (t.id === id ? { ...t, isSelected: !t.isSelected } : t));
     setTagList(newTagList);
@@ -137,30 +150,39 @@ const Save = () => {
 
   return (
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onClick : undefined}>
-      <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
-        <SaveHeader />
-        <div className='flex flex-col items-center justify-center gap-3 w-full p-4 pt-13'>
-          <div className='bg-white w-full rounded-[12px] shadow p-4'>
-            <TextField
-              label='링크입력'
-              placeholder='제목을 입력해주세요'
-              maxLength={10}
-              onSubmit={handleTitle}
+      <div
+        className={Container({ isMobile }) + ' flex flex-col'}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className='sticky top-0 z-10 w-full'>
+          <SaveHeader />
+        </div>
+        <div className='flex-1 overflow-y-auto hide-scrollbar w-full'>
+          <div className='flex flex-col items-center gap-3 w-full p-4 pt-13'>
+            <div className='bg-white w-full rounded-[12px] shadow p-4'>
+              <TextField
+                label='링크입력'
+                placeholder='제목을 입력해주세요'
+                maxLength={10}
+                onSubmit={handleTitle}
+              />
+            </div>
+            <CategoryTagSelector
+              visibleCategory={visibleCategory}
+              visibleTag={visibleTag}
+              categoryList={categoryList}
+              tagList={tagList}
+              suggestionList={suggestionList}
+              handleCategory={handleCategory}
+              handleTag={handleTag}
+              handleSuggestion={handleSuggestion}
+              addCategory={addCategory}
+              addTag={addTag}
             />
-          </div>
-          <CategoryTagSelector
-            visibleCategory={visibleCategory}
-            visibleTag={visibleTag}
-            categoryList={categoryList}
-            tagList={tagList}
-            suggestionList={suggestionList}
-            handleCategory={handleCategory}
-            handleTag={handleTag}
-            handleSuggestion={handleSuggestion}
-          />
-          <Memo visible={visibleMemo} handleMemo={handleMemo} />
-          <div className='bg-white w-full rounded-[12px] shadow p-4'>
-            <p className='text-sm'>알림</p>
+            <Memo visible={visibleMemo} handleMemo={handleMemo} />
+            <div className='bg-white w-full rounded-[12px] shadow p-4'>
+              <p className='text-sm'>알림</p>
+            </div>
           </div>
         </div>
       </div>
