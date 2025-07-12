@@ -33,6 +33,8 @@ const Alarm = ({
   setSelectedTime,
 }: AlarmProps) => {
   const [isOpenAlarmModal, setIsOpenAlarmModal] = useState(false);
+  const [tempDate, setTempDate] = useState('');
+  const [tempTime, setTempTime] = useState('');
 
   const handleDate = (date: string) => {
     setSelectedDate(date);
@@ -45,6 +47,11 @@ const Alarm = ({
   const resetAlarm = () => {
     setSelectedDate('');
     setSelectedTime('');
+  };
+
+  const resetTempAlarm = () => {
+    setTempDate('');
+    setTempTime('');
   };
 
   return (
@@ -91,11 +98,15 @@ const Alarm = ({
           title='알림 추가'
           onCancel={() => {
             setIsOpenAlarmModal(false);
+            resetTempAlarm();
           }}
           onConfirm={() => {
+            setSelectedDate(tempDate);
+            setSelectedTime(tempTime);
+            resetTempAlarm();
             setIsOpenAlarmModal(false);
           }}
-          disabled={selectedDate === '' || selectedTime === ''}
+          disabled={tempDate === '' || tempTime === ''}
         >
           <div className='flex flex-row gap-2 mb-2 mt-2'>
             <DropDown
@@ -103,16 +114,16 @@ const Alarm = ({
               title='날짜 선택'
               subTitle='날짜'
               options={dateOptions}
-              selectedOption={selectedDate}
-              setSelectedOption={handleDate}
+              selectedOption={tempDate}
+              setSelectedOption={setTempDate}
             />
             <DropDown
               icon={<Schedule width={24} height={24} fill='#090E1D' />}
               title='시간 선택'
               subTitle='시간'
               options={timeOptions}
-              selectedOption={selectedTime}
-              setSelectedOption={handleTime}
+              selectedOption={tempTime}
+              setSelectedOption={setTempTime}
             />
           </div>
         </Modal>
