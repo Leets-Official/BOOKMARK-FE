@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import TextField from '@/components/ui/TextField';
 import CategoryTagSelector from '@/pages/save/CategoryTagSelector';
 import Memo from '@/pages/save/Memo';
+import Alarm from './Alarm';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -40,7 +41,7 @@ const Save = () => {
   const [memo, setMemo] = useState('');
   const [visibleCategory, setVisibleCategory] = useState(false);
   const [visibleTag, setVisibleTag] = useState(false);
-  const [visibleMemo, setVisibleMemo] = useState(false);
+  const [visibleMemoAndAlarm, setVisibleMemoAndAlarm] = useState(false);
 
   // 더미 데이터
   const [categoryList, setCategoryList] = useState<ChipProps[]>([
@@ -128,9 +129,9 @@ const Save = () => {
       tagList.filter((t) => t.isSelected).length > 0 ||
       suggestionList.filter((s) => s.isSelected).length > 0
     ) {
-      setVisibleMemo(true);
+      setVisibleMemoAndAlarm(true);
     } else {
-      setVisibleMemo(false);
+      setVisibleMemoAndAlarm(false);
       setMemo('');
     }
   }, [tagList, suggestionList]);
@@ -177,10 +178,8 @@ const Save = () => {
               addCategory={addCategory}
               addTag={addTag}
             />
-            <Memo visible={visibleMemo} handleMemo={handleMemo} />
-            <div className='bg-white w-full rounded-[12px] shadow p-4'>
-              <p className='text-sm'>알림</p>
-            </div>
+            <Memo visible={visibleMemoAndAlarm} handleMemo={handleMemo} />
+            <Alarm visible={visibleMemoAndAlarm} />
           </div>
         </div>
       </div>

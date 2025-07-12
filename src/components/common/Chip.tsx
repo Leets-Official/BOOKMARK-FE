@@ -1,6 +1,5 @@
 import { tv } from 'tailwind-variants';
 import { motion } from 'framer-motion';
-import Button from './Button';
 
 interface ChipProps {
   id: string;
