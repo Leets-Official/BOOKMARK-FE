@@ -8,11 +8,13 @@ interface TextFieldProps {
   placeholder: string;
   maxLength: number;
   //eslint-disable-next-line
-  onSubmit: (v: string) => void;
+  onChange: (v: string) => void;
+  //eslint-disable-next-line
+  onSubmit?: (v: string) => void;
   type: 'create' | 'reset';
 }
 
-const TextField = ({ label, placeholder, maxLength, onSubmit, type }: TextFieldProps) => {
+const TextField = ({ label, placeholder, maxLength, onChange, onSubmit, type }: TextFieldProps) => {
   const [content, setContent] = useState('');
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -24,22 +26,30 @@ const TextField = ({ label, placeholder, maxLength, onSubmit, type }: TextFieldP
 
   const resetContent = () => {
     setContent('');
-    onSubmit('');
+    onChange('');
   };
 
   const createContent = () => {
     setContent('');
-    onSubmit(content);
+    if (onSubmit) {
+      onSubmit(content);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && onSubmit && type === 'reset') {
+    if (e.key === 'Enter') {
+      onChange(content);
+    }
+
+    if (type === 'reset' && onSubmit) {
       onSubmit(content);
     }
   };
 
   const handleBlur = () => {
-    if (onSubmit && type === 'reset') {
+    onChange(content);
+
+    if (type === 'reset' && onSubmit) {
       onSubmit(content);
     }
   };

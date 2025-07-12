@@ -2,7 +2,7 @@ import { isMobile } from 'react-device-detect';
 import SaveHeader from '@/components/layout/header/SaveHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextField from '@/components/ui/TextField';
 import CategoryTagSelector from '@/pages/save/CategoryTagSelector';
 import Memo from '@/pages/save/Memo';
@@ -161,7 +161,7 @@ const Save = () => {
                 label='링크입력'
                 placeholder='제목을 입력해주세요'
                 maxLength={10}
-                onSubmit={handleTitle}
+                onChange={handleTitle}
                 type='reset'
               />
             </div>

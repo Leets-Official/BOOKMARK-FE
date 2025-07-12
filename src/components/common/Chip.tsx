@@ -54,16 +54,15 @@ const chipStyle = tv({
 const Chip = ({ id, content, isSelected, type, onClick, disabled = false }: ChipProps) => {
   return (
     <motion.div
-      className={chipStyle({ isSelected, type })}
+      className={chipStyle({ isSelected, type }) + (disabled ? '' : ' cursor-pointer')}
       layoutId={`${id}`}
       animate={{ scale: 1 }}
       transition={{ duration: 0.2 }}
       whileHover={disabled ? undefined : { scale: 1.05 }}
       whileTap={disabled ? undefined : { scale: 0.95 }}
+      onClick={disabled ? undefined : onClick}
     >
-      <Button onClick={onClick} disabled={disabled} className={disabled ? '' : 'cursor-pointer'}>
-        {type === 'category' ? content : '#' + content}
-      </Button>
+      {type === 'category' ? content : '#' + content}
     </motion.div>
   );
 };

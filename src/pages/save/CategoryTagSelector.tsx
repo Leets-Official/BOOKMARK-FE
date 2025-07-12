@@ -162,7 +162,7 @@ const CategoryTagSelector = ({
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className='overflow-hidden'
                     >
-                      <div className='flex flex-wrap gap-2 m-0.5'>
+                      <div className='flex flex-wrap gap-2 m-1'>
                         {tagList.map((tag) => (
                           <Chip
                             key={tag.id}
@@ -178,7 +178,7 @@ const CategoryTagSelector = ({
                         <Star width={18} height={18} fill='#007AFF' />
                         <p className='text-sm text-primary'>제안</p>
                       </div>
-                      <div className='flex flex-wrap gap-2 m-0.5'>
+                      <div className='flex flex-wrap gap-2 m-1'>
                         {suggestionList.map((suggestion) => (
                           <Chip
                             key={suggestion.id}
@@ -214,7 +214,7 @@ const CategoryTagSelector = ({
             label='카테고리'
             placeholder='추가할 카테고리를 입력해주세요.'
             maxLength={10}
-            onSubmit={(content) => {
+            onChange={(content) => {
               handleCategoryContent(content);
             }}
             type='reset'
@@ -253,6 +253,9 @@ const CategoryTagSelector = ({
             label='태그'
             placeholder='추가할 태그를 입력해주세요.'
             maxLength={10}
+            onChange={(content) => {
+              setTagContent(content);
+            }}
             onSubmit={(content) => {
               handleTagContent(content);
             }}
