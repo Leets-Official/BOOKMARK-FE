@@ -2,7 +2,7 @@ import { isMobile } from 'react-device-detect';
 import SaveHeader from '@/components/layout/header/SaveHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import TextField from '@/components/ui/TextField';
 import CategoryTagSelector from '@/pages/save/CategoryTagSelector';
 import Memo from '@/pages/save/Memo';
@@ -75,12 +75,6 @@ const Save = () => {
     navigate(-1);
   };
 
-  const resetChip = () => {
-    setCategoryList(categoryList.map((c) => ({ ...c, isSelected: false })));
-    setTagList(tagList.map((t) => ({ ...t, isSelected: false })));
-    setSuggestionList(suggestionList.map((s) => ({ ...s, isSelected: false })));
-  };
-
   const handleTitle = (v: string) => {
     setTitle(v);
 
@@ -89,7 +83,9 @@ const Save = () => {
       setVisibleCategory(true);
     } else {
       setVisibleCategory(false);
-      resetChip();
+      setCategoryList(categoryList.map((c) => ({ ...c, isSelected: false })));
+      setTagList(tagList.map((t) => ({ ...t, isSelected: false })));
+      setSuggestionList(suggestionList.map((s) => ({ ...s, isSelected: false })));
     }
   };
 
@@ -102,13 +98,6 @@ const Save = () => {
       c.id === id ? { ...c, isSelected: !c.isSelected } : c,
     );
     setCategoryList(newCategoryList);
-
-    if (newCategoryList.filter((c) => c.isSelected).length > 0) {
-      setVisibleTag(true);
-    } else {
-      setVisibleTag(false);
-      resetChip();
-    }
   };
 
   const addCategory = (content: string) => {
@@ -116,12 +105,10 @@ const Save = () => {
       ...categoryList,
       { id: categoryList.length, content, isSelected: true, type: 'category' },
     ]);
-    setVisibleCategory(true);
   };
 
   const addTag = (content: string) => {
     setTagList([...tagList, { id: tagList.length, content, isSelected: true, type: 'tag' }]);
-    setVisibleTag(true);
   };
 
   const handleTag = (id: number) => {
@@ -147,6 +134,16 @@ const Save = () => {
       setMemo('');
     }
   }, [tagList, suggestionList]);
+
+  useEffect(() => {
+    if (categoryList.filter((c) => c.isSelected).length > 0) {
+      setVisibleTag(true);
+    } else {
+      setVisibleTag(false);
+      setTagList((prev) => prev.map((t) => ({ ...t, isSelected: false })));
+      setSuggestionList((prev) => prev.map((s) => ({ ...s, isSelected: false })));
+    }
+  }, [categoryList]);
 
   return (
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onClick : undefined}>
