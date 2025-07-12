@@ -3,6 +3,9 @@ import Button from '@/components/common/Button';
 import { Add, Star } from '@/assets';
 import Chip from '@/components/common/Chip';
 import type { ChipProps } from '@/pages/save/Save';
+import { useState } from 'react';
+import Modal from '@/components/common/Modal';
+import TextField from '@/components/ui/TextField';
 
 interface CategoryTagSelectorProps {
   visibleCategory: boolean;
@@ -28,6 +31,16 @@ const CategoryTagSelector = ({
   handleTag,
   handleSuggestion,
 }: CategoryTagSelectorProps) => {
+  const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
+  const [isOpenTagModal, setIsOpenTagModal] = useState(false);
+
+  const handleOpenCategoryModal = () => {
+    setIsOpenCategoryModal((prev) => !prev);
+  };
+  const handleOpenTagModal = () => {
+    setIsOpenTagModal((prev) => !prev);
+  };
+
   return (
     <div className='bg-white w-full rounded-[12px] shadow p-4'>
       <div className='flex flex-col gap-2 pt-1 origin-top'>
@@ -53,7 +66,7 @@ const CategoryTagSelector = ({
                 >
                   <Button
                     icon={<Add width={18} height={18} fill='#397FFF' />}
-                    onClick={() => { }}
+                    onClick={handleOpenCategoryModal}
                     className='cursor-pointer text-xs font-semibold text-primary flex items-center gap-1'
                   >
                     카테고리 추가
@@ -114,7 +127,7 @@ const CategoryTagSelector = ({
                     >
                       <Button
                         icon={<Add width={18} height={18} fill='#397FFF' />}
-                        onClick={() => { }}
+                        onClick={handleOpenTagModal}
                         className='cursor-pointer text-xs font-semibold text-primary flex items-center gap-1'
                       >
                         태그 추가
@@ -168,6 +181,39 @@ const CategoryTagSelector = ({
           )}
         </AnimatePresence>
       </div>
+
+      {isOpenCategoryModal && (
+        <Modal
+          title='새 카테고리 추가'
+          onCancel={() => {
+            setIsOpenCategoryModal(false);
+          }}
+          onConfirm={() => {
+            setIsOpenCategoryModal(false);
+          }}
+        >
+          <TextField
+            label='카테고리'
+            placeholder='추가할 카테고리를 입력해주세요.'
+            maxLength={10}
+            onSubmit={(content) => {
+              console.log(content);
+            }}
+          />
+        </Modal>
+      )}
+
+      {isOpenTagModal && (
+        <Modal
+          title='태그 추가'
+          onCancel={() => {
+            setIsOpenTagModal(false);
+          }}
+          onConfirm={() => {
+            setIsOpenTagModal(false);
+          }}
+        />
+      )}
     </div>
   );
 };

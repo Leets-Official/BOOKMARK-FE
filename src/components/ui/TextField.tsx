@@ -53,7 +53,7 @@ const TextField = ({ label, placeholder, maxLength, onSubmit }: TextFieldProps) 
         {content && (
           <Button
             className='absolute right-3 bg-transparent hover:cursor-pointer h-6 w-6'
-            icon={<Delete width={24} height={24} />}
+            icon={<Delete width={24} height={24} fill='#545966' />}
             onClick={resetContent}
           />
         )}
