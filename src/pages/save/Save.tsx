@@ -38,7 +38,7 @@ const Save = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
-  const [visibleCategory, setVisibleCategory] = useState(false);
+  const [visibleCategory, setVisibleCategory] = useState(true);
   const [visibleTag, setVisibleTag] = useState(false);
   const [visibleMemo, setVisibleMemo] = useState(false);
 
