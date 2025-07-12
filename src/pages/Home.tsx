@@ -1,5 +1,3 @@
-import { isMobile } from 'react-device-detect';
-import clsx from 'clsx';
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import HomeSearchBar from '@/components/layout/searchBar/HomeSearchBar';
 import HomeCardList from '@/components/layout/card/HomeCardList';
@@ -12,15 +10,10 @@ const Home = () => {
 
   return (
     <div className='flex items-center justify-center flex-col'>
-      <div
-        className={clsx(
-          'flex items-center justify-center my-70 w-[90%] max-w-200',
-          isMobile ? 'mb-35' : 'mb-50',
-        )}
-      >
+      <div className='flex items-center justify-center my-70 w-[90%] max-w-200'>
         <HomeSearchBar />
       </div>
-      <div className='w-[80%] max-lg:w-[90%] h-120'>
+      <div className='w-[80%] max-lg:w-[90%]'>
         <CardListHeader currentNum={`${cardList.length}`} />
         <hr className='border-t border-gray-200 my-3' />
         <HomeCardList cardList={cardList} />

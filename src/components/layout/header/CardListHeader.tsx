@@ -9,7 +9,6 @@ interface CardListHeaderProps {
 }
 
 const CardListHeader = ({ currentNum }: CardListHeaderProps) => {
-  const isMobile = 'true';
   return (
     <div className='flex justify-between items-center'>
       <div className='flex items-center gap-1'>
