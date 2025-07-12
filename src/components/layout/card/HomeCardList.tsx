@@ -1,12 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 import { isMobile } from 'react-device-detect';
-import clsx from 'clsx';
+import { tv } from 'tailwind-variants';
 import FolderCard from '@/components/layout/card/FolderCard';
 
 interface HomeCardListProps {
   cardList: { id: number; title: string }[];
 }
+
+const containerStyle = tv({
+  base: 'relative py-3 overflow-hidden',
+  variants: {
+    mobile: {
+      true: 'mb-10',
+      false: 'mb-30',
+    },
+  },
+});
 
 const HomeCardList = ({ cardList }: HomeCardListProps) => {
   const x = useMotionValue(0);
@@ -37,10 +47,7 @@ const HomeCardList = ({ cardList }: HomeCardListProps) => {
   }, [cardList, x]);
 
   return (
-    <div
-      ref={containerRef}
-      className={clsx('relative py-3 overflow-hidden', isMobile ? 'mb-10' : 'mb-30')}
-    >
+    <div ref={containerRef} className={containerStyle({ mobile: isMobile })}>
       <motion.div
         ref={dragRef}
         style={{

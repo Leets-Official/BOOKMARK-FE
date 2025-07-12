@@ -1,9 +1,12 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FilterIcon, SearchIcon } from '@/assets';
 import Input from '@/components/common/Input';
-import React, { useState } from 'react';
 
 const HomeSearchBar = () => {
   const [value, setValue] = useState('');
+  const navigate = useNavigate();
+
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     const {
       currentTarget: { value },
@@ -11,6 +14,7 @@ const HomeSearchBar = () => {
     setValue(value);
   };
 
+  // 엔터 누르면 발생하는 함수
   const EnterFn = () => {
     console.log(value);
   };
@@ -28,7 +32,10 @@ const HomeSearchBar = () => {
       <div className='absolute left-4 top-[18px]'>
         <SearchIcon />
       </div>
-      <div className='absolute right-2 top-[4px] cursor-pointer hover:brightness-90 transition'>
+      <div
+        className='absolute right-2 top-[4px] cursor-pointer hover:brightness-90 transition'
+        onClick={() => navigate('/search')} // 아이콘 누르면 /search로 이동
+      >
         <FilterIcon />
       </div>
     </div>

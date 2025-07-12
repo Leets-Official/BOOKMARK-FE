@@ -4,5 +4,7 @@ import DetailIcon from './Icon/detail.svg?react';
 import LeftIcon from './Icon/left.svg?react';
 import RightIcon from './Icon/right.svg?react';
 import AddIcon from './Icon/add.svg?react';
+import HomeIcon from './Icon/home.svg?react';
+import FolderIcon from './Icon/folder.svg?react';
 
-export { FilterIcon, SearchIcon, DetailIcon, LeftIcon, RightIcon, AddIcon };
+export { FilterIcon, SearchIcon, DetailIcon, LeftIcon, RightIcon, AddIcon, HomeIcon, FolderIcon };
