@@ -1,4 +1,4 @@
-import { AddAlert, Calendar, Schedule } from '@/assets';
+import { AddAlert, Calendar, Schedule, Trash } from '@/assets';
 import Button from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
 import DropDown from '@/components/ui/DropDown';
@@ -18,11 +18,11 @@ const Alarm = ({ visible }: AlarmProps) => {
   const dateOptions = [
     {
       id: 1,
-      name: '내일(금) 8/1일',
+      name: '내일(금) 8/1',
     },
     {
       id: 2,
-      name: '내일 모레(토) 8/2일',
+      name: '내일 모레(토) 8/2',
     },
     {
       id: 3,
@@ -77,9 +77,23 @@ const Alarm = ({ visible }: AlarmProps) => {
     setSelectedTime(time);
   };
 
+  const resetAlarm = () => {
+    setSelectedDate('');
+    setSelectedTime('');
+  };
+
   return (
-    <div className='bg-white w-full rounded-[12px] shadow p-4'>
+    <div className='bg-white w-full rounded-[12px] shadow p-4 relative'>
       <p className='text-sm'>알림</p>
+      {selectedDate === '' || selectedTime === '' ? null : (
+        <Button
+          onClick={resetAlarm}
+          icon={<Trash width={18} height={18} fill='#FF2C3D' />}
+          className='text-xs text-error underline font-semibold flex items-center cursor-pointer absolute top-4 right-4'
+        >
+          알림 삭제
+        </Button>
+      )}
       <AnimatePresence>
         {visible && (
           <motion.div
@@ -88,7 +102,7 @@ const Alarm = ({ visible }: AlarmProps) => {
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className='overflow-hidden'
+            className='overflow-hidden mt-4'
           >
             <div className='flex items-center justify-center m-1'>
               <Button
@@ -98,7 +112,9 @@ const Alarm = ({ visible }: AlarmProps) => {
                 }}
                 className='text-sm text-primary underline font-semibold flex items-center cursor-pointer'
               >
-                알림 설정 카카오톡 나에게 보내기
+                {selectedDate === '' || selectedTime === ''
+                  ? '알림 설정 카카오톡 나에게 보내기'
+                  : `${selectedDate}일뒤 ${selectedTime}에 카카오톡 나에게 보내기`}
               </Button>
             </div>
           </motion.div>
