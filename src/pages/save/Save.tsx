@@ -2,9 +2,10 @@ import { isMobile } from 'react-device-detect';
 import SaveHeader from '@/components/layout/header/SaveHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextField from '@/components/ui/TextField';
-import CategoryTagSelector from './CategoryTagSelector';
+import CategoryTagSelector from '@/pages/save/CategoryTagSelector';
+import Memo from '@/pages/save/Memo';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center overflow-y-scroll',
@@ -36,8 +37,10 @@ export interface ChipProps {
 const Save = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
+  const [memo, setMemo] = useState('');
   const [visibleCategory, setVisibleCategory] = useState(false);
   const [visibleTag, setVisibleTag] = useState(false);
+  const [visibleMemo, setVisibleMemo] = useState(false);
 
   // 더미 데이터
   const [categoryList, setCategoryList] = useState<ChipProps[]>([
@@ -90,6 +93,10 @@ const Save = () => {
     }
   };
 
+  const handleMemo = (v: string) => {
+    setMemo(v);
+  };
+
   const handleCategory = (id: number) => {
     const newCategoryList = categoryList.map((c) =>
       c.id === id ? { ...c, isSelected: !c.isSelected } : c,
@@ -116,6 +123,18 @@ const Save = () => {
     setSuggestionList(newSuggestionList);
   };
 
+  useEffect(() => {
+    if (
+      tagList.filter((t) => t.isSelected).length > 0 ||
+      suggestionList.filter((s) => s.isSelected).length > 0
+    ) {
+      setVisibleMemo(true);
+    } else {
+      setVisibleMemo(false);
+      setMemo('');
+    }
+  }, [tagList, suggestionList]);
+
   return (
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onClick : undefined}>
       <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
@@ -139,9 +158,7 @@ const Save = () => {
             handleTag={handleTag}
             handleSuggestion={handleSuggestion}
           />
-          <div className='bg-white w-full rounded-[12px] shadow p-4'>
-            <p className='text-sm'>메모</p>
-          </div>
+          <Memo visible={visibleMemo} handleMemo={handleMemo} />
           <div className='bg-white w-full rounded-[12px] shadow p-4'>
             <p className='text-sm'>알림</p>
           </div>
