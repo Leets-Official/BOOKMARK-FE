@@ -50,6 +50,7 @@ const Memo = ({ visible, handleMemo }: MemoProps) => {
               placeholder='메모를 입력해주세요'
               maxLength={70}
               onSubmit={handleMemo}
+              type='reset'
             />
           </motion.div>
         )}

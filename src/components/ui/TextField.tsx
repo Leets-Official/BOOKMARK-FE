@@ -9,9 +9,10 @@ interface TextFieldProps {
   maxLength: number;
   //eslint-disable-next-line
   onSubmit: (v: string) => void;
+  type: 'create' | 'reset';
 }
 
-const TextField = ({ label, placeholder, maxLength, onSubmit }: TextFieldProps) => {
+const TextField = ({ label, placeholder, maxLength, onSubmit, type }: TextFieldProps) => {
   const [content, setContent] = useState('');
 
   const onChangeContent = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,14 +27,19 @@ const TextField = ({ label, placeholder, maxLength, onSubmit }: TextFieldProps) 
     onSubmit('');
   };
 
+  const createContent = () => {
+    setContent('');
+    onSubmit(content);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && onSubmit) {
+    if (e.key === 'Enter' && onSubmit && type === 'reset') {
       onSubmit(content);
     }
   };
 
   const handleBlur = () => {
-    if (onSubmit) {
+    if (onSubmit && type === 'reset') {
       onSubmit(content);
     }
   };
@@ -52,10 +58,12 @@ const TextField = ({ label, placeholder, maxLength, onSubmit }: TextFieldProps) 
         />
         {content && (
           <Button
-            className='absolute right-3 bg-transparent hover:cursor-pointer h-6 w-6'
-            icon={<Delete width={24} height={24} fill='#545966' />}
-            onClick={resetContent}
-          />
+            className='absolute right-3 bg-transparent hover:cursor-pointer h-6 w-6 text-xs text-primary font-semibold'
+            icon={type === 'reset' ? <Delete width={24} height={24} fill='#545966' /> : null}
+            onClick={type === 'create' ? createContent : resetContent}
+          >
+            {type === 'create' ? '등록' : undefined}
+          </Button>
         )}
       </div>
       <p className='text-[12px] text-grayText text-right w-full mt-1'>

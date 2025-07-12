@@ -162,6 +162,7 @@ const Save = () => {
                 placeholder='제목을 입력해주세요'
                 maxLength={10}
                 onSubmit={handleTitle}
+                type='reset'
               />
             </div>
             <CategoryTagSelector
