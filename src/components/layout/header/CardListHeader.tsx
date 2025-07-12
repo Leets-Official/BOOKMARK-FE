@@ -1,28 +1,27 @@
 import { LeftIcon, RightIcon, AddIcon } from '@/assets';
+import { isMobile } from 'react-device-detect';
+import clsx from 'clsx';
 
 interface CardListHeaderProps {
-  onClickLeft: () => void;
-  onClickRight: () => void;
-  currentNum: string;
+  onClickLeft?: () => void;
+  onClickRight?: () => void;
+  currentNum?: string;
 }
 
-const CardListHeader = ({ onClickLeft, onClickRight, currentNum }: CardListHeaderProps) => {
+const CardListHeader = ({ currentNum }: CardListHeaderProps) => {
+  const isMobile = 'true';
   return (
     <div className='flex justify-between items-center'>
       <div className='flex items-center gap-1'>
-        <p className='text-xl mr-5'>Folder</p>
-        <button onClick={onClickLeft} className='cursor-pointer hover:opacity-70 transition'>
-          <LeftIcon />
-        </button>
-        <p className='text-xl'>{currentNum}</p>
-        <button onClick={onClickRight} className='cursor-pointer hover:opacity-70 transition'>
-          <RightIcon />
-        </button>
+        <p className={clsx(isMobile ? 'mr-3 text-[16px]' : 'mr-5 text-xl')}>Folder</p>
+        <LeftIcon />
+        <p className={clsx(isMobile ? 'text-[16px]' : 'text-xl')}>{currentNum}</p>
+        <RightIcon />
       </div>
       <div className='flex flex-row gap-1.5 items-center justify-center'>
-        <p className='text-xl'>폴더 추가</p>
+        <p className={clsx(isMobile ? 'text-[16px]' : 'text-xl')}>폴더 추가</p>
         <button className='rounded-2xl cursor-pointer hover:bg-gray-300 transition-colors'>
-          <AddIcon />
+          <AddIcon className={isMobile ? 'w-6 h-6' : 'w-[30px] h-[30px'} />
         </button>
       </div>
     </div>
