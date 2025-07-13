@@ -18,33 +18,42 @@ const Home = () => {
   const [leaving, setLeaving] = useState(false);
   const [cardsPerSlide, setCardsPerSlide] = useState(getCardsPerSlide());
 
+  // maxIndex를 cardsPerSlide가 변경될 때마다 다시 계산
   const maxIndex = Math.floor((cardList.length - 1) / cardsPerSlide);
-
-  const toggleLeaving = () => setLeaving((prev) => !prev);
 
   const increaseIndex = () => {
     if (leaving) return;
     setDirection('next');
-    toggleLeaving();
+    setLeaving(true);
     setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
   };
 
   const decreaseIndex = () => {
     if (leaving) return;
     setDirection('prev');
-    toggleLeaving();
+    setLeaving(true);
     setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
   };
 
   useEffect(() => {
     const handleResize = () => {
-      setCardsPerSlide(getCardsPerSlide());
+      const newCardsPerSlide = getCardsPerSlide();
+      const newMaxIndex = Math.floor((cardList.length - 1) / newCardsPerSlide);
+
+      setCardsPerSlide(newCardsPerSlide);
+
+      // index 조정 로직 수정
+      setIndex((prevIndex) => {
+        if (prevIndex > newMaxIndex) {
+          return newMaxIndex;
+        }
+        return prevIndex;
+      });
     };
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  console.log(window.innerWidth);
+  }, [cardList.length]); // cardsPerSlide 의존성 제거
 
   return (
     <div className='min-h-screen w-full flex relative items-center justify-center flex-col'>
@@ -70,7 +79,7 @@ const Home = () => {
             cardList={cardList}
             index={index}
             direction={direction}
-            toggleLeaving={toggleLeaving}
+            toggleLeaving={() => setLeaving(false)}
             cardsPerSlide={cardsPerSlide}
           />
         )}

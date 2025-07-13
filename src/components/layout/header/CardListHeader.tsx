@@ -12,11 +12,11 @@ const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => 
     <div className='flex justify-between items-center'>
       <div className='flex items-center gap-1'>
         <p className={isMobile ? 'mr-3 text-[16px]' : 'mr-5 text-xl'}>Folder</p>
-        <div onClick={onPrev}>
+        <div onClick={onPrev} className='hover:brightness-0'>
           <LeftIcon />
         </div>
         <p className={isMobile ? 'text-[16px]' : 'text-xl'}>{currentNum}</p>
-        <div onClick={onNext}>
+        <div onClick={onNext} className='hover:brightness-0'>
           <RightIcon />
         </div>
       </div>
