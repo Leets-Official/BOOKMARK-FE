@@ -42,12 +42,18 @@ const detailIcon = tv({
 
 const FolderCard = ({ title }: ICardProps) => {
   return (
-    <div className={isMobile ? 'min-w-40 mr-4' : 'min-w-95 px-3'}>
+    <div
+      className={
+        isMobile
+          ? 'w-1/2 flex-shrink-0 px-2'
+          : 'w-1/2 sm:w-1/2 lg:w-1/3 xl:w-1/4 flex-shrink-0 px-3'
+      }
+    >
       <div className='hover:scale-105 duration-300 origin-center'>
-        <Image src={TestImage} className='w-full h-full rounded-2xl object-cover' />
+        <Image src={TestImage} className=' w-full aspect-[3/2] rounded-2xl object-cover' />
       </div>
       <p className={titleText({ mobile: isMobile })}>{title}</p>
-      <div className='flex flex-row items-center ml-1 mt-1'>
+      <div className='flex flex-row items-center ml-1 mt-1 flex-shrink-0 min-h-[28px]'>
         <div className={chipInner({ mobile: isMobile })}>
           <Chip />
           <Chip />

@@ -1,24 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
-import { isMobile } from 'react-device-detect';
-import { tv } from 'tailwind-variants';
 import FolderCard from '@/components/layout/card/FolderCard';
 
 interface HomeCardListProps {
   cardList: { id: number; title: string }[];
 }
 
-const containerStyle = tv({
-  base: 'relative py-3 overflow-hidden',
-  variants: {
-    mobile: {
-      true: 'mb-10',
-      false: 'mb-30',
-    },
-  },
-});
-
-const HomeCardList = ({ cardList }: HomeCardListProps) => {
+const MobileCardList = ({ cardList }: HomeCardListProps) => {
   const x = useMotionValue(0);
   const dragRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +35,7 @@ const HomeCardList = ({ cardList }: HomeCardListProps) => {
   }, [cardList, x]);
 
   return (
-    <div ref={containerRef} className={containerStyle({ mobile: isMobile })}>
+    <div ref={containerRef} className='relative py-3 overflow-hidden mb-10'>
       <motion.div
         ref={dragRef}
         style={{
@@ -61,7 +49,7 @@ const HomeCardList = ({ cardList }: HomeCardListProps) => {
           power: 0.01,
           timeConstant: 200,
         }}
-        className='flex w-full justify-start items-center cursor-grab active:cursor-grabbing'
+        className='flex justify-start items-center cursor-grab active:cursor-grabbing'
       >
         {cardList.map((card) => (
           <FolderCard key={card.id} title={card.title} />
@@ -71,4 +59,4 @@ const HomeCardList = ({ cardList }: HomeCardListProps) => {
   );
 };
 
-export default HomeCardList;
+export default MobileCardList;

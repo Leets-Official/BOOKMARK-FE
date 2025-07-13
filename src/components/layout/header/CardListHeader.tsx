@@ -2,17 +2,23 @@ import { LeftIcon, RightIcon, AddIcon } from '@/assets';
 import { isMobile } from 'react-device-detect';
 
 interface CardListHeaderProps {
+  onNext: () => void;
+  onPrev: () => void;
   currentNum?: string;
 }
 
-const CardListHeader = ({ currentNum }: CardListHeaderProps) => {
+const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => {
   return (
     <div className='flex justify-between items-center'>
       <div className='flex items-center gap-1'>
         <p className={isMobile ? 'mr-3 text-[16px]' : 'mr-5 text-xl'}>Folder</p>
-        <LeftIcon />
+        <div onClick={onPrev}>
+          <LeftIcon />
+        </div>
         <p className={isMobile ? 'text-[16px]' : 'text-xl'}>{currentNum}</p>
-        <RightIcon />
+        <div onClick={onNext}>
+          <RightIcon />
+        </div>
       </div>
       <div className='flex flex-row gap-1.5 items-center justify-center'>
         <p className={isMobile ? 'text-[16px]' : 'text-xl'}>폴더 추가</p>

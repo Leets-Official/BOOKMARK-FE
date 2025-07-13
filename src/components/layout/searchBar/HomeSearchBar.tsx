@@ -19,11 +19,11 @@ const HomeSearchBar = () => {
     console.log(value);
   };
   return (
-    <div className='relative w-[100%]'>
+    <div className='relative w-full'>
       <Input
         value={value}
         onChange={onChange}
-        className='border text-lg color-white rounded-[100px] px-12 py-3 w-[100%] mb-5 focus:outline-none border-none shadow-[0_0_12px_rgba(0,0,0,0.15)]'
+        className='border text-lg color-white rounded-[100px] px-12 py-3 w-full mb-5 focus:outline-none border-none shadow-[0_0_12px_rgba(0,0,0,0.15)]'
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
           if (e.key === 'Enter') EnterFn();
         }}

@@ -3,7 +3,7 @@ import Button from '@/components/common/Button';
 import { useNavigate } from 'react-router-dom';
 
 const iconButtonClass =
-  'flex justify-center items-center w-13 h-13 rounded-4xl hover:brightness-80';
+  'flex justify-center items-center w-13 h-13 rounded-4xl hover:brightness-80 transition';
 
 const SideBar = () => {
   const navigate = useNavigate();
