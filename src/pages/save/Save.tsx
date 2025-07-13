@@ -234,12 +234,11 @@ const Save = () => {
           <SaveHeader />
         </div>
         <div className='flex-1 overflow-y-auto hide-scrollbar w-full'>
-          <div className='flex flex-col items-center gap-3 w-full p-4 pt-13'>
+          <div className='flex flex-col items-center gap-3 w-full p-4 mt-3'>
             <div className='bg-white w-full rounded-[12px] shadow p-4'>
               <TextField
                 label='링크입력'
                 placeholder='제목을 입력해주세요'
-                maxLength={10}
                 onChange={handleTitle}
                 type='reset'
               />

@@ -6,7 +6,7 @@ import Textarea from '../common/Textarea';
 interface TextFieldProps {
   label: string;
   placeholder: string;
-  maxLength: number;
+  maxLength?: number;
   //eslint-disable-next-line
   onChange: (v: string) => void;
   //eslint-disable-next-line
@@ -18,7 +18,7 @@ const TextField = ({ label, placeholder, maxLength, onChange, onSubmit, type }: 
   const [content, setContent] = useState('');
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length > maxLength) {
+    if (maxLength && e.target.value.length > maxLength) {
       return;
     }
     setContent(e.target.value);
@@ -77,9 +77,11 @@ const TextField = ({ label, placeholder, maxLength, onChange, onSubmit, type }: 
           </Button>
         )}
       </div>
-      <p className='text-[12px] text-grayText text-right w-full mt-1'>
-        {content.length}/{maxLength}
-      </p>
+      {maxLength && (
+        <p className='text-[12px] text-grayText text-right w-full mt-1'>
+          {content.length}/{maxLength}
+        </p>
+      )}
     </div>
   );
 };
