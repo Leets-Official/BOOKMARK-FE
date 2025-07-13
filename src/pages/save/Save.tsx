@@ -30,7 +30,7 @@ const Container = tv({
 });
 
 const SaveButton = tv({
-  base: 'bg-blue text-base text-white text-center font-medium mb-12 p-4 w-[90%] rounded-[10px]',
+  base: 'bg-blue text-base text-white text-center font-medium mb-8 p-4 w-[90%] rounded-[10px]',
   variants: {
     isDisabled: {
       true: 'bg-lightBlueGray text-veryLightGray',
@@ -260,6 +260,7 @@ const Save = () => {
             />
           </div>
         </div>
+        {/* <div className='w-full bg-transparent flex items-center justify-center mt-4'></div> */}
         <Button
           onClick={() => {
             console.log('저장하기', title, memo, selectedDate, selectedTime);

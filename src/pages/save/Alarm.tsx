@@ -36,14 +36,6 @@ const Alarm = ({
   const [tempDate, setTempDate] = useState('');
   const [tempTime, setTempTime] = useState('');
 
-  const handleDate = (date: string) => {
-    setSelectedDate(date);
-  };
-
-  const handleTime = (time: string) => {
-    setSelectedTime(time);
-  };
-
   const resetAlarm = () => {
     setSelectedDate('');
     setSelectedTime('');
