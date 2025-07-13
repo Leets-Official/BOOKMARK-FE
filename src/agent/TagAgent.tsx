@@ -13,14 +13,15 @@ const model = new ChatOpenAI({
 export async function getSuggestionTag(title: string) {
   const prompt = ChatPromptTemplate.fromTemplate(
     `
-    You are a helpful assistant specialized in generating relevant and concise tags based on the content of titles.
-    Given a title, analyze its meaning and context to suggest **3 to 5 relevant tags** that best describe its main topics, themes, or categories.
+    Your task is to infer and suggest 3 to 5 relevant tags based solely on the given article title.
+    Do not just extract keywords. Instead, **analyze the title carefully**, and **infer the implied topic, context, and author’s intent**.
+    Use your knowledge of common article patterns, technical domains, and writing purposes to make an educated guess.
 
-    Guidelines:
-    - Tags must be in lowercase and use concise language (single words or short phrases).
-    - Avoid generic or overly broad tags like "article", "information", or "miscellaneous".
-    - Do not repeat words already in the title unless essential.
-    - Output should be a valid JSON object.
+    **Guidelines:**
+    - Tags must be relevant, specific, and helpful for categorizing or searching the article.
+    - Tags must be in lowercase and formatted as a list of strings in valid JSON.
+    - Avoid vague or generic terms like "article" or "information".
+    - Use your reasoning to go beyond what is explicitly written.
     - Output should be in Korean.
 
     Input Title:
