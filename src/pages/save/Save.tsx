@@ -176,15 +176,17 @@ const Save = () => {
 
   const handleCategory = (id: number) => {
     const newCategoryList = categoryList.map((c) =>
-      c.id === id ? { ...c, isSelected: !c.isSelected } : c,
+      c.id === id ? { ...c, isSelected: true } : { ...c, isSelected: false },
     );
     setCategoryList(newCategoryList);
   };
 
   const addCategory = (content: string) => {
     if (content === '') return;
+
+    const newCategoryList = categoryList.map((c) => ({ ...c, isSelected: false }));
     setCategoryList([
-      ...categoryList,
+      ...newCategoryList,
       { id: categoryList.length, content, isSelected: true, type: 'category', deleteable: true },
     ]);
   };
