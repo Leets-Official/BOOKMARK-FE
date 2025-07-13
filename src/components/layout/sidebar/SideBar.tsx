@@ -11,7 +11,7 @@ const SideBar = () => {
   return (
     <div className='flex flex-col gap-6 items-center w-[70px] min-h-screen pt-20'>
       <Button
-        onClick={() => navigate('save')}
+        onClick={() => navigate('save')} // 버튼 클릭시 /save로 이동
         className={`${iconButtonClass} bg-blue text-3xl text-white`}
       >
         +

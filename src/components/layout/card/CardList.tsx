@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import FolderCard from '@/components/layout/card/FolderCard';
 
+// Props 타입
 interface HomeCardListProps {
   cardList: { id: number; title: string }[];
   index: number;
@@ -9,6 +10,7 @@ interface HomeCardListProps {
   cardsPerSlide: number;
 }
 
+// 슬라이드 애니메이션용 variants 정의
 const rowVariants = {
   start: (direction: 'next' | 'prev') => ({
     x: direction === 'next' ? '100%' : '-100%',
@@ -28,6 +30,7 @@ const CardList = ({
   toggleLeaving,
   cardsPerSlide,
 }: HomeCardListProps) => {
+  // 현재 슬라이드에 보여줄 카드만 추출
   const cardSlice = cardList.slice(index * cardsPerSlide, index * cardsPerSlide + cardsPerSlide);
 
   return (

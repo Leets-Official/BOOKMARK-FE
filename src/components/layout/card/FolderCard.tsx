@@ -10,6 +10,7 @@ interface ICardProps {
   title: string;
 }
 
+// 제목 텍스트 스타일 (반응형)
 const titleText = tv({
   base: 'overflow-hidden text-ellipsis whitespace-nowrap ml-1 mt-2',
   variants: {
@@ -20,6 +21,7 @@ const titleText = tv({
   },
 });
 
+// Chip 영역 내부 스타일 정의
 const chipInner = tv({
   base: 'flex flex-row',
   variants: {
@@ -30,6 +32,7 @@ const chipInner = tv({
   },
 });
 
+// 디테일 아이콘 스타일 정의
 const detailIcon = tv({
   base: 'ml-auto cursor-pointer text-black hover:text-gray-500 transition-colors',
   variants: {
@@ -43,6 +46,7 @@ const detailIcon = tv({
 const FolderCard = ({ title }: ICardProps) => {
   return (
     <div
+      // 카드 한 칸 너비 정의: 모바일은 2개씩, 데스크탑은 2~4개까지 자동으로 맞춤
       className={
         isMobile
           ? 'w-1/2 flex-shrink-0 px-2'

@@ -16,7 +16,7 @@ const HomeSearchBar = () => {
 
   // 엔터 누르면 발생하는 함수
   const EnterFn = () => {
-    console.log(value);
+    console.log(value); // 실제 검색 기능 연결 예정
   };
   return (
     <div className='relative w-full'>
