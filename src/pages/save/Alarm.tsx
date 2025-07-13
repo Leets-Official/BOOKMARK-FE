@@ -4,6 +4,7 @@ import Modal from '@/components/common/Modal';
 import DropDown from '@/components/ui/DropDown';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
+import { tv } from 'tailwind-variants';
 
 interface AlarmProps {
   visible: boolean;
@@ -22,6 +23,16 @@ interface AlarmProps {
   // eslint-disable-next-line no-unused-vars
   setSelectedTime: (time: string) => void;
 }
+
+const AlarmButtonStyle = tv({
+  base: 'text-primary underline font-semibold flex items-center cursor-pointer',
+  variants: {
+    large: {
+      true: 'text-[12px]',
+      false: 'text-sm',
+    },
+  },
+});
 
 const Alarm = ({
   visible,
@@ -47,17 +58,19 @@ const Alarm = ({
   };
 
   return (
-    <div className='bg-white w-full rounded-[12px] shadow p-4 relative'>
-      <p className='text-sm'>알림</p>
-      {selectedDate === '' || selectedTime === '' ? null : (
-        <Button
-          onClick={resetAlarm}
-          icon={<Trash width={18} height={18} fill='#FF2C3D' />}
-          className='text-xs text-error underline font-semibold flex items-center cursor-pointer absolute top-4 right-4'
-        >
-          알림 삭제
-        </Button>
-      )}
+    <div className='bg-white w-full rounded-[12px] shadow relative'>
+      <div className='flex items-center justify-between pr-4 pl-4 pt-4'>
+        <p className='text-sm'>알림</p>
+        {selectedDate === '' || selectedTime === '' ? null : (
+          <Button
+            onClick={resetAlarm}
+            icon={<Trash width={18} height={18} fill='#FF2C3D' />}
+            className='text-xs text-error underline font-semibold flex items-center cursor-pointer absolute top-4 right-4'
+          >
+            알림 삭제
+          </Button>
+        )}
+      </div>
       <AnimatePresence>
         {visible && (
           <motion.div
@@ -66,7 +79,7 @@ const Alarm = ({
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className='overflow-hidden mt-4'
+            className='overflow-hidden p-3'
           >
             <div className='flex items-center justify-center m-1'>
               <Button
@@ -74,7 +87,9 @@ const Alarm = ({
                 onClick={() => {
                   setIsOpenAlarmModal(true);
                 }}
-                className='text-sm text-primary underline font-semibold flex items-center cursor-pointer'
+                className={AlarmButtonStyle({
+                  large: selectedDate.length + selectedTime.length > 15,
+                })}
               >
                 {selectedDate === '' || selectedTime === ''
                   ? '알림 설정 카카오톡 나에게 보내기'

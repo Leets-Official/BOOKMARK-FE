@@ -3,6 +3,7 @@ import { BackArrow } from '@/assets';
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
+import { tv } from 'tailwind-variants';
 
 interface DropDownProps {
   icon?: React.ReactNode;
@@ -16,6 +17,13 @@ interface DropDownProps {
   // eslint-disable-next-line no-unused-vars
   setSelectedOption: (option: string) => void;
 }
+
+const titleStyle = tv({
+  base: 'font-medium text-darkGray',
+  variants: {
+    large: { true: 'text-xs', false: 'text-[15px]' },
+  },
+});
 
 const DropDown = ({
   icon,
@@ -65,7 +73,7 @@ const DropDown = ({
       >
         <div className='flex flex-row gap-2 items-center'>
           {!isOpenOptions && icon ? icon : null}
-          <p className='text-[15px] font-medium text-darkGray'>
+          <p className={titleStyle({ large: selectedOption.length > 8 })}>
             {selectedOption === '' ? title : selectedOption}
           </p>
         </div>

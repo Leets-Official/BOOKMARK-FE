@@ -209,6 +209,7 @@ const CategoryTagSelector = ({
             addCategory(categoryContent);
             setIsOpenCategoryModal(false);
           }}
+          disabled={categoryContent === '' || categoryContent === null}
         >
           <TextField
             label='카테고리'
@@ -248,6 +249,7 @@ const CategoryTagSelector = ({
             addTag(tagContent);
             setIsOpenTagModal(false);
           }}
+          disabled={tagContent === '' || tagContent === null}
         >
           <TextField
             label='태그'
