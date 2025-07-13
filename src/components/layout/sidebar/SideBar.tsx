@@ -2,24 +2,23 @@ import { FolderIcon, HomeIcon } from '@/assets';
 import Button from '@/components/common/Button';
 import { useNavigate } from 'react-router-dom';
 
-const iconButtonClass =
+const iconButton =
   'flex justify-center items-center w-13 h-13 rounded-4xl hover:brightness-80 transition';
 
 const SideBar = () => {
   const navigate = useNavigate();
-
   return (
-    <div className='flex flex-col gap-6 items-center w-[70px] min-h-screen pt-20'>
+    <div className='fixed flex flex-col gap-6 items-center pt-20 left-0 top-0 h-screen w-[70px]'>
       <Button
-        onClick={() => navigate('save')} // 버튼 클릭시 /save로 이동
-        className={`${iconButtonClass} bg-blue text-3xl text-white`}
+        onClick={() => navigate('save')}
+        className={`${iconButton} bg-blue text-3xl text-white`}
       >
         +
       </Button>
-      <div className={`${iconButtonClass} bg-white`}>
+      <div className={`${iconButton} bg-white`}>
         <HomeIcon />
       </div>
-      <div className={`${iconButtonClass} bg-white`}>
+      <div className={`${iconButton} bg-white`}>
         <FolderIcon />
       </div>
     </div>

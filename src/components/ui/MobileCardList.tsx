@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
-import FolderCard from '@/components/layout/card/FolderCard';
+import FolderCard from './FolderCard';
 
 interface HomeCardListProps {
   cardList: { id: number; title: string }[];
