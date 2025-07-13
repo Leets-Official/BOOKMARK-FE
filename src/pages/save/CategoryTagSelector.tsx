@@ -56,10 +56,11 @@ const CategoryTagSelector = ({
   const handleTagContent = (content: string) => {
     setTagContent(content);
     addTag(content);
+    setTagContent('');
   };
 
   return (
-    <div className='bg-white w-full rounded-[12px] shadow p-4'>
+    <div className='bg-white w-full rounded-[12px] shadow p-2'>
       <div className='flex flex-col gap-2 pt-1 origin-top'>
         <div className='flex flex-row items-center justify-between mb-1'>
           <AnimatePresence mode='wait'>

@@ -59,7 +59,7 @@ const Alarm = ({
 
   return (
     <div className='bg-white w-full rounded-[12px] shadow relative'>
-      <div className='flex items-center justify-between p-4'>
+      <div className='flex items-center justify-between p-2 mt-1'>
         <p className='text-sm'>알림</p>
         {selectedDate === '' || selectedTime === '' ? null : (
           <Button

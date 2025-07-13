@@ -3,11 +3,11 @@ import SaveHeader from '@/components/layout/header/SaveHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { useEffect, useState } from 'react';
-import TextField from '@/components/ui/TextField';
 import CategoryTagSelector from '@/pages/save/CategoryTagSelector';
 import Memo from '@/pages/save/Memo';
-import Alarm from './Alarm';
+import Alarm from '@/pages/save/Alarm';
 import Button from '@/components/common/Button';
+import LinkField from '@/pages/save/LinkField';
 import { getSuggestionTag } from '@/agent/TagAgent';
 
 const Overlay = tv({
@@ -49,8 +49,9 @@ export interface ChipProps {
 
 const Save = () => {
   const navigate = useNavigate();
-  const [title, setTitle] = useState('');
+  const [link, setLink] = useState('');
   const [memo, setMemo] = useState('');
+  const [visibleCard, setVisibleCard] = useState(false);
   const [visibleCategory, setVisibleCategory] = useState(false);
   const [visibleTag, setVisibleTag] = useState(false);
   const [visibleMemoAndAlarm, setVisibleMemoAndAlarm] = useState(false);
@@ -141,11 +142,12 @@ const Save = () => {
     navigate(-1);
   };
 
-  const handleTitle = (v: string) => {
-    setTitle(v);
+  const handleLink = (v: string) => {
+    setLink(v);
 
     // 임시로 제목이 있으면 카테고리, 태그 보여주기
     if (v.length > 0) {
+      setVisibleCard(true);
       setVisibleCategory(true);
       // 제목이 있으면 태그 제안 가져오기
       getSuggestionTag(v).then((res) => {
@@ -159,6 +161,7 @@ const Save = () => {
         );
       });
     } else {
+      setVisibleCard(false);
       setVisibleCategory(false);
       setCategoryList(categoryList.map((c) => ({ ...c, isSelected: false })));
       setTagList(tagList.map((t) => ({ ...t, isSelected: false })));
@@ -178,6 +181,7 @@ const Save = () => {
   };
 
   const addCategory = (content: string) => {
+    if (content === '') return;
     setCategoryList([
       ...categoryList,
       { id: categoryList.length, content, isSelected: true, type: 'category' },
@@ -185,6 +189,7 @@ const Save = () => {
   };
 
   const addTag = (content: string) => {
+    if (content === '') return;
     setTagList([...tagList, { id: tagList.length, content, isSelected: true, type: 'tag' }]);
   };
 
@@ -235,14 +240,7 @@ const Save = () => {
         </div>
         <div className='flex-1 overflow-y-auto hide-scrollbar w-full'>
           <div className='flex flex-col items-center gap-3 w-full p-4 mt-3'>
-            <div className='bg-white w-full rounded-[12px] shadow p-4'>
-              <TextField
-                label='링크입력'
-                placeholder='제목을 입력해주세요'
-                onChange={handleTitle}
-                type='reset'
-              />
-            </div>
+            <LinkField visible={visibleCard} link={link} handleLink={handleLink} />
             <CategoryTagSelector
               visibleCategory={visibleCategory}
               visibleTag={visibleTag}
@@ -270,7 +268,7 @@ const Save = () => {
         {/* <div className='w-full bg-transparent flex items-center justify-center mt-4'></div> */}
         <Button
           onClick={() => {
-            console.log('저장하기', title, memo, selectedDate, selectedTime);
+            console.log('저장하기', link, memo, selectedDate, selectedTime);
           }}
           className={SaveButton({ isDisabled: isSaveButtonDisabled })}
           disabled={isSaveButtonDisabled}
