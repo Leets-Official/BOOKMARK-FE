@@ -8,6 +8,7 @@ import CategoryTagSelector from '@/pages/save/CategoryTagSelector';
 import Memo from '@/pages/save/Memo';
 import Alarm from './Alarm';
 import Button from '@/components/common/Button';
+import { getSuggestionTag } from '@/agent/TagAgent';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -80,11 +81,7 @@ const Save = () => {
     { id: 4, content: '태그', isSelected: false, type: 'tag' },
   ]);
 
-  const [suggestionList, setSuggestionList] = useState<ChipProps[]>([
-    { id: 0, content: '제안', isSelected: false, type: 'suggestion' },
-    { id: 1, content: '제안', isSelected: false, type: 'suggestion' },
-    { id: 2, content: '제안', isSelected: false, type: 'suggestion' },
-  ]);
+  const [suggestionList, setSuggestionList] = useState<ChipProps[]>([]);
 
   const dateOptions = [
     {
@@ -150,6 +147,17 @@ const Save = () => {
     // 임시로 제목이 있으면 카테고리, 태그 보여주기
     if (v.length > 0) {
       setVisibleCategory(true);
+      // 제목이 있으면 태그 제안 가져오기
+      getSuggestionTag(v).then((res) => {
+        setSuggestionList(
+          res.tags.map((t: string, index: number) => ({
+            id: index,
+            content: t,
+            isSelected: false,
+            type: 'suggestion',
+          })),
+        );
+      });
     } else {
       setVisibleCategory(false);
       setCategoryList(categoryList.map((c) => ({ ...c, isSelected: false })));
