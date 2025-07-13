@@ -59,7 +59,7 @@ const Alarm = ({
 
   return (
     <div className='bg-white w-full rounded-[12px] shadow relative'>
-      <div className='flex items-center justify-between pr-4 pl-4 pt-4'>
+      <div className='flex items-center justify-between p-4'>
         <p className='text-sm'>알림</p>
         {selectedDate === '' || selectedTime === '' ? null : (
           <Button
@@ -79,7 +79,7 @@ const Alarm = ({
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className='overflow-hidden p-3'
+            className='overflow-hidden pb-3'
           >
             <div className='flex items-center justify-center m-1'>
               <Button
