@@ -45,6 +45,7 @@ export interface ChipProps {
   content: string;
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
+  deleteable?: boolean;
 }
 
 const Save = () => {
@@ -184,13 +185,26 @@ const Save = () => {
     if (content === '') return;
     setCategoryList([
       ...categoryList,
-      { id: categoryList.length, content, isSelected: true, type: 'category' },
+      { id: categoryList.length, content, isSelected: true, type: 'category', deleteable: true },
     ]);
   };
 
   const addTag = (content: string) => {
     if (content === '') return;
-    setTagList([...tagList, { id: tagList.length, content, isSelected: true, type: 'tag' }]);
+    setTagList([
+      ...tagList,
+      { id: tagList.length, content, isSelected: true, type: 'tag', deleteable: true },
+    ]);
+  };
+
+  const deleteCategory = (id: number) => {
+    const newCategoryList = categoryList.filter((c) => c.id !== id);
+    setCategoryList(newCategoryList);
+  };
+
+  const deleteTag = (id: number) => {
+    const newTagList = tagList.filter((t) => t.id !== id);
+    setTagList(newTagList);
   };
 
   const handleTag = (id: number) => {
@@ -252,6 +266,8 @@ const Save = () => {
               handleSuggestion={handleSuggestion}
               addCategory={addCategory}
               addTag={addTag}
+              deleteCategory={deleteCategory}
+              deleteTag={deleteTag}
             />
             <Memo visible={visibleMemoAndAlarm} handleMemo={handleMemo} />
             <Alarm

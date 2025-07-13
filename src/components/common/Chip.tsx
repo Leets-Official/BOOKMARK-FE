@@ -1,5 +1,7 @@
 import { tv } from 'tailwind-variants';
 import { motion } from 'framer-motion';
+import Button from './Button';
+import { Delete } from '@/assets';
 
 interface ChipProps {
   id: string;
@@ -7,11 +9,12 @@ interface ChipProps {
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
   onClick: () => void;
+  onDelete?: () => void;
   disabled?: boolean;
 }
 
 const chipStyle = tv({
-  base: 'rounded-[100px] flex items-center justify-center border text-xs h-8 p-2',
+  base: 'rounded-[100px] flex items-center justify-center border text-xs h-8 p-2 flex-row gap-1',
   variants: {
     isSelected: { true: '', false: '' },
     type: { category: '', tag: '', suggestion: '' },
@@ -50,10 +53,20 @@ const chipStyle = tv({
   ],
 });
 
-const Chip = ({ id, content, isSelected, type, onClick, disabled = false }: ChipProps) => {
+const Chip = ({
+  id,
+  content,
+  isSelected,
+  type,
+  onClick,
+  onDelete,
+  disabled = false,
+}: ChipProps) => {
   return (
     <motion.div
-      className={chipStyle({ isSelected, type }) + (disabled ? '' : ' cursor-pointer')}
+      className={
+        chipStyle({ isSelected, type }) + (disabled ? '' : ' cursor-pointer') + ' group relative'
+      }
       layoutId={`${id}`}
       animate={{ scale: 1 }}
       transition={{ duration: 0.2 }}
@@ -61,7 +74,15 @@ const Chip = ({ id, content, isSelected, type, onClick, disabled = false }: Chip
       whileTap={disabled ? undefined : { scale: 0.95 }}
       onClick={disabled ? undefined : onClick}
     >
-      {type === 'category' ? content : '#' + content}
+      <p>{type === 'category' ? content : '#' + content}</p>
+      {onDelete && (
+        <Button
+          onClick={() => {
+            onDelete?.();
+          }}
+          icon={<Delete height={16} width={16} fill='#000000' />}
+        />
+      )}
     </motion.div>
   );
 };

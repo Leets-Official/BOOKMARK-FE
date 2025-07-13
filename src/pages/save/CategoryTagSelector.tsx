@@ -23,6 +23,10 @@ interface CategoryTagSelectorProps {
   addCategory: (content: string) => void;
   // eslint-disable-next-line no-unused-vars
   addTag: (content: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  deleteCategory: (id: number) => void;
+  // eslint-disable-next-line no-unused-vars
+  deleteTag: (id: number) => void;
 }
 
 const CategoryTagSelector = ({
@@ -36,6 +40,8 @@ const CategoryTagSelector = ({
   handleSuggestion,
   addCategory,
   addTag,
+  deleteCategory,
+  deleteTag,
 }: CategoryTagSelectorProps) => {
   const [categoryContent, setCategoryContent] = useState('');
   const [tagContent, setTagContent] = useState('');
@@ -233,6 +239,7 @@ const CategoryTagSelector = ({
                     type={category.type}
                     onClick={() => handleCategory(category.id)}
                     disabled={true}
+                    onDelete={category.deleteable ? () => deleteCategory(category.id) : undefined}
                   />
                 ),
             )}
@@ -276,6 +283,7 @@ const CategoryTagSelector = ({
                     type={tag.type}
                     onClick={() => handleTag(tag.id)}
                     disabled={true}
+                    onDelete={tag.deleteable ? () => deleteTag(tag.id) : undefined}
                   />
                 ),
             )}
