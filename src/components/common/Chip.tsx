@@ -14,7 +14,7 @@ interface ChipProps {
 }
 
 const chipStyle = tv({
-  base: 'rounded-[100px] flex items-center justify-center border text-xs h-8 p-2',
+  base: 'rounded-[100px] flex items-center justify-center border text-xs h-8 p-2 flex-row gap-1',
   variants: {
     isSelected: { true: '', false: '' },
     type: { category: '', tag: '', suggestion: '' },
@@ -74,12 +74,15 @@ const Chip = ({
       whileTap={disabled ? undefined : { scale: 0.95 }}
       onClick={disabled ? undefined : onClick}
     >
-      {type === 'category' ? content : '#' + content}
-      <Button
-        className='absolute right-0 top-0'
-        onClick={() => { }}
-        icon={<Delete height={16} width={16} />}
-      />
+      <p>{type === 'category' ? content : '#' + content}</p>
+      {onDelete && (
+        <Button
+          onClick={() => {
+            onDelete?.();
+          }}
+          icon={<Delete height={16} width={16} fill='#000000' />}
+        />
+      )}
     </motion.div>
   );
 };
