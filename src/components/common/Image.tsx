@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ImageProps {
-  src?: string;
+  src: string;
   alt?: string;
   onClick?: () => void;
   className: string;

@@ -1,4 +1,4 @@
-import Card from '@/components/layout/card/Card';
+import Card from '@/components/ui/card/Card';
 import TestImage from '@/assets/test.jpg';
 
 const Home = () => {
@@ -21,6 +21,7 @@ const Home = () => {
       id: 3,
       title: 'Next.js App Router',
       platform: 'GitHub Blog',
+      image: undefined,
       isLoading: false,
     },
   ];
