@@ -13,6 +13,7 @@ interface ChipProps {
   disabled?: boolean;
 }
 
+// type(카테고리, 태그, 제안 태그), isSelected(선택됨, 선택안됨)에 따라서 chip 색상 변경
 const chipStyle = tv({
   base: 'rounded-[100px] flex items-center justify-center border text-xs h-8 p-2 flex-row gap-1',
   variants: {
@@ -75,6 +76,7 @@ const Chip = ({
       onClick={disabled ? undefined : onClick}
     >
       <p>{type === 'category' ? content : '#' + content}</p>
+      {/* 삭제 함수가 있을시 활성화 */}
       {onDelete && (
         <Button
           onClick={() => {

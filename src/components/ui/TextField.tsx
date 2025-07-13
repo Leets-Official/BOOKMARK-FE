@@ -11,6 +11,7 @@ interface TextFieldProps {
   onChange: (v: string) => void;
   //eslint-disable-next-line
   onSubmit?: (v: string) => void;
+  // create : 생성 버튼, reset : 초기화 버튼
   type: 'create' | 'reset';
 }
 

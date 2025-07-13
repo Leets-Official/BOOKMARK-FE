@@ -52,15 +52,18 @@ const Save = () => {
   const navigate = useNavigate();
   const [link, setLink] = useState('');
   const [memo, setMemo] = useState('');
+  // 각 컴포넌트 보여주기 여부
   const [visibleCard, setVisibleCard] = useState(false);
   const [visibleCategory, setVisibleCategory] = useState(false);
   const [visibleTag, setVisibleTag] = useState(false);
   const [visibleMemoAndAlarm, setVisibleMemoAndAlarm] = useState(false);
+  // 알림 설정 시간
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  // 저장 버튼(최종 제출 버튼) 비활성화 여부
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
 
-  // 더미 데이터
+  // 더미 데이터(카테고리, 태그)
   const [categoryList, setCategoryList] = useState<ChipProps[]>([
     { id: 0, content: '카테고리', isSelected: false, type: 'category' },
     { id: 1, content: '카테고리', isSelected: false, type: 'category' },
@@ -85,6 +88,7 @@ const Save = () => {
 
   const [suggestionList, setSuggestionList] = useState<ChipProps[]>([]);
 
+  // 더미 데이터(알림 설정 시간)
   const dateOptions = [
     {
       id: 1,
@@ -146,7 +150,7 @@ const Save = () => {
   const handleLink = (v: string) => {
     setLink(v);
 
-    // 임시로 제목이 있으면 카테고리, 태그 보여주기
+    // 임시로 링크가 있으면 카테고리, 태그 보여주기 -> 추후에는 링크가 올바른지 여부 확인 필요
     if (v.length > 0) {
       setVisibleCard(true);
       setVisibleCategory(true);
@@ -162,6 +166,7 @@ const Save = () => {
         );
       });
     } else {
+      // 링크가 없으면 카테고리, 태그 안보여주기 및 카테고리, 태그 선택 초기화
       setVisibleCard(false);
       setVisibleCategory(false);
       setCategoryList(categoryList.map((c) => ({ ...c, isSelected: false })));
@@ -170,6 +175,7 @@ const Save = () => {
     }
   };
 
+  // handle function
   const handleMemo = (v: string) => {
     setMemo(v);
   };
@@ -181,6 +187,19 @@ const Save = () => {
     setCategoryList(newCategoryList);
   };
 
+  const handleTag = (id: number) => {
+    const newTagList = tagList.map((t) => (t.id === id ? { ...t, isSelected: !t.isSelected } : t));
+    setTagList(newTagList);
+  };
+
+  const handleSuggestion = (id: number) => {
+    const newSuggestionList = suggestionList.map((s) =>
+      s.id === id ? { ...s, isSelected: !s.isSelected } : s,
+    );
+    setSuggestionList(newSuggestionList);
+  };
+
+  // add function
   const addCategory = (content: string) => {
     if (content === '') return;
 
@@ -199,6 +218,7 @@ const Save = () => {
     ]);
   };
 
+  // delete function
   const deleteCategory = (id: number) => {
     const newCategoryList = categoryList.filter((c) => c.id !== id);
     setCategoryList(newCategoryList);
@@ -209,18 +229,18 @@ const Save = () => {
     setTagList(newTagList);
   };
 
-  const handleTag = (id: number) => {
-    const newTagList = tagList.map((t) => (t.id === id ? { ...t, isSelected: !t.isSelected } : t));
-    setTagList(newTagList);
-  };
+  // 카테고리가 선택되면 태그 보여주기
+  useEffect(() => {
+    if (categoryList.filter((c) => c.isSelected).length > 0) {
+      setVisibleTag(true);
+    } else {
+      setVisibleTag(false);
+      setTagList((prev) => prev.map((t) => ({ ...t, isSelected: false })));
+      setSuggestionList((prev) => prev.map((s) => ({ ...s, isSelected: false })));
+    }
+  }, [categoryList]);
 
-  const handleSuggestion = (id: number) => {
-    const newSuggestionList = suggestionList.map((s) =>
-      s.id === id ? { ...s, isSelected: !s.isSelected } : s,
-    );
-    setSuggestionList(newSuggestionList);
-  };
-
+  // 태그 또는 제안 태그가 선택되면 메모 및 알림 보여주기
   useEffect(() => {
     if (
       tagList.filter((t) => t.isSelected).length > 0 ||
@@ -235,26 +255,20 @@ const Save = () => {
     }
   }, [tagList, suggestionList]);
 
-  useEffect(() => {
-    if (categoryList.filter((c) => c.isSelected).length > 0) {
-      setVisibleTag(true);
-    } else {
-      setVisibleTag(false);
-      setTagList((prev) => prev.map((t) => ({ ...t, isSelected: false })));
-      setSuggestionList((prev) => prev.map((s) => ({ ...s, isSelected: false })));
-    }
-  }, [categoryList]);
-
   return (
+    // PC : 모달형식, 모바일 : 전체화면
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onClick : undefined}>
       <div
         className={Container({ isMobile }) + ' flex flex-col'}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* 해더 */}
         <div className='sticky top-0 z-10 w-full'>
           <SaveHeader />
         </div>
+        {/* 본문 */}
         <div className='flex-1 overflow-y-auto hide-scrollbar w-full'>
+          {/* 카드 모음 */}
           <div className='flex flex-col items-center gap-3 w-full p-4 mt-3'>
             <LinkField visible={visibleCard} link={link} handleLink={handleLink} />
             <CategoryTagSelector
@@ -283,7 +297,7 @@ const Save = () => {
             />
           </div>
         </div>
-        {/* <div className='w-full bg-transparent flex items-center justify-center mt-4'></div> */}
+        {/* 저장 버튼 */}
         <Button
           onClick={() => {
             console.log('저장하기', link, memo, selectedDate, selectedTime);

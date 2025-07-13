@@ -37,6 +37,7 @@ const DropDown = ({
   const [dropdownStyle, setDropdownStyle] = useState({ top: 0, left: 0, width: 0 });
   const buttonRef = useRef<HTMLDivElement>(null);
 
+  // 드롭다운 위치 업데이트(계속 부모 위치 바로 밑으로)
   useEffect(() => {
     function updatePosition() {
       if (buttonRef.current) {
@@ -87,6 +88,7 @@ const DropDown = ({
         </motion.div>
       </motion.div>
       {isOpenOptions &&
+        // 드롭다운 모달 포탈
         createPortal(
           <motion.div
             className='bg-white rounded-[8px] flex flex-col gap-2 border border-lightBlueGray z-[9999] shadow-lg max-h-60 overflow-y-auto p-4'

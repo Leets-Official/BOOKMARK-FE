@@ -72,6 +72,7 @@ const CategoryTagSelector = ({
           <AnimatePresence mode='wait'>
             {visibleCategory ? (
               <>
+                {/* 카테고리를 선택할 수 있을 떄 보일 컴포넌트 */}
                 <motion.p
                   key='category-with-file'
                   className='text-sm'
@@ -98,6 +99,7 @@ const CategoryTagSelector = ({
                 </motion.div>
               </>
             ) : (
+              // 카테고리를 선택할 수 없을 떄 보일 컴포넌트
               <motion.p
                 key='category-only'
                 className='text-sm'
@@ -160,6 +162,7 @@ const CategoryTagSelector = ({
                   )}
                 </div>
                 <AnimatePresence>
+                  {/* 태그를 선택할 수 있을 떄 보일 컴포넌트 */}
                   {visibleTag && (
                     <motion.div
                       key='tagContainer'
@@ -206,6 +209,7 @@ const CategoryTagSelector = ({
         </AnimatePresence>
       </div>
 
+      {/* 카테고리 추가 모달 */}
       {isOpenCategoryModal && (
         <Modal
           title='새 카테고리 추가'
@@ -247,6 +251,7 @@ const CategoryTagSelector = ({
         </Modal>
       )}
 
+      {/* 태그 추가 모달 */}
       {isOpenTagModal && (
         <Modal
           title='태그 추가'

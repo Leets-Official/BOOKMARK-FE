@@ -35,6 +35,7 @@ const Textarea = ({
   };
 
   return (
+    // TextareaAutosize을 사용하여 자동으로 높이 조절
     <TextareaAutosize
       ref={textareaRef}
       placeholder={placeholder}

@@ -39,6 +39,7 @@ const Modal = ({ title, onConfirm, onCancel, children, disabled = false }: Modal
             icon={<Delete height={24} width={24} fill='#090e1d' />}
           ></Button>
         </div>
+        {/* 자식 컴포넌트 넣는 곳 */}
         <div className='flex flex-col pr-4 pl-4 pb-4'>{children}</div>
         <Button onClick={onConfirm} className={ButtonContainer({ disabled })} disabled={disabled}>
           추가하기
