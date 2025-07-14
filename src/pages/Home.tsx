@@ -3,6 +3,7 @@ import HomeSearchBar from '@/components/layout/searchBar/HomeSearchBar';
 import CardList from '@/components/ui/CardList';
 import MobileCardList from '@/components/ui/MobileCardList';
 import { isMobile } from 'react-device-detect';
+import MobileHeader from '@/components/layout/header/MobileHeader';
 
 const Home = () => {
   const cardList = Array.from({ length: 11 }, (_, i) => ({
@@ -13,7 +14,7 @@ const Home = () => {
   return (
     <div className='relative min-h-screen'>
       {/* 데스크탑일 경우 사이드바 나타남 */}
-      {!isMobile && <SideBar />}
+      {!isMobile ? <SideBar /> : <MobileHeader />}
       <HomeSearchBar />
       {/* 모바일/데스크탑 구분 */}
       {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />}

@@ -14,7 +14,7 @@ const titleText = tv({
   base: 'overflow-hidden text-ellipsis whitespace-nowrap ml-1 mt-2',
   variants: {
     mobile: {
-      true: 'text-[16px]',
+      true: 'text-base',
       false: 'text-xl',
     },
   },
@@ -26,7 +26,7 @@ const FolderCard = ({ title }: ICardProps) => {
       <div className='hover:scale-105 duration-300 origin-center'>
         <Image src={TestImage} className=' w-full aspect-[3/2] rounded-2xl object-cover' />
       </div>
-      <p className={titleText({ mobile: true })}>{title}</p>
+      <p className={titleText({ mobile: isMobile })}>{title}</p>
       <div className='flex gap-3 ml-1 mt-2'>
         <p className='bg-blue-100 text-blue-700 text-sm px-3 py-2 rounded-xl'>태그</p>
         <p className='bg-blue-100 text-blue-700 text-sm  px-3 py-2 rounded-xl'>태그</p>
