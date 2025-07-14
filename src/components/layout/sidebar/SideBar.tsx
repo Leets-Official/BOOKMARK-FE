@@ -13,7 +13,7 @@ const SideBar = () => {
     <div
       className={clsx(
         'fixed top-0 left-0 flex flex-col items-center pt-20 h-screen w-[70px]',
-        'max-sm:flex-row max-sm:justify-center max-sm:w-screen max-sm:h-[70px]',
+        'max-sm:flex-row max-sm:justify-center max-sm:w-screen max-sm:h-[70px]', // 반응형이 sm일 때 상단에 헤더처럼 보이도록 추가
       )}
     >
       <div

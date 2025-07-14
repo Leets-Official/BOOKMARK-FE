@@ -102,6 +102,7 @@ const CardList = ({ cardList }: HomeCardListProps) => {
             ))}
           </motion.div>
         </AnimatePresence>
+        {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
         <div className='invisible flex w-full'>
           {cardSlice.map((card) => (
             <FolderCard key={`ghost-${card.id}`} title={card.title} />

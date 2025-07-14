@@ -22,7 +22,8 @@ const titleText = tv({
 
 const FolderCard = ({ title }: ICardProps) => {
   return (
-    <div className={isMobile ? 'w-1/2 flex-shrink-0 px-2' : 'p-3 w-1/2  lg:w-1/3 xl:w-1/4'}>
+    // 모바일은 카드가 너비의 50%로 고정, PC는 반응형에 따라 비율 조정
+    <div className={isMobile ? 'w-1/2 flex-shrink-0 px-2' : 'w-1/2  lg:w-1/3 xl:w-1/4 p-3'}>
       <div className='hover:scale-105 duration-300 origin-center'>
         <Image src={TestImage} className=' w-full aspect-[3/2] rounded-2xl object-cover' />
       </div>

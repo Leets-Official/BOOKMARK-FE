@@ -10,9 +10,7 @@ interface CardListHeaderProps {
 
 const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => {
   return (
-    <div
-      className={clsx('w-4/5 mx-auto max-sm:w-9/10', isMobile ? 'w-9/10 mt-140' : 'w-4/5 mt-180')}
-    >
+    <div className={clsx('w-4/5 mx-auto max-sm:w-9/10', isMobile ? 'w-9/10 mt-140' : 'mt-180')}>
       <div className='flex justify-between items-center'>
         <div className='flex items-center gap-1'>
           <p className={clsx('font-bold', isMobile ? 'mr-3 text-base' : 'mr-5 text-xl')}>Folder</p>
