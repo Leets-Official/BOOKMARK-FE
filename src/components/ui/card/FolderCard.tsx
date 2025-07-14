@@ -22,12 +22,12 @@ const titleText = tv({
 
 const FolderCard = ({ title }: ICardProps) => {
   return (
-    // 모바일은 카드가 너비의 50%로 고정, PC는 반응형에 따라 비율 조정
-    <div className={isMobile ? 'w-1/2 flex-shrink-0 px-2' : 'w-1/2  lg:w-1/3 xl:w-1/4 p-3'}>
+    // 모바일은 카드의 너비를 고정, PC는 반응형에 따라 비율 조정
+    <div className={isMobile ? 'w-42 px-2' : 'w-1/2  lg:w-1/3 xl:w-1/4 p-3'}>
       <div className='hover:scale-105 duration-300 origin-center'>
         <Image src={TestImage} className=' w-full aspect-[3/2] rounded-2xl object-cover' />
       </div>
-      <p className={titleText({ mobile: isMobile })}>{title}</p>
+      <p className={titleText({ mobile: true })}>{title}</p>
       <div className='flex gap-3 ml-1 mt-2'>
         <p className='bg-blue-100 text-blue-700 text-sm px-3 py-2 rounded-xl'>태그</p>
         <p className='bg-blue-100 text-blue-700 text-sm  px-3 py-2 rounded-xl'>태그</p>
