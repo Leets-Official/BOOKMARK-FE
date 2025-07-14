@@ -16,6 +16,8 @@ interface TextFieldProps {
 }
 
 const TextField = ({ label, placeholder, maxLength, onChange, onSubmit, type }: TextFieldProps) => {
+  const isCreateType = type === 'create';
+
   const [content, setContent] = useState('');
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -43,7 +45,7 @@ const TextField = ({ label, placeholder, maxLength, onChange, onSubmit, type }: 
       onChange(content);
     }
 
-    if (type === 'reset' && onSubmit) {
+    if (!isCreateType && onSubmit) {
       onSubmit(content);
     }
   };
@@ -51,7 +53,7 @@ const TextField = ({ label, placeholder, maxLength, onChange, onSubmit, type }: 
   const handleBlur = () => {
     onChange(content);
 
-    if (type === 'reset' && onSubmit) {
+    if (!isCreateType && onSubmit) {
       onSubmit(content);
     }
   };
@@ -72,9 +74,9 @@ const TextField = ({ label, placeholder, maxLength, onChange, onSubmit, type }: 
           <Button
             className='absolute top-3 right-3 bg-transparent hover:cursor-pointer h-6 w-6 text-xs text-primary font-semibold'
             icon={type === 'reset' ? <Delete width={24} height={24} fill='#545966' /> : null}
-            onClick={type === 'create' ? createContent : resetContent}
+            onClick={isCreateType ? createContent : resetContent}
           >
-            {type === 'create' ? '등록' : undefined}
+            {isCreateType ? '등록' : undefined}
           </Button>
         )}
       </div>

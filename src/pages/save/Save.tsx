@@ -9,6 +9,12 @@ import Alarm from '@/pages/save/Alarm';
 import Button from '@/components/common/Button';
 import LinkField from '@/pages/save/LinkField';
 import { getSuggestionTag } from '@/agent/TagAgent';
+import {
+  dummyCategoryList,
+  dummyTagList,
+  dummyDateOptions,
+  dummyTimeOptions,
+} from '@/contants/DummyData';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -64,84 +70,14 @@ const Save = () => {
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
 
   // 더미 데이터(카테고리, 태그)
-  const [categoryList, setCategoryList] = useState<ChipProps[]>([
-    { id: 0, content: '카테고리', isSelected: false, type: 'category' },
-    { id: 1, content: '카테고리', isSelected: false, type: 'category' },
-    { id: 2, content: '카테고리', isSelected: false, type: 'category' },
-    { id: 3, content: '카테고리', isSelected: false, type: 'category' },
-    { id: 4, content: '카테고리', isSelected: false, type: 'category' },
-    { id: 5, content: '카테고리', isSelected: false, type: 'category' },
-    { id: 6, content: '카테고리', isSelected: false, type: 'category' },
-    { id: 7, content: '카테고리', isSelected: false, type: 'category' },
-    { id: 8, content: '카테고리', isSelected: false, type: 'category' },
-    { id: 9, content: '카테고리', isSelected: false, type: 'category' },
-    { id: 10, content: '카테고리', isSelected: false, type: 'category' },
-  ]);
-
-  const [tagList, setTagList] = useState<ChipProps[]>([
-    { id: 0, content: '태그', isSelected: false, type: 'tag' },
-    { id: 1, content: '태그', isSelected: false, type: 'tag' },
-    { id: 2, content: '태그', isSelected: false, type: 'tag' },
-    { id: 3, content: '태그', isSelected: false, type: 'tag' },
-    { id: 4, content: '태그', isSelected: false, type: 'tag' },
-  ]);
+  const [categoryList, setCategoryList] = useState<ChipProps[]>(dummyCategoryList);
+  const [tagList, setTagList] = useState<ChipProps[]>(dummyTagList);
 
   const [suggestionList, setSuggestionList] = useState<ChipProps[]>([]);
 
   // 더미 데이터(알림 설정 시간)
-  const dateOptions = [
-    {
-      id: 1,
-      name: '내일(금) 8/1',
-    },
-    {
-      id: 2,
-      name: '내일 모레(토) 8/2',
-    },
-    {
-      id: 3,
-      name: '8/3',
-    },
-    {
-      id: 4,
-      name: '8/4',
-    },
-    {
-      id: 5,
-      name: '8/5',
-    },
-    {
-      id: 6,
-      name: '8/6',
-    },
-  ];
-
-  const timeOptions = [
-    {
-      id: 1,
-      name: '10:00',
-    },
-    {
-      id: 2,
-      name: '11:00',
-    },
-    {
-      id: 3,
-      name: '12:00',
-    },
-    {
-      id: 4,
-      name: '13:00',
-    },
-    {
-      id: 5,
-      name: '14:00',
-    },
-    {
-      id: 6,
-      name: '15:00',
-    },
-  ];
+  const dateOptions = dummyDateOptions;
+  const timeOptions = dummyTimeOptions;
 
   const onClick = () => {
     navigate(-1);
