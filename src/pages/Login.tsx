@@ -1,23 +1,29 @@
-// login.tsx
-import KakaoIcon from '@/assets/kakaologin.svg?react';
+import KakaoIcon from '@/assets/kakaoLogo.svg?react';
+import Button from '@/components/common/Button';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
 
   const handleKakaoLogin = () => {
-    console.log('카카오 로그인');
-    navigate('/home'); // 필요하면 사용
+    console.log('카카오 로그인 클릭');
+    navigate('/home');
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-white px-'>
-      <div className='max-w-sm w-full space-y-6 text-center'>
+    <div className='min-h-screen flex items-center justify-center bg-white px-4'>
+      <div className='flex flex-col items-center space-y-6 w-full max-w-xs'>
+        {/* 로고 텍스트 (나중에 이미지) */}
         <h1 className='text-2xl font-bold'>Logo</h1>
 
-        <button onClick={handleKakaoLogin} className='w-full'>
-          <KakaoIcon className='w-full h-auto' />
-        </button>
+        <Button
+          onClick={handleKakaoLogin}
+          icon={<KakaoIcon />}
+          variant='kakao'
+          className='flex items-center justify-center rounded-lg shadow w-full h-[45px]'
+        >
+          카카오 로그인
+        </Button>
       </div>
     </div>
   );
