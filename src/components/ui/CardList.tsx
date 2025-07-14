@@ -82,7 +82,7 @@ const CardList = ({ cardList }: HomeCardListProps) => {
         onPrev={decreaseIndex}
         currentNum={`${index + 1} / ${maxIndex + 1}`}
       />
-      <div className='relative w-4/5 mx-auto overflow-hidden mb-20'>
+      <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden mb-20'>
         <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
           <motion.div
             key={index}
