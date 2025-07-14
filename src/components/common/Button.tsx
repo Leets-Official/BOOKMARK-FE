@@ -11,6 +11,7 @@ const buttonVariants = tv({
       danger: 'bg-red-500 text-white hover:brightness-90 disabled:brightness-80',
       ghost:
         'bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-100 disabled:opacity-60',
+      kakao: 'bg-[#FEE500] text-black hover:brightness-90 disabled:brightness-80',
     },
     size: {
       sm: 'px-2 py-1 text-sm',
@@ -26,8 +27,8 @@ const buttonVariants = tv({
 
 // Button 컴포넌트에서 사용할 prop의 타입 정의
 interface ButtonProps {
-  children?: string; // 버튼 안에 들어갈 내용 (텍스트 or 아이콘 등)
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost'; // 버튼 스타일 종류
+  children?: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'kakao'; // 버튼 스타일 종류
   size?: 'sm' | 'md' | 'lg'; // 버튼 크기 종류
   isLoading?: boolean; // 로딩 중 여부
   icon?: React.ReactNode; // 버튼 왼쪽에 표시할 아이콘

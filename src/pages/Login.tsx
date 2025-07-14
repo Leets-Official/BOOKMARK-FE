@@ -1,18 +1,24 @@
-import React from "react";
+// login.tsx
+import KakaoIcon from '@/assets/kakaologin.svg?react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
-      <h1 className="text-6xl font-bold mb-12">Logo</h1>
+  const navigate = useNavigate();
 
-      <button className="flex items-center justify-center bg-yellow-400 text-black text-sm font-semibold py-3 px-6 rounded-lg shadow hover:bg-yellow-300 transition-colors w-full max-w-xs">
-        <img
-          src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_small.png"
-          alt="Kakao"
-          className="w-5 h-5 mr-2"
-        />
-        카카오 로그인
-      </button>
+  const handleKakaoLogin = () => {
+    console.log('카카오 로그인');
+    navigate('/home'); // 필요하면 사용
+  };
+
+  return (
+    <div className='min-h-screen flex items-center justify-center bg-white px-'>
+      <div className='max-w-sm w-full space-y-6 text-center'>
+        <h1 className='text-2xl font-bold'>Logo</h1>
+
+        <button onClick={handleKakaoLogin} className='w-full'>
+          <KakaoIcon className='w-full h-auto' />
+        </button>
+      </div>
     </div>
   );
 };
