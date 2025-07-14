@@ -218,6 +218,7 @@ const CategoryTagSelector = ({
           }}
           onConfirm={() => {
             addCategory(categoryContent);
+            setCategoryContent('');
             setIsOpenCategoryModal(false);
           }}
           disabled={categoryContent === '' || categoryContent === null}
