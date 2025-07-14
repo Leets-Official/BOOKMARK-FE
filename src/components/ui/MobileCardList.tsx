@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
-import FolderCard from './FolderCard';
+import FolderCard from './card/FolderCard';
+import CardListHeader from '@/components/layout/header/CardListHeader';
 
 interface HomeCardListProps {
   cardList: { id: number; title: string }[];
@@ -39,27 +40,30 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
   }, [cardList, x]);
 
   return (
-    <div ref={containerRef} className='relative py-3 overflow-hidden mb-10'>
-      <motion.div
-        ref={dragRef}
-        style={{
-          x,
-          willChange: 'transform', // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
-        }}
-        drag='x'
-        dragConstraints={constraints}
-        dragElastic={0.05}
-        dragTransition={{
-          power: 0.01, // 드래그 이동 거리의 가중치와 속도를 낮춰 너무 빨리 넘어가는 것 방지
-          timeConstant: 200,
-        }}
-        className='flex justify-start items-center cursor-grab active:cursor-grabbing'
-      >
-        {cardList.map((card) => (
-          <FolderCard key={card.id} title={card.title} />
-        ))}
-      </motion.div>
-    </div>
+    <>
+      <CardListHeader currentNum={cardList.length.toString()} />
+      <div ref={containerRef} className='relative py-3 overflow-hidden mb-10 w-9/10 mx-auto'>
+        <motion.div
+          ref={dragRef}
+          style={{
+            x,
+            willChange: 'transform', // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
+          }}
+          drag='x'
+          dragConstraints={constraints}
+          dragElastic={0.05}
+          dragTransition={{
+            power: 0.01, // 드래그 이동 거리의 가중치와 속도를 낮춰 너무 빨리 넘어가는 것 방지
+            timeConstant: 200,
+          }}
+          className='flex justify-start items-center cursor-grab active:cursor-grabbing'
+        >
+          {cardList.map((card) => (
+            <FolderCard key={card.id} title={card.title} />
+          ))}
+        </motion.div>
+      </div>
+    </>
   );
 };
 

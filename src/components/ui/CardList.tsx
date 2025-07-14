@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import FolderCard from './FolderCard';
-import CardListHeader from '../layout/header/CardListHeader';
+import FolderCard from './card/FolderCard';
+import CardListHeader from '@/components/layout/header/CardListHeader';
 import { useEffect, useState } from 'react';
 import { getCardsPerSlide } from '@/utils/CardPerSlide';
 
@@ -76,13 +76,12 @@ const CardList = ({ cardList }: HomeCardListProps) => {
   };
 
   return (
-    <div className=''>
+    <>
       <CardListHeader
         onNext={increaseIndex}
         onPrev={decreaseIndex}
         currentNum={`${index + 1} / ${maxIndex + 1}`}
       />
-
       <div className='relative w-4/5 mx-auto overflow-hidden mb-20'>
         <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
           <motion.div
@@ -109,7 +108,7 @@ const CardList = ({ cardList }: HomeCardListProps) => {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
