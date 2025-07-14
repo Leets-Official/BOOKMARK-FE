@@ -2,6 +2,7 @@ import { tv } from 'tailwind-variants';
 import { motion } from 'framer-motion';
 import Button from './Button';
 import { Delete } from '@/assets';
+import clsx from 'clsx';
 
 interface ChipProps {
   id: string;
@@ -63,17 +64,23 @@ const Chip = ({
   onDelete,
   disabled = false,
 }: ChipProps) => {
+  const hoverAnimation = disabled ? undefined : { scale: 1.05 };
+  const tapAnimation = disabled ? undefined : { scale: 0.95 };
+  const handleClick = disabled ? undefined : onClick;
+
   return (
     <motion.div
-      className={
-        chipStyle({ isSelected, type }) + (disabled ? '' : ' cursor-pointer') + ' group relative'
-      }
+      className={clsx(
+        chipStyle({ isSelected, type }),
+        disabled ? '' : ' cursor-pointer',
+        ' group relative',
+      )}
       layoutId={`${id}`}
       animate={{ scale: 1 }}
       transition={{ duration: 0.2 }}
-      whileHover={disabled ? undefined : { scale: 1.05 }}
-      whileTap={disabled ? undefined : { scale: 0.95 }}
-      onClick={disabled ? undefined : onClick}
+      whileHover={hoverAnimation}
+      whileTap={tapAnimation}
+      onClick={handleClick}
     >
       <p>{type === 'category' ? content : '#' + content}</p>
       {/* 삭제 함수가 있을시 활성화 */}

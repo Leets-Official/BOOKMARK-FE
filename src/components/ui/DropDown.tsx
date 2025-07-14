@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { BackArrow } from '@/assets';
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
@@ -37,19 +37,19 @@ const DropDown = ({
   const [dropdownStyle, setDropdownStyle] = useState({ top: 0, left: 0, width: 0 });
   const buttonRef = useRef<HTMLDivElement>(null);
 
+  const updatePosition = useCallback(() => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownStyle({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+      });
+    }
+  }, []);
+
   // 드롭다운 위치 업데이트(계속 부모 위치 바로 밑으로)
   useEffect(() => {
-    function updatePosition() {
-      if (buttonRef.current) {
-        const rect = buttonRef.current.getBoundingClientRect();
-        setDropdownStyle({
-          top: rect.bottom + window.scrollY,
-          left: rect.left + window.scrollX,
-          width: rect.width,
-        });
-      }
-    }
-
     if (isOpenOptions) {
       updatePosition();
       window.addEventListener('resize', updatePosition);
@@ -59,13 +59,15 @@ const DropDown = ({
       window.removeEventListener('resize', updatePosition);
       window.removeEventListener('scroll', updatePosition, true);
     };
-  }, [isOpenOptions]);
+  }, [isOpenOptions, updatePosition]);
+
+  const displayText = selectedOption || title;
 
   return (
     <>
       <motion.div
         ref={buttonRef}
-        className={`w-full bg-white rounded-[8px] flex flex-row gap-2 items-center border border-lightBlueGray cursor-pointer relative p-2 justify-between`}
+        className='w-full bg-white rounded-[8px] flex flex-row gap-2 items-center border border-lightBlueGray cursor-pointer relative p-2 justify-between'
         animate={{
           backgroundColor: isOpenOptions ? '#F2F3F7' : '#FFFFFF',
         }}
@@ -74,9 +76,7 @@ const DropDown = ({
       >
         <div className='flex flex-row gap-2 items-center'>
           {!isOpenOptions && icon ? icon : null}
-          <p className={titleStyle({ large: selectedOption.length > 8 })}>
-            {selectedOption === '' ? title : selectedOption}
-          </p>
+          <p className={titleStyle({ large: displayText.length > 8 })}>{displayText}</p>
         </div>
         <motion.div
           animate={{
