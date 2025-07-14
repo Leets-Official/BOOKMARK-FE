@@ -1,33 +1,20 @@
 // import React from 'react';
 import FilterSearchBar from '@/components/layout/searchBar/FilterSearchBar';
-import { HistoryIcon, FilterIcon, SearchIcon } from '@/assets';
-import Input from '@/components/common/Input';
+import { FilterIcon, SearchIcon } from '@/assets';
 
 const Search = () => {
   return (
-    <div className='flex flex-col w-full h-full bg-gray-100'>
+    <div className='flex flex-col w-full h-[100vh] bg-gray-100'>
       {/* 상단 영역 (검색바 + 최근기록) */}
-      <div className='bg-white p-4 shadow-sm'>
+      <div className='bg-white shadow-sm'>
         {/* 검색바 */}
         <FilterSearchBar />
-
-        {/* 최근기록 */}
-        <div className='mt-4'>
-          <div className='flex items-center text-sm text-black'>
-            <HistoryIcon className='w-4 h-4 mr-2' />
-            최근기록
-          </div>
-          <div className='flex items-center text-sm text-black mt-2'>
-            <HistoryIcon className='w-4 h-4 mr-2' />
-            최근기록
-          </div>
-        </div>
       </div>
 
       {/* 하단 영역 (필터 등) */}
       <div className='flex flex-col p-4 flex-1'>
         {/* 필터 */}
-        <div className='flex items-center font-semibold text-lg mt-2 mb-4'>
+        <div className='flex items-center font-semibold text-lg mt-30 mb-4 ml-2'>
           <FilterIcon className='w-5 h-5 mr-2 text-black' />
           필터
         </div>
@@ -50,28 +37,14 @@ const Search = () => {
           </div>
 
           {/* 태그 인풋 */}
-          <div className='w-full bg-gray-100 rounded-lg px-2 py-2 mb-4'>
-            <Input
-              placeholder='태그'
-              value=''
-              onChange={() => {}}
-              className='w-full bg-transparent focus:outline-none text-sm placeholder-black'
-            />
-          </div>
+          <div className='w-full bg-gray-100 rounded-lg px-2 py-2 mb-4'>태그</div>
         </div>
 
         {/* 플랫폼 인풋 */}
-        <div className='mt-4 bg-white rounded-lg px-4 py-2'>
-          <Input
-            placeholder='플랫폼'
-            value=''
-            onChange={() => {}}
-            className='w-full bg-transparent focus:outline-none text-sm placeholder-black'
-          />
-        </div>
+        <div className='mt-4 bg-white rounded-lg px-4 py-2'>플랫폼</div>
 
         {/* 초기화 / 검색 버튼 */}
-        <div className='mt-6 flex justify-between items-center'>
+        <div className='fixed bottom-0 left-0 w-full bg-white px-8 py-4 flex justify-between items-center z-20'>
           <button className='text-black underline font-semibold'>초기화</button>
           <button className='flex items-center gap-2 px-6 py-2 bg-blue-500 text-white rounded-md text-sm'>
             <SearchIcon className='w-4 h-4' />
