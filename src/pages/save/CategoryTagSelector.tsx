@@ -106,7 +106,7 @@ const CategoryTagSelector = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                transition={{ ease: 'easeInOut' }}
               >
                 카테고리, 태그
               </motion.p>
@@ -127,18 +127,16 @@ const CategoryTagSelector = ({
               className='overflow-hidden'
             >
               <div className='flex flex-wrap gap-2 m-1'>
-                <AnimatePresence>
-                  {categoryList.map((category) => (
-                    <Chip
-                      key={category.id}
-                      id={'category' + category.id}
-                      content={category.content}
-                      isSelected={category.isSelected}
-                      type={category.type}
-                      onClick={() => handleCategory(category.id)}
-                    />
-                  ))}
-                </AnimatePresence>
+                {categoryList.map((category) => (
+                  <Chip
+                    key={category.id}
+                    id={'category' + category.id}
+                    content={category.content}
+                    isSelected={category.isSelected}
+                    type={category.type}
+                    onClick={() => handleCategory(category.id)}
+                  />
+                ))}
               </div>
               {/* 태그 영역 */}
               <div className='flex flex-col gap-2 bg-grayBg rounded-[12px] p-2 pr-2 pt-1 mt-3 origin-top'>
@@ -161,48 +159,46 @@ const CategoryTagSelector = ({
                     </motion.div>
                   )}
                 </div>
-                <AnimatePresence>
-                  {/* 태그를 선택할 수 있을 떄 보일 컴포넌트 */}
-                  {visibleTag && (
-                    <motion.div
-                      key='tagContainer'
-                      initial={{ height: 0 }}
-                      animate={{ height: 'auto' }}
-                      exit={{ height: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className='overflow-hidden'
-                    >
-                      <div className='flex flex-wrap gap-2 m-1'>
-                        {tagList.map((tag) => (
-                          <Chip
-                            key={tag.id}
-                            id={'tag' + tag.id}
-                            content={tag.content}
-                            isSelected={tag.isSelected}
-                            type={tag.type}
-                            onClick={() => handleTag(tag.id)}
-                          />
-                        ))}
-                      </div>
-                      <div className='flex flex-row items-center mb-1 mt-2 pl-1 gap-1'>
-                        <Star width={18} height={18} fill='#007AFF' />
-                        <p className='text-sm text-primary'>제안</p>
-                      </div>
-                      <div className='flex flex-wrap gap-2 m-1'>
-                        {suggestionList.map((suggestion) => (
-                          <Chip
-                            key={suggestion.id}
-                            id={'suggestion' + suggestion.id}
-                            content={suggestion.content}
-                            isSelected={suggestion.isSelected}
-                            type={suggestion.type}
-                            onClick={() => handleSuggestion(suggestion.id)}
-                          />
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/* 태그를 선택할 수 있을 떄 보일 컴포넌트 */}
+                {visibleTag && (
+                  <motion.div
+                    key='tagContainer'
+                    initial={{ height: 0 }}
+                    animate={{ height: 'auto' }}
+                    exit={{ height: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className='overflow-hidden'
+                  >
+                    <div className='flex flex-wrap gap-2 m-1'>
+                      {tagList.map((tag) => (
+                        <Chip
+                          key={tag.id}
+                          id={'tag' + tag.id}
+                          content={tag.content}
+                          isSelected={tag.isSelected}
+                          type={tag.type}
+                          onClick={() => handleTag(tag.id)}
+                        />
+                      ))}
+                    </div>
+                    <div className='flex flex-row items-center mb-1 mt-2 pl-1 gap-1'>
+                      <Star width={18} height={18} fill='#007AFF' />
+                      <p className='text-sm text-primary'>제안</p>
+                    </div>
+                    <div className='flex flex-wrap gap-2 m-1'>
+                      {suggestionList.map((suggestion) => (
+                        <Chip
+                          key={suggestion.id}
+                          id={'suggestion' + suggestion.id}
+                          content={suggestion.content}
+                          isSelected={suggestion.isSelected}
+                          type={suggestion.type}
+                          onClick={() => handleSuggestion(suggestion.id)}
+                        />
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
               </div>
             </motion.div>
           )}
