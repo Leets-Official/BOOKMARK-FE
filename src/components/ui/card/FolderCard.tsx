@@ -1,5 +1,4 @@
 import { DetailIcon } from '@/assets';
-import TestImage from '@/assets/test.jpg';
 import Image from '@/components/common/Image';
 import { isMobile } from 'react-device-detect';
 import clsx from 'clsx';
@@ -31,8 +30,29 @@ const FolderCard = ({ title }: ICardProps) => {
   return (
     // 모바일은 카드의 너비를 고정, PC는 반응형에 따라 비율 조정
     <div className={isMobile ? 'min-w-42 px-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 p-3'}>
-      <div className='hover:scale-105 duration-300 origin-center'>
-        <Image src={TestImage} className=' w-full aspect-[3/2] rounded-2xl object-cover' />
+      <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden hover:scale-105 duration-300'>
+        <div className='w-full h-full flex rounded-2xl'>
+          <div className='w-2/3 h-full'>
+            <Image
+              src='https://picsum.photos/200/300'
+              className='w-full h-full object-cover rounded-l-2xl'
+            />
+          </div>
+          <div className='w-1/3 h-full flex flex-col'>
+            <div className='w-full h-1/2'>
+              <Image
+                src='https://picsum.photos/id/237/200/300'
+                className='w-full h-full object-cover'
+              />
+            </div>
+            <div className='w-full h-1/2'>
+              <Image
+                src='https://picsum.photos/200/300?grayscale'
+                className='w-full h-full object-cover rounded-tr-2xl rounded-br-2xl'
+              />
+            </div>
+          </div>
+        </div>
       </div>
       <p className={titleText({ mobile: true })}>{title}</p>
       <div className='relative mt-2'>
