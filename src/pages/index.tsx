@@ -1,5 +1,6 @@
 import Home from './Home';
-import SignUp from './SignUp';
+import Save from './Save';
 import Search from './Search';
+import Example from './Example';
 
-export { Home, SignUp, Search };
+export { Home, Save, Search, Example };

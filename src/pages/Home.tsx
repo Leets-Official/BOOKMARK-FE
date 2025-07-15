@@ -1,42 +1,23 @@
-import Card from '@/components/ui/card/Card';
-import TestImage from '@/assets/test.jpg';
+import SideBar from '@/components/layout/sidebar/SideBar';
+import HomeSearchBar from '@/components/layout/searchBar/HomeSearchBar';
+import CardList from '@/components/ui/CardList';
+import MobileCardList from '@/components/ui/MobileCardList';
+import { isMobile } from 'react-device-detect';
+import MobileHeader from '@/components/layout/header/MobileHeader';
 
 const Home = () => {
-  const cardList = [
-    {
-      id: 1,
-      title: 'React Lifecycle 정리',
-      platform: '티스토리',
-      image: TestImage,
-      isLoading: false,
-    },
-    {
-      id: 2,
-      title: 'Vue3 Composition API',
-      platform: 'Velog',
-      image: TestImage,
-      isLoading: true,
-    },
-    {
-      id: 3,
-      title: 'Next.js App Router',
-      platform: 'GitHub Blog',
-      isLoading: false,
-      editable: true,
-    },
-  ];
+  const cardList = Array.from({ length: 11 }, (_, i) => ({
+    id: i + 1,
+    title: `제목 ${i + 1}`,
+  }));
+
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen gap-6'>
-      {cardList.map((card) => (
-        <Card
-          key={card.id}
-          title={card.title}
-          platform={card.platform}
-          image={card.image}
-          isLoading={card.isLoading}
-          editable={card.editable}
-        />
-      ))}
+    <div className='relative min-h-screen'>
+      {/* 데스크탑일 경우 사이드바 나타남 */}
+      {!isMobile ? <SideBar /> : <MobileHeader />}
+      <HomeSearchBar />
+      {/* 모바일/데스크탑 구분 */}
+      {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />}
     </div>
   );
 };
