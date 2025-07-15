@@ -5,7 +5,6 @@ import { Delete } from '@/assets';
 import clsx from 'clsx';
 
 interface ChipProps {
-  id: string;
   content: string;
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
@@ -55,15 +54,7 @@ const chipStyle = tv({
   ],
 });
 
-const Chip = ({
-  id,
-  content,
-  isSelected,
-  type,
-  onClick,
-  onDelete,
-  disabled = false,
-}: ChipProps) => {
+const Chip = ({ content, isSelected, type, onClick, onDelete, disabled = false }: ChipProps) => {
   const hoverAnimation = disabled ? undefined : { scale: 1.05 };
   const tapAnimation = disabled ? undefined : { scale: 0.95 };
   const handleClick = disabled ? undefined : onClick;
@@ -75,7 +66,6 @@ const Chip = ({
         disabled ? '' : ' cursor-pointer',
         ' group relative',
       )}
-      layoutId={`${id}`}
       animate={{ scale: 1 }}
       transition={{ duration: 0.2 }}
       whileHover={hoverAnimation}

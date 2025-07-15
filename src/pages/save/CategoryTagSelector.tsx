@@ -249,7 +249,6 @@ const CategoryTagSelector = () => {
                 {categoryList.map((category) => (
                   <Chip
                     key={category.id}
-                    id={'category' + category.id}
                     content={category.content}
                     isSelected={category.isSelected}
                     type={category.type}
@@ -295,7 +294,6 @@ const CategoryTagSelector = () => {
                       {tagList.map((tag) => (
                         <Chip
                           key={tag.id}
-                          id={'tag' + tag.id}
                           content={tag.content}
                           isSelected={tag.isSelected}
                           type={tag.type}
@@ -311,7 +309,6 @@ const CategoryTagSelector = () => {
                       {suggestionList.map((suggestion) => (
                         <Chip
                           key={suggestion.id}
-                          id={'suggestion' + suggestion.id}
                           content={suggestion.content}
                           isSelected={suggestion.isSelected}
                           type={suggestion.type}
@@ -359,7 +356,6 @@ const CategoryTagSelector = () => {
                 .map((item) => (
                   <Chip
                     key={item.id}
-                    id={'Selected temp tag' + item.id}
                     content={item.content}
                     isSelected={item.isSelected}
                     type={item.type}
