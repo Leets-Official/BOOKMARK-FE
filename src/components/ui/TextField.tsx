@@ -13,6 +13,8 @@ interface TextFieldProps {
   onSubmit?: (v: string) => void;
   // create : 생성 버튼, reset : 초기화 버튼
   isCreateType: boolean;
+  // eslint-disable-next-line
+  setDisabled?: (v: boolean) => void;
 }
 
 const TextField = ({
@@ -22,6 +24,7 @@ const TextField = ({
   onChange,
   onSubmit,
   isCreateType,
+  setDisabled,
 }: TextFieldProps) => {
   const [content, setContent] = useState('');
 
@@ -30,17 +33,33 @@ const TextField = ({
       return;
     }
     setContent(e.target.value);
+
+    if (setDisabled) {
+      if (e.target.value.length > 0) {
+        setDisabled(false);
+      } else {
+        setDisabled(true);
+      }
+    }
   };
 
   const resetContent = () => {
     setContent('');
     onChange('');
+
+    if (setDisabled) {
+      setDisabled(true);
+    }
   };
 
   const createContent = () => {
     setContent('');
     if (onSubmit) {
       onSubmit(content);
+    }
+
+    if (setDisabled) {
+      setDisabled(true);
     }
   };
 

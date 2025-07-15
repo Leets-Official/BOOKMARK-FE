@@ -37,6 +37,8 @@ const CategoryTagSelector = () => {
   const [content, setContent] = useState('');
   const [modalOpenType, setModalOpenType] = useState<ModalType>(null);
 
+  const [disabledSubmitButton, setDisabledSubmitButton] = useState(true);
+
   const handleCategory = (id: number) => {
     const newCategoryList = categoryList.map((c) =>
       c.id === id ? { ...c, isSelected: true } : { ...c, isSelected: false },
@@ -129,6 +131,7 @@ const CategoryTagSelector = () => {
 
   const closeModal = () => {
     setModalOpenType(null);
+    setDisabledSubmitButton(true);
   };
 
   const handleCategoryModal = () => {
@@ -250,7 +253,7 @@ const CategoryTagSelector = () => {
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                     className='overflow-hidden'
                   >
-                    <div className='flex flex-wrap gap-2 m-1'>
+                    <div className='flex flex-wrap gap-2 m-1 max-h-[200px] overflow-y-auto'>
                       {tagList.map((tag) => (
                         <Chip
                           key={tag.id}
@@ -296,7 +299,7 @@ const CategoryTagSelector = () => {
           onConfirm={() => {
             modalOpenType === 'category' ? handleCategoryModal() : handleTagModal('onConfirm');
           }}
-          disabled={content === '' || content === null}
+          disabled={disabledSubmitButton}
         >
           <TextField
             label='카테고리'
@@ -308,28 +311,26 @@ const CategoryTagSelector = () => {
             onSubmit={() => {
               modalOpenType === 'category' ? undefined : handleTagModal('onSubmit');
             }}
+            setDisabled={setDisabledSubmitButton}
             isCreateType={modalOpenType === 'category' ? false : true}
           />
-          <div className='flex flex-wrap gap-2 m-0.5'>
-            {(modalOpenType === 'category' ? categoryList : tagList).map(
-              (item) =>
-                item.isSelected && (
-                  <Chip
-                    key={item.id}
-                    id={'Selected category' + item.id}
-                    content={item.content}
-                    isSelected={item.isSelected}
-                    type={item.type}
-                    onClick={() =>
-                      modalOpenType === 'category' ? handleCategory(item.id) : handleTag(item.id)
-                    }
-                    disabled={true}
-                    onDelete={
-                      item.deleteable ? () => deleteItem(item.id, modalOpenType) : undefined
-                    }
-                  />
-                ),
-            )}
+          <div className='flex flex-wrap gap-2 m-0.5 max-h-[200px] overflow-y-auto'>
+            {modalOpenType === 'tag' &&
+              tagList.map(
+                (item) =>
+                  item.isSelected && (
+                    <Chip
+                      key={item.id}
+                      id={'Selected category' + item.id}
+                      content={item.content}
+                      isSelected={item.isSelected}
+                      type={item.type}
+                      onClick={() => handleTag(item.id)}
+                      disabled={true}
+                      onDelete={item.deleteable ? () => deleteItem(item.id, 'tag') : undefined}
+                    />
+                  ),
+              )}
           </div>
         </Modal>
       )}
