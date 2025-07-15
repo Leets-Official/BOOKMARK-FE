@@ -1,4 +1,4 @@
-import { Delete } from '@/assets';
+import { DeleteIcon } from '@/assets';
 import Button from './Button';
 import type React from 'react';
 import { tv } from 'tailwind-variants';
@@ -36,7 +36,7 @@ const Modal = ({ title, onConfirm, onCancel, children, disabled = false }: Modal
           <Button
             onClick={onCancel}
             className='absolute right-3 top-1/2 -translate-y-1/2'
-            icon={<Delete height={24} width={24} fill='#090e1d' />}
+            icon={<DeleteIcon height={24} width={24} fill='#090e1d' />}
           ></Button>
         </div>
         {/* 자식 컴포넌트 넣는 곳 */}

@@ -1,4 +1,4 @@
-import { Delete } from '@/assets';
+import { DeleteIcon } from '@/assets';
 import Button from '@/components/common/Button';
 import React, { useState } from 'react';
 import Textarea from '../common/Textarea';
@@ -97,7 +97,7 @@ const TextField = ({
         {content && (
           <Button
             className='absolute top-3 right-3 bg-transparent hover:cursor-pointer h-6 w-6 text-xs text-primary font-semibold'
-            icon={!isCreateType ? <Delete width={24} height={24} fill='#545966' /> : null}
+            icon={!isCreateType ? <DeleteIcon width={24} height={24} fill='#545966' /> : null}
             onClick={isCreateType ? createContent : resetContent}
           >
             {isCreateType ? '등록' : undefined}

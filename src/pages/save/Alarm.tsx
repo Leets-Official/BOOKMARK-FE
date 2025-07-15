@@ -1,4 +1,4 @@
-import { AddAlert, Calendar, Schedule, Trash } from '@/assets';
+import { AddAlertIcon, CalendarIcon, ScheduleIcon, TrashIcon } from '@/assets';
 import {
   dateOptionsAtom,
   selectedDateAtom,
@@ -58,7 +58,7 @@ const Alarm = () => {
         {selectedDate === '' || selectedTime === '' ? null : (
           <Button
             onClick={resetAlarm}
-            icon={<Trash width={18} height={18} fill='#FF2C3D' />}
+            icon={<TrashIcon width={18} height={18} fill='#FF2C3D' />}
             className='text-xs text-error underline font-semibold flex items-center cursor-pointer absolute top-4 right-4'
           >
             알림 삭제
@@ -77,7 +77,7 @@ const Alarm = () => {
           >
             <div className='flex items-center justify-center m-1'>
               <Button
-                icon={<AddAlert width={24} height={24} fill='#397FFF' />}
+                icon={<AddAlertIcon width={24} height={24} fill='#397FFF' />}
                 onClick={() => {
                   setIsOpenAlarmModal(true);
                 }}
@@ -109,7 +109,7 @@ const Alarm = () => {
         >
           <div className='flex flex-row gap-2 mb-2 mt-2'>
             <DropDown
-              icon={<Calendar width={24} height={24} fill='#090E1D' />}
+              icon={<CalendarIcon width={24} height={24} fill='#090E1D' />}
               title='날짜 선택'
               subTitle='날짜'
               options={dateOptions}
@@ -117,7 +117,7 @@ const Alarm = () => {
               setSelectedOption={setTempDate}
             />
             <DropDown
-              icon={<Schedule width={24} height={24} fill='#090E1D' />}
+              icon={<ScheduleIcon width={24} height={24} fill='#090E1D' />}
               title='시간 선택'
               subTitle='시간'
               options={timeOptions}

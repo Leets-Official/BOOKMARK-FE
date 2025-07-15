@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { BackArrow } from '@/assets';
+import { BackArrowIcon } from '@/assets';
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
@@ -84,7 +84,7 @@ const DropDown = ({
           }}
           transition={{ duration: 0.2 }}
         >
-          <BackArrow width={24} height={24} />
+          <BackArrowIcon width={24} height={24} />
         </motion.div>
       </motion.div>
       {isOpenOptions &&

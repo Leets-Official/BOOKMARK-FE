@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import Button from '@/components/common/Button';
-import { Add, Star } from '@/assets';
+import { AddIcon, StarIcon } from '@/assets';
 import Chip from '@/components/common/Chip';
 import { useEffect, useState } from 'react';
 import Modal from '@/components/common/Modal';
@@ -209,7 +209,7 @@ const CategoryTagSelector = () => {
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                 >
                   <Button
-                    icon={<Add width={18} height={18} fill='#397FFF' />}
+                    icon={<AddIcon width={18} height={18} fill='#397FFF' />}
                     onClick={() => openModal('category')}
                     className='cursor-pointer text-xs font-semibold text-primary flex items-center gap-1'
                   >
@@ -271,7 +271,7 @@ const CategoryTagSelector = () => {
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                     >
                       <Button
-                        icon={<Add width={18} height={18} fill='#397FFF' />}
+                        icon={<AddIcon width={18} height={18} fill='#397FFF' />}
                         onClick={() => openModal('tag')}
                         className='cursor-pointer text-xs font-semibold text-primary flex items-center gap-1'
                       >
@@ -302,7 +302,7 @@ const CategoryTagSelector = () => {
                       ))}
                     </div>
                     <div className='flex flex-row items-center mb-1 mt-2 pl-1 gap-1'>
-                      <Star width={18} height={18} stroke='#007AFF' />
+                      <StarIcon width={18} height={18} stroke='#007AFF' />
                       <p className='text-sm text-primary'>추천</p>
                     </div>
                     <div className='flex flex-wrap gap-2 m-1'>
