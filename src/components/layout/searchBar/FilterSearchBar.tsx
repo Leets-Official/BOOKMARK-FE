@@ -4,13 +4,23 @@ import React, { useState } from 'react';
 
 interface FilterSearchBarProps {
   selectedCategories: string[];
+  selectedTags: string[];
+  selectedPlatforms: string[];
   // eslint-disable-next-line no-unused-vars
   onDeleteCategory: (category: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  onDeleteTag: (tag: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  onDeletePlatform: (platform: string) => void;
 }
 
 const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
   selectedCategories,
+  selectedTags,
+  selectedPlatforms,
   onDeleteCategory,
+  onDeleteTag,
+  onDeletePlatform,
 }) => {
   const [value, setValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -29,28 +39,40 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
     setValue('');
   };
 
+  const renderChip = (
+    items: string[],
+    // eslint-disable-next-line no-unused-vars
+    onDelete: (item: string) => void,
+    type: 'category' | 'tag' | 'platform',
+  ) => {
+    return items.map((item, idx) => (
+      <span
+        key={`${type}-${idx}`}
+        className='flex items-center px-3 py-1 rounded-full text-sm max-w-[140px] truncate bg-gray-100 text-black border border-black'
+        title={item}
+      >
+        <span className='truncate mr-2'>{type === 'tag' ? `#${item}` : item}</span>
+        <button onClick={() => onDelete(item)} className='flex items-center justify-center'>
+          <DeleteIcon width={14} height={14} fill='#000' />
+        </button>
+      </span>
+    ));
+  };
+
   return (
     <div className='w-full bg-white shadow-sm relative'>
-      {selectedCategories.length > 0 && (
+      {/* 선택된 Chip들 표시 */}
+      {(selectedCategories.length > 0 ||
+        selectedTags.length > 0 ||
+        selectedPlatforms.length > 0) && (
         <div className='px-4 py-2 border-t border-gray-200 bg-white flex flex-wrap gap-2'>
-          {selectedCategories.map((category, idx) => (
-            <span
-              key={idx}
-              className='flex items-center bg-gray-100 text-black px-3 py-1 rounded-full text-sm max-w-[140px] border border-black'
-              title={category}
-            >
-              <span className='truncate mr-2'>{category}</span>
-              <button
-                onClick={() => onDeleteCategory(category)}
-                className='flex items-center justify-center'
-              >
-                <DeleteIcon width={14} height={14} fill='#000' />
-              </button>
-            </span>
-          ))}
+          {renderChip(selectedCategories, onDeleteCategory, 'category')}
+          {renderChip(selectedTags, onDeleteTag, 'tag')}
+          {renderChip(selectedPlatforms, onDeletePlatform, 'platform')}
         </div>
       )}
 
+      {/* 검색 입력창 */}
       <div className='flex items-center w-full h-12 px-4 shadow-md bg-white z-10'>
         <div className='mr-2 cursor-pointer'>
           <BackIcon />
@@ -70,6 +92,7 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
         </div>
       </div>
 
+      {/* 최근 기록 */}
       {isFocused && (
         <div className='absolute top-full left-0 w-full bg-white px-4 shadow-md z-0'>
           {['최근기록 1', '최근기록 2'].map((record, idx) => (

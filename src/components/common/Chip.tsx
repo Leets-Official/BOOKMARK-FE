@@ -7,25 +7,24 @@ interface ChipProps {
   id: string;
   content: string;
   isSelected: boolean;
-  type: 'category' | 'tag' | 'suggestion';
+  type: 'category' | 'tag' | 'suggestion' | 'platform';
   onClick: () => void;
   onDelete?: () => void;
   disabled?: boolean;
   className?: string;
 }
 
-// type(카테고리, 태그, 제안 태그), isSelected(선택됨, 선택안됨)에 따라서 chip 색상 변경
 const chipStyle = tv({
   base: 'rounded-[100px] flex items-center justify-center border text-xs h-8 p-2 flex-row gap-1',
   variants: {
     isSelected: { true: '', false: '' },
-    type: { category: '', tag: '', suggestion: '' },
+    type: { category: '', tag: '', suggestion: '', platform: '' },
   },
   compoundVariants: [
     {
       type: 'category',
       isSelected: true,
-      class: 'bg-lightGray border-black',
+      class: 'bg-gray-100 border-black',
     },
     {
       type: 'category',
@@ -40,7 +39,7 @@ const chipStyle = tv({
     {
       type: 'tag',
       isSelected: false,
-      class: 'bg-grayBg border-grayBorder text-grayText',
+      class: 'bg-white border-grayBorder text-grayText',
     },
     {
       type: 'suggestion',
@@ -51,6 +50,16 @@ const chipStyle = tv({
       type: 'suggestion',
       isSelected: false,
       class: 'bg-grayBg border-grayBorder text-grayText',
+    },
+    {
+      type: 'platform',
+      isSelected: true,
+      class: 'bg-gray-100 text-black border-black',
+    },
+    {
+      type: 'platform',
+      isSelected: false,
+      class: 'bg-white text-black border-grayBorder',
     },
   ],
 });
@@ -80,8 +89,7 @@ const Chip = ({
       whileTap={disabled ? undefined : { scale: 0.95 }}
       onClick={disabled ? undefined : onClick}
     >
-      <p>{type === 'category' ? content : '#' + content}</p>
-      {/* 삭제 함수가 있을시 활성화 */}
+      <p>{type === 'tag' ? `#${content}` : content}</p>
       {onDelete && (
         <Button
           onClick={() => {
