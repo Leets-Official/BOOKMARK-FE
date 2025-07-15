@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Home, Search, SignUp, Save } from '@/pages';
+import { Home, Search, Save } from '@/pages';
 import App from '@/App';
 
 const router = createBrowserRouter([
@@ -16,10 +16,6 @@ const router = createBrowserRouter([
             element: <Save />,
           },
         ],
-      },
-      {
-        path: 'signup',
-        element: <SignUp />,
       },
       {
         path: 'search',
