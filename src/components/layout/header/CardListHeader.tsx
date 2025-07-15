@@ -10,7 +10,7 @@ interface CardListHeaderProps {
 }
 
 const TextSize = tv({
-  base: 'overflow-hidden text-ellipsis whitespace-nowrap max-md:text-base',
+  base: 'overflow-hidden text-ellipsis whitespace-nowrap max-sm:text-base',
   variants: {
     mobile: {
       true: 'text-base',
