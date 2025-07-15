@@ -11,29 +11,16 @@ const Memo = ({ visible, handleMemo }: MemoProps) => {
   return (
     <div className='bg-white w-full rounded-[12px] shadow p-2'>
       <AnimatePresence mode='wait'>
-        {visible ? (
-          <motion.p
-            key='memo-with-file'
-            className='text-xs'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-          >
-            메모
-          </motion.p>
-        ) : (
-          <motion.p
-            key='memo-with-file'
-            className='text-sm'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-          >
-            메모
-          </motion.p>
-        )}
+        <motion.p
+          key='memo-with-file'
+          className={visible ? 'text-xs' : 'text-sm'}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+        >
+          메모
+        </motion.p>
       </AnimatePresence>
       <AnimatePresence>
         {visible && (
