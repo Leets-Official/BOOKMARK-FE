@@ -1,46 +1,19 @@
-// src/components/common/Button.tsx
-
 import React from 'react';
 
+// Button 컴포넌트에서 사용할 prop의 타입 정의
 interface ButtonProps {
-  children?: string;
-  isLoading?: boolean;
-  icon?: React.ReactNode;
-  className?: string;
-  onClick: () => void;
-  disabled?: boolean;
-  variant?: 'primary' | 'secondary' | 'ghost' | 'kakao';
+  children?: string; // 버튼 안에 들어갈 내용 (텍스트 or 아이콘 등)
+  isLoading?: boolean; // 로딩 중 여부
+  icon?: React.ReactNode; // 버튼 왼쪽에 표시할 아이콘
+  className?: string; // 추가 클래스명 전달
+  onClick: () => void; // 클릭 이벤트 핸들러
+  disabled?: boolean; // 비활성화 여부
 }
 
-const variantStyles: Record<NonNullable<ButtonProps['variant']>, string> = {
-  primary: 'bg-blue-500 text-white hover:brightness-90',
-  secondary: 'bg-gray-200 text-black hover:brightness-90',
-  ghost: 'bg-transparent text-black hover:opacity-70',
-  kakao: 'bg-[#FEE500] text-black hover:brightness-90',
-};
-
-const Button = ({
-  children,
-  isLoading,
-  icon,
-  className = '',
-  onClick,
-  disabled,
-  variant = 'primary',
-}: ButtonProps) => {
-  const variantClass = variantStyles[variant];
-
+// 실제 버튼 컴포넌트 정의
+const Button = ({ children, isLoading, icon, className, onClick, disabled }: ButtonProps) => {
   return (
-    <button
-      className={`
-        ${variantClass}
-        ${className}
-        flex items-center justify-center gap-2
-        px-4 py-2 rounded transition duration-200
-      `}
-      onClick={onClick}
-      disabled={isLoading || disabled}
-    >
+    <button className={className} onClick={onClick} disabled={isLoading || disabled}>
       {isLoading ? (
         'Loading...'
       ) : (
