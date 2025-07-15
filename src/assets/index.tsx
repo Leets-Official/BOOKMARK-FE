@@ -14,6 +14,8 @@ import RightIcon from '@/assets/icons/Right.svg?react';
 import HomeIcon from '@/assets/icons/Home.svg?react';
 import FolderIcon from '@/assets/icons/Folder.svg?react';
 import ProfileIcon from '@/assets/icons/Profile.svg?react';
+import FilteringIcon from '@/assets/icons/Filtering.svg?react';
+import FixedFilteringIcon from '@/assets/icons/FixedFiltering.svg?react';
 
 export {
   BackArrowIcon,
@@ -32,4 +34,6 @@ export {
   HomeIcon,
   FolderIcon,
   ProfileIcon,
+  FilteringIcon,
+  FixedFilteringIcon,
 };

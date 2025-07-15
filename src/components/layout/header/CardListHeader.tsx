@@ -1,4 +1,4 @@
-import { LeftIcon, RightIcon, AddIcon } from '@/assets';
+import { LeftIcon, RightIcon } from '@/assets';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import { tv } from 'tailwind-variants';
@@ -21,7 +21,7 @@ const TextSize = tv({
 
 const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => {
   return (
-    <div className={clsx('w-4/5 mx-auto max-sm:w-9/10', isMobile ? 'w-9/10 mt-140' : 'mt-180')}>
+    <div className={clsx('w-4/5 mx-auto max-sm:w-9/10', isMobile ? 'w-9/10 mt-100' : 'mt-130')}>
       <div className='flex justify-between items-center'>
         <div className='flex items-center gap-1'>
           <p className={clsx('font-bold md:mr-7 mr-3', TextSize({ mobile: isMobile }))}>Folder</p>
@@ -38,10 +38,8 @@ const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => 
           )}
         </div>
         <div className='flex flex-row gap-1.5 items-center'>
-          <p className={TextSize({ mobile: isMobile })}>폴더 추가</p>
-          <button className='rounded-2xl cursor-pointer hover:bg-gray-300 transition-colors'>
-            <AddIcon width={24} height={24} fill='#090E1D' className={isMobile ? 'w-6 h-6' : ''} />
-          </button>
+          <p className={TextSize({ mobile: isMobile })}>+ 카테고리 추가</p>
+          <button className='rounded-2xl cursor-pointer hover:bg-gray-300 transition-colors' />
         </div>
       </div>
       <hr className='border-t border-gray-300 my-3' />
