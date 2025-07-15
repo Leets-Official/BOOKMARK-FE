@@ -7,6 +7,7 @@ import AddIcon from './Icon/add.svg?react';
 import HomeIcon from './Icon/home.svg?react';
 import FolderIcon from './Icon/folder.svg?react';
 import ProfileIcon from './Icon/Profile.svg?react';
+import DeleteIcon from './Icon/Delete.svg?react';
 
 export {
   FilterIcon,
@@ -18,4 +19,5 @@ export {
   HomeIcon,
   FolderIcon,
   ProfileIcon,
+  DeleteIcon,
 };

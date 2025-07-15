@@ -19,7 +19,7 @@ const SideBar = () => {
       <div
         className={clsx(
           'flex flex-col gap-5 bg-white',
-          'max-sm:flex-row max-sm:p-3 max-sm:border-none max-sm:bg-gray-200 max-sm:rounded-[50px] max-sm:bg-opacity-50',
+          'max-sm:flex-row max-sm:p-3 max-sm:bg-white/80 max-sm:border-white/30 max-sm:rounded-[50px] max-sm:shadow-xl max-sm:backdrop-blur-md',
         )}
       >
         <Button
