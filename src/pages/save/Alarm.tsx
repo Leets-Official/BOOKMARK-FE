@@ -1,28 +1,18 @@
 import { AddAlert, Calendar, Schedule, Trash } from '@/assets';
+import {
+  dateOptionsAtom,
+  selectedDateAtom,
+  selectedTimeAtom,
+  timeOptionsAtom,
+  visibleMemoAndAlarmAtom,
+} from '@/atoms';
 import Button from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
 import DropDown from '@/components/ui/DropDown';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useAtom, useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { tv } from 'tailwind-variants';
-
-interface AlarmProps {
-  visible: boolean;
-  dateOptions: {
-    id: number;
-    name: string;
-  }[];
-  timeOptions: {
-    id: number;
-    name: string;
-  }[];
-  selectedDate: string;
-  selectedTime: string;
-  // eslint-disable-next-line no-unused-vars
-  setSelectedDate: (date: string) => void;
-  // eslint-disable-next-line no-unused-vars
-  setSelectedTime: (time: string) => void;
-}
 
 const AlarmButtonStyle = tv({
   base: 'text-primary underline font-semibold flex items-center cursor-pointer',
@@ -34,18 +24,22 @@ const AlarmButtonStyle = tv({
   },
 });
 
-const Alarm = ({
-  visible,
-  dateOptions,
-  timeOptions,
-  selectedDate,
-  selectedTime,
-  setSelectedDate,
-  setSelectedTime,
-}: AlarmProps) => {
+const Alarm = () => {
+  const visible = useAtomValue(visibleMemoAndAlarmAtom);
+  const dateOptions = useAtomValue(dateOptionsAtom);
+  const timeOptions = useAtomValue(timeOptionsAtom);
+  const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
+  const [selectedTime, setSelectedTime] = useAtom(selectedTimeAtom);
+
   const [isOpenAlarmModal, setIsOpenAlarmModal] = useState(false);
   const [tempDate, setTempDate] = useState('');
   const [tempTime, setTempTime] = useState('');
+
+  const handleSeletedAlarm = () => {
+    setSelectedDate(tempDate);
+    setSelectedTime(tempTime);
+    resetTempAlarm();
+  };
 
   const resetAlarm = () => {
     setSelectedDate('');
@@ -108,9 +102,7 @@ const Alarm = ({
             resetTempAlarm();
           }}
           onConfirm={() => {
-            setSelectedDate(tempDate);
-            setSelectedTime(tempTime);
-            resetTempAlarm();
+            handleSeletedAlarm();
             setIsOpenAlarmModal(false);
           }}
           disabled={tempDate === '' || tempTime === ''}

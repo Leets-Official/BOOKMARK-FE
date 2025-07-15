@@ -2,52 +2,113 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Button from '@/components/common/Button';
 import { Add, Star } from '@/assets';
 import Chip from '@/components/common/Chip';
-import type { ChipProps } from '@/pages/save/Save';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from '@/components/common/Modal';
 import TextField from '@/components/ui/TextField';
+import {
+  categoryListAtom,
+  isSaveButtonDisabledAtom,
+  memoAtom,
+  suggestionListAtom,
+  tagListAtom,
+  visibleCategoryAtom,
+  visibleMemoAndAlarmAtom,
+  visibleTagAtom,
+} from '@/atoms';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-interface CategoryTagSelectorProps {
-  visibleCategory: boolean;
-  visibleTag: boolean;
-  categoryList: ChipProps[];
-  tagList: ChipProps[];
-  suggestionList: ChipProps[];
-  // eslint-disable-next-line no-unused-vars
-  handleCategory: (id: number) => void;
-  // eslint-disable-next-line no-unused-vars
-  handleTag: (id: number) => void;
-  // eslint-disable-next-line no-unused-vars
-  handleSuggestion: (id: number) => void;
-  // eslint-disable-next-line no-unused-vars
-  addCategory: (content: string) => void;
-  // eslint-disable-next-line no-unused-vars
-  addTag: (content: string) => void;
-  // eslint-disable-next-line no-unused-vars
-  deleteCategory: (id: number) => void;
-  // eslint-disable-next-line no-unused-vars
-  deleteTag: (id: number) => void;
-}
+const CategoryTagSelector = () => {
+  const visibleCategory = useAtomValue(visibleCategoryAtom);
+  const [visibleTag, setVisibleTag] = useAtom(visibleTagAtom);
+  const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
+  const setIsSaveButtonDisabled = useSetAtom(isSaveButtonDisabledAtom);
+  const setMemo = useSetAtom(memoAtom);
 
-const CategoryTagSelector = ({
-  visibleCategory,
-  visibleTag,
-  categoryList,
-  tagList,
-  suggestionList,
-  handleCategory,
-  handleTag,
-  handleSuggestion,
-  addCategory,
-  addTag,
-  deleteCategory,
-  deleteTag,
-}: CategoryTagSelectorProps) => {
+  const [categoryList, setCategoryList] = useAtom(categoryListAtom);
+  const [tagList, setTagList] = useAtom(tagListAtom);
+  const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
+
   const [categoryContent, setCategoryContent] = useState('');
   const [tagContent, setTagContent] = useState('');
 
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
   const [isOpenTagModal, setIsOpenTagModal] = useState(false);
+
+  const handleCategory = (id: number) => {
+    const newCategoryList = categoryList.map((c) =>
+      c.id === id ? { ...c, isSelected: true } : { ...c, isSelected: false },
+    );
+    setCategoryList(newCategoryList);
+    setVisibleTag(true);
+  };
+
+  const handleTag = (id: number) => {
+    const newTagList = tagList.map((t) => (t.id === id ? { ...t, isSelected: !t.isSelected } : t));
+    setTagList(newTagList);
+  };
+
+  const handleSuggestion = (id: number) => {
+    const newSuggestionList = suggestionList.map((s) =>
+      s.id === id ? { ...s, isSelected: !s.isSelected } : s,
+    );
+    setSuggestionList(newSuggestionList);
+  };
+
+  // add function
+  const addCategory = (content: string) => {
+    if (content === '') return;
+
+    const newCategoryList = categoryList.map((c) => ({ ...c, isSelected: false }));
+    setCategoryList([
+      ...newCategoryList,
+      { id: categoryList.length, content, isSelected: true, type: 'category', deleteable: true },
+    ]);
+  };
+
+  const addTag = (content: string) => {
+    if (content === '') return;
+    setTagList([
+      ...tagList,
+      { id: tagList.length, content, isSelected: true, type: 'tag', deleteable: true },
+    ]);
+  };
+
+  // delete function
+  const deleteCategory = (id: number) => {
+    const newCategoryList = categoryList.filter((c) => c.id !== id);
+    setCategoryList(newCategoryList);
+  };
+
+  const deleteTag = (id: number) => {
+    const newTagList = tagList.filter((t) => t.id !== id);
+    setTagList(newTagList);
+  };
+
+  // 카테고리가 선택되면 태그 보여주기
+  useEffect(() => {
+    if (categoryList.filter((c) => c.isSelected).length > 0) {
+      setVisibleTag(true);
+    } else {
+      setVisibleTag(false);
+      setTagList((prev) => prev.map((t) => ({ ...t, isSelected: false })));
+      setSuggestionList((prev) => prev.map((s) => ({ ...s, isSelected: false })));
+    }
+  }, [categoryList, setVisibleTag, setTagList, setSuggestionList]);
+
+  // 태그 또는 제안 태그가 선택되면 메모 및 알림 보여주기
+  useEffect(() => {
+    if (
+      tagList.filter((t) => t.isSelected).length > 0 ||
+      suggestionList.filter((s) => s.isSelected).length > 0
+    ) {
+      setVisibleMemoAndAlarm(true);
+      setIsSaveButtonDisabled(false);
+    } else {
+      setVisibleMemoAndAlarm(false);
+      setIsSaveButtonDisabled(true);
+      setMemo('');
+    }
+  }, [tagList, suggestionList, setVisibleMemoAndAlarm, setIsSaveButtonDisabled, setMemo]);
 
   const handleOpenCategoryModal = () => {
     setIsOpenCategoryModal((prev) => !prev);

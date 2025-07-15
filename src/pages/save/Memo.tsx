@@ -1,13 +1,16 @@
+import { memoAtom, visibleMemoAndAlarmAtom } from '@/atoms';
 import TextField from '@/components/ui/TextField';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useAtomValue, useSetAtom } from 'jotai';
 
-interface MemoProps {
-  visible: boolean;
-  // eslint-disable-next-line no-unused-vars
-  handleMemo: (v: string) => void;
-}
+const Memo = () => {
+  const visible = useAtomValue(visibleMemoAndAlarmAtom);
+  const setMemo = useSetAtom(memoAtom);
 
-const Memo = ({ visible, handleMemo }: MemoProps) => {
+  const handleMemo = (v: string) => {
+    setMemo(v);
+  };
+
   return (
     <div className='bg-white w-full rounded-[12px] shadow p-2'>
       <AnimatePresence mode='wait'>
