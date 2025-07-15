@@ -9,6 +9,8 @@ import {
   categoryListAtom,
   isSaveButtonDisabledAtom,
   memoAtom,
+  selectedDateAtom,
+  selectedTimeAtom,
   suggestionListAtom,
   tagListAtom,
   visibleCategoryAtom,
@@ -17,22 +19,23 @@ import {
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
+type ModalType = 'category' | 'tag' | null;
+
 const CategoryTagSelector = () => {
   const visibleCategory = useAtomValue(visibleCategoryAtom);
   const [visibleTag, setVisibleTag] = useAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const setIsSaveButtonDisabled = useSetAtom(isSaveButtonDisabledAtom);
   const setMemo = useSetAtom(memoAtom);
+  const setSelectedDate = useSetAtom(selectedDateAtom);
+  const setSelectedTime = useSetAtom(selectedTimeAtom);
 
   const [categoryList, setCategoryList] = useAtom(categoryListAtom);
   const [tagList, setTagList] = useAtom(tagListAtom);
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
 
-  const [categoryContent, setCategoryContent] = useState('');
-  const [tagContent, setTagContent] = useState('');
-
-  const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
-  const [isOpenTagModal, setIsOpenTagModal] = useState(false);
+  const [content, setContent] = useState('');
+  const [modalOpenType, setModalOpenType] = useState<ModalType>(null);
 
   const handleCategory = (id: number) => {
     const newCategoryList = categoryList.map((c) =>
@@ -74,14 +77,14 @@ const CategoryTagSelector = () => {
   };
 
   // delete function
-  const deleteCategory = (id: number) => {
-    const newCategoryList = categoryList.filter((c) => c.id !== id);
-    setCategoryList(newCategoryList);
-  };
-
-  const deleteTag = (id: number) => {
-    const newTagList = tagList.filter((t) => t.id !== id);
-    setTagList(newTagList);
+  const deleteItem = (id: number, type: ModalType) => {
+    if (type === 'category') {
+      const newCategoryList = categoryList.filter((c) => c.id !== id);
+      setCategoryList(newCategoryList);
+    } else {
+      const newTagList = tagList.filter((t) => t.id !== id);
+      setTagList(newTagList);
+    }
   };
 
   // 카테고리가 선택되면 태그 보여주기
@@ -107,23 +110,40 @@ const CategoryTagSelector = () => {
       setVisibleMemoAndAlarm(false);
       setIsSaveButtonDisabled(true);
       setMemo('');
+      setSelectedDate('');
+      setSelectedTime('');
     }
-  }, [tagList, suggestionList, setVisibleMemoAndAlarm, setIsSaveButtonDisabled, setMemo]);
+  }, [
+    tagList,
+    suggestionList,
+    setVisibleMemoAndAlarm,
+    setIsSaveButtonDisabled,
+    setMemo,
+    setSelectedDate,
+    setSelectedTime,
+  ]);
 
-  const handleOpenCategoryModal = () => {
-    setIsOpenCategoryModal((prev) => !prev);
-  };
-  const handleOpenTagModal = () => {
-    setIsOpenTagModal((prev) => !prev);
+  const openModal = (type: ModalType) => {
+    setModalOpenType(type);
   };
 
-  const handleCategoryContent = (content: string) => {
-    setCategoryContent(content);
+  const closeModal = () => {
+    setModalOpenType(null);
   };
-  const handleTagContent = (content: string) => {
-    setTagContent(content);
+
+  const handleCategoryModal = () => {
+    addCategory(content);
+    setContent('');
+    closeModal();
+  };
+
+  const handleTagModal = (type: 'onConfirm' | 'onSubmit') => {
+    setContent(content);
     addTag(content);
-    setTagContent('');
+    setContent('');
+    if (type === 'onConfirm') {
+      closeModal();
+    }
   };
 
   return (
@@ -152,7 +172,7 @@ const CategoryTagSelector = () => {
                 >
                   <Button
                     icon={<Add width={18} height={18} fill='#397FFF' />}
-                    onClick={handleOpenCategoryModal}
+                    onClick={() => openModal('category')}
                     className='cursor-pointer text-xs font-semibold text-primary flex items-center gap-1'
                   >
                     카테고리 추가
@@ -212,7 +232,7 @@ const CategoryTagSelector = () => {
                     >
                       <Button
                         icon={<Add width={18} height={18} fill='#397FFF' />}
-                        onClick={handleOpenTagModal}
+                        onClick={() => openModal('tag')}
                         className='cursor-pointer text-xs font-semibold text-primary flex items-center gap-1'
                       >
                         태그 추가
@@ -266,87 +286,47 @@ const CategoryTagSelector = () => {
         </AnimatePresence>
       </div>
 
-      {/* 카테고리 추가 모달 */}
-      {isOpenCategoryModal && (
+      {/* 카테고리, 태그 추가 모달 */}
+      {modalOpenType && (
         <Modal
-          title='새 카테고리 추가'
+          title={modalOpenType === 'category' ? '새 카테고리 추가' : '태그 추가'}
           onCancel={() => {
-            setIsOpenCategoryModal(false);
+            closeModal();
           }}
           onConfirm={() => {
-            addCategory(categoryContent);
-            setCategoryContent('');
-            setIsOpenCategoryModal(false);
+            modalOpenType === 'category' ? handleCategoryModal() : handleTagModal('onConfirm');
           }}
-          disabled={categoryContent === '' || categoryContent === null}
+          disabled={content === '' || content === null}
         >
           <TextField
             label='카테고리'
             placeholder='추가할 카테고리를 입력해주세요.'
             maxLength={10}
             onChange={(content) => {
-              handleCategoryContent(content);
+              setContent(content);
             }}
-            isCreateType={false}
+            onSubmit={() => {
+              modalOpenType === 'category' ? undefined : handleTagModal('onSubmit');
+            }}
+            isCreateType={modalOpenType === 'category' ? false : true}
           />
           <div className='flex flex-wrap gap-2 m-0.5'>
-            {categoryList.map(
-              (category) =>
-                category.isSelected && (
+            {(modalOpenType === 'category' ? categoryList : tagList).map(
+              (item) =>
+                item.isSelected && (
                   <Chip
-                    key={category.id}
-                    id={'Selected category' + category.id}
-                    content={category.content}
-                    isSelected={category.isSelected}
-                    type={category.type}
-                    onClick={() => handleCategory(category.id)}
+                    key={item.id}
+                    id={'Selected category' + item.id}
+                    content={item.content}
+                    isSelected={item.isSelected}
+                    type={item.type}
+                    onClick={() =>
+                      modalOpenType === 'category' ? handleCategory(item.id) : handleTag(item.id)
+                    }
                     disabled={true}
-                    onDelete={category.deleteable ? () => deleteCategory(category.id) : undefined}
-                  />
-                ),
-            )}
-          </div>
-        </Modal>
-      )}
-
-      {/* 태그 추가 모달 */}
-      {isOpenTagModal && (
-        <Modal
-          title='태그 추가'
-          onCancel={() => {
-            setIsOpenTagModal(false);
-          }}
-          onConfirm={() => {
-            addTag(tagContent);
-            setIsOpenTagModal(false);
-          }}
-          disabled={tagContent === '' || tagContent === null}
-        >
-          <TextField
-            label='태그'
-            placeholder='추가할 태그를 입력해주세요.'
-            maxLength={10}
-            onChange={(content) => {
-              setTagContent(content);
-            }}
-            onSubmit={(content) => {
-              handleTagContent(content);
-            }}
-            isCreateType={true}
-          />
-          <div className='flex flex-wrap gap-2 m-0.5'>
-            {tagList.map(
-              (tag) =>
-                tag.isSelected && (
-                  <Chip
-                    key={tag.id}
-                    id={'Selected tag' + tag.id}
-                    content={tag.content}
-                    isSelected={tag.isSelected}
-                    type={tag.type}
-                    onClick={() => handleTag(tag.id)}
-                    disabled={true}
-                    onDelete={tag.deleteable ? () => deleteTag(tag.id) : undefined}
+                    onDelete={
+                      item.deleteable ? () => deleteItem(item.id, modalOpenType) : undefined
+                    }
                   />
                 ),
             )}
