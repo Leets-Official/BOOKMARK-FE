@@ -41,10 +41,12 @@ const Home = () => {
     <div className='relative min-h-screen'>
       {/* 데스크탑일 경우 사이드바 나타남 */}
       {!isMobile ? <SideBar /> : <MobileHeader />}
+
       {/* 원래 위치의 검색바, props로 className을 전달해서 높이 조절 가능 */}
       <div ref={searchBarRef}>
         <HomeSearchBar className='mt-[12.5rem]' />
       </div>
+
       {/* 스크롤 후 고정되는 검색바 */}
       <AnimatePresence mode='wait'>
         {isFixedVisible && (
@@ -57,14 +59,12 @@ const Home = () => {
           >
             <HomeSearchBar
               isFixed={true}
-              className={clsx(
-                'mx-auto rounded-[100px] bg-white',
-                isMobile ? '-translate-x-5' : '-translate-x/2',
-              )}
+              className={clsx(isMobile ? '-translate-x-5' : '-translate-x/2')}
             />
           </motion.div>
         )}
       </AnimatePresence>
+
       {/* 모바일/데스크탑 구분 */}
       {isMobile ? (
         <>

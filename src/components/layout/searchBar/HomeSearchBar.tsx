@@ -34,7 +34,7 @@ const HomeSearchBar = ({ className, isFixed = false }: IHomeSearchBarProps) => {
           className={clsx(
             'w-full rounded-[100px] text-md px-[3rem] font-medium focus:outline-none placeholder-stone',
             'border-2 border-[rgba(234,237,245,1)] shadow-[0_2px_7px_rgba(28,37,53,0.1)]',
-            isFixed ? 'py-[0.5rem]' : 'py-[1rem]',
+            isFixed ? 'py-[0.5rem] mx-auto rounded-[100px] bg-white' : 'py-[1rem]',
           )}
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') EnterFn();
