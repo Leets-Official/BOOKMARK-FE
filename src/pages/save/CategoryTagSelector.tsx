@@ -16,6 +16,7 @@ import {
   visibleCategoryAtom,
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
+  type ChipProps,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
@@ -32,6 +33,10 @@ const CategoryTagSelector = () => {
 
   const [categoryList, setCategoryList] = useAtom(categoryListAtom);
   const [tagList, setTagList] = useAtom(tagListAtom);
+
+  // 태그 추가 시 모달에 임시로 저장할 태그 리스트
+  const [tempTagList, setTempTagList] = useState<ChipProps[]>([]);
+
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
 
   const [content, setContent] = useState('');
@@ -70,23 +75,43 @@ const CategoryTagSelector = () => {
     ]);
   };
 
-  const addTag = (content: string) => {
+  const addTag = () => {
+    if (tempTagList.length === 0) return;
+    // id 중복 방지를 위한 id 초기화
+    const mergedList = [...tagList, ...tempTagList].map((item, idx) => ({
+      ...item,
+      id: idx,
+    }));
+    setTagList(mergedList);
+    setTempTagList([]);
+  };
+
+  const addTempTag = (content: string) => {
     if (content === '') return;
-    setTagList([
-      ...tagList,
-      { id: tagList.length, content, isSelected: true, type: 'tag', deleteable: true },
+    // id 중복 방지를 위한 id 초기화
+    const newTempTagList = tempTagList.map((t, index) => ({
+      ...t,
+      id: index,
+      isSelected: true,
+      deleteable: true,
+    }));
+    setTempTagList([
+      ...newTempTagList,
+      {
+        id: newTempTagList.length,
+        content,
+        type: 'tag',
+        isSelected: true,
+        deleteable: true,
+        isNew: true,
+      },
     ]);
   };
 
   // delete function
-  const deleteItem = (id: number, type: ModalType) => {
-    if (type === 'category') {
-      const newCategoryList = categoryList.filter((c) => c.id !== id);
-      setCategoryList(newCategoryList);
-    } else {
-      const newTagList = tagList.filter((t) => t.id !== id);
-      setTagList(newTagList);
-    }
+  const deleteTempTag = (id: number) => {
+    const newTempTagList = tempTagList.filter((t) => t.id !== id);
+    setTempTagList(newTempTagList);
   };
 
   // 카테고리가 선택되면 태그 보여주기
@@ -127,6 +152,13 @@ const CategoryTagSelector = () => {
 
   const openModal = (type: ModalType) => {
     setModalOpenType(type);
+    if (type === 'tag') {
+      // 새로 만들어진 태그를 다시 임시 태그 리스트에 추가
+      const newTempTagList = tagList.filter((t) => t.isNew);
+      setTempTagList(newTempTagList);
+      const newTagList = tagList.filter((t) => !t.isNew);
+      setTagList(newTagList);
+    }
   };
 
   const closeModal = () => {
@@ -140,13 +172,15 @@ const CategoryTagSelector = () => {
     closeModal();
   };
 
-  const handleTagModal = (type: 'onConfirm' | 'onSubmit') => {
+  const tagModalSubmit = () => {
     setContent(content);
-    addTag(content);
+    addTempTag(content);
     setContent('');
-    if (type === 'onConfirm') {
-      closeModal();
-    }
+  };
+
+  const tagModalConfirm = () => {
+    addTag();
+    closeModal();
   };
 
   return (
@@ -301,9 +335,9 @@ const CategoryTagSelector = () => {
             closeModal();
           }}
           onConfirm={() => {
-            modalOpenType === 'category' ? handleCategoryModal() : handleTagModal('onConfirm');
+            modalOpenType === 'category' ? handleCategoryModal() : tagModalConfirm();
           }}
-          disabled={disabledSubmitButton}
+          disabled={modalOpenType === 'category' ? disabledSubmitButton : tempTagList.length === 0}
         >
           <TextField
             label='카테고리'
@@ -313,28 +347,27 @@ const CategoryTagSelector = () => {
               setContent(content);
             }}
             onSubmit={() => {
-              modalOpenType === 'category' ? undefined : handleTagModal('onSubmit');
+              modalOpenType === 'category' ? undefined : tagModalSubmit();
             }}
             setDisabled={setDisabledSubmitButton}
             isCreateType={modalOpenType === 'category' ? false : true}
           />
           <div className='flex flex-wrap gap-2 m-0.5 max-h-[200px] overflow-y-auto hide-scrollbar'>
             {modalOpenType === 'tag' &&
-              tagList.map(
-                (item) =>
-                  item.isSelected && (
-                    <Chip
-                      key={item.id}
-                      id={'Selected category' + item.id}
-                      content={item.content}
-                      isSelected={item.isSelected}
-                      type={item.type}
-                      onClick={() => handleTag(item.id)}
-                      disabled={true}
-                      onDelete={item.deleteable ? () => deleteItem(item.id, 'tag') : undefined}
-                    />
-                  ),
-              )}
+              tempTagList
+                .filter((item) => item.isSelected)
+                .map((item) => (
+                  <Chip
+                    key={item.id}
+                    id={'Selected temp tag' + item.id}
+                    content={item.content}
+                    isSelected={item.isSelected}
+                    type={item.type}
+                    onClick={() => handleTag(item.id)}
+                    disabled={true}
+                    onDelete={item.deleteable ? () => deleteTempTag(item.id) : undefined}
+                  />
+                ))}
           </div>
         </Modal>
       )}

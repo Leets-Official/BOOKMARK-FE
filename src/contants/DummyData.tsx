@@ -1,11 +1,5 @@
 // 더미 데이터(카테고리, 태그)
-interface ChipProps {
-  id: number;
-  content: string;
-  isSelected: boolean;
-  type: 'category' | 'tag' | 'suggestion';
-  deleteable?: boolean;
-}
+import type { ChipProps } from '@/atoms';
 
 const dummyCategoryList: ChipProps[] = [
   { id: 0, content: '카테고리', isSelected: false, type: 'category' },
@@ -22,11 +16,11 @@ const dummyCategoryList: ChipProps[] = [
 ];
 
 const dummyTagList: ChipProps[] = [
-  { id: 0, content: '태그', isSelected: false, type: 'tag' },
-  { id: 1, content: '태그', isSelected: false, type: 'tag' },
-  { id: 2, content: '태그', isSelected: false, type: 'tag' },
-  { id: 3, content: '태그', isSelected: false, type: 'tag' },
-  { id: 4, content: '태그', isSelected: false, type: 'tag' },
+  { id: 0, content: '태그', isSelected: false, type: 'tag', isNew: false },
+  { id: 1, content: '태그', isSelected: false, type: 'tag', isNew: false },
+  { id: 2, content: '태그', isSelected: false, type: 'tag', isNew: false },
+  { id: 3, content: '태그', isSelected: false, type: 'tag', isNew: false },
+  { id: 4, content: '태그', isSelected: false, type: 'tag', isNew: false },
 ];
 
 // 더미 데이터(알림 설정 시간)

@@ -6,12 +6,13 @@ import {
   dummyTimeOptions,
 } from './contants/DummyData';
 
-interface ChipProps {
+export interface ChipProps {
   id: number;
   content: string;
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
   deleteable?: boolean;
+  isNew?: boolean;
 }
 
 // Save Page Atoms
