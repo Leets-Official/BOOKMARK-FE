@@ -1,5 +1,6 @@
 import { memoAtom, visibleMemoAndAlarmAtom } from '@/atoms';
 import TextField from '@/components/ui/TextField';
+import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtomValue, useSetAtom } from 'jotai';
 
@@ -16,7 +17,10 @@ const Memo = () => {
       <AnimatePresence mode='wait'>
         <motion.p
           key='memo-with-file'
-          className={visible ? 'text-xs' : 'text-sm'}
+          className={clsx(
+            { 'text-xs': visible, 'text-sm': !visible },
+            'font-semibold text-grayText',
+          )}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

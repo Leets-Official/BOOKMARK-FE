@@ -157,16 +157,17 @@ const CategoryTagSelector = () => {
             {visibleCategory ? (
               <>
                 {/* 카테고리를 선택할 수 있을 떄 보일 컴포넌트 */}
-                <motion.p
+                <motion.div
                   key='category-with-file'
-                  className='text-sm'
+                  className='text-sm font-semibold flex flex-row items-center'
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                 >
-                  카테고리(파일)
-                </motion.p>
+                  <p className='text-grayText'>카테고리</p>
+                  <p className='text-redText'>*</p>
+                </motion.div>
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -186,7 +187,7 @@ const CategoryTagSelector = () => {
               // 카테고리를 선택할 수 없을 떄 보일 컴포넌트
               <motion.p
                 key='category-only'
-                className='text-sm'
+                className='text-sm font-semibold'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -225,7 +226,10 @@ const CategoryTagSelector = () => {
               {/* 태그 영역 */}
               <div className='flex flex-col gap-2 bg-grayBg rounded-[12px] p-2 pr-2 pt-1 mt-3 origin-top'>
                 <div className='flex flex-row items-center justify-between mb-1 mt-2 pl-1'>
-                  <p className='text-sm'>태그</p>
+                  <div className='flex flex-row items-center text-sm font-semibold '>
+                    <p className='text-grayText'>태그</p>
+                    <p className='text-redText'>*</p>
+                  </div>
                   {visibleTag && (
                     <motion.div
                       initial={{ opacity: 0 }}
@@ -253,7 +257,7 @@ const CategoryTagSelector = () => {
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                     className='overflow-hidden'
                   >
-                    <div className='flex flex-wrap gap-2 m-1 max-h-[200px] overflow-y-auto'>
+                    <div className='flex flex-wrap gap-2 m-1 max-h-[200px] overflow-y-auto hide-scrollbar p-1'>
                       {tagList.map((tag) => (
                         <Chip
                           key={tag.id}
@@ -266,8 +270,8 @@ const CategoryTagSelector = () => {
                       ))}
                     </div>
                     <div className='flex flex-row items-center mb-1 mt-2 pl-1 gap-1'>
-                      <Star width={18} height={18} fill='#007AFF' />
-                      <p className='text-sm text-primary'>제안</p>
+                      <Star width={18} height={18} stroke='#007AFF' />
+                      <p className='text-sm text-primary'>추천</p>
                     </div>
                     <div className='flex flex-wrap gap-2 m-1'>
                       {suggestionList.map((suggestion) => (
@@ -314,7 +318,7 @@ const CategoryTagSelector = () => {
             setDisabled={setDisabledSubmitButton}
             isCreateType={modalOpenType === 'category' ? false : true}
           />
-          <div className='flex flex-wrap gap-2 m-0.5 max-h-[200px] overflow-y-auto'>
+          <div className='flex flex-wrap gap-2 m-0.5 max-h-[200px] overflow-y-auto hide-scrollbar'>
             {modalOpenType === 'tag' &&
               tagList.map(
                 (item) =>
