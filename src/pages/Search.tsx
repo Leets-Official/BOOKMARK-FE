@@ -3,6 +3,7 @@ import FilterSearchBar from '@/components/layout/searchBar/FilterSearchBar';
 import { FilterIcon, SearchIcon } from '@/assets';
 import Chip from '@/components/common/Chip';
 import Button from '@/components/common/Button';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const categories = [
   '개발',
@@ -56,7 +57,7 @@ const Search = () => {
         {/* 카테고리 + 태그 */}
         <div className='bg-white p-4 rounded-lg shadow-sm'>
           {/* 카테고리 */}
-          <div className='mb-2 text-sm font-semibold text-gray-800'>카테고리(파일)</div>
+          <div className='mb-2 text-sm font-semibold text-gray-800'>카테고리</div>
           <div className='flex flex-wrap gap-2 mb-6'>
             {categories.map((category, idx) => (
               <Chip
@@ -74,38 +75,64 @@ const Search = () => {
           {/* 태그 */}
           <div className='bg-gray-100 px-4 py-3 rounded-lg'>
             <div className='text-sm font-semibold text-gray-800 mb-2'>태그</div>
-            <div className='flex flex-wrap gap-2'>
-              {tags.map((tag, idx) => (
-                <Chip
-                  key={`tag-${idx}`}
-                  id={`tag-${idx}`}
-                  content={tag}
-                  type='tag'
-                  isSelected={selectedTags.includes(tag)}
-                  onClick={() => toggleSelection(tag, setSelectedTags)}
-                  className='h-7 px-2 py-0.5 text-sm max-w-[80px] truncate w-1/4'
-                />
-              ))}
-            </div>
+            <AnimatePresence>
+              {selectedCategories.length > 0 && (
+                <motion.div
+                  key='tags'
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className='overflow-hidden'
+                >
+                  <div className='flex flex-wrap gap-2'>
+                    {tags.map((tag, idx) => (
+                      <Chip
+                        key={`tag-${idx}`}
+                        id={`tag-${idx}`}
+                        content={tag}
+                        type='tag'
+                        isSelected={selectedTags.includes(tag)}
+                        onClick={() => toggleSelection(tag, setSelectedTags)}
+                        className='h-7 px-2 py-0.5 text-sm max-w-[80px] truncate w-1/4'
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
         {/* 플랫폼 */}
         <div className='mt-4 bg-white rounded-lg shadow-sm px-4 py-4'>
           <div className='text-sm font-semibold mb-2'>플랫폼</div>
-          <div className='flex flex-wrap gap-2'>
-            {platforms.map((platform, idx) => (
-              <Chip
-                key={`platform-${idx}`}
-                id={`platform-${idx}`}
-                content={platform}
-                type='platform'
-                isSelected={selectedPlatforms.includes(platform)}
-                onClick={() => toggleSelection(platform, setSelectedPlatforms)}
-                className='h-7 px-2 py-0.5 text-sm max-w-[80px] truncate w-1/4'
-              />
-            ))}
-          </div>
+          <AnimatePresence>
+            {selectedTags.length > 0 && (
+              <motion.div
+                key='platforms'
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className='overflow-hidden'
+              >
+                <div className='flex flex-wrap gap-2'>
+                  {platforms.map((platform, idx) => (
+                    <Chip
+                      key={`platform-${idx}`}
+                      id={`platform-${idx}`}
+                      content={platform}
+                      type='platform'
+                      isSelected={selectedPlatforms.includes(platform)}
+                      onClick={() => toggleSelection(platform, setSelectedPlatforms)}
+                      className='h-7 px-2 py-0.5 text-sm max-w-[80px] truncate w-1/4'
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* 하단 버튼 */}
