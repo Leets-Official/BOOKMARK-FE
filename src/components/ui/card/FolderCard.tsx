@@ -45,7 +45,7 @@ const FolderCard = ({ title }: ICardProps) => {
         </div>
       </div>
       <div className='relative mt-2 pr-4'>
-        <p className={titleText({ mobile: true })}>{title}</p>
+        <p className={titleText({ mobile: isMobile })}>{title}</p>
         <div className='absolute top-0 right-0 cursor-pointer hover:text-gray-500 transition-colors'>
           <DetailIcon width={isMobile ? 20 : 28} height={isMobile ? 20 : 28} />
         </div>
