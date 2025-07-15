@@ -24,7 +24,7 @@ const ButtonContainer = tv({
 const Modal = ({ title, onConfirm, onCancel, children, disabled = false }: ModalProps) => {
   return (
     <div
-      className='fixed inset-0 bg-black/50 flex justify-center items-center z-100'
+      className='fixed inset-0 bg-black/50 flex justify-center items-center z-100 pb-[40vh]'
       onClick={onCancel}
     >
       <div
