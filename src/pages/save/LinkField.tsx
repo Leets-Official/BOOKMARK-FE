@@ -16,7 +16,7 @@ const LinkField = ({ visible, link, handleLink }: LinkProps) => {
         label='링크입력'
         placeholder='제목을 입력해주세요'
         onChange={handleLink}
-        type='reset'
+        isCreateType={false}
       />
     </div>
   );

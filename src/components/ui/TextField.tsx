@@ -12,12 +12,17 @@ interface TextFieldProps {
   //eslint-disable-next-line
   onSubmit?: (v: string) => void;
   // create : 생성 버튼, reset : 초기화 버튼
-  type: 'create' | 'reset';
+  isCreateType: boolean;
 }
 
-const TextField = ({ label, placeholder, maxLength, onChange, onSubmit, type }: TextFieldProps) => {
-  const isCreateType = type === 'create';
-
+const TextField = ({
+  label,
+  placeholder,
+  maxLength,
+  onChange,
+  onSubmit,
+  isCreateType,
+}: TextFieldProps) => {
   const [content, setContent] = useState('');
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -73,7 +78,7 @@ const TextField = ({ label, placeholder, maxLength, onChange, onSubmit, type }: 
         {content && (
           <Button
             className='absolute top-3 right-3 bg-transparent hover:cursor-pointer h-6 w-6 text-xs text-primary font-semibold'
-            icon={type === 'reset' ? <Delete width={24} height={24} fill='#545966' /> : null}
+            icon={!isCreateType ? <Delete width={24} height={24} fill='#545966' /> : null}
             onClick={isCreateType ? createContent : resetContent}
           >
             {isCreateType ? '등록' : undefined}

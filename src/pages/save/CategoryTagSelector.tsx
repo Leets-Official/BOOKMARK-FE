@@ -230,7 +230,7 @@ const CategoryTagSelector = ({
             onChange={(content) => {
               handleCategoryContent(content);
             }}
-            type='reset'
+            isCreateType={false}
           />
           <div className='flex flex-wrap gap-2 m-0.5'>
             {categoryList.map(
@@ -275,7 +275,7 @@ const CategoryTagSelector = ({
             onSubmit={(content) => {
               handleTagContent(content);
             }}
-            type='create'
+            isCreateType={true}
           />
           <div className='flex flex-wrap gap-2 m-0.5'>
             {tagList.map(
