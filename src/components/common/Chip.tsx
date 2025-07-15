@@ -1,4 +1,5 @@
 import { tv } from 'tailwind-variants';
+import { motion } from 'framer-motion';
 import Button from './Button';
 import { DeleteIcon } from '@/assets';
 import clsx from 'clsx';
@@ -7,7 +8,7 @@ interface ChipProps {
   content: string;
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
-  onClick?: () => void;
+  onClick: () => void;
   onDelete?: () => void;
   disabled?: boolean;
 }
@@ -54,14 +55,21 @@ const chipStyle = tv({
 });
 
 const Chip = ({ content, isSelected, type, onClick, onDelete, disabled = false }: ChipProps) => {
+  const hoverAnimation = disabled ? undefined : { scale: 1.05 };
+  const tapAnimation = disabled ? undefined : { scale: 0.95 };
   const handleClick = disabled ? undefined : onClick;
+
   return (
-    <div
+    <motion.div
       className={clsx(
         chipStyle({ isSelected, type }),
-        !disabled &&
-          'cursor-pointer hover:scale-[1.05] active:scale-95 transition-transform duration-200 relative',
+        disabled ? '' : ' cursor-pointer',
+        ' group relative',
       )}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.2 }}
+      whileHover={hoverAnimation}
+      whileTap={tapAnimation}
       onClick={handleClick}
     >
       <p>{type === 'category' ? content : '#' + content}</p>
@@ -74,7 +82,7 @@ const Chip = ({ content, isSelected, type, onClick, onDelete, disabled = false }
           icon={<DeleteIcon height={16} width={16} fill='#000000' />}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 

@@ -58,16 +58,16 @@ const Card = ({ title, platform, image, isLoading, editable }: CardProps) => {
   const isValidImage = finalImage && !imageError; // finalImage가 유효한지 판단
 
   return (
-    <div className='flex flex-row items-center w-100 p-5'>
+    <div className='flex flex-row items-center w-full'>
       {/* 로딩 상태 */}
       {isLoading ? (
-        <div className='bg-gray-200 h-25 w-25 mr-4 flex items-center rounded-2xl justify-center'>
+        <div className='bg-gray-200 h-25 w-25 mr-2 flex items-center rounded-2xl justify-center'>
           <div className='spinner border-4 border-gray-400 border-t-gray-200 rounded-full w-10 h-10 animate-spin' />
         </div>
       ) : isValidImage ? (
         <div
           className={clsx(
-            'rounded-2xl object-cover h-25 w-25 mr-4 overflow-hidden',
+            'rounded-2xl object-cover h-25 w-25 mr-2 overflow-hidden',
             editable && 'cursor-pointer hover:brightness-90',
           )}
           onClick={editable ? handleImageUpload : undefined}
@@ -82,7 +82,7 @@ const Card = ({ title, platform, image, isLoading, editable }: CardProps) => {
         <Button
           onClick={handleImageUpload}
           className={clsx(
-            'h-25 w-25 mr-4 flex items-center justify-center bg-gray-200 rounded-2xl',
+            'h-25 w-25 mr-2 flex items-center justify-center bg-gray-200 rounded-2xl',
             'cursor-pointer hover:brightness-90 text-gray-600 text-3xl font-bold',
           )}
         >
@@ -96,9 +96,9 @@ const Card = ({ title, platform, image, isLoading, editable }: CardProps) => {
         className='hidden'
         onChange={handleFileChange}
       />
-      <div className='flex flex-col gap-2'>
-        <p className='text-black font-semibold'>{title}</p>
-        <p className='text-[#545966]'>{platform}</p>
+      <div className='flex flex-col'>
+        <p className='text-sm text-black font-semibold'>{title}</p>
+        <p className='text-xs text-[#545966]'>{platform}</p>
       </div>
     </div>
   );

@@ -55,11 +55,17 @@ const FolderCard = ({ title }: ICardProps) => {
       <p className={titleText({ mobile: true })}>{title}</p>
       <div className='relative mt-2 pt-2'>
         <div className='absolute top-0 right-0 ml-50 cursor-pointer text-black hover:text-gray-500 transition-colors'>
-          <DetailIcon className={clsx(isMobile && 'w-5 h-5')} />
+          <DetailIcon width={24} height={24} className={clsx(isMobile && 'w-5 h-5')} />
         </div>
         <div className='flex flex-wrap flex-row gap-2 mr-8 p-1'>
           {chupList.map((chip) => (
-            <Chip key={chip.id} content={chip.title} isSelected={true} type='suggestion' />
+            <Chip
+              key={chip.id}
+              content={chip.title}
+              isSelected={true}
+              type='suggestion'
+              onClick={() => { }}
+            />
           ))}
         </div>
       </div>

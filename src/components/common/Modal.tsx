@@ -1,53 +1,49 @@
+import { DeleteIcon } from '@/assets';
+import Button from './Button';
+import type React from 'react';
 import { tv } from 'tailwind-variants';
 
 interface ModalProps {
-  text: string;
-  subText: string;
-  cancelButtonText: string;
-  confirmButtonText: string;
-  onCancel: () => void;
+  title: string;
   onConfirm: () => void;
+  onCancel: () => void;
+  children: React.ReactNode;
+  disabled?: boolean;
 }
 
-const modalButton = tv({
-  base: 'text-[14px] flex justify-center items-center w-[141px] h-[38px] rounded-[2px] cursor-pointer',
+const ButtonContainer = tv({
+  base: 'w-full h-[48px] font-semibold text-sm',
   variants: {
-    variant: {
-      cancel: 'bg-white border-1 border-grayBorder',
-      confirm: 'bg-blue text-white',
+    disabled: {
+      true: 'bg-lightBlueGray text-veryLightGray',
+      false: 'bg-primary text-white cursor-pointer',
     },
   },
 });
 
-const Modal = ({
-  text,
-  subText,
-  cancelButtonText,
-  confirmButtonText,
-  onCancel,
-  onConfirm,
-}: ModalProps) => {
+const Modal = ({ title, onConfirm, onCancel, children, disabled = false }: ModalProps) => {
   return (
     <div
-      className='fixed inset-0 backdrop-blur-sm flex justify-center items-center z-100'
+      className='fixed inset-0 bg-black/50 flex justify-center items-center z-100 pb-[40vh]'
       onClick={onCancel}
     >
       <div
-        className='bg-white shadow-xl w-[326px] h-[151px] flex flex-col gap-[24px] pl-[16px] pt-[24px] pb-[16px] pr-[16px] border-2 border-white rounded-[4px]'
+        className='bg-white shadow-xl w-[335px] flex flex-col rounded-[12px] overflow-hidden'
         onClick={(e) => e.stopPropagation()}
       >
-        <div className='text-2xl flex flex-col gap-[8px]'>
-          <div className='text-[14px]'>{text}</div>
-          <div className='text-[12px] text-grayText'>{subText}</div>
+        <div className='w-full h-[48px] flex items-center justify-center relative'>
+          <div className='text-sm font-medium'>{title}</div>
+          <Button
+            onClick={onCancel}
+            className='absolute right-3 top-1/2 -translate-y-1/2'
+            icon={<DeleteIcon height={24} width={24} fill='#090e1d' />}
+          ></Button>
         </div>
-        <div className='text-sm flex justify-center items-center gap-[12px]'>
-          <div className={modalButton({ variant: 'cancel' })} onClick={onCancel}>
-            {cancelButtonText}
-          </div>
-          <div className={modalButton({ variant: 'confirm' })} onClick={onConfirm}>
-            {confirmButtonText}
-          </div>
-        </div>
+        {/* 자식 컴포넌트 넣는 곳 */}
+        <div className='flex flex-col pr-4 pl-4 pb-4'>{children}</div>
+        <Button onClick={onConfirm} className={ButtonContainer({ disabled })} disabled={disabled}>
+          추가하기
+        </Button>
       </div>
     </div>
   );

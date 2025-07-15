@@ -27,20 +27,20 @@ const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => 
           <p className={clsx('font-bold md:mr-7 mr-3', TextSize({ mobile: isMobile }))}>Folder</p>
           {!isMobile && (
             <div onClick={onPrev} className='hover:brightness-0'>
-              <LeftIcon />
+              <LeftIcon width={24} height={24} />
             </div>
           )}
           <p className={TextSize({ mobile: isMobile })}>{currentNum}</p>
           {!isMobile && (
             <div onClick={onNext} className='hover:brightness-0'>
-              <RightIcon />
+              <RightIcon width={24} height={24} />
             </div>
           )}
         </div>
         <div className='flex flex-row gap-1.5 items-center'>
           <p className={TextSize({ mobile: isMobile })}>폴더 추가</p>
           <button className='rounded-2xl cursor-pointer hover:bg-gray-300 transition-colors'>
-            <AddIcon className={isMobile ? 'w-6 h-6' : ''} />
+            <AddIcon width={24} height={24} fill='#090E1D' className={isMobile ? 'w-6 h-6' : ''} />
           </button>
         </div>
       </div>

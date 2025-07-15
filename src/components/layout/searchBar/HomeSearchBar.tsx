@@ -32,13 +32,13 @@ const HomeSearchBar = () => {
           placeholder='검색'
         />
         <div className='absolute left-4 top-1/2 -translate-y-1/2'>
-          <SearchIcon />
+          <SearchIcon width={24} height={24} />
         </div>
         <div
           className='absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer hover:brightness-90 transition'
           onClick={() => navigate('/search')} // 아이콘 누르면 /search로 이동
         >
-          <FilterIcon />
+          <FilterIcon width={40} height={40} />
         </div>
       </div>
     </div>

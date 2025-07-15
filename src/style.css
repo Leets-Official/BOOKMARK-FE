@@ -1,15 +1,18 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-white: #ffffff;
+  --color-white: #FFFFFF;
+  --color-blue: #00A1FF;
+  --color-redText: #FF2C3D;
   --color-grayText: #909090;
-  --color-lightGray: #f5f7f7;
-  --color-lightBlueGray: #d8dce6;
-  --color-veryLightGray: #eeeeee;
-  --color-darkGray: #090e1d;
-  --color-grayBg: #f2f3f7;
-  --color-primary: #397fff;
-  --color-lightPrimary: #eaf8ff;
-  --color-error: #ff2c3d;
-  --color-blue: #397fff;
+  --color-grayBorder: #F5F5F5;
+  --color-lightGray: #F5F7F7;
+  --color-lightBlueGray: #D8DCE6;
+  --color-veryLightGray: #EEEEEE;
+  --color-darkGray: #090E1D;
+  --color-grayBg: #F2F3F7;
+  --color-primary: #397FFF;
+  --color-lightPrimary: #EAF8FF;
+  --color-error: #FF2C3D;
+  --color-blue: #397FFF;
 }

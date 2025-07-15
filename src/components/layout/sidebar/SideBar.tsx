@@ -29,10 +29,10 @@ const SideBar = () => {
           +
         </Button>
         <div className={clsx(iconButton, 'bg-inherit')}>
-          <HomeIcon />
+          <HomeIcon width={24} height={24} />
         </div>
         <div className={clsx(iconButton, 'bg-inherit')}>
-          <FolderIcon />
+          <FolderIcon width={24} height={24} />
         </div>
       </div>
     </div>
