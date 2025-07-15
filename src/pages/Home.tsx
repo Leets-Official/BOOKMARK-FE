@@ -4,8 +4,10 @@ import CardList from '@/components/ui/CardList';
 import MobileCardList from '@/components/ui/MobileCardList';
 import { isMobile } from 'react-device-detect';
 import MobileHeader from '@/components/layout/header/MobileHeader';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   const cardList = Array.from({ length: 11 }, (_, i) => ({
     id: i + 1,
     title: `제목 ${i + 1}`,
@@ -18,6 +20,7 @@ const Home = () => {
       <HomeSearchBar />
       {/* 모바일/데스크탑 구분 */}
       {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />}
+      <Outlet />
     </div>
   );
 };

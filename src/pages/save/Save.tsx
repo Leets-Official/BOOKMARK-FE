@@ -55,6 +55,8 @@ const Save = () => {
     navigate(-1);
   };
 
+  console.log('hi');
+
   return (
     // PC : 모달형식, 모바일 : 전체화면
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onClick : undefined}>
