@@ -37,12 +37,12 @@ const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => 
             </div>
           )}
         </div>
-        <div className='flex flex-row gap-1.5 items-center'>
+        <div className='flex flex-row items-center'>
           <p className={TextSize({ mobile: isMobile })}>+ 카테고리 추가</p>
           <button className='rounded-2xl cursor-pointer hover:bg-gray-300 transition-colors' />
         </div>
       </div>
-      <hr className='border-t border-gray-300 my-3' />
+      <hr className='border-t border-gray-300 my-4' />
     </div>
   );
 };

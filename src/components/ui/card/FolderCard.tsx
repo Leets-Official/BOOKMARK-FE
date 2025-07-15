@@ -19,7 +19,6 @@ const titleText = tv({
 });
 
 const FolderCard = ({ title }: ICardProps) => {
-  const isMobile = 'true';
   return (
     // 모바일은 카드의 너비를 고정, PC는 반응형에 따라 비율 조정
     <div className={isMobile ? 'min-w-42 px-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 p-3'}>
