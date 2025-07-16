@@ -18,7 +18,7 @@ const Home = () => {
   }));
 
   const searchBarRef = useRef<HTMLDivElement>(null);
-  const [isFixedVisible, setShowFixedVisible] = useState(false);
+  const [isFixedBar, setISFixedBar] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,10 +27,10 @@ const Home = () => {
       //검색창 DOM 요소의 위치 정보를 가져옴 (브라우저 뷰포트 기준)
       // -> getBoundingClientRect()는 브라우저에서 뷰포트(화면) 내 위치를 알려주는 메서드
       const barPosition = searchBarRef.current.getBoundingClientRect();
-      const isSearchBarVisible = barPosition.bottom > 0; // 검색창의 하단이 화면 안에 보이면 true
+      const barVisible = barPosition.bottom > 0; // 검색창의 하단이 화면 안에 보이면 true
 
       // isSearchBarVisibledl false 즉, 화면에서 검색창이 완전히 사라지면 fixed 검색창 보여줌
-      setShowFixedVisible(!isSearchBarVisible);
+      setISFixedBar(!barVisible);
     };
 
     window.addEventListener('scroll', handleScroll); // 사용자가 스크롤할 때마다 검색창 위치를 검사
@@ -49,7 +49,7 @@ const Home = () => {
 
       {/* 스크롤 후 고정되는 검색바 */}
       <AnimatePresence mode='wait'>
-        {isFixedVisible && (
+        {isFixedBar && (
           <motion.div
             initial={{ y: -80, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
