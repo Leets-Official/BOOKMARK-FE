@@ -5,6 +5,7 @@ import Chip from '@/components/common/Chip';
 import { useEffect, useState } from 'react';
 import Modal from '@/components/common/Modal';
 import TextField from '@/components/ui/TextField';
+import type { ChipProps } from '@/types';
 import {
   categoryListAtom,
   isSaveButtonDisabledAtom,
@@ -16,7 +17,6 @@ import {
   visibleCategoryAtom,
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
-  type ChipProps,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 

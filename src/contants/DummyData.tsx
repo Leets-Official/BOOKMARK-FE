@@ -1,5 +1,5 @@
 // 더미 데이터(카테고리, 태그)
-import type { ChipProps } from '@/atoms';
+import type { ChipProps, CompactCardProps } from '@/types';
 
 const dummyCategoryList: ChipProps[] = [
   { id: 0, content: '카테고리', isSelected: false, type: 'category' },
@@ -21,6 +21,37 @@ const dummyTagList: ChipProps[] = [
   { id: 2, content: '태그', isSelected: false, type: 'tag', isNew: false },
   { id: 3, content: '태그', isSelected: false, type: 'tag', isNew: false },
   { id: 4, content: '태그', isSelected: false, type: 'tag', isNew: false },
+];
+
+const dummyCompactCardList: CompactCardProps[] = [
+  {
+    title: 'SEMIHARU CITY PO',
+    src: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
+    memo: '작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트.',
+    category: '카테고리',
+    tags: ['태그', '태그', '태그'],
+  },
+  {
+    title: 'SEMIHARU CITY PO',
+    src: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
+    memo: '작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트.',
+    category: '카테고리',
+    tags: ['태그', '태그', '태그'],
+  },
+  {
+    title: 'SEMIHARU CITY PO',
+    src: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
+    memo: '작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트.',
+    category: '카테고리',
+    tags: ['태그', '태그', '태그'],
+  },
+  {
+    title: 'SEMIHARU CITY PO',
+    src: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
+    memo: '작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트.',
+    category: '카테고리',
+    tags: ['태그', '태그', '태그'],
+  },
 ];
 
 // 더미 데이터(알림 설정 시간)
@@ -78,4 +109,10 @@ const dummyTimeOptions = [
   },
 ];
 
-export { dummyCategoryList, dummyTagList, dummyDateOptions, dummyTimeOptions };
+export {
+  dummyCategoryList,
+  dummyTagList,
+  dummyCompactCardList,
+  dummyDateOptions,
+  dummyTimeOptions,
+};
