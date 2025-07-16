@@ -5,8 +5,8 @@ import type { CompactCardProps } from '@/types';
 const SearchResult = () => {
   return (
     <div className='flex flex-col gap-4 w-full p-4'>
-      {dummyCompactCardList.map((card: CompactCardProps) => (
-        <CompactCard key={card.title} {...card} />
+      {dummyCompactCardList.map((card: CompactCardProps, index: number) => (
+        <CompactCard key={index} {...card} />
       ))}
     </div>
   );
