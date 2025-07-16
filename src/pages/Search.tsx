@@ -63,8 +63,8 @@ const Search = () => {
           <div className='flex flex-wrap gap-2 mb-6'>
             {categories.map((category, idx) => (
               <Chip
-                key={`category-${idx}`}
-                id={`category-${idx}`}
+                key={`category-${category}-${idx}`}
+                id={`category-${category}-${idx}`}
                 content={category}
                 type='category'
                 isSelected={selectedCategories.includes(category)}
@@ -75,7 +75,7 @@ const Search = () => {
           </div>
 
           {/* 태그 */}
-          <div className='bg-gray-100 px-4 py-3 rounded-lg'>
+          <div className='bg-gray-100 px-4 py-4 rounded-lg overflow-visible'>
             <div className='text-sm font-semibold text-gray-800 mb-2'>태그</div>
             <AnimatePresence>
               {selectedCategories.length > 0 && (
@@ -85,18 +85,18 @@ const Search = () => {
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className='overflow-hidden'
+                  className='overflow-visible'
                 >
                   <div className='flex flex-wrap gap-2'>
                     {tags.map((tag, idx) => (
                       <Chip
-                        key={`tag-${idx}`}
-                        id={`tag-${idx}`}
+                        key={`tag-${tag}-${idx}`}
+                        id={`tag-${tag}-${idx}`}
                         content={tag}
                         type='tag'
                         isSelected={selectedTags.includes(tag)}
                         onClick={() => toggleSelection(tag, setSelectedTags)}
-                        className='h-7 px-2 py-0.5 text-sm max-w-[80px] truncate w-1/4'
+                        className='h-7 px-2 py-0.5 text-sm max-w-[80px] truncate w-1/4 z-10'
                       />
                     ))}
                   </div>
@@ -107,7 +107,7 @@ const Search = () => {
         </div>
 
         {/* 플랫폼 */}
-        <div className='mt-4 bg-white rounded-lg shadow-sm px-4 py-4'>
+        <div className='mt-4 bg-white rounded-lg shadow-sm px-4 py-4 overflow-visible'>
           <div className='text-sm font-semibold mb-2'>플랫폼</div>
           <AnimatePresence>
             {selectedCategories.length > 0 && (
@@ -117,7 +117,7 @@ const Search = () => {
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className='overflow-hidden'
+                className='overflow-visible'
               >
                 <div className='flex flex-wrap gap-2'>
                   {platforms.map((platform, idx) => (
@@ -128,7 +128,7 @@ const Search = () => {
                       type='platform'
                       isSelected={selectedPlatforms.includes(platform)}
                       onClick={() => toggleSelection(platform, setSelectedPlatforms)}
-                      className='h-7 px-2 py-0.5 text-sm max-w-[80px] truncate w-1/4'
+                      className='h-7 px-2 py-0.5 text-sm max-w-[80px] truncate w-1/4 z-10'
                     />
                   ))}
                 </div>

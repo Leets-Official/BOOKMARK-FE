@@ -37,9 +37,9 @@ const AnimatedHeight: React.FC<AnimatedHeightProps> = ({ show, children }) => {
 };
 
 const FilterSearchBar: React.FC = () => {
-  const [value, setValue] = useState('');
+  const [searchContents, setSearchContents] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const [history, setHistory] = useState<string[]>(['최근기록 1', '최근기록 2']);
+  const [history, setHistory] = useState<string[]>([]);
 
   // Jotai 전역 상태
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
@@ -47,18 +47,20 @@ const FilterSearchBar: React.FC = () => {
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
 
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
-    setValue(e.currentTarget.value);
+    setSearchContents(e.currentTarget.value);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && value.trim()) {
-      setHistory((prev) => [value, ...prev.filter((v) => v !== value)]);
-      console.log('검색어:', value);
-      setValue('');
+    if (e.key === 'Enter' && searchContents.trim()) {
+      setHistory((prev) =>
+        [searchContents, ...prev.filter((v) => v !== searchContents)].slice(0, 3),
+      );
+      console.log('검색어:', searchContents);
+      setSearchContents('');
     }
   };
 
-  const clearInput = () => setValue('');
+  const clearInput = () => setSearchContents('');
 
   const handleDeleteHistory = (target: string) => {
     setHistory((prev) => prev.filter((item) => item !== target));
@@ -112,7 +114,7 @@ const FilterSearchBar: React.FC = () => {
           <BackIcon />
         </div>
         <Input
-          value={value}
+          value={searchContents}
           onChange={onChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
@@ -128,9 +130,9 @@ const FilterSearchBar: React.FC = () => {
       {/* 최근 검색 기록 */}
       {isFocused && history.length > 0 && (
         <div className='absolute top-full left-0 w-full bg-white px-4 shadow-md z-0'>
-          {history.map((record, idx) => (
+          {history.map((record, i) => (
             <div
-              key={idx}
+              key={i}
               className='flex items-center justify-between gap-2 my-4 text-sm text-black'
             >
               <div className='flex items-center gap-2'>
