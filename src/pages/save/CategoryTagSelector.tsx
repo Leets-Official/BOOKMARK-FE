@@ -221,13 +221,14 @@ const CategoryTagSelector = () => {
               // 카테고리를 선택할 수 없을 떄 보일 컴포넌트
               <motion.p
                 key='category-only'
-                className='text-sm font-semibold'
+                className='text-sm font-semibold text-grayText'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ ease: 'easeInOut' }}
               >
                 카테고리, 태그
+                <span className='text-redText'>*</span>
               </motion.p>
             )}
           </AnimatePresence>
