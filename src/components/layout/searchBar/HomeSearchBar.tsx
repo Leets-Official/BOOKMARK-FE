@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import clsx from 'clsx';
 import { FilteringIcon, FixedFilteringIcon, SearchIcon } from '@/assets';
 import Input from '@/components/common/Input';
-import clsx from 'clsx';
+import { searchContentsAtom } from '@/atoms';
+import { useAtom } from 'jotai';
 
 interface IHomeSearchBarProps {
   className?: string;
@@ -10,26 +12,23 @@ interface IHomeSearchBarProps {
 }
 
 const HomeSearchBar = ({ className, isFixed = false }: IHomeSearchBarProps) => {
-  const [value, setValue] = useState('');
+  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
 
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
-    const {
-      currentTarget: { value },
-    } = e;
-    setValue(value);
+    setSearchContents(e.currentTarget.value);
   };
 
   // 엔터 누르면 발생하는 함수
   const EnterFn = () => {
-    console.log(value); // 실제 검색 기능 연결 예정
+    console.log(searchContents); // 실제 검색 기능 연결 예정
   };
 
   return (
     <div className='flex justify-center'>
       <div className={clsx('relative w-4/5 max-w-[50rem] max-sm:w-9/10', className)}>
         <Input
-          value={value}
+          value={searchContents}
           onChange={onChange}
           className={clsx(
             'w-full rounded-[100px] text-md px-[3rem] font-medium focus:outline-none placeholder-stone',
