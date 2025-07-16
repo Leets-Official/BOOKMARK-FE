@@ -8,7 +8,7 @@ interface ChipProps {
   content: string;
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
-  onClick: () => void;
+  onClick?: () => void;
   onDelete?: () => void;
   disabled?: boolean;
 }
