@@ -8,14 +8,14 @@ interface ChipProps {
   content: string;
   isSelected: boolean;
   type: 'category' | 'tag' | 'suggestion';
-  onClick: () => void;
+  onClick?: () => void;
   onDelete?: () => void;
   disabled?: boolean;
 }
 
 // type(카테고리, 태그, 제안 태그), isSelected(선택됨, 선택안됨)에 따라서 chip 색상 변경
 const chipStyle = tv({
-  base: 'rounded-[100px] flex items-center justify-center border sm:text-xs text-[10px] sm:h-8 h-6 sm:p-2 p-1 flex-row gap-1 ',
+  base: 'rounded-[100px] flex items-center justify-center border text-xs h-8 p-2 flex-row gap-1 ',
   variants: {
     isSelected: { true: '', false: '' },
     type: { category: '', tag: '', suggestion: '' },

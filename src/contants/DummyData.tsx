@@ -31,7 +31,7 @@ const dummyDateOptions = [
   },
   {
     id: 2,
-    name: '내일 모레(토) 8/2',
+    name: '모레(토) 8/2',
   },
   {
     id: 3,

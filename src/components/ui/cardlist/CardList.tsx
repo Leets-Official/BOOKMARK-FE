@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import FolderCard from './card/FolderCard';
+import FolderCard from '../card/FolderCard';
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import { useEffect, useState } from 'react';
 import { getCardsPerSlide } from '@/utils/CardPerSlide';

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
-import FolderCard from './card/FolderCard';
+import FolderCard from '../card/FolderCard';
 import CardListHeader from '@/components/layout/header/CardListHeader';
 
 interface HomeCardListProps {
@@ -42,7 +42,7 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
   return (
     <>
       <CardListHeader currentNum={cardList.length.toString()} />
-      <div ref={containerRef} className='relative py-3 overflow-hidden mb-10 w-9/10 mx-auto'>
+      <div ref={containerRef} className='relative py-3 overflow-hidden w-9/10 mx-auto'>
         <motion.div
           ref={dragRef}
           style={{

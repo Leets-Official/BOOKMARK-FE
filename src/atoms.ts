@@ -30,6 +30,7 @@ const timeOptionsAtom = atom<{ id: number; name: string }[]>(dummyTimeOptions);
 const selectedDateAtom = atom<string>('');
 const selectedTimeAtom = atom<string>('');
 const isSaveButtonDisabledAtom = atom<boolean>(true);
+const searchContentsAtom = atom<string>('');
 
 export {
   linkAtom,
@@ -46,4 +47,5 @@ export {
   selectedDateAtom,
   selectedTimeAtom,
   isSaveButtonDisabledAtom,
+  searchContentsAtom,
 };
