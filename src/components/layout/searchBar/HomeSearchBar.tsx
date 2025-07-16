@@ -11,6 +11,7 @@ interface IHomeSearchBarProps {
   className?: string;
   isFixed?: boolean;
   isBlur?: boolean;
+  style?: React.CSSProperties;
 }
 
 const inputStyle = tv({
@@ -68,7 +69,12 @@ const filterIconStyle = tv({
   },
 });
 
-const HomeSearchBar = ({ className, isFixed = false, isBlur = false }: IHomeSearchBarProps) => {
+const HomeSearchBar = ({
+  className,
+  style,
+  isFixed = false,
+  isBlur = false,
+}: IHomeSearchBarProps) => {
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
 
@@ -83,7 +89,7 @@ const HomeSearchBar = ({ className, isFixed = false, isBlur = false }: IHomeSear
 
   return (
     <div className='flex justify-center'>
-      <div className={clsx('relative w-4/5 max-w-[50rem] max-sm:w-9/10', className)}>
+      <div className={clsx('relative w-4/5 max-w-[50rem] max-sm:w-9/10', className)} style={style}>
         <Input
           value={searchContents}
           onChange={onChange}

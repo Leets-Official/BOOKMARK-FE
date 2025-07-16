@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { isMobile } from 'react-device-detect';
 import clsx from 'clsx';
 import HomeSearchBar from './HomeSearchBar';
+import Button from '@/components/common/Button';
+import { BackArrowIcon } from '@/assets';
 
 // props로 검색창의 top마진 값 전달 받음
 interface ChangeSearchBarProps {
@@ -36,24 +38,41 @@ const ChangeSearchBar = ({ barMarginTop }: ChangeSearchBarProps) => {
     <>
       {/* 원래 위치의 검색바, props로 className을 전달해서 높이 조절 가능 */}
       <div ref={searchBarRef}>
-        <HomeSearchBar isBlur={isBlur} className={`mt-[${barMarginTop}px]`} />
+        <HomeSearchBar isBlur={isBlur} style={{ marginTop: `${barMarginTop}px` }} />
       </div>
 
       {/* 스크롤 후 고정되는 검색바 */}
       <AnimatePresence mode='wait'>
         {isFixedBar && (
-          <motion.div
-            initial={{ y: -80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -80, opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className='fixed w-full top-0 z-10 p-4'
-          >
-            <HomeSearchBar
-              isFixed={true}
-              className={clsx(isMobile ? '-translate-x-5' : '-translate-x/2')}
-            />
-          </motion.div>
+          <>
+            <motion.div
+              initial={{ y: -80, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -80, opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              className='fixed w-full top-0 z-10 p-4'
+            >
+              <HomeSearchBar
+                isFixed={true}
+                className={clsx(isMobile ? '-translate-x-5' : '-translate-x/2')}
+              />
+            </motion.div>
+            <motion.div
+              initial={{ rotate: 0, opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              className='fixed w-full bottom-5 left-5 z-10'
+            >
+              <Button
+                icon={
+                  <BackArrowIcon width={24} height={24} strokeWidth={2.5} className='rotate-90' />
+                }
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className='border-1 bg-lightGray rounded-full shadow-md p-4 border-lightGray hover:brightness-90 cursor-pointer'
+              />
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
