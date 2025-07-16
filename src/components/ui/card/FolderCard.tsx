@@ -8,7 +8,7 @@ interface ICardProps {
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
-  'overflow-hidden font-sans font-bold text-ellipsis whitespace-nowrap ml-1 md:text-xl text-base';
+  'overflow-hidden font-sans font-semibold text-ellipsis whitespace-nowrap ml-1 md:text-xl text-base';
 
 const FolderCard = ({ title }: ICardProps) => {
   return (

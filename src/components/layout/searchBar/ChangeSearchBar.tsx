@@ -65,14 +65,14 @@ const ChangeSearchBar = ({ barMarginTop }: ChangeSearchBarProps) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: 'easeInOut' }}
-              className='fixed w-full bottom-5 left-5 z-10'
+              className='fixed w-full bottom-4 left-4 z-10'
             >
               <Button
                 icon={
                   <BackArrowIcon width={24} height={24} strokeWidth={2.5} className='rotate-90' />
                 }
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className='border-1 bg-lightGray rounded-full shadow-md p-4 border-lightGray hover:brightness-90 cursor-pointer'
+                className='border-1 bg-lightGray rounded-full shadow-md sm:p-4 p-2.5 border-lightGray hover:brightness-90 cursor-pointer'
               />
             </motion.div>
           </>

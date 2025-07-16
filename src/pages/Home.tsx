@@ -18,15 +18,10 @@ const Home = () => {
       <ChangeSearchBar barMarginTop={250} />
 
       {/* 모바일/데스크탑 구분 */}
-      {isMobile ? (
-        <>
-          <MobileCardList cardList={cardList} />
-          <HomeFooter />
-        </>
-      ) : (
-        <CardList cardList={cardList} />
-      )}
+      {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />}
+
       <LatestListHeader />
+      <HomeFooter />
       <Outlet />
     </div>
   );
