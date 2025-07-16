@@ -1,11 +1,11 @@
 // ChangeSearchBar.tsx
 import { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { isMobile } from 'react-device-detect';
 import clsx from 'clsx';
 import HomeSearchBar from './HomeSearchBar';
 import Button from '@/components/common/Button';
 import { BackArrowIcon } from '@/assets';
+import { useLocation } from 'react-router-dom';
 
 // props로 검색창의 top마진 값 전달 받음
 interface ChangeSearchBarProps {
@@ -16,6 +16,9 @@ const ChangeSearchBar = ({ barMarginTop }: ChangeSearchBarProps) => {
   const searchBarRef = useRef<HTMLDivElement>(null);
   const [isFixedBar, setISFixedBar] = useState(false);
   const [isBlur, setIsBlur] = useState(false);
+
+  const location = useLocation();
+  const isHome = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,7 +57,7 @@ const ChangeSearchBar = ({ barMarginTop }: ChangeSearchBarProps) => {
             >
               <HomeSearchBar
                 isFixed={true}
-                className={clsx(isMobile ? '-translate-x-5' : '-translate-x/2')}
+                className={clsx(isHome && '-translate-x-5 md:-translate-x/2')}
               />
             </motion.div>
             <motion.div

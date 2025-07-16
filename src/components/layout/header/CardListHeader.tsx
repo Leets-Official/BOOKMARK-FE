@@ -10,21 +10,22 @@ interface CardListHeaderProps {
 }
 
 const TextSize = tv({
-  base: 'overflow-hidden text-ellipsis whitespace-nowrap max-sm:text-base',
+  base: 'overflow-hidden text-ellipsis whitespace-nowrap max-sm:text-base text-xl',
   variants: {
     mobile: {
       true: 'text-base',
-      false: 'text-xl',
     },
   },
 });
 
 const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => {
   return (
-    <div className={clsx('w-4/5 mx-auto max-sm:w-9/10', isMobile ? 'w-9/10 mt-100' : 'mt-130')}>
+    <div className={clsx('w-4/5 mx-auto max-sm:w-9/10', isMobile ? 'w-9/10 mt-100' : 'mt-100')}>
       <div className='flex justify-between items-center'>
         <div className='flex items-center gap-1'>
-          <p className={clsx('font-bold md:mr-7 mr-3', TextSize({ mobile: isMobile }))}>Folder</p>
+          <p className='font-bold md:mr-7 mr-3 overflow-hidden text-ellipsis whitespace-nowrap max-sm:text-base text-xl'>
+            Folder
+          </p>
           {!isMobile && (
             <div onClick={onPrev} className='hover:brightness-0'>
               <LeftIcon width={24} height={24} />
