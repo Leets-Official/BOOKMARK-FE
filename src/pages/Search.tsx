@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import { useEffect } from 'react';
 import FilterSearchBar from '@/components/layout/searchBar/FilterSearchBar';
 import { FilterIcon, SearchIcon } from '@/assets';
 import Chip from '@/components/common/Chip';
 import Button from '@/components/common/Button';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useAtom } from 'jotai';
+import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
 
 const categories = [
   '개발',
@@ -19,37 +21,37 @@ const tags = ['태그', '태그', '태그', '태그', '태그', '태그', '태�
 const platforms = ['유튜브', '유튜브', '유튜브', '유튜브', '유튜브', '유튜브', '유튜브', '유튜브'];
 
 const Search = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
+  const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
+  const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
 
-  const toggleSelection = (item: string, setFn: React.Dispatch<React.SetStateAction<string[]>>) => {
+  useEffect(() => {
+    if (selectedCategories.length === 0) {
+      setSelectedTags([]);
+      setSelectedPlatforms([]);
+    }
+  }, [selectedCategories, setSelectedTags, setSelectedPlatforms]);
+
+  const toggleSelection = (
+    item: string,
+    // eslint-disable-next-line no-unused-vars
+    setFn: (updater: (prev: string[]) => string[]) => void,
+  ) => {
     setFn((prev) => (prev.includes(item) ? prev.filter((v) => v !== item) : [...prev, item]));
   };
 
   const resetAll = () => {
     setSelectedCategories([]);
-    setSelectedTags([]);
-    setSelectedPlatforms([]);
   };
 
   return (
     <div className='flex flex-col w-full h-[100vh] bg-gray-100'>
       <div className='bg-white shadow-sm'>
-        <FilterSearchBar
-          selectedCategories={selectedCategories}
-          selectedTags={selectedTags}
-          selectedPlatforms={selectedPlatforms}
-          onDeleteCategory={(cat) => setSelectedCategories((prev) => prev.filter((c) => c !== cat))}
-          onDeleteTag={(tag) => setSelectedTags((prev) => prev.filter((t) => t !== tag))}
-          onDeletePlatform={(platform) =>
-            setSelectedPlatforms((prev) => prev.filter((p) => p !== platform))
-          }
-        />
+        <FilterSearchBar />
       </div>
 
       <div className='flex flex-col p-4 flex-1'>
-        <div className='flex items-center font-semibold text-lg mt-25 mb-4 ml-2'>
+        <div className='flex items-center font-semibold text-lg mt-10 mb-4 ml-2'>
           <FilterIcon className='w-5 h-5 mr-2 text-black' />
           필터
         </div>
@@ -108,7 +110,7 @@ const Search = () => {
         <div className='mt-4 bg-white rounded-lg shadow-sm px-4 py-4'>
           <div className='text-sm font-semibold mb-2'>플랫폼</div>
           <AnimatePresence>
-            {selectedTags.length > 0 && (
+            {selectedCategories.length > 0 && (
               <motion.div
                 key='platforms'
                 initial={{ height: 0, opacity: 0 }}
