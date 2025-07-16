@@ -1,5 +1,6 @@
 import { BackIcon, DeleteIcon, HistoryIcon } from '@/assets';
 import Input from '@/components/common/Input';
+import Button from '@/components/common/Button';
 import React, { useState } from 'react';
 
 interface FilterSearchBarProps {
@@ -24,6 +25,7 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
 }) => {
   const [value, setValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [history, setHistory] = useState<string[]>(['최근기록 1', '최근기록 2']);
 
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     setValue(e.currentTarget.value);
@@ -31,12 +33,20 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      console.log('검색어:', value);
+      if (value.trim()) {
+        setHistory((prev) => [value, ...prev.filter((v) => v !== value)]);
+        console.log('검색어:', value);
+        setValue('');
+      }
     }
   };
 
   const clearInput = () => {
     setValue('');
+  };
+
+  const handleDeleteHistory = (target: string) => {
+    setHistory((prev) => prev.filter((item) => item !== target));
   };
 
   const renderChip = (
@@ -83,7 +93,7 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
           onChange={onChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 100)}
           className='flex-1 border-none focus:outline-none text-sm placeholder-gray-400 bg-transparent'
           placeholder='제목, 메모, 태그'
         />
@@ -93,22 +103,30 @@ const FilterSearchBar: React.FC<FilterSearchBarProps> = ({
       </div>
 
       {/* 최근 기록 */}
-      {isFocused && (
+      {isFocused && history.length > 0 && (
         <div className='absolute top-full left-0 w-full bg-white px-4 shadow-md z-0'>
-          {['최근기록 1', '최근기록 2'].map((record, idx) => (
-            <div
-              key={idx}
-              className='flex items-center justify-between gap-2 my-4 text-sm text-black'
-            >
-              <div className='flex items-center gap-2'>
-                <HistoryIcon />
-                {record}
+          {history.map(
+            (
+              record,
+              idx, // 상태 기반 렌더링
+            ) => (
+              <div
+                key={idx}
+                className='flex items-center justify-between gap-2 my-4 text-sm text-black'
+              >
+                <div className='flex items-center gap-2'>
+                  <HistoryIcon />
+                  {record}
+                </div>
+                <Button
+                  className='cursor-pointer'
+                  icon={<DeleteIcon width={20} height={20} fill='#000000' />}
+                  onMouseDown={(e: React.MouseEvent<HTMLButtonElement>) => e.preventDefault()}
+                  onClick={() => handleDeleteHistory(record)}
+                />
               </div>
-              <div className='cursor-pointer'>
-                <DeleteIcon width={20} height={20} fill='#000000' />
-              </div>
-            </div>
-          ))}
+            ),
+          )}
         </div>
       )}
     </div>
