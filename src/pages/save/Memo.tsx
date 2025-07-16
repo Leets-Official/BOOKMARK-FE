@@ -19,7 +19,7 @@ const Memo = () => {
           key='memo-with-file'
           className={clsx(
             { 'text-xs': visible, 'text-sm': !visible },
-            'font-semibold text-grayText',
+            'font-semibold text-grayText my-1',
           )}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
