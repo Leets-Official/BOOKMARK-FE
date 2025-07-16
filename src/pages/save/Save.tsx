@@ -40,14 +40,6 @@ const SaveButton = tv({
   },
 });
 
-export interface ChipProps {
-  id: number;
-  content: string;
-  isSelected: boolean;
-  type: 'category' | 'tag' | 'suggestion';
-  deleteable?: boolean;
-}
-
 const Save = () => {
   const navigate = useNavigate();
   const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);

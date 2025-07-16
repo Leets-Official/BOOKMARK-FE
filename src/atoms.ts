@@ -5,15 +5,7 @@ import {
   dummyTagList,
   dummyTimeOptions,
 } from './contants/DummyData';
-
-export interface ChipProps {
-  id: number;
-  content: string;
-  isSelected: boolean;
-  type: 'category' | 'tag' | 'suggestion';
-  deleteable?: boolean;
-  isNew?: boolean;
-}
+import type { ChipProps } from './types';
 
 // Save Page Atoms
 const linkAtom = atom('');
