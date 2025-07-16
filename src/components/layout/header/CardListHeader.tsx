@@ -1,7 +1,5 @@
 import { LeftIcon, RightIcon } from '@/assets';
-import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
-import { tv } from 'tailwind-variants';
 
 interface CardListHeaderProps {
   onNext?: () => void;
@@ -9,21 +7,14 @@ interface CardListHeaderProps {
   currentNum: string;
 }
 
-const TextSize = tv({
-  base: 'overflow-hidden text-ellipsis whitespace-nowrap max-sm:text-base text-xl',
-  variants: {
-    mobile: {
-      true: 'text-base',
-    },
-  },
-});
+const TextSize = 'overflow-hidden text-ellipsis whitespace-nowrap max-sm:text-base text-xl';
 
 const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => {
   return (
-    <div className={clsx('w-4/5 mx-auto max-sm:w-9/10', isMobile ? 'w-9/10 mt-100' : 'mt-100')}>
+    <div className='w-4/5 mx-auto max-sm:w-9/10 mt-100'>
       <div className='flex justify-between items-center'>
         <div className='flex items-center gap-1'>
-          <p className='font-bold md:mr-7 mr-3 overflow-hidden text-ellipsis whitespace-nowrap max-sm:text-base text-xl'>
+          <p className='font-bold sm:mr-7 mr-3 overflow-hidden text-ellipsis whitespace-nowrap max-sm:text-base text-xl'>
             Folder
           </p>
           {!isMobile && (
@@ -31,7 +22,7 @@ const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => 
               <LeftIcon width={24} height={24} />
             </div>
           )}
-          <p className={TextSize({ mobile: isMobile })}>{currentNum}</p>
+          <p className={TextSize}>{currentNum}</p>
           {!isMobile && (
             <div onClick={onNext} className='hover:brightness-0'>
               <RightIcon width={24} height={24} />
@@ -39,7 +30,7 @@ const CardListHeader = ({ onNext, onPrev, currentNum }: CardListHeaderProps) => 
           )}
         </div>
         <div className='flex flex-row items-center'>
-          <p className={TextSize({ mobile: isMobile })}>+ 카테고리 추가</p>
+          <p className={TextSize}>+ 카테고리 추가</p>
           <button className='rounded-2xl cursor-pointer hover:bg-gray-300 transition-colors' />
         </div>
       </div>

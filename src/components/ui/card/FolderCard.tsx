@@ -1,22 +1,14 @@
-import { DetailIcon } from '@/assets';
+import { FolderDetailIcon } from '@/assets';
 import Image from '@/components/common/Image';
 import { isMobile } from 'react-device-detect';
-import { tv } from 'tailwind-variants';
 
 interface ICardProps {
   title: string;
 }
 
 // 제목 텍스트 스타일 (반응형)
-const titleText = tv({
-  base: 'overflow-hidden font-sans text-ellipsis whitespace-nowrap ml-1 sm:text-xl text-base',
-  variants: {
-    mobile: {
-      true: 'text-base',
-      false: 'text-xl',
-    },
-  },
-});
+const TitleText =
+  'overflow-hidden font-sans font-bold text-ellipsis whitespace-nowrap ml-1 md:text-xl text-base';
 
 const FolderCard = ({ title }: ICardProps) => {
   return (
@@ -44,11 +36,13 @@ const FolderCard = ({ title }: ICardProps) => {
           </div>
         </div>
       </div>
-      <div className='relative mt-2 pr-4'>
-        <p className={titleText({ mobile: isMobile })}>{title}</p>
-        <div className='absolute top-0 right-0 cursor-pointer hover:text-gray-500 transition-colors'>
-          <DetailIcon width={isMobile ? 20 : 28} height={isMobile ? 20 : 28} />
-        </div>
+      <div className='flex items-center justify-between pt-2'>
+        <p className={TitleText}>{title}</p>
+        <FolderDetailIcon
+          width={isMobile ? 24 : 40}
+          height={isMobile ? 24 : 40}
+          className='text-white hover:text-grayBg transition-colors'
+        />
       </div>
     </div>
   );
