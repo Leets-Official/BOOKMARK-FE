@@ -5,13 +5,12 @@ interface DropDownItemProps {
   children: React.ReactNode;
   /** 드롭다운 메뉴 안 각 요소의 클릭 함수입니다. */
   onClick?: () => void;
-  className?: string;
 }
 
-const DropDownItem = ({ children, onClick, className }: DropDownItemProps) => (
-  <li className={`cursor-pointer ${className}`} onClick={onClick}>
+const DropDownItem = ({ children, onClick }: DropDownItemProps) => (
+  <div className={`cursor-pointer`} onClick={onClick}>
     {children}
-  </li>
+  </div>
 );
 
 export default DropDownItem;

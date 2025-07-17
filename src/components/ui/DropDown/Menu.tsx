@@ -19,7 +19,7 @@ const DropDownMenu = ({ children, isOpen, position, className }: DropDownMenuPro
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
         >
-          <ul className='text-center'>{children}</ul>
+          {children}
         </motion.div>
       )}
     </AnimatePresence>
