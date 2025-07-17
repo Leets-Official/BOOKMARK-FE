@@ -2,7 +2,7 @@ import { BackIcon, DeleteIcon, HistoryIcon } from '@/assets';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 import Chip from '@/components/common/Chip';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
@@ -40,8 +40,8 @@ const FilterSearchBar: React.FC = () => {
   const [searchContents, setSearchContents] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
+  const historyRef = useRef<HTMLDivElement>(null);
 
-  // Jotai 전역 상태
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
@@ -79,8 +79,8 @@ const FilterSearchBar: React.FC = () => {
     // eslint-disable-next-line no-unused-vars
     onDelete: (item: string) => void,
     type: 'category' | 'tag' | 'platform',
-  ) => {
-    return items.map((item) => (
+  ) =>
+    items.map((item) => (
       <Chip
         key={`${type}-${item}`}
         id={item}
@@ -90,14 +90,24 @@ const FilterSearchBar: React.FC = () => {
         onDelete={() => onDelete(item)}
       />
     ));
-  };
 
   const hasSelectedChips =
     selectedCategories.length > 0 || selectedTags.length > 0 || selectedPlatforms.length > 0;
 
+  // 외부 클릭 시 검색 기록창 닫기
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (historyRef.current && !historyRef.current.contains(e.target as Node)) {
+        setIsFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
-    <div className='w-full bg-white shadow-sm relative'>
-      {/* 선택된 Chip들 (애니메이션 적용) */}
+    <div className='w-full bg-white shadow-sm relative' ref={historyRef}>
+      {/* 선택된 Chip들 */}
       <AnimatePresence>
         <AnimatedHeight show={hasSelectedChips}>
           <div className='px-4 pt-2 border-t border-gray-200 bg-white flex flex-wrap gap-2'>
@@ -118,7 +128,6 @@ const FilterSearchBar: React.FC = () => {
           onChange={onChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 100)}
           className='flex-1 border-none focus:outline-none text-sm placeholder-gray-400 bg-transparent'
           placeholder='제목, 메모, 태그'
         />
@@ -135,7 +144,10 @@ const FilterSearchBar: React.FC = () => {
               key={i}
               className='flex items-center justify-between gap-2 my-4 text-sm text-black'
             >
-              <div className='flex items-center gap-2'>
+              <div
+                className='flex items-center gap-2 cursor-pointer hover:underline'
+                onClick={() => setSearchContents(record)}
+              >
                 <HistoryIcon />
                 {record}
               </div>
