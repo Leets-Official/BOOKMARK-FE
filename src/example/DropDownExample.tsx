@@ -10,7 +10,13 @@ import { useRef, useState } from 'react';
       - Item
   으로 구성됨
 
-  ref로 Trigger 컴포넌트 위치 참조
+  menuRef : 드롭다운 메뉴 컴포넌트 참조 (DropDown.Menu를 눌렀을 때 닫히지 않도록)
+  parentRef : ref로 Trigger 컴포넌트 위치 참조 (드롭다운 메뉴 위치 참조)
+
+  DropDown : 드롭다운 메뉴 컴포넌트
+    - handleClose : 드롭다운 메뉴 닫기 함수
+    - menuRef : 드롭다운 메뉴 컴포넌트 참조
+    - isOpen : 드롭다운 메뉴 열림 여부(열리면 외부 스크롤이 닫힘)
 
   Trigger : 드롭다운 메뉴 트리거
     - children : 드롭다운 메뉴 트리거 컴포넌트
@@ -74,7 +80,7 @@ const DropDownExample = () => {
 
   return (
     <div className='flex flex-row gap-4 w-full p-4 items-center justify-center'>
-      <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef}>
+      <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef} isOpen={isOpen}>
         <DropDown.Trigger onClick={() => setIsOpen((prev) => !prev)} ref={parentRef}>
           <div className='w-[150px] bg-white rounded-[8px] flex flex-row gap-2 items-center border border-lightBlueGray cursor-pointer relative p-2 justify-between'>
             <div className='flex flex-row gap-2 items-center'>

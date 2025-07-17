@@ -9,6 +9,7 @@ interface DropDownProps {
   /** 드롭다운 메뉴 닫기 함수 */
   handleClose: () => void;
   menuRef: React.RefObject<HTMLDivElement | null>;
+  isOpen: boolean;
 }
 
 interface DropDownStatic extends FC<DropDownProps> {
@@ -17,7 +18,18 @@ interface DropDownStatic extends FC<DropDownProps> {
   Item: typeof DropDownItem;
 }
 
-const DropDown = (({ children, handleClose, menuRef }: DropDownProps) => {
+const DropDown = (({ children, handleClose, menuRef, isOpen }: DropDownProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
