@@ -2,12 +2,12 @@
 import type { ChipProps, CompactCardProps } from '@/types';
 
 const dummyCategoryList: ChipProps[] = [
-  { id: 0, content: '카테고리', isSelected: false, type: 'category' },
-  { id: 1, content: '카테고리', isSelected: false, type: 'category' },
-  { id: 2, content: '카테고리', isSelected: false, type: 'category' },
-  { id: 3, content: '카테고리', isSelected: false, type: 'category' },
-  { id: 4, content: '카테고리', isSelected: false, type: 'category' },
-  { id: 5, content: '카테고리', isSelected: false, type: 'category' },
+  { id: 0, content: '개발', isSelected: false, type: 'category' },
+  { id: 1, content: '디자인', isSelected: false, type: 'category' },
+  { id: 2, content: '레퍼런스', isSelected: false, type: 'category' },
+  { id: 3, content: '공모전', isSelected: false, type: 'category' },
+  { id: 4, content: '드로잉', isSelected: false, type: 'category' },
+  { id: 5, content: '아티클', isSelected: false, type: 'category' },
   { id: 6, content: '카테고리', isSelected: false, type: 'category' },
   { id: 7, content: '카테고리', isSelected: false, type: 'category' },
   { id: 8, content: '카테고리', isSelected: false, type: 'category' },
