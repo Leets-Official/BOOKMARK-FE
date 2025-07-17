@@ -1,4 +1,4 @@
-import KakaoIcon from '@/assets/kakaoLogo.svg?react';
+import { KakaoLogoIcon } from '@/assets';
 import Button from '@/components/common/Button';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ const Login = () => {
 
         <Button
           onClick={handleKakaoLogin}
-          icon={<KakaoIcon width={18} height={18} className='mr-2' />}
+          icon={<KakaoLogoIcon width={18} height={18} className='mr-2' />}
           className='bg-[#FEE500] text-black hover:brightness-90 disabled:brightness-80 flex items-center justify-center rounded-lg shadow w-full h-[45px]'
         >
           카카오 로그인
