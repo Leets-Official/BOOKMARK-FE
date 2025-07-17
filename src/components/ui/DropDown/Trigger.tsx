@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 interface DropDownTriggerProps {
   children: React.ReactNode;
@@ -6,18 +6,18 @@ interface DropDownTriggerProps {
   onClick: () => void;
 }
 
-const DropDownTrigger = ({ children, onClick }: DropDownTriggerProps) => {
-  const onClickHandler = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === 'Escape') {
-      onClick();
-    }
-  };
-
-  return (
-    <button onClick={onClick} onKeyDown={onClickHandler}>
-      {children}
-    </button>
-  );
-};
+const DropDownTrigger = forwardRef<HTMLButtonElement, DropDownTriggerProps>(
+  function DropDownTrigger({ children, onClick }, ref) {
+    // ref는 부모가 전달한 ref
+    const onClickHandler = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === 'Escape') onClick();
+    };
+    return (
+      <button ref={ref} onClick={onClick} onKeyDown={onClickHandler}>
+        {children}
+      </button>
+    );
+  },
+);
 
 export default DropDownTrigger;

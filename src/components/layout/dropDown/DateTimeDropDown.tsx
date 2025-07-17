@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import DropDown from '@/components/ui/DropDown';
 import { motion } from 'framer-motion';
 import { BackArrowIcon } from '@/assets';
@@ -31,9 +31,11 @@ const DateTimeDropDown = ({
     setIsOpen(false);
   };
 
+  const parentRef = useRef<HTMLButtonElement>(null);
+
   return (
     <DropDown handleClose={() => setIsOpen(false)}>
-      <DropDown.Trigger onClick={() => setIsOpen(!isOpen)}>
+      <DropDown.Trigger onClick={() => setIsOpen(!isOpen)} ref={parentRef}>
         <div className='w-[150px] bg-white rounded-[8px] flex flex-row gap-2 items-center border border-lightBlueGray cursor-pointer relative p-2 justify-between'>
           <div className='flex flex-row gap-2 items-center'>
             {icon}
@@ -51,7 +53,7 @@ const DateTimeDropDown = ({
       </DropDown.Trigger>
       <DropDown.Menu
         isOpen={isOpen}
-        position='top-13 left-1/2'
+        parentRef={parentRef}
         className='absolute left-1/2 -translate-x-1/2 bg-white rounded-[8px] flex flex-col gap-5 border border-lightBlueGray z-[9999] shadow-lg max-h-60 overflow-y-auto p-4 w-[150px]'
       >
         <p className='text-sm text-lightBlueGray font-medium'>{subTitle}</p>
