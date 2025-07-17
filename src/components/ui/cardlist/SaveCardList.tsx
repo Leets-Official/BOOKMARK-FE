@@ -20,12 +20,12 @@ const SaveCardList = () => {
           <SaveCard key={card.id} data={card} />
         ))}
       </div>
-      <div className='flex justify-center'>
+      <div className='flex justify-center mt-10 mb-20'>
         <Button
           onClick={() => {
             console.log('전체보기');
           }}
-          className=' mt-8 w-9/10 py-5 bg-white text-[15px] border-1 border-[#BCC0CC] rounded-[10px] active:brightness-95'
+          className='sm:w-4/5 w-9/10 py-5 bg-white text-[15px] sm:text-base border-1 border-[#BCC0CC] rounded-[10px] active:brightness-95'
         >
           전체보기
         </Button>
