@@ -14,3 +14,12 @@ export interface CompactCardProps {
   category: string;
   tags: string[];
 }
+
+export interface SaveCardProps {
+  id: number;
+  category: string;
+  tags: string[];
+  image: string;
+  memo: string;
+  platform: string;
+}
