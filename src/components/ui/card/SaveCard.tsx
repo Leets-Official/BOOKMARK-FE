@@ -2,13 +2,13 @@ import { FolderDetailIcon } from '@/assets';
 import Image from '@/components/common/Image';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
-import type { SaveCardProps } from '@/contants/DummyData';
+import type { SaveCardProps } from '@/types';
 
 const SaveCard = ({ data }: { data: SaveCardProps }) => {
   return (
-    <div className='mt-3 w-full rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
+    <div className='mt-3 w-full rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] hover:border hover:border-gray-300 transition-transform duration-100 active:scale-99'>
       <div className='p-4 pb-2'>
-        <div className='flex gap-2 mb-4'>
+        <div className='flex flex-wrap gap-2 mb-4'>
           <span className='bg-[#80CA14] text-white font-normal px-3 py-3 rounded-full text-[15px] border-1 border-[#EAEDF5]'>
             {data.category}
           </span>

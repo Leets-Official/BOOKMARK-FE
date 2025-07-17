@@ -89,7 +89,7 @@ const CardList = ({ cardList }: HomeCardListProps) => {
         showPagination={true}
         showCategory={true}
       />
-      <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden'>
+      <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden pb-4'>
         <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
           <motion.div
             key={index}

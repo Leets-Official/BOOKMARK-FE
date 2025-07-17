@@ -15,7 +15,12 @@ const TitleText =
 const FolderCard = ({ category, images }: ICardProps) => {
   return (
     // 모바일은 카드의 너비를 고정, PC는 반응형에 따라 비율 조정
-    <div className={isMobile ? 'min-w-50 pt-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 sm:pt-3 p-2'}>
+    <div
+      className={clsx(
+        isMobile ? 'min-w-40 pt-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 sm:mt-2 p-2',
+        'rounded-2xl hover:border-1 hover:border-gray-300 hover:shadow-md active:scale-99 transition-transform duration-100',
+      )}
+    >
       {/**카테고리에 카드가 하나만 있으면 폴더에 하나만, 두개 있으면 1 : 1 비율... 3개까지 표시 */}
       <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex'>
         {images.length === 1 && (
