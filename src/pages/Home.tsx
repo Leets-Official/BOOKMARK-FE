@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect';
 import HomeHeader from '@/components/layout/header/HomeHeader';
 import { Outlet } from 'react-router-dom';
 import HomeFooter from '@/components/layout/footer/HomeFooter';
-import LatestListHeader from '@/components/layout/header/LatestListHeader';
+import SaveCardList from '@/components/ui/cardlist/SaveCardList';
 
 const Home = () => {
   const cardList = Array.from({ length: 11 }, (_, i) => ({
@@ -17,10 +17,8 @@ const Home = () => {
       <HomeHeader />
       <ChangeSearchBar barMarginTop={250} />
 
-      {/* 모바일/데스크탑 구분 */}
       {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />}
-
-      <LatestListHeader />
+      <SaveCardList />
       <HomeFooter />
       <Outlet />
     </div>

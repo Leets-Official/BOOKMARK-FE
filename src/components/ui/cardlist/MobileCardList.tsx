@@ -40,8 +40,8 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
   }, [cardList, x]);
 
   return (
-    <>
-      <CardListHeader currentNum={cardList.length.toString()} />
+    <div className='mt-90'>
+      <CardListHeader currentNum={cardList.length.toString()} title='Folder' />
       <div ref={containerRef} className='relative py-3 overflow-hidden w-9/10 mx-auto'>
         <motion.div
           ref={dragRef}
@@ -63,7 +63,7 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
           ))}
         </motion.div>
       </div>
-    </>
+    </div>
   );
 };
 

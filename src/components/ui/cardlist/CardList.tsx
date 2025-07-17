@@ -76,13 +76,16 @@ const CardList = ({ cardList }: HomeCardListProps) => {
   };
 
   return (
-    <>
+    <div className='mt-100'>
       <CardListHeader
         onNext={increaseIndex}
         onPrev={decreaseIndex}
         currentNum={`${index + 1} / ${maxIndex + 1}`}
+        title='Folder'
+        showPagination={true}
+        showCategory={true}
       />
-      <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden mb-20'>
+      <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden'>
         <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
           <motion.div
             key={index}
@@ -109,7 +112,7 @@ const CardList = ({ cardList }: HomeCardListProps) => {
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
