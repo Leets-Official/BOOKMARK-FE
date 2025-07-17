@@ -28,7 +28,7 @@ const Modal = ({ title, onConfirm, onCancel, children, disabled = false }: Modal
       onClick={onCancel}
     >
       <div
-        className='bg-white shadow-xl w-[335px] flex flex-col rounded-[12px]'
+        className='bg-white shadow-xl w-[335px] flex flex-col rounded-[12px] overflow-hidden'
         onClick={(e) => e.stopPropagation()}
       >
         <div className='w-full h-[48px] flex items-center justify-center relative'>

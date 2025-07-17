@@ -58,27 +58,27 @@ const dummyCompactCardList: CompactCardProps[] = [
 const dummyDateOptions = [
   {
     id: 1,
-    name: '내일(금) 8/1',
+    name: '내일 (금)',
   },
   {
     id: 2,
-    name: '모레(토) 8/2',
+    name: '2일뒤 (토)',
   },
   {
     id: 3,
-    name: '8/3',
+    name: '3일뒤 (일)',
   },
   {
     id: 4,
-    name: '8/4',
+    name: '4일뒤 (월)',
   },
   {
     id: 5,
-    name: '8/5',
+    name: '5일뒤 (화)',
   },
   {
     id: 6,
-    name: '8/6',
+    name: '6일뒤 (수)',
   },
 ];
 
