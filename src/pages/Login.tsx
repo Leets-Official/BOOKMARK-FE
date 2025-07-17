@@ -18,7 +18,7 @@ const Login = () => {
 
         <Button
           onClick={handleKakaoLogin}
-          icon={<KakaoIcon className='mr-2' />}
+          icon={<KakaoIcon width={18} height={18} className='mr-2' />}
           className='bg-[#FEE500] text-black hover:brightness-90 disabled:brightness-80 flex items-center justify-center rounded-lg shadow w-full h-[45px]'
         >
           카카오 로그인

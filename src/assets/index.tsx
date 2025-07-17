@@ -1,2 +1,2 @@
-import kakaoLoginImg from './kakaologin.svg';
-export { kakaoLoginImg };
+import kakaoLoginicon from './kakaologin.svg?react';
+export { kakaoLoginicon };
