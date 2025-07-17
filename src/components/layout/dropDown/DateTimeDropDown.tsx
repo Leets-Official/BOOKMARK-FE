@@ -54,7 +54,7 @@ const DateTimeDropDown = ({
       <DropDown.Menu
         isOpen={isOpen}
         parentRef={parentRef}
-        className='absolute left-1/2 -translate-x-1/2 bg-white rounded-[8px] flex flex-col gap-5 border border-lightBlueGray z-[9999] shadow-lg max-h-60 overflow-y-auto p-4 w-[150px]'
+        className='absolute top-full left-0 mt-2 bg-white rounded-[8px] flex flex-col gap-5 border border-lightBlueGray z-[9999] shadow-lg max-h-60 overflow-y-auto p-4 w-[150px]'
       >
         <p className='text-sm text-lightBlueGray font-medium'>{subTitle}</p>
         <div className='flex flex-col gap-5 text-gray'>
