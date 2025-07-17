@@ -1,7 +1,7 @@
 import { tv } from 'tailwind-variants';
 import { motion } from 'framer-motion';
 import Button from './Button';
-import { DeleteIcon } from '@/assets';
+import { BackArrowIcon, DeleteIcon } from '@/assets';
 import clsx from 'clsx';
 
 interface ChipProps {
@@ -11,6 +11,7 @@ interface ChipProps {
   onClick?: () => void;
   onDelete?: () => void;
   disabled?: boolean;
+  dropdownEnabled?: boolean;
 }
 
 // type(카테고리, 태그, 제안 태그), isSelected(선택됨, 선택안됨)에 따라서 chip 색상 변경
@@ -54,7 +55,15 @@ const chipStyle = tv({
   ],
 });
 
-const Chip = ({ content, isSelected, type, onClick, onDelete, disabled = false }: ChipProps) => {
+const Chip = ({
+  content,
+  isSelected,
+  type,
+  onClick,
+  onDelete,
+  disabled = false,
+  dropdownEnabled = false,
+}: ChipProps) => {
   const hoverAnimation = disabled ? undefined : { scale: 1.05 };
   const tapAnimation = disabled ? undefined : { scale: 0.95 };
   const handleClick = disabled ? undefined : onClick;
@@ -81,6 +90,17 @@ const Chip = ({ content, isSelected, type, onClick, onDelete, disabled = false }
           }}
           icon={<DeleteIcon height={16} width={16} fill='#000000' />}
         />
+      )}
+      {/* Chip 드롭다운 옵션*/}
+      {dropdownEnabled && (
+        <motion.div
+          animate={{
+            rotate: !isSelected ? 90 : -90,
+          }}
+          transition={{ duration: 0.2 }}
+        >
+          <BackArrowIcon width={16} height={16} />
+        </motion.div>
       )}
     </motion.div>
   );

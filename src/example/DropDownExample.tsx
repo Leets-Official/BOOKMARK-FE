@@ -70,10 +70,11 @@ const DropDownExample = () => {
   };
 
   const parentRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className='flex flex-row gap-4 w-full p-4 items-center justify-center'>
-      <DropDown handleClose={() => setIsOpen(false)}>
+      <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef}>
         <DropDown.Trigger onClick={() => setIsOpen((prev) => !prev)} ref={parentRef}>
           <div className='w-[150px] bg-white rounded-[8px] flex flex-row gap-2 items-center border border-lightBlueGray cursor-pointer relative p-2 justify-between'>
             <div className='flex flex-row gap-2 items-center'>
@@ -93,6 +94,7 @@ const DropDownExample = () => {
         <DropDown.Menu
           isOpen={isOpen}
           parentRef={parentRef}
+          ref={menuRef}
           className='absolute top-full left-0 mt-2 bg-white rounded-[8px] flex flex-col gap-5 border border-lightBlueGray z-[9999] shadow-lg max-h-60 overflow-y-auto p-4 w-[150px]'
         >
           <p className='text-sm text-lightBlueGray font-medium'>날짜</p>

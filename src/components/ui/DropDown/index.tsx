@@ -8,6 +8,7 @@ interface DropDownProps {
   children: React.ReactNode;
   /** 드롭다운 메뉴 닫기 함수 */
   handleClose: () => void;
+  menuRef: React.RefObject<HTMLDivElement | null>;
 }
 
 interface DropDownStatic extends FC<DropDownProps> {
@@ -16,12 +17,19 @@ interface DropDownStatic extends FC<DropDownProps> {
   Item: typeof DropDownItem;
 }
 
-const DropDown = (({ children, handleClose }: DropDownProps) => {
+const DropDown = (({ children, handleClose, menuRef }: DropDownProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      const dropdownEl = dropdownRef.current;
+      const menuEl = menuRef.current; // props로 받은 menuRef 사용
+      if (
+        dropdownEl &&
+        !dropdownEl.contains(e.target as Node) &&
+        menuEl &&
+        !menuEl.contains(e.target as Node)
+      ) {
         handleClose();
       }
     };
@@ -30,7 +38,7 @@ const DropDown = (({ children, handleClose }: DropDownProps) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [handleClose]);
+  }, [handleClose, menuRef]);
 
   return (
     <div ref={dropdownRef} className='relative'>

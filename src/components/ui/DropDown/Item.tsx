@@ -7,10 +7,19 @@ interface DropDownItemProps {
   onClick?: () => void;
 }
 
-const DropDownItem = ({ children, onClick }: DropDownItemProps) => (
-  <div className={`cursor-pointer`} onClick={onClick}>
-    {children}
-  </div>
-);
+const DropDownItem = ({ children, onClick }: DropDownItemProps) => {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (onClick) {
+      e.stopPropagation();
+      onClick();
+    }
+  };
+
+  return (
+    <div className={`cursor-pointer`} onClick={handleClick}>
+      {children}
+    </div>
+  );
+};
 
 export default DropDownItem;

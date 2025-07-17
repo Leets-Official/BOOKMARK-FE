@@ -28,7 +28,7 @@ const DateTimeDropDown = ({
 }: DateTimeDropDownProps) => {
   const onItemClick = (option: string) => {
     setSelectedOption(option);
-    setIsOpen(false);
+    // setIsOpen(false);
   };
 
   const parentRef = useRef<HTMLButtonElement>(null);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { createPortal } from 'react-dom';
 
@@ -7,66 +7,72 @@ interface DropDownMenuProps {
   parentRef: React.RefObject<HTMLElement | null>;
   children: React.ReactNode;
   className?: string;
+  alignLeft?: boolean;
 }
 
-const DropDownMenu = ({ isOpen, parentRef, children, className }: DropDownMenuProps) => {
-  const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
-  const rafId = useRef<number | null>(null);
+const DropDownMenu = forwardRef<HTMLDivElement, DropDownMenuProps>(
+  ({ isOpen, parentRef, children, className, alignLeft = false }, ref) => {
+    const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
+    const rafId = useRef<number | null>(null);
 
-  const updatePosition = useCallback(() => {
-    if (parentRef.current) {
-      const rect = parentRef.current.getBoundingClientRect();
-      setPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-      });
-    }
-  }, [parentRef]);
+    const updatePosition = useCallback(() => {
+      if (parentRef.current) {
+        const rect = parentRef.current.getBoundingClientRect();
+        setPosition({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX,
+          width: rect.width,
+        });
+      }
+    }, [parentRef]);
 
-  // 쓰로틀링: requestAnimationFrame으로 한 프레임에 한 번만 위치 업데이트
-  const scheduleUpdate = useCallback(() => {
-    if (rafId.current !== null) cancelAnimationFrame(rafId.current);
-    rafId.current = requestAnimationFrame(updatePosition);
-  }, [updatePosition]);
-
-  // 드롭다운 위치 업데이트(계속 부모 위치 바로 밑으로)
-  useEffect(() => {
-    if (isOpen) {
-      updatePosition();
-      window.addEventListener('resize', scheduleUpdate);
-      window.addEventListener('scroll', scheduleUpdate, true); // true: 버블링 단계에서 모든 스크롤 감지
-    }
-    return () => {
-      window.removeEventListener('resize', scheduleUpdate);
-      window.removeEventListener('scroll', scheduleUpdate, true);
+    // 쓰로틀링: requestAnimationFrame으로 한 프레임에 한 번만 위치 업데이트
+    const scheduleUpdate = useCallback(() => {
       if (rafId.current !== null) cancelAnimationFrame(rafId.current);
-    };
-  }, [isOpen, scheduleUpdate, updatePosition]);
+      rafId.current = requestAnimationFrame(updatePosition);
+    }, [updatePosition]);
 
-  if (typeof window === 'undefined') return null;
+    // 드롭다운 위치 업데이트(계속 부모 위치 바로 밑으로)
+    useEffect(() => {
+      if (isOpen) {
+        updatePosition();
+        window.addEventListener('resize', scheduleUpdate);
+        window.addEventListener('scroll', scheduleUpdate, true); // true: 버블링 단계에서 모든 스크롤 감지
+      }
+      return () => {
+        window.removeEventListener('resize', scheduleUpdate);
+        window.removeEventListener('scroll', scheduleUpdate, true);
+        if (rafId.current !== null) cancelAnimationFrame(rafId.current);
+      };
+    }, [isOpen, scheduleUpdate, updatePosition]);
 
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className={`absolute z-50 ${className ?? ''}`}
-          style={{
-            top: position.top,
-            left: position.left,
-            minWidth: position.width,
-          }}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>,
-    document.body,
-  );
-};
+    if (typeof window === 'undefined') return null;
+
+    return createPortal(
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            ref={ref}
+            className={`absolute z-50 ${className ?? ''}`}
+            style={{
+              top: position.top,
+              left: alignLeft ? 0 : position.left,
+              minWidth: position.width,
+            }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>,
+      document.body,
+    );
+  },
+);
+
+DropDownMenu.displayName = 'DropDownMenu';
 
 export default DropDownMenu;
