@@ -6,13 +6,13 @@ const SaveCardList = () => {
   return (
     <div className='mb-10'>
       <CardListHeader title='이번 주 저장 List' />
-      <div className='relative w-4/5 max-sm:w-9/10 mx-auto flex flex-col gap-8'>
+      <div className='relative w-4/5 max-sm:w-9/10 mx-auto flex flex-col gap-4'>
         <SaveCard />
         <SaveCard />
         <SaveCard />
       </div>
       <CardListHeader title='전체 저장 List' showAllContent={true} />
-      <div className='relative w-4/5 max-sm:w-9/10 mx-auto flex flex-col gap-8'>
+      <div className='relative w-4/5 max-sm:w-9/10 mx-auto flex flex-col gap-4'>
         <SaveCard />
         <SaveCard />
         <SaveCard />

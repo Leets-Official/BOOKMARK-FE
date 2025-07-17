@@ -1,4 +1,6 @@
 import { LeftIcon, RightIcon } from '@/assets';
+import clsx from 'clsx';
+import { useState } from 'react';
 import { isMobile } from 'react-device-detect';
 
 interface CardListHeaderProps {
@@ -20,6 +22,12 @@ const CardListHeader = ({
   showCategory = false,
   showAllContent = false,
 }: CardListHeaderProps) => {
+  const [isRotated, setIsRotated] = useState(false);
+
+  const toggleSortOrder = () => {
+    setIsRotated((prev) => !prev);
+  };
+
   return (
     <div className='w-4/5 mx-auto max-sm:w-9/10 mt-15'>
       <div className='flex justify-between items-center'>
@@ -31,32 +39,45 @@ const CardListHeader = ({
             <>
               {!isMobile && (
                 <div onClick={onPrev} className='hover:brightness-0'>
-                  <LeftIcon width={24} height={24} />
+                  <LeftIcon width={24} height={24} strokeWidth={1.5} stroke='#545966' />
                 </div>
               )}
               <p className='overflow-hidden max-sm:text-base text-xl'>{currentNum}</p>
               {!isMobile && (
                 <div onClick={onNext} className='hover:brightness-0'>
-                  <RightIcon width={24} height={24} />
+                  <RightIcon width={24} height={24} strokeWidth={1.5} />
                 </div>
               )}
             </>
           )}
         </div>
         {showCategory && (
-          <div className='flex flex-row items-center gap-2 mr-3 font-semibold text-blue hover:brightness-75 cursor-pointer'>
+          <div className='flex flex-row items-center gap-1.5 mr-3 font-semibold text-blue hover:brightness-75 cursor-pointer'>
             <p className='max-sm:text-[16px] text-[24px]'>+</p>
             <span className=' max-sm:text-[12px] text-base'>카테고리 추가</span>
           </div>
         )}
         {showAllContent && (
-          <div className='flex flex-row items-center gap-2 mr-3 font-semibold text-stone hover:brightness-75 cursor-pointer'>
-            <p className='max-sm:text-[16px] text-[24px]'>+</p>
-            <span className=' max-sm:text-[12px] text-base'>최신순</span>
+          <div
+            onClick={toggleSortOrder}
+            className='flex flex-row items-center gap-1 mr-3 font-semibold text-stone cursor-pointer'
+          >
+            <p className=' max-sm:text-[12px] text-base'>최신순</p>
+            <span className='max-sm:text-[16px] text-[24px] rotate-90'>
+              <RightIcon
+                width={16}
+                height={16}
+                strokeWidth={2.5}
+                className={clsx(
+                  'w-4 h-4 sm:w-6 sm:h-6 transition-transform duration-300',
+                  isRotated && 'rotate-180',
+                )}
+              />
+            </span>
           </div>
         )}
       </div>
-      <hr className='border-t border-gray-300 my-4' />
+      <hr className='border-t border-gray-300 mt-5 mb-1' />
     </div>
   );
 };

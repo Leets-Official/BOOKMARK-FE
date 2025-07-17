@@ -16,7 +16,6 @@ const Home = () => {
     <div className='relative min-h-screen'>
       <HomeHeader />
       <ChangeSearchBar barMarginTop={250} />
-
       {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />}
       <SaveCardList />
       <HomeFooter />

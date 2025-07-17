@@ -1,9 +1,11 @@
 import { FolderDetailIcon } from '@/assets';
 import Image from '@/components/common/Image';
+import clsx from 'clsx';
+import { isMobile } from 'react-device-detect';
 
 const SaveCard = () => {
   return (
-    <div className='w-full rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
+    <div className='mt-3 w-full rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
       <div className='p-4 pb-2'>
         <div className='flex gap-2 mb-4'>
           <span className='bg-[#80CA14] text-white font-normal px-3 py-3 rounded-full text-[15px] border-1 border-[#EAEDF5]'>
@@ -20,7 +22,7 @@ const SaveCard = () => {
           src='https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg'
           className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4'
         />
-        <div className='flex justify-between items-start pl-2'>
+        <div className='flex justify-between items-start pl-2 pb-2'>
           <div className='flex-1'>
             <h3 className='font-semibold text-[20px] text-gray-900 mb-2'>
               SEMIHARU CITY POP PLAYLIST
@@ -33,7 +35,10 @@ const SaveCard = () => {
               <FolderDetailIcon
                 width={24}
                 height={24}
-                className='text-white hover:text-grayBg transition-colors'
+                className={clsx(
+                  'text-white hover:text-grayBg transition-colors',
+                  isMobile ? 'w-6 h-6' : 'sm:w-10 w-8 sm:h-10 h-8',
+                )}
               />
             </div>
           </div>

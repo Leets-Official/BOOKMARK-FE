@@ -41,8 +41,8 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
 
   return (
     <div className='mt-90'>
-      <CardListHeader currentNum={cardList.length.toString()} title='Folder' />
-      <div ref={containerRef} className='relative py-3 overflow-hidden w-9/10 mx-auto'>
+      <CardListHeader currentNum={cardList.length.toString()} title='Folder' showCategory={true} />
+      <div ref={containerRef} className='relative overflow-hidden w-4/5 max-sm:w-9/10 mx-auto'>
         <motion.div
           ref={dragRef}
           style={{
@@ -56,7 +56,7 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
             power: 0.01, // 드래그 이동 거리의 가중치와 속도를 낮춰 너무 빨리 넘어가는 것 방지
             timeConstant: 200,
           }}
-          className='flex justify-start items-center cursor-grab active:cursor-grabbing'
+          className='flex justify-start items-center gap-3 cursor-grab active:cursor-grabbing'
         >
           {cardList.map((card) => (
             <FolderCard key={card.id} title={card.title} />

@@ -65,7 +65,8 @@ const ChangeSearchBar = ({ barMarginTop }: ChangeSearchBarProps) => {
                   <LeftIcon
                     width={24}
                     height={24}
-                    strokeWidth={2.5}
+                    stroke='black'
+                    strokeWidth={2}
                     className='rotate-90 w-6 h-6 sm:w-[30px] sm:h-[30px]'
                   />
                 }
