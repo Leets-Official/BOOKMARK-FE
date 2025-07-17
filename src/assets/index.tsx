@@ -1,3 +1,4 @@
+import kakaoLoginicon from './kakaologin.svg?react';
 import BackArrowIcon from '@/assets/icons/BackArrow.svg?react';
 import DeleteIcon from '@/assets/icons/Delete.svg?react';
 import AddIcon from '@/assets/icons/Add.svg?react';
@@ -18,6 +19,7 @@ import FilteringIcon from '@/assets/icons/Filtering.svg?react';
 import FixedFilteringIcon from '@/assets/icons/FixedFiltering.svg?react';
 
 export {
+  kakaoLoginicon,
   BackArrowIcon,
   DeleteIcon,
   AddIcon,
