@@ -8,6 +8,7 @@ interface CardListHeaderProps {
   title: string;
   showPagination?: boolean;
   showCategory?: boolean;
+  showAllContent?: boolean;
 }
 
 const CardListHeader = ({
@@ -17,9 +18,10 @@ const CardListHeader = ({
   title,
   showPagination = false,
   showCategory = false,
+  showAllContent = false,
 }: CardListHeaderProps) => {
   return (
-    <div className='w-4/5 mx-auto max-sm:w-9/10'>
+    <div className='w-4/5 mx-auto max-sm:w-9/10 mt-15'>
       <div className='flex justify-between items-center'>
         <div className='flex items-center gap-1'>
           <p className='font-bold sm:mr-7 mr-3 overflow-hidden max-sm:text-base text-xl text-stone'>
@@ -45,6 +47,12 @@ const CardListHeader = ({
           <div className='flex flex-row items-center gap-2 mr-3 font-semibold text-blue hover:brightness-75 cursor-pointer'>
             <p className='max-sm:text-[16px] text-[24px]'>+</p>
             <span className=' max-sm:text-[12px] text-base'>카테고리 추가</span>
+          </div>
+        )}
+        {showAllContent && (
+          <div className='flex flex-row items-center gap-2 mr-3 font-semibold text-stone hover:brightness-75 cursor-pointer'>
+            <p className='max-sm:text-[16px] text-[24px]'>+</p>
+            <span className=' max-sm:text-[12px] text-base'>최신순</span>
           </div>
         )}
       </div>
