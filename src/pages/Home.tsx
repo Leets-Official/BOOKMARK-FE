@@ -7,7 +7,7 @@ import { Outlet } from 'react-router-dom';
 import HomeFooter from '@/components/layout/footer/HomeFooter';
 import SaveCardList from '@/components/ui/cardlist/SaveCardList';
 import { dummyCardData } from '@/contants/DummyData';
-import type { SaveCardProps } from '@/contants/DummyData';
+import type { SaveCardProps } from '@/types';
 
 interface GroupedByCategoryType {
   [category: string]: SaveCardProps[];
