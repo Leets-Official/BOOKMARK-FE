@@ -4,7 +4,11 @@ import FolderCard from '../card/FolderCard';
 import CardListHeader from '@/components/layout/header/CardListHeader';
 
 interface HomeCardListProps {
-  cardList: { id: number; title: string }[];
+  cardList: {
+    id: number;
+    category: string;
+    images: string[];
+  }[];
 }
 
 // 모바일 용 카드리스트
@@ -59,7 +63,7 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
           className='flex justify-start items-center gap-3 cursor-grab active:cursor-grabbing'
         >
           {cardList.map((card) => (
-            <FolderCard key={card.id} title={card.title} />
+            <FolderCard key={card.id} category={card.category} images={card.images} />
           ))}
         </motion.div>
       </div>

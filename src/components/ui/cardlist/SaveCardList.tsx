@@ -1,21 +1,24 @@
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import SaveCard from '../card/SaveCard';
 import Button from '@/components/common/Button';
+import { dummyCardData } from '@/contants/DummyData';
+
+const sortedData = [...dummyCardData].sort((a, b) => a.id - b.id);
 
 const SaveCardList = () => {
   return (
     <div className='mb-10'>
       <CardListHeader title='이번 주 저장 List' />
       <div className='relative w-4/5 max-sm:w-9/10 mx-auto flex flex-col gap-4'>
-        <SaveCard />
-        <SaveCard />
-        <SaveCard />
+        {sortedData.slice(0, 3).map((card) => (
+          <SaveCard key={card.id} data={card} />
+        ))}
       </div>
       <CardListHeader title='전체 저장 List' showAllContent={true} />
       <div className='relative w-4/5 max-sm:w-9/10 mx-auto flex flex-col gap-4'>
-        <SaveCard />
-        <SaveCard />
-        <SaveCard />
+        {sortedData.slice(0, 5).map((card) => (
+          <SaveCard key={card.id} data={card} />
+        ))}
       </div>
       <div className='flex justify-center'>
         <Button

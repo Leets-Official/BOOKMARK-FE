@@ -6,7 +6,11 @@ import { getCardsPerSlide } from '@/utils/CardPerSlide';
 
 // Props 타입
 interface HomeCardListProps {
-  cardList: { id: number; title: string }[];
+  cardList: {
+    id: number;
+    category: string;
+    images: string[];
+  }[];
 }
 
 // 슬라이드 애니메이션용 variants 정의
@@ -101,14 +105,14 @@ const CardList = ({ cardList }: HomeCardListProps) => {
             }}
           >
             {cardSlice.map((card) => (
-              <FolderCard key={card.id} title={card.title} />
+              <FolderCard key={card.id} category={card.category} images={card.images} />
             ))}
           </motion.div>
         </AnimatePresence>
         {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
         <div className='invisible flex w-full'>
           {cardSlice.map((card) => (
-            <FolderCard key={`ghost-${card.id}`} title={card.title} />
+            <FolderCard key={`ghost-${card.id}`} category={card.category} images={card.images} />
           ))}
         </div>
       </div>
