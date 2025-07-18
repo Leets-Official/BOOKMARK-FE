@@ -2,7 +2,7 @@ export interface ChipProps {
   id: number;
   content: string;
   isSelected: boolean;
-  type: 'category' | 'tag' | 'suggestion';
+  type: 'category' | 'tag' | 'suggestion' | 'platform';
   deleteable?: boolean;
   isNew?: boolean;
 }

@@ -2,12 +2,12 @@
 import type { ChipProps, CompactCardProps } from '@/types';
 
 const dummyCategoryList: ChipProps[] = [
-  { id: 0, content: '카테고리', isSelected: false, type: 'category' },
-  { id: 1, content: '카테고리', isSelected: false, type: 'category' },
-  { id: 2, content: '카테고리', isSelected: false, type: 'category' },
-  { id: 3, content: '카테고리', isSelected: false, type: 'category' },
-  { id: 4, content: '카테고리', isSelected: false, type: 'category' },
-  { id: 5, content: '카테고리', isSelected: false, type: 'category' },
+  { id: 0, content: '개발', isSelected: false, type: 'category' },
+  { id: 1, content: '디자인', isSelected: false, type: 'category' },
+  { id: 2, content: '레퍼런스', isSelected: false, type: 'category' },
+  { id: 3, content: '공모전', isSelected: false, type: 'category' },
+  { id: 4, content: '드로잉', isSelected: false, type: 'category' },
+  { id: 5, content: '아티클', isSelected: false, type: 'category' },
   { id: 6, content: '카테고리', isSelected: false, type: 'category' },
   { id: 7, content: '카테고리', isSelected: false, type: 'category' },
   { id: 8, content: '카테고리', isSelected: false, type: 'category' },
@@ -21,6 +21,14 @@ const dummyTagList: ChipProps[] = [
   { id: 2, content: '태그', isSelected: false, type: 'tag', isNew: false },
   { id: 3, content: '태그', isSelected: false, type: 'tag', isNew: false },
   { id: 4, content: '태그', isSelected: false, type: 'tag', isNew: false },
+];
+
+const dummyPlatformList: ChipProps[] = [
+  { id: 0, content: '플랫폼', isSelected: false, type: 'platform' },
+  { id: 1, content: '플랫폼', isSelected: false, type: 'platform' },
+  { id: 2, content: '플랫폼', isSelected: false, type: 'platform' },
+  { id: 3, content: '플랫폼', isSelected: false, type: 'platform' },
+  { id: 4, content: '플랫폼', isSelected: false, type: 'platform' },
 ];
 
 const dummyCompactCardList: CompactCardProps[] = [
@@ -58,27 +66,27 @@ const dummyCompactCardList: CompactCardProps[] = [
 const dummyDateOptions = [
   {
     id: 1,
-    name: '내일(금) 8/1',
+    name: '내일 (금)',
   },
   {
     id: 2,
-    name: '모레(토) 8/2',
+    name: '2일뒤 (토)',
   },
   {
     id: 3,
-    name: '8/3',
+    name: '3일뒤 (일)',
   },
   {
     id: 4,
-    name: '8/4',
+    name: '4일뒤 (월)',
   },
   {
     id: 5,
-    name: '8/5',
+    name: '5일뒤 (화)',
   },
   {
     id: 6,
-    name: '8/6',
+    name: '6일뒤 (수)',
   },
 ];
 
@@ -112,6 +120,7 @@ const dummyTimeOptions = [
 export {
   dummyCategoryList,
   dummyTagList,
+  dummyPlatformList,
   dummyCompactCardList,
   dummyDateOptions,
   dummyTimeOptions,

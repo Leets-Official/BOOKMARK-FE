@@ -8,7 +8,7 @@ import {
 } from '@/atoms';
 import Button from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
-import DropDown from '@/components/ui/DropDown';
+import DateTimeDropDown from '@/components/layout/dropDown/DateTimeDropDown';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom, useAtomValue } from 'jotai';
 import { useState } from 'react';
@@ -32,8 +32,11 @@ const Alarm = () => {
   const [selectedTime, setSelectedTime] = useAtom(selectedTimeAtom);
 
   const [isOpenAlarmModal, setIsOpenAlarmModal] = useState(false);
+  const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
   const [tempDate, setTempDate] = useState('');
   const [tempTime, setTempTime] = useState('');
+
+  const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
 
   const handleSeletedAlarm = () => {
     setSelectedDate(tempDate);
@@ -108,21 +111,27 @@ const Alarm = () => {
           disabled={tempDate === '' || tempTime === ''}
         >
           <div className='flex flex-row gap-2 mb-2 mt-2'>
-            <DropDown
+            {/* 날짜 드롭다운 */}
+            <DateTimeDropDown
               icon={<CalendarIcon width={24} height={24} fill='#090E1D' />}
-              title='날짜 선택'
-              subTitle='날짜'
               options={dateOptions}
+              title='날짜선택'
+              subTitle='날짜'
               selectedOption={tempDate}
               setSelectedOption={setTempDate}
+              isOpen={isDateDropDownOpen}
+              setIsOpen={setIsDateDropDownOpen}
             />
-            <DropDown
+            {/* 시간 드롭다운 */}
+            <DateTimeDropDown
               icon={<ScheduleIcon width={24} height={24} fill='#090E1D' />}
-              title='시간 선택'
-              subTitle='시간'
               options={timeOptions}
+              title='시간선택'
+              subTitle='시간'
               selectedOption={tempTime}
               setSelectedOption={setTempTime}
+              isOpen={isTimeDropDownOpen}
+              setIsOpen={setIsTimeDropDownOpen}
             />
           </div>
         </Modal>
