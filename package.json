@@ -17,6 +17,7 @@
     "framer-motion": "^12.23.5",
     "jotai": "^2.12.5",
     "react": "^19.1.0",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",
     "tailwind-variants": "^1.0.0",
