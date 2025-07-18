@@ -1,8 +1,12 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { JsonOutputParser } from '@langchain/core/output_parsers';
+import { z } from 'zod';
 
 const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
+const tagSchema = z.object({
+  tags: z.array(z.string()).describe('Array of suggested tags based on title analysis'),
+});
 
 const model = new ChatOpenAI({
   modelName: 'gpt-4o-mini',
@@ -26,18 +30,13 @@ export async function getSuggestionTag(title: string) {
 
     Input Title:
     "{title}"
-
-    Output Format (JSON):
-    {{
-      "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
-    }}
     `,
   );
-  const outputParser = new JsonOutputParser();
 
-  const chain = prompt.pipe(model).pipe(outputParser);
+  const structuredModel = model.withStructuredOutput(tagSchema, {
+    name: 'tag_suggestion',
+  });
 
-  const response = await chain.invoke({ title });
-
+  const response = await structuredModel.invoke(await prompt.format({ title }));
   return response;
 }

@@ -1,3 +1,4 @@
+import KakaoLogoIcon from '@/assets/icons/KakaoLogo.svg?react';
 import BackArrowIcon from '@/assets/icons/BackArrow.svg?react';
 import DeleteIcon from '@/assets/icons/Delete.svg?react';
 import AddIcon from '@/assets/icons/Add.svg?react';
@@ -19,6 +20,7 @@ import FixedFilteringIcon from '@/assets/icons/FixedFiltering.svg?react';
 import FolderDetailIcon from '@/assets/icons/FolderDetail.svg?react';
 
 export {
+  KakaoLogoIcon,
   BackArrowIcon,
   DeleteIcon,
   AddIcon,
