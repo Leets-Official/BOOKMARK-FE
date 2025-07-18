@@ -1,11 +1,9 @@
 // ChangeSearchBar.tsx
 import { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { isMobile } from 'react-device-detect';
-import clsx from 'clsx';
-import HomeSearchBar from './HomeSearchBar';
+import SearchBar from './SearchBar';
 import Button from '@/components/common/Button';
-import { BackArrowIcon } from '@/assets';
+import { LeftIcon } from '@/assets';
 
 // props로 검색창의 top마진 값 전달 받음
 interface ChangeSearchBarProps {
@@ -30,15 +28,15 @@ const ChangeSearchBar = ({ barMarginTop }: ChangeSearchBarProps) => {
       setIsBlur(isPassedMargin); // 기존 검색바는 blur처리
     };
 
-    window.addEventListener('scroll', handleScroll); // 사용자가 스크롤할 때마다 검색창 위치를 검사
-    return () => window.removeEventListener('scroll', handleScroll); // 메모리 누수 방지를 위한 이벤트 제거
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [barMarginTop]);
 
   return (
     <>
-      {/* 원래 위치의 검색바, props로 className을 전달해서 높이 조절 가능 */}
+      {/* 원래 위치의 검색바, props로 style을 전달해서 높이 조절 가능 */}
       <div ref={searchBarRef}>
-        <HomeSearchBar isBlur={isBlur} style={{ marginTop: `${barMarginTop}px` }} />
+        <SearchBar isBlur={isBlur} style={{ marginTop: `${barMarginTop}px` }} />
       </div>
 
       {/* 스크롤 후 고정되는 검색바 */}
@@ -52,24 +50,28 @@ const ChangeSearchBar = ({ barMarginTop }: ChangeSearchBarProps) => {
               transition={{ duration: 0.2, ease: 'easeInOut' }}
               className='fixed w-full top-0 z-10 p-4'
             >
-              <HomeSearchBar
-                isFixed={true}
-                className={clsx(isMobile ? '-translate-x-5' : '-translate-x/2')}
-              />
+              <SearchBar isFixed={true} type='isHome' />
             </motion.div>
             <motion.div
               initial={{ rotate: 0, opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: 'easeInOut' }}
-              className='fixed w-full bottom-5 left-5 z-10'
+              className='fixed w-full bottom-4 left-4 z-10'
             >
+              {/* 업스크롤 버튼 */}
               <Button
                 icon={
-                  <BackArrowIcon width={24} height={24} strokeWidth={2.5} className='rotate-90' />
+                  <LeftIcon
+                    width={24}
+                    height={24}
+                    stroke='black'
+                    strokeWidth={2}
+                    className='rotate-90 w-6 h-6 sm:w-[30px] sm:h-[30px]'
+                  />
                 }
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className='border-1 bg-lightGray rounded-full shadow-md p-4 border-lightGray hover:brightness-90 cursor-pointer'
+                className='border-1 bg-lightGray rounded-full shadow-md sm:p-3 p-2 border-lightGray hover:brightness-90 cursor-pointer'
               />
             </motion.div>
           </>
