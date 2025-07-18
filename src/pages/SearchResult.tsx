@@ -2,15 +2,21 @@ import CompactCard from '@/components/ui/card/CompactCard';
 import ChipDropDown from '@/components/layout/dropDown/ChipDropDown';
 import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
 import { dummyCategoryList, dummyPlatformList, dummyTagList } from '@/contants/DummyData';
+import { useState } from 'react';
+import type { ChipProps } from '@/types';
 
 const SearchResult = () => {
+  const [categoryList, setCategoryList] = useState<ChipProps[]>(dummyCategoryList);
+  const [tagList, setTagList] = useState<ChipProps[]>(dummyTagList);
+  const [platformList, setPlatformList] = useState<ChipProps[]>(dummyPlatformList);
+
   return (
     <div className='relative min-h-screen flex flex-col gap-4'>
       <ChangeSearchBar barMarginTop={100} isBackButton={true} />
       <div className='flex flex-row gap-5 items-center justify-center'>
-        <ChipDropDown title='카테고리' options={dummyCategoryList} />
-        <ChipDropDown title='태그' options={dummyTagList} />
-        <ChipDropDown title='플랫폼' options={dummyPlatformList} />
+        <ChipDropDown title='카테고리' options={categoryList} onChange={setCategoryList} />
+        <ChipDropDown title='태그' options={tagList} onChange={setTagList} />
+        <ChipDropDown title='플랫폼' options={platformList} onChange={setPlatformList} />
       </div>
       <div className='flex flex-col gap-5 px-4'>
         <CompactCard
