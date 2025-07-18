@@ -32,7 +32,7 @@ const Chip = ({
     <motion.div
       className={clsx(
         'rounded-[100px] flex items-center justify-center border text-xs h-8 p-2 flex-row gap-1',
-        disabled ? '' : ' cursor-pointer',
+        !disabled && 'cursor-pointer',
         !isSelected ? className : selectedClassName,
         ' group relative',
       )}

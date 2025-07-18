@@ -16,14 +16,13 @@ const ChipDropDown = ({ title, options }: ChipDropDownProps) => {
   return (
     <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef} isOpen={isOpen}>
       <DropDown.Trigger onClick={() => setIsOpen((prev) => !prev)} ref={parentRef}>
-        <div className='cursor-pointer'>
-          <Chip
-            content={title}
-            isSelected={isOpen}
-            className='border-lightGrayBlue bg-white'
-            dropdownEnabled={true}
-          />
-        </div>
+        <Chip
+          disabled={true}
+          content={title}
+          isSelected={isOpen}
+          className='border-lightGrayBlue bg-white cursor-pointer'
+          dropdownEnabled={true}
+        />
       </DropDown.Trigger>
       <DropDown.Menu
         isOpen={isOpen}
