@@ -6,17 +6,19 @@ import clsx from 'clsx';
 import HomeSearchBar from './HomeSearchBar';
 import Button from '@/components/common/Button';
 import { BackArrowIcon } from '@/assets';
+import { useNavigate } from 'react-router-dom';
 
 // props로 검색창의 top마진 값 전달 받음
 interface ChangeSearchBarProps {
   barMarginTop: number;
+  isBackButton?: boolean;
 }
 
-const ChangeSearchBar = ({ barMarginTop }: ChangeSearchBarProps) => {
+const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBarProps) => {
   const searchBarRef = useRef<HTMLDivElement>(null);
   const [isFixedBar, setISFixedBar] = useState(false);
   const [isBlur, setIsBlur] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const handleScroll = () => {
       if (!searchBarRef.current) return; // 아직 검색창이 렌더링 되지 않았으면 종료
@@ -50,12 +52,23 @@ const ChangeSearchBar = ({ barMarginTop }: ChangeSearchBarProps) => {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -80, opacity: 0 }}
               transition={{ duration: 0.2, ease: 'easeInOut' }}
-              className='fixed w-full top-0 z-10 p-4'
+              className={clsx('fixed w-full top-0 z-10', isBackButton ? 'py-4 px-2' : 'p-4')}
             >
-              <HomeSearchBar
-                isFixed={true}
-                className={clsx(isMobile ? '-translate-x-5' : '-translate-x/2')}
-              />
+              <div className='flex flex-row items-center w-full'>
+                {isBackButton && (
+                  <Button
+                    icon={<BackArrowIcon width={24} height={24} strokeWidth={2.5} />}
+                    onClick={() => navigate('/')}
+                    className='cursor-pointer mr-2'
+                  />
+                )}
+                <div className='flex-1 min-w-0'>
+                  <HomeSearchBar
+                    isFixed={true}
+                    className={clsx(isMobile ? '-translate-x-5' : '-translate-x/2')}
+                  />
+                </div>
+              </div>
             </motion.div>
             <motion.div
               initial={{ rotate: 0, opacity: 0 }}

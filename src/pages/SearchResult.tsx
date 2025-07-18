@@ -6,7 +6,7 @@ import { dummyCategoryList, dummyPlatformList, dummyTagList } from '@/contants/D
 const SearchResult = () => {
   return (
     <div className='relative min-h-screen flex flex-col gap-4'>
-      <ChangeSearchBar barMarginTop={100} />
+      <ChangeSearchBar barMarginTop={100} isBackButton={true} />
       <div className='flex flex-row gap-5 items-center justify-center'>
         <ChipDropDown title='카테고리' options={dummyCategoryList} />
         <ChipDropDown title='태그' options={dummyTagList} />
