@@ -110,7 +110,7 @@ const FilterSearchBar: React.FC = () => {
       {/* 선택된 Chip들 */}
       <AnimatePresence>
         <AnimatedHeight show={hasSelectedChips}>
-          <div className='px-4 pt-2 border-t border-gray-200 bg-white flex flex-wrap gap-2'>
+          <div className='px-4 pt-2 pb-1 border-t border-gray-200 bg-white flex flex-wrap gap-2'>
             {renderChip(selectedCategories, handleDeleteCategory, 'category')}
             {renderChip(selectedTags, handleDeleteTag, 'tag')}
             {renderChip(selectedPlatforms, handleDeletePlatform, 'platform')}
