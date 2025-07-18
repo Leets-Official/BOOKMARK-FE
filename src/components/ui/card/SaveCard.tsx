@@ -3,26 +3,32 @@ import Image from '@/components/common/Image';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import type { SaveCardProps } from '@/types';
+import Chip from '@/components/common/Chip';
 
 const SaveCard = ({ data }: { data: SaveCardProps }) => {
   return (
     <div className='mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] cursor-pointer hover:border hover:border-gray-300'>
       <div className='p-4 pb-10'>
         <div className='flex flex-wrap gap-2 mb-4'>
-          <span className='bg-[#80CA14] text-white font-normal px-3 py-3 rounded-full text-[15px] border-1 border-[#EAEDF5]'>
-            {data.category}
-          </span>
+          <Chip
+            content={data.category}
+            isSelected={false}
+            className='bg-[#80CA14] text-white border-[#EAEDF5] text-[15px] px-3 h-auto'
+          />
+
           {data.tags.map((tag, i) => (
-            <span
+            <Chip
               key={i}
-              className='font-normal px-3 py-3 rounded-full text-[15px] border-1 border-[#EAEDF5]'
-            >
-              {tag}
-            </span>
+              content={tag}
+              isSelected={false}
+              className='border-[#EAEDF5] text-[15px] px-3 h-auto'
+            />
           ))}
-          <span className='font-normal px-3 py-3 rounded-full text-[15px] border-1 border-[#EAEDF5]'>
-            {data.platform}
-          </span>
+          <Chip
+            content={data.platform}
+            isSelected={false}
+            className='border-[#EAEDF5] text-[15px] px-3 h-auto'
+          />
         </div>
         <Image src={data.image} className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4' />
         <div className='flex justify-between items-start pl-2 pb-2'>
