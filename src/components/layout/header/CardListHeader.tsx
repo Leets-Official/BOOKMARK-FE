@@ -9,6 +9,8 @@ interface CardListHeaderProps {
   showPagination?: boolean;
   showCategory?: boolean;
   showAllContent?: boolean;
+  sortLabel?: string;
+  onSortToggle?: () => void;
 }
 
 const CardListHeader = ({
@@ -19,6 +21,8 @@ const CardListHeader = ({
   showPagination = false,
   showCategory = false,
   showAllContent = false,
+  sortLabel,
+  onSortToggle,
 }: CardListHeaderProps) => {
   return (
     <div className='w-4/5 mx-auto max-sm:w-9/10 mt-15'>
@@ -50,8 +54,11 @@ const CardListHeader = ({
           </div>
         )}
         {showAllContent && (
-          <div className='flex flex-row items-center gap-1 mr-3 font-semibold text-stone hover:brightness-75 cursor-pointer'>
-            <p className=' max-sm:text-[12px] text-base'>최신순</p>
+          <div
+            onClick={onSortToggle}
+            className='flex flex-row items-center gap-1 mr-3 font-semibold text-stone hover:brightness-75 cursor-pointer'
+          >
+            <p className=' max-sm:text-[12px] text-base'>{sortLabel}</p>
             <span className='max-sm:text-[16px] text-[24px] rotate-90'>
               <RightIcon
                 width={16}

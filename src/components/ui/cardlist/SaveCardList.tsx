@@ -2,21 +2,32 @@ import CardListHeader from '@/components/layout/header/CardListHeader';
 import SaveCard from '../card/SaveCard';
 import Button from '@/components/common/Button';
 import { dummyCardData } from '@/contants/DummyData';
-
-const sortedData = [...dummyCardData].sort((a, b) => a.id - b.id);
+import { useState } from 'react';
 
 const SaveCardList = () => {
+  const [sortOrder, setSortOrder] = useState(true);
+
+  const sortLabel = sortOrder ? '최신순' : '오래된순';
+
+  const weeklySortedData = [...dummyCardData].sort((a, b) => a.id - b.id);
+  const allSortedData = [...dummyCardData].sort((a, b) => (sortOrder ? a.id - b.id : b.id - a.id));
+
   return (
     <div className='mb-10'>
       <CardListHeader title='이번 주 저장 List' />
       <div className='w-4/5 max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-        {sortedData.slice(0, 3).map((card) => (
+        {weeklySortedData.slice(0, 3).map((card) => (
           <SaveCard key={card.id} data={card} />
         ))}
       </div>
-      <CardListHeader title='전체 저장 List' showAllContent={true} />
+      <CardListHeader
+        title='전체 저장 List'
+        showAllContent={true}
+        sortLabel={sortLabel}
+        onSortToggle={() => setSortOrder((prev) => !prev)}
+      />
       <div className='w-4/5 max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-        {sortedData.slice(0, 6).map((card) => (
+        {allSortedData.slice(0, 6).map((card) => (
           <SaveCard key={card.id} data={card} />
         ))}
       </div>
