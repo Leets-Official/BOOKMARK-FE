@@ -19,11 +19,13 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
   const [triggerTitle, setTriggerTitle] = useState<string>(title);
   const [isSelectedOption, setIsSelectedOption] = useState<boolean>(false);
 
+  // Menu(옵션) 클릭 시 선택 여부 변경
   const handleChipClick = (id: number) => {
     const newOptions = options.map((o) => (o.id === id ? { ...o, isSelected: !o.isSelected } : o));
     onChange(newOptions);
   };
 
+  // Menu(옵션) 선택 시 Tigger text와 Chip 색상 변경
   useEffect(() => {
     const selectedOptions = options.filter((o) => o.isSelected);
     if (!selectedOptions || selectedOptions.length === 0) {
