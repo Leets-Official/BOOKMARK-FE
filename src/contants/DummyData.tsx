@@ -23,6 +23,14 @@ const dummyTagList: ChipProps[] = [
   { id: 4, content: '태그', isSelected: false, type: 'tag', isNew: false },
 ];
 
+const dummyPlatformList: ChipProps[] = [
+  { id: 0, content: '플랫폼', isSelected: false, type: 'platform' },
+  { id: 1, content: '플랫폼', isSelected: false, type: 'platform' },
+  { id: 2, content: '플랫폼', isSelected: false, type: 'platform' },
+  { id: 3, content: '플랫폼', isSelected: false, type: 'platform' },
+  { id: 4, content: '플랫폼', isSelected: false, type: 'platform' },
+];
+
 const dummyCompactCardList: CompactCardProps[] = [
   {
     title: 'SEMIHARU CITY PO',
@@ -112,6 +120,7 @@ const dummyTimeOptions = [
 export {
   dummyCategoryList,
   dummyTagList,
+  dummyPlatformList,
   dummyCompactCardList,
   dummyDateOptions,
   dummyTimeOptions,

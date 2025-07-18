@@ -10,9 +10,11 @@ const ChipDropDown = () => {
   const categories = dummyCategoryList;
 
   return (
-    <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef}>
+    <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef} isOpen={isOpen}>
       <DropDown.Trigger onClick={() => setIsOpen((prev) => !prev)} ref={parentRef}>
-        <Chip content='카테고리' isSelected={isOpen} type='category' dropdownEnabled={true} />
+        <div className='cursor-pointer'>
+          <Chip content='카테고리' isSelected={isOpen} type='category' dropdownEnabled={true} />
+        </div>
       </DropDown.Trigger>
       <DropDown.Menu
         isOpen={isOpen}
