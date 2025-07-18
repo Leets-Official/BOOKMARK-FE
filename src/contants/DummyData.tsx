@@ -132,7 +132,7 @@ const dummyCardData: SaveCardProps[] = [
     category: '갤럭시 워치',
     tags: ['헬스', '알림', '배터리'],
     image: 'https://cdn.pixabay.com/photo/2018/04/26/12/14/travel-3351825_1280.jpg',
-    memo: '갤럭시 워치로 운동 루틴 관리하기.',
+    memo: '애플 워치는 너무 비싸서 갤럭시 워치 사려고 했는데 벤텐 시계 같아서 너무 안 이쁨 ㅜㅜ',
     platform: '브런치',
   },
   {

@@ -6,8 +6,8 @@ import type { SaveCardProps } from '@/types';
 
 const SaveCard = ({ data }: { data: SaveCardProps }) => {
   return (
-    <div className='mt-3 w-full rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] hover:border hover:border-gray-300'>
-      <div className='p-4 pb-2'>
+    <div className='mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] hover:border hover:border-gray-300'>
+      <div className='p-4 pb-10'>
         <div className='flex flex-wrap gap-2 mb-4'>
           <span className='bg-[#80CA14] text-white font-normal px-3 py-3 rounded-full text-[15px] border-1 border-[#EAEDF5]'>
             {data.category}
@@ -29,7 +29,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
           <div className='flex-1'>
             <h3 className='font-semibold text-[20px] text-gray-900 mb-2'>{data.category}</h3>
             <p className='text-[15px] text-gray-600 leading-relaxed mb-2'>{data.memo}</p>
-            <div className='flex justify-between items-center'>
+            <div className='absolute bottom-4 left-6 right-4 flex justify-between items-center'>
               <p className='text-sm text-stone'>2025.07.17 저장</p>
               <FolderDetailIcon
                 width={24}

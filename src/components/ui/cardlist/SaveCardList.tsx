@@ -9,14 +9,14 @@ const SaveCardList = () => {
   return (
     <div className='mb-10'>
       <CardListHeader title='이번 주 저장 List' />
-      <div className='relative w-4/5 max-sm:w-9/10 mx-auto flex flex-col gap-4'>
+      <div className='w-4/5 max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
         {sortedData.slice(0, 3).map((card) => (
           <SaveCard key={card.id} data={card} />
         ))}
       </div>
       <CardListHeader title='전체 저장 List' showAllContent={true} />
-      <div className='relative w-4/5 max-sm:w-9/10 mx-auto flex flex-col gap-4'>
-        {sortedData.slice(0, 5).map((card) => (
+      <div className='w-4/5 max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+        {sortedData.slice(0, 6).map((card) => (
           <SaveCard key={card.id} data={card} />
         ))}
       </div>
