@@ -5,6 +5,7 @@ import Chip from '@/components/common/Chip';
 import { useEffect, useState } from 'react';
 import Modal from '@/components/common/Modal';
 import TextField from '@/components/ui/TextField';
+import type { ChipProps } from '@/types';
 import {
   categoryListAtom,
   isSaveButtonDisabledAtom,
@@ -16,7 +17,6 @@ import {
   visibleCategoryAtom,
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
-  type ChipProps,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
@@ -252,7 +252,8 @@ const CategoryTagSelector = () => {
                     key={category.id}
                     content={category.content}
                     isSelected={category.isSelected}
-                    type={category.type}
+                    className='border-grayText'
+                    selectedClassName='bg-lightGray'
                     onClick={() => handleCategory(category.id)}
                   />
                 ))}
@@ -297,7 +298,8 @@ const CategoryTagSelector = () => {
                           key={tag.id}
                           content={tag.content}
                           isSelected={tag.isSelected}
-                          type={tag.type}
+                          className='border-lightGrayBlue bg-white'
+                          selectedClassName='bg-lightGray'
                           onClick={() => handleTag(tag.id)}
                         />
                       ))}
@@ -312,7 +314,8 @@ const CategoryTagSelector = () => {
                           key={suggestion.id}
                           content={suggestion.content}
                           isSelected={suggestion.isSelected}
-                          type={suggestion.type}
+                          className='border-lightGrayBlue bg-white'
+                          selectedClassName='border-primary bg-lightPrimary'
                           onClick={() => handleSuggestion(suggestion.id)}
                         />
                       ))}
@@ -352,19 +355,18 @@ const CategoryTagSelector = () => {
           />
           <div className='flex flex-wrap gap-2 m-0.5 max-h-[200px] overflow-y-auto hide-scrollbar'>
             {modalOpenType === 'tag' &&
-              tempTagList
-                .filter((item) => item.isSelected)
-                .map((item) => (
-                  <Chip
-                    key={item.id}
-                    content={item.content}
-                    isSelected={item.isSelected}
-                    type={item.type}
-                    onClick={() => handleTag(item.id)}
-                    disabled={true}
-                    onDelete={item.deleteable ? () => deleteTempTag(item.id) : undefined}
-                  />
-                ))}
+              tempTagList.map((item) => (
+                <Chip
+                  key={item.id}
+                  content={item.content}
+                  isSelected={item.isSelected}
+                  className='border-lightGrayBlue bg-white'
+                  selectedClassName='bg-lightGray'
+                  onClick={() => handleTag(item.id)}
+                  disabled={true}
+                  onDelete={item.deleteable ? () => deleteTempTag(item.id) : undefined}
+                />
+              ))}
           </div>
         </Modal>
       )}

@@ -1,10 +1,10 @@
+// CardList, MobileCardList에서만 사용 (나중에 API 연동 시 바뀔 수 있음)
 import type { SaveCardProps } from '@/types';
 
 interface GroupedByCategoryType {
   [category: string]: SaveCardProps[];
 }
 
-// 카테고리 기준으로 그룹화(나중에 API 연동할 때 바뀔 수 있는 부분임)
 export const getGroupedCardList = (dummyCardData: SaveCardProps[]) => {
   // 카테고리 기준으로 그룹화
   const groupedByCategory = dummyCardData.reduce((groupedCards, card) => {

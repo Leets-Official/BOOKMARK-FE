@@ -25,7 +25,7 @@ const Container = tv({
   variants: {
     isMobile: {
       true: 'h-full w-full',
-      false: 'w-[369px] h-[773px] rounded-[30px] border fixed',
+      false: 'w-[369px] h-[98%] rounded-[30px] border fixed',
     },
   },
 });
@@ -39,14 +39,6 @@ const SaveButton = tv({
     },
   },
 });
-
-export interface ChipProps {
-  id: number;
-  content: string;
-  isSelected: boolean;
-  type: 'category' | 'tag' | 'suggestion';
-  deleteable?: boolean;
-}
 
 const Save = () => {
   const navigate = useNavigate();
