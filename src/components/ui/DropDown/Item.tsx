@@ -16,7 +16,7 @@ const DropDownItem = ({ children, onClick }: DropDownItemProps) => {
   };
 
   return (
-    <div className={`cursor-pointer`} onClick={handleClick}>
+    <div className='cursor-pointer' onClick={handleClick}>
       {children}
     </div>
   );
