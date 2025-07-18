@@ -3,10 +3,6 @@ import Button from './Button';
 import { BackArrowIcon, DeleteIcon } from '@/assets';
 import clsx from 'clsx';
 
-// 이거 그냥 선택 시 색변 경 및 일반 색 변경 두 개를 props로 받아서 해결하자.
-// 이거 후에 ChipDropDown 컴포넌트 완성
-// 검색 완료 페이지 작성
-
 interface ChipProps {
   content: string;
   className: string;

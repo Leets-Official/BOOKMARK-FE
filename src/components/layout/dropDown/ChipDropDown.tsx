@@ -1,19 +1,28 @@
 import Chip from '@/components/common/Chip';
 import DropDown from '@/components/ui/DropDown';
-import { dummyCategoryList } from '@/contants/DummyData';
+import type { ChipProps } from '@/types';
 import { useRef, useState } from 'react';
 
-const ChipDropDown = () => {
+interface ChipDropDownProps {
+  title: string;
+  options: ChipProps[];
+}
+
+const ChipDropDown = ({ title, options }: ChipDropDownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const parentRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const categories = dummyCategoryList;
 
   return (
     <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef} isOpen={isOpen}>
       <DropDown.Trigger onClick={() => setIsOpen((prev) => !prev)} ref={parentRef}>
         <div className='cursor-pointer'>
-          <Chip content='카테고리' isSelected={isOpen} type='category' dropdownEnabled={true} />
+          <Chip
+            content={title}
+            isSelected={isOpen}
+            className='border-lightGrayBlue bg-white'
+            dropdownEnabled={true}
+          />
         </div>
       </DropDown.Trigger>
       <DropDown.Menu
@@ -24,15 +33,16 @@ const ChipDropDown = () => {
         ref={menuRef}
       >
         <div className='bg-white rounded-[8px] flex flex-col gap-5 border border-lightBlueGray z-[9999] shadow-lg h-[144px] overflow-y-auto p-4 mt-1'>
-          <p className='text-15 text-stone font-semibold'>카테고리</p>
+          <p className='text-15 text-stone font-semibold'>{title}</p>
           <div className='flex flex-row gap-2 flex-wrap'>
-            {categories.map((category) => (
-              <DropDown.Item key={category.id} onClick={() => console.log('clicked')}>
+            {options.map((option) => (
+              <DropDown.Item key={option.id} onClick={() => console.log('clicked')}>
                 <Chip
-                  key={category.id}
-                  content={category.content}
+                  key={option.id}
+                  content={option.content}
                   isSelected={false}
-                  type='category'
+                  className='border-lightGrayBlue bg-white'
+                  dropdownEnabled={false}
                 />
               </DropDown.Item>
             ))}
