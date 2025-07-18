@@ -1,16 +1,12 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { StructuredOutputParser } from '@langchain/core/output_parsers';
 import { z } from 'zod';
-import { RunnableSequence } from '@langchain/core/runnables';
 
 const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
-const schema = z.object({
-  tags: z.array(z.string()),
+const tagSchema = z.object({
+  tags: z.array(z.string()).describe('Array of suggested tags based on title analysis'),
 });
-
-const parser = StructuredOutputParser.fromZodSchema(schema);
 
 const model = new ChatOpenAI({
   modelName: 'gpt-4o-mini',
@@ -34,17 +30,13 @@ export async function getSuggestionTag(title: string) {
 
     Input Title:
     "{title}"
-
-    {format_instructions}
-    `.trim(),
+    `,
   );
 
-  const chain = RunnableSequence.from([prompt, model, parser]);
-
-  const response = await chain.invoke({
-    title,
-    format_instructions: parser.getFormatInstructions(),
+  const structuredModel = model.withStructuredOutput(tagSchema, {
+    name: 'tag_suggestion',
   });
 
+  const response = await structuredModel.invoke(await prompt.format({ title }));
   return response;
 }
