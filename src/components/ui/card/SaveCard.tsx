@@ -4,10 +4,18 @@ import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import type { SaveCardProps } from '@/types';
 import Chip from '@/components/common/Chip';
+import { motion } from 'framer-motion';
 
 const SaveCard = ({ data }: { data: SaveCardProps }) => {
   return (
-    <div className='mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] cursor-pointer hover:border hover:border-gray-300'>
+    <motion.div
+      whileHover={{ scale: 1.04 }}
+      transition={{ duration: 0.4 }}
+      className={clsx(
+        'mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] cursor-pointer',
+        'hover:border hover:border-gray-300 border-transparent',
+      )}
+    >
       <div className='p-4 pb-10'>
         <div className='flex flex-wrap gap-2 mb-4'>
           <Chip
@@ -15,7 +23,6 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
             isSelected={false}
             className='bg-[#80CA14] text-white border-[#EAEDF5] text-[15px] px-3 h-auto'
           />
-
           {data.tags.map((tag, i) => (
             <Chip
               key={i}
@@ -49,7 +56,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

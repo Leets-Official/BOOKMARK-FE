@@ -2,23 +2,26 @@ import { FolderDetailIcon } from '@/assets';
 import Image from '@/components/common/Image';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
+import { motion } from 'framer-motion';
 
 interface ICardProps {
   category: string;
   images: string[];
+  position?: 'left' | 'center' | 'right';
 }
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
   'overflow-hidden font-sans font-semibold text-ellipsis whitespace-nowrap ml-1 md:text-xl text-base';
 
-const FolderCard = ({ category, images }: ICardProps) => {
+const FolderCard = ({ category, images, position = 'center' }: ICardProps) => {
   return (
-    // 모바일은 카드의 너비를 고정, PC는 반응형에 따라 비율 조정
-    <div
+    <motion.div
+      whileHover={{ scale: 1.04, x: position === 'left' ? 8 : position === 'right' ? -8 : 0 }}
+      transition={{ duration: 0.4 }}
       className={clsx(
-        isMobile ? 'min-w-40 pt-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 sm:mt-2 p-2',
-        'rounded-2xl hover:border-1 hover:border-gray-300 hover:shadow-md',
+        isMobile ? 'min-w-40 pt-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 sm:mt-2 p-2 border-transparent ', // 모바일은 카드의 너비를 고정, PC는 반응형에 따라 비율 조정
+        'rounded-2xl hover:shadow-md hover:border-1 hover:border-gray-300',
       )}
     >
       {/**카테고리에 카드가 하나만 있으면 폴더에 하나만, 두개 있으면 1 : 1 비율... 3개까지 표시 */}
@@ -65,7 +68,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
           )}
         />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
