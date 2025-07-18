@@ -25,7 +25,7 @@ const Container = tv({
   variants: {
     isMobile: {
       true: 'h-full w-full',
-      false: 'w-[369px] h-[98%] rounded-[30px] border fixed',
+      false: 'w-[369px] h-[773px] rounded-[30px] border fixed',
     },
   },
 });
