@@ -1,0 +1,63 @@
+import { FolderDetailIcon } from '@/assets';
+import Image from '@/components/common/Image';
+import clsx from 'clsx';
+import { isMobile } from 'react-device-detect';
+import type { SaveCardProps } from '@/types';
+import Chip from '@/components/common/Chip';
+import { motion } from 'framer-motion';
+
+const SaveCard = ({ data }: { data: SaveCardProps }) => {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.04 }}
+      transition={{ duration: 0.4 }}
+      className={clsx(
+        'mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] cursor-pointer',
+        'hover:border hover:border-gray-300 border-transparent',
+      )}
+    >
+      <div className='p-4 pb-10'>
+        <div className='flex flex-wrap gap-2 mb-4'>
+          <Chip
+            content={data.category}
+            isSelected={false}
+            className='bg-[#80CA14] text-white border-[#EAEDF5] text-[15px] px-3 h-auto'
+          />
+          {data.tags.map((tag, i) => (
+            <Chip
+              key={i}
+              content={tag}
+              isSelected={false}
+              className='border-[#EAEDF5] text-[15px] px-3 h-auto'
+            />
+          ))}
+          <Chip
+            content={data.platform}
+            isSelected={false}
+            className='border-[#EAEDF5] text-[15px] px-3 h-auto'
+          />
+        </div>
+        <Image src={data.image} className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4' />
+        <div className='flex justify-between items-start pl-2 pb-2'>
+          <div className='flex-1'>
+            <h3 className='font-semibold text-[20px] text-gray-900 mb-2'>{data.category}</h3>
+            <p className='text-[15px] text-gray-600 leading-relaxed mb-2'>{data.memo}</p>
+            <div className='absolute bottom-4 left-6 right-4 flex justify-between items-center'>
+              <p className='text-sm text-stone'>2025.07.17 저장</p>
+              <FolderDetailIcon
+                width={24}
+                height={24}
+                className={clsx(
+                  'text-white hover:text-grayBg transition-colors',
+                  isMobile ? 'w-6 h-6' : 'sm:w-10 w-8 sm:h-10 h-8',
+                )}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+export default SaveCard;
