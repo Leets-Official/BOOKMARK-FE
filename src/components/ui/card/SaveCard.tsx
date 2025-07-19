@@ -79,7 +79,10 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
         <div className='flex flex-col w-32'>
           <p className='text-left px-1 mb-2 text-[#A4A8B2] rounded text-xs'>링크 설정</p>
           <Button
-            onClick={() => navigate('save')}
+            onClick={() => {
+              isClose();
+              navigate('save');
+            }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15'
           >
             수정
