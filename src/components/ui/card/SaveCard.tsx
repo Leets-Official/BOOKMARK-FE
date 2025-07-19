@@ -5,8 +5,8 @@ import { isMobile } from 'react-device-detect';
 import type { SaveCardProps } from '@/types';
 import Chip from '@/components/common/Chip';
 import { motion } from 'framer-motion';
-import FolderMenuPortal from '@/utils/FolderMenuPortal';
-import { useMenuHandler } from '@/components/hooks/menuHandler';
+import FolderMenuPortal from '@/utils/MenuPortal';
+import { useMenuHandler } from '@/components/hooks/MenuHandler';
 
 const SaveCard = ({ data }: { data: SaveCardProps }) => {
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(160);

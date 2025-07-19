@@ -39,7 +39,7 @@ const Textarea = ({
     <TextareaAutosize
       ref={textareaRef}
       placeholder={placeholder}
-      className={`${className} border border-grayBorder focus:border-blue-500 focus:ring-0 focus:ring-offset-0 focus:outline-none resize-none hide-scrollbar`}
+      className={`${className} border border-areaBorder focus:border-blue-500 focus:ring-0 focus:ring-offset-0 focus:outline-none resize-none hide-scrollbar`}
       value={value}
       onChange={handleChange}
       onKeyDown={handleKeyDown}

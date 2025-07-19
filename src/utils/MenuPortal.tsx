@@ -9,7 +9,7 @@ interface FolderMenuPortalProps {
   children: React.ReactNode;
 }
 
-const FolderMenuPortal = ({ isOpen, onClose, position, children }: FolderMenuPortalProps) => {
+const MenuPortal = ({ isOpen, onClose, position, children }: FolderMenuPortalProps) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -68,4 +68,4 @@ const FolderMenuPortal = ({ isOpen, onClose, position, children }: FolderMenuPor
   );
 };
 
-export default FolderMenuPortal;
+export default MenuPortal;

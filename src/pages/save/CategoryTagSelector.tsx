@@ -332,6 +332,7 @@ const CategoryTagSelector = () => {
       {modalOpenType && (
         <Modal
           title={modalOpenType === 'category' ? '새 카테고리 추가' : '태그 추가'}
+          confirmLabel='추가하기'
           onCancel={() => {
             closeModal();
           }}

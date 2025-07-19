@@ -3,10 +3,10 @@ import Image from '@/components/common/Image';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import { motion } from 'framer-motion';
-
-import FolderMenuPortal from '@/utils/FolderMenuPortal';
-
-import { useMenuHandler } from '@/components/hooks/menuHandler';
+import { MenuPortal, ModalPortal } from '@/utils';
+import { useMenuHandler } from '@/components/hooks/MenuHandler';
+import { useState } from 'react';
+import TextField from '../TextField';
 
 interface ICardProps {
   category: string;
@@ -18,6 +18,8 @@ const TitleText =
   'overflow-hidden font-sans font-semibold text-ellipsis whitespace-nowrap ml-1 md:text-xl text-base';
 
 const FolderCard = ({ category, images }: ICardProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [content, setContent] = useState('');
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(136);
 
   return (
@@ -83,17 +85,44 @@ const FolderCard = ({ category, images }: ICardProps) => {
         </div>
       </motion.div>
       {/* Portal로 렌더링되는 메뉴 */}
-      <FolderMenuPortal isOpen={isMenuOpen} onClose={isClose} position={menuPosition}>
+      <MenuPortal isOpen={isMenuOpen} onClose={isClose} position={menuPosition}>
         <div className='flex flex-col w-32'>
           <p className='text-left px-1 mb-2 text-[#A4A8B2] rounded text-xs'>카테고리 설정</p>
-          <button className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15'>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15'
+          >
             이름 수정
           </button>
           <button className='text-left px-1 py-3 text-[#FF2C3D] hover:bg-gray-100 rounded text-15'>
             삭제
           </button>
         </div>
-      </FolderMenuPortal>
+      </MenuPortal>
+
+      <ModalPortal
+        isOpen={isModalOpen}
+        title='카테고리 수정'
+        confirmLabel='저장하기'
+        onCancel={() => {
+          setIsModalOpen(false);
+          setContent('');
+        }}
+        onConfirm={() => {
+          if (!content.trim()) return;
+          console.log('카테고리 수정됨:', content); // 실제 로직에 맞게 대체
+          setIsModalOpen(false);
+          setContent('');
+        }}
+        disabled={content.trim().length === 0}
+      >
+        <TextField
+          label='카테고리'
+          placeholder={category}
+          maxLength={10}
+          onChange={(content) => setContent(content)}
+        />
+      </ModalPortal>
     </>
   );
 };

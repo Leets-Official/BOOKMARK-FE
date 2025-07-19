@@ -12,7 +12,7 @@ interface TextFieldProps {
   //eslint-disable-next-line
   onSubmit?: (v: string) => void;
   // create : 생성 버튼, reset : 초기화 버튼
-  isCreateType: boolean;
+  isCreateType?: boolean;
   // eslint-disable-next-line
   setDisabled?: (v: boolean) => void;
 }
@@ -23,7 +23,7 @@ const TextField = ({
   maxLength,
   onChange,
   onSubmit,
-  isCreateType,
+  isCreateType = false,
   setDisabled,
 }: TextFieldProps) => {
   const [content, setContent] = useState('');
@@ -33,6 +33,7 @@ const TextField = ({
       return;
     }
     setContent(e.target.value);
+    onChange(e.target.value);
 
     if (setDisabled) {
       if (e.target.value.length > 0) {
