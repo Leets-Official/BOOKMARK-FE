@@ -6,7 +6,11 @@ import { getCardsPerSlide } from '@/utils/CardPerSlide';
 
 // Props 타입
 interface HomeCardListProps {
-  cardList: { id: number; title: string }[];
+  cardList: {
+    id: number;
+    category: string;
+    images: string[];
+  }[];
 }
 
 // 슬라이드 애니메이션용 variants 정의
@@ -75,14 +79,25 @@ const CardList = ({ cardList }: HomeCardListProps) => {
     setLeaving(false);
   };
 
+  // 해당 컨텐츠가 왼쪽에 있는지 오른쪽에 있는지 위치 파악
+  const positionedCards = cardSlice.map((card, i) => {
+    let position: 'left' | 'center' | 'right' = 'center';
+    if (i === 0) position = 'left';
+    else if (i === cardSlice.length - 1) position = 'right';
+    return { ...card, position };
+  });
+
   return (
-    <>
+    <div className='mt-100'>
       <CardListHeader
         onNext={increaseIndex}
         onPrev={decreaseIndex}
         currentNum={`${index + 1} / ${maxIndex + 1}`}
+        title='Folder'
+        showPagination={true}
+        showCategory={true}
       />
-      <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden mb-20'>
+      <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden pb-4'>
         <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
           <motion.div
             key={index}
@@ -92,24 +107,34 @@ const CardList = ({ cardList }: HomeCardListProps) => {
             animate='variant'
             exit='end'
             transition={{ type: 'tween', duration: 1, ease: 'easeInOut' }}
-            className='absolute flex'
+            className='absolute flex w-full justify-start gap-3'
             style={{
               willChange: 'transform', // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
             }}
           >
-            {cardSlice.map((card) => (
-              <FolderCard key={card.id} title={card.title} />
+            {positionedCards.map((card) => (
+              <FolderCard
+                key={card.id}
+                category={card.category}
+                images={card.images}
+                position={card.position}
+              />
             ))}
           </motion.div>
         </AnimatePresence>
         {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
         <div className='invisible flex w-full'>
-          {cardSlice.map((card) => (
-            <FolderCard key={`ghost-${card.id}`} title={card.title} />
+          {positionedCards.map((card) => (
+            <FolderCard
+              key={`ghost-${card.id}`}
+              category={card.category}
+              images={card.images}
+              position={card.position}
+            />
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

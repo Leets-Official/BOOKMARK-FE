@@ -42,7 +42,7 @@ const Chip = ({
       whileTap={tapAnimation}
       onClick={handleClick}
     >
-      <p>{content}</p>
+      <p className='whitespace-nowrap'>{content}</p>
       {/* 삭제 함수가 있을시 활성화 */}
       {onDelete && (
         <Button

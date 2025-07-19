@@ -19,6 +19,7 @@ import FilteringIcon from '@/assets/icons/Filtering.svg?react';
 import FixedFilteringIcon from '@/assets/icons/FixedFiltering.svg?react';
 import CheckIcon from '@/assets/icons/Check.svg?react';
 import ErrorIcon from '@/assets/icons/Error.svg?react';
+import FolderDetailIcon from '@/assets/icons/FolderDetail.svg?react';
 
 export {
   KakaoLogoIcon,
@@ -42,4 +43,5 @@ export {
   FixedFilteringIcon,
   CheckIcon,
   ErrorIcon,
+  FolderDetailIcon,
 };

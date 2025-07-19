@@ -8,10 +8,10 @@ import { searchContentsAtom } from '@/atoms';
 import { useAtom } from 'jotai';
 
 interface IHomeSearchBarProps {
-  className?: string;
   isFixed?: boolean;
   isBlur?: boolean;
   style?: React.CSSProperties;
+  type?: 'isHome' | string;
 }
 
 const inputStyle = tv({
@@ -69,12 +69,7 @@ const filterIconStyle = tv({
   },
 });
 
-const HomeSearchBar = ({
-  className,
-  style,
-  isFixed = false,
-  isBlur = false,
-}: IHomeSearchBarProps) => {
+const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearchBarProps) => {
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
 
@@ -89,7 +84,13 @@ const HomeSearchBar = ({
 
   return (
     <div className='flex justify-center'>
-      <div className={clsx('relative w-4/5 max-w-[50rem] max-sm:w-9/10', className)} style={style}>
+      <div
+        className={clsx(
+          'relative w-4/5 max-w-[50rem] max-sm:w-9/10',
+          type === 'isHome' && '-translate-x-5 md:-translate-x/2',
+        )}
+        style={style}
+      >
         <Input
           value={searchContents}
           onChange={onChange}
@@ -113,4 +114,4 @@ const HomeSearchBar = ({
   );
 };
 
-export default HomeSearchBar;
+export default SearchBar;
