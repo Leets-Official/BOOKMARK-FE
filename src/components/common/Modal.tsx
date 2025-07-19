@@ -15,7 +15,7 @@ interface ModalProps {
 }
 
 const ButtonContainer = tv({
-  base: 'w-full h-[53px] font-semibold text-sm',
+  base: 'w-full h-[53px] font-medium text-sm',
   variants: {
     disabled: {
       true: 'bg-lightBlueGray text-veryLightGray',

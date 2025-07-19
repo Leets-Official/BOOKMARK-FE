@@ -84,7 +84,7 @@ const TextField = ({
 
   return (
     <div className='flex flex-col'>
-      <p className='text-[12px] mb-2'>{label}</p>
+      <p className='text-[12px] font-medium mb-2'>{label}</p>
       <div className='flex items-center relative'>
         <Textarea
           className='w-full rounded-[12px] text-15 p-4 pr-8'
