@@ -1,7 +1,6 @@
 import { RoundDeleteIcon } from '@/assets';
-import Button from '@/components/common/Button';
+import { Button, Textarea } from '@/components/common';
 import React, { useState } from 'react';
-import Textarea from '../common/Textarea';
 
 interface TextFieldProps {
   label: string;

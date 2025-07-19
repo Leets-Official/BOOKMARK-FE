@@ -1,6 +1,7 @@
 import { WarningIcon } from '@/assets';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useScrollLock } from '@/components/hooks/ScrollLock';
 
 interface DeleteModalProps {
   isOpen: boolean;
@@ -10,6 +11,8 @@ interface DeleteModalProps {
 }
 
 const DeleteModal = ({ isOpen, onCancel, onDelete, warningText }: DeleteModalProps) => {
+  useScrollLock(isOpen);
+
   // ESC 키로 모달 닫기
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
@@ -19,11 +22,9 @@ const DeleteModal = ({ isOpen, onCancel, onDelete, warningText }: DeleteModalPro
     };
     if (isOpen) {
       document.addEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'hidden';
     }
     return () => {
       document.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'auto';
     };
   }, [isOpen, onCancel]);
 

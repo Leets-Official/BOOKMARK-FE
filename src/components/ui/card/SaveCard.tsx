@@ -1,12 +1,11 @@
 import { FolderDetailIcon } from '@/assets';
-import Image from '@/components/common/Image';
+import { Image, Chip } from '@/components/common';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import type { SaveCardProps } from '@/types';
-import Chip from '@/components/common/Chip';
 import { motion } from 'framer-motion';
 import FolderMenuPortal from '@/utils/MenuPortal';
-import { useMenuHandler } from '@/components/hooks/MenuHandler';
+import { useMenuHandler } from '@/components/hooks/MenuPosition';
 
 const SaveCard = ({ data }: { data: SaveCardProps }) => {
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(160);

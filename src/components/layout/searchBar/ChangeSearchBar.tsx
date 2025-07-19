@@ -1,4 +1,3 @@
-// ChangeSearchBar.tsx
 import { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import SearchBar from './SearchBar';
