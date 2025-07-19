@@ -1,7 +1,7 @@
-import MotionExample from '@/example/MotionExample';
+import ToastExample from '@/example/ToastExample';
 
 const Example = () => {
-  return <MotionExample />;
+  return <ToastExample />;
 };
 
 export default Example;
