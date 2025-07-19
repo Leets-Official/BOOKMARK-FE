@@ -48,7 +48,7 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
           content={triggerTitle}
           isSelected={isOpen}
           className={clsx(
-            'cursor-pointer',
+            'cursor-pointer min-w-0',
             isSelectedOption ? 'border-base bg-lightGray' : 'border-lightGrayBlue bg-white',
           )}
           selectedClassName='bg-lightGray'
