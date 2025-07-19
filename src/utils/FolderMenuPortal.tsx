@@ -1,0 +1,71 @@
+import { createPortal } from 'react-dom';
+import { useEffect, useRef, useState } from 'react';
+import type React from 'react';
+
+interface FolderMenuPortalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  position: { x: number; y: number };
+  children: React.ReactNode;
+}
+
+const FolderMenuPortal = ({ isOpen, onClose, position, children }: FolderMenuPortalProps) => {
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // 다른 곳 클릭 시 메뉴 닫힘
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    //esc 이벤트 핸들러
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    // 스크롤 이벤트 핸들러 추가
+    const handleScroll = () => {
+      onClose();
+    };
+
+    // 이벤트 리스너 등록
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    window.addEventListener('scroll', handleScroll, true);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isMounted || !isOpen) return null;
+
+  return createPortal(
+    <div
+      ref={menuRef}
+      className='fixed bg-white border-1 border-[#D8DCE6] rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.1)] p-2'
+      style={{
+        left: position.x,
+        top: position.y,
+      }}
+    >
+      {children}
+    </div>,
+    document.body,
+  );
+};
+
+export default FolderMenuPortal;
