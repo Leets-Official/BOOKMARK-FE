@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom';
 import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type React from 'react';
 
 interface FolderMenuPortalProps {
@@ -51,19 +52,28 @@ const MenuPortal = ({ isOpen, onClose, position, children }: FolderMenuPortalPro
     };
   }, [isOpen, onClose]);
 
-  if (!isMounted || !isOpen) return null;
+  if (!isMounted) return null;
 
   return createPortal(
-    <div
-      ref={menuRef}
-      className='fixed bg-white border-1 border-[#D8DCE6] rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.1)] p-2'
-      style={{
-        left: position.x,
-        top: position.y,
-      }}
-    >
-      {children}
-    </div>,
+    <AnimatePresence>
+      {isOpen && position.x !== 0 && position.y !== 0 && (
+        <motion.div
+          ref={menuRef}
+          initial={{ opacity: 0, scale: 0.95, y: -8 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -8 }}
+          transition={{ duration: 0.15 }}
+          className='fixed bg-white border border-[#D8DCE6] rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.1)] p-2'
+          style={{
+            left: position.x,
+            top: position.y,
+            zIndex: 9999,
+          }}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>,
     document.body,
   );
 };

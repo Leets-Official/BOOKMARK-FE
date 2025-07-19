@@ -19,9 +19,11 @@ const DeleteModal = ({ isOpen, onCancel, onDelete, warningText }: DeleteModalPro
     };
     if (isOpen) {
       document.addEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'hidden';
     }
     return () => {
       document.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'auto';
     };
   }, [isOpen, onCancel]);
 
@@ -32,10 +34,15 @@ const DeleteModal = ({ isOpen, onCancel, onDelete, warningText }: DeleteModalPro
       className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
       onClick={() => onCancel()}
     >
-      <div className='bg-white rounded-xl w-[335px] min-h-[208px] shadow-lg'>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className='bg-white rounded-xl w-[335px] min-h-[208px] shadow-lg'
+      >
         <div className='flex flex-col items-center text-center m-4 mx-10'>
           <WarningIcon />
-          <p className='text-base font-semibold mt-4 mb-5'>{warningText}</p>
+          <p className='text-base font-semibold mt-4 mb-5 break-keep whitespace-pre-wrap'>
+            {warningText}
+          </p>
         </div>
 
         <hr className='border-1 border-lightGrayBlue mt-5' />

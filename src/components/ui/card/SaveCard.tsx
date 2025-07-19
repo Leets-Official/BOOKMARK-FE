@@ -18,11 +18,13 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
         transition={{ duration: 0.4 }}
         className={clsx(
           'mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] cursor-pointer',
-          'hover:border hover:border-gray-300 border-transparent',
-          isMenuOpen && !isMobile && 'shadow-md border border-gray-300',
+          !isMobile && 'hover:border hover:border-gray-300',
+          isMenuOpen &&
+            !isMobile &&
+            'shadow-[0_2px_7px_rgba(2,34,94,0.1)] border border-gray-300 hover:border hover:border-gray-300',
         )}
       >
-        <div className='p-4 pb-10'>
+        <div className='p-3.5 pb-10'>
           <div className='flex flex-wrap gap-2 mb-4'>
             <Chip
               content={data.category}

@@ -1,6 +1,6 @@
 import { DeleteIcon } from '@/assets';
 import Button from './Button';
-import type React from 'react';
+import React, { useEffect } from 'react';
 import { tv } from 'tailwind-variants';
 import clsx from 'clsx';
 
@@ -33,6 +33,14 @@ const Modal = ({
   className,
   confirmLabel,
 }: ModalProps) => {
+  // 모달 열렸을 때 스크롤 작동 멈추기
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [onConfirm, onCancel]);
+
   return (
     <div
       className={clsx(
