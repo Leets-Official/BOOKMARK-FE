@@ -22,7 +22,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [content, setContent] = useState('');
-  const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
+  const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
 
   return (
     <>

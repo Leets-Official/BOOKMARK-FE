@@ -67,7 +67,6 @@ const MenuPortal = ({ isOpen, onClose, position, children }: FolderMenuPortalPro
           style={{
             left: position.x,
             top: position.y,
-            zIndex: 9999,
           }}
         >
           {children}

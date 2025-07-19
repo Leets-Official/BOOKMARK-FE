@@ -15,6 +15,7 @@ export function useMenuHandler(offsetX = 143, offsetY = 4) {
     }
   }, [isMenuOpen, offsetX, offsetY]);
 
+  // 브라우저 크기 줄여도 메뉴 창 유지
   useEffect(() => {
     if (!isMenuOpen) return;
 
