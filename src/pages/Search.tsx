@@ -21,7 +21,7 @@ const overlayStyle = tv({
 });
 
 const modalStyle = tv({
-  base: 'bg-gray-100 rounded-lg flex flex-col overflow-hidden',
+  base: 'bg-gray-100 rounded-[30px] flex flex-col overflow-hidden',
   variants: {
     isMobile: {
       true: 'w-full h-full',
