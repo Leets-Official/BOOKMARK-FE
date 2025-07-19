@@ -22,7 +22,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [content, setContent] = useState('');
-  const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(136);
+  const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
 
   return (
     <>
@@ -139,10 +139,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
       {/**삭제 모달 */}
       <DeleteModal
         isOpen={isDeleteModalOpen}
-        onCancel={() => {
-          setIsDeleteModalOpen(false);
-          setContent('');
-        }}
+        onCancel={() => setIsDeleteModalOpen(false)}
         warningText={`"${category}"카테고리를 정말 삭제할까요?`}
         onDelete={() => {
           setIsDeleteModalOpen(false);

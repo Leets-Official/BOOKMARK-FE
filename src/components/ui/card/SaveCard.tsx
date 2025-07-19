@@ -1,14 +1,22 @@
 import { FolderDetailIcon } from '@/assets';
-import { Image, Chip } from '@/components/common';
+import { Image, Chip, Button } from '@/components/common';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import type { SaveCardProps } from '@/types';
 import { motion } from 'framer-motion';
-import FolderMenuPortal from '@/utils/MenuPortal';
+import { MenuPortal } from '@/utils/';
 import { useMenuHandler } from '@/components/hooks/MenuPosition';
+import { useNavigate } from 'react-router-dom';
+
+import DeleteModal from '../modal/DeleteModal';
+import { useState } from 'react';
 
 const SaveCard = ({ data }: { data: SaveCardProps }) => {
-  const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(160);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   return (
     <>
       <motion.div
@@ -67,20 +75,36 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
           </div>
         </div>
       </motion.div>
-      <FolderMenuPortal isOpen={isMenuOpen} onClose={isClose} position={menuPosition}>
-        <div className='flex flex-col w-40'>
-          <p className='text-left px-1 mb-2 text-[#A4A8B2] rounded text-xs'>북마크 설정</p>
-          <button className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15'>
-            카테고리 이름 수정
-          </button>
-          <button className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15'>
-            태그 수정
-          </button>
-          <button className='text-left px-1 py-3 text-[#FF2C3D] hover:bg-gray-100 rounded text-15'>
+      <MenuPortal isOpen={isMenuOpen} onClose={isClose} position={menuPosition}>
+        <div className='flex flex-col w-32'>
+          <p className='text-left px-1 mb-2 text-[#A4A8B2] rounded text-xs'>링크 설정</p>
+          <Button
+            onClick={() => navigate('save')}
+            className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15'
+          >
+            수정
+          </Button>
+          <Button
+            onClick={() => {
+              isClose();
+              setIsDeleteModalOpen(true);
+            }}
+            className='text-left px-1 py-3 text-[#FF2C3D] hover:bg-gray-100 rounded text-15'
+          >
             삭제
-          </button>
+          </Button>
         </div>
-      </FolderMenuPortal>
+      </MenuPortal>
+      {/**삭제 모달 */}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        warningText={`"${data.category}"카테고리를 정말 삭제할까요?`}
+        onDelete={() => {
+          setIsDeleteModalOpen(false);
+          console.log('삭제:', data.category);
+        }}
+      />
     </>
   );
 };

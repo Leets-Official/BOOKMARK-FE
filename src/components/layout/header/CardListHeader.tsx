@@ -57,12 +57,12 @@ const CardListHeader = ({
           </div>
           {showCategory && (
             <div className='flex flex-row items-center gap-1.5 mr-3 font-semibold text-blue hover:brightness-75 cursor-pointer'>
-              <p className='max-sm:text-[16px] text-[24px]'>+</p>
+              <p className='max-sm:text-[20px] text-[24px]'>+</p>
               <Button
                 onClick={() => {
                   setIsModalOpen(true);
                 }}
-                className=' max-sm:text-[12px] text-base'
+                className=' max-sm:text-sm text-base'
               >
                 카테고리 추가
               </Button>

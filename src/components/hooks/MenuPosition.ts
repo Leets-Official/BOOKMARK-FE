@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-export function useMenuHandler(offsetX = 0, offsetY = 4) {
+export function useMenuHandler(offsetX = 143, offsetY = 4) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 4 });
   const iconRef = useRef<HTMLDivElement>(null);
