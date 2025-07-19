@@ -29,7 +29,7 @@ const ModalPortal = ({
       onCancel={onCancel}
       onConfirm={onConfirm}
       disabled={disabled}
-      className='pt-[20vh]'
+      className='pt-[30vh]'
       confirmLabel={confirmLabel}
     >
       {children}

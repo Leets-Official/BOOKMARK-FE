@@ -7,6 +7,7 @@ import { MenuPortal, ModalPortal } from '@/utils';
 import { useMenuHandler } from '@/components/hooks/MenuHandler';
 import { useState } from 'react';
 import TextField from '../TextField';
+import DeleteModal from '../modal/DeleteModal';
 
 interface ICardProps {
   category: string;
@@ -19,6 +20,7 @@ const TitleText =
 
 const FolderCard = ({ category, images }: ICardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [content, setContent] = useState('');
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(136);
 
@@ -94,12 +96,15 @@ const FolderCard = ({ category, images }: ICardProps) => {
           >
             이름 수정
           </button>
-          <button className='text-left px-1 py-3 text-[#FF2C3D] hover:bg-gray-100 rounded text-15'>
+          <button
+            onClick={() => setIsDeleteModalOpen(true)}
+            className='text-left px-1 py-3 text-[#FF2C3D] hover:bg-gray-100 rounded text-15'
+          >
             삭제
           </button>
         </div>
       </MenuPortal>
-
+      {/* 모달 포탈 */}
       <ModalPortal
         isOpen={isModalOpen}
         title='카테고리 수정'
@@ -123,6 +128,19 @@ const FolderCard = ({ category, images }: ICardProps) => {
           onChange={(content) => setContent(content)}
         />
       </ModalPortal>
+      {/**삭제 모달 */}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setContent('');
+        }}
+        warningText={`"${category}"카테고리를 정말 삭제할까요?삭제할까요?삭제할까요?삭제할까요?`}
+        onDelete={() => {
+          setIsDeleteModalOpen(false);
+          console.log('삭제:', category);
+        }}
+      />
     </>
   );
 };

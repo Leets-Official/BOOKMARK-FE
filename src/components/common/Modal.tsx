@@ -46,11 +46,11 @@ const Modal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className='w-full h-[53px] flex items-center justify-center relative'>
-          <div className='text-sm font-medium'>{title}</div>
+          <div className='text-base font-semibold'>{title}</div>
           <Button
             onClick={onCancel}
             className='absolute right-3 top-1/2 -translate-y-1/2'
-            icon={<DeleteIcon height={24} width={24} fill='#090e1d' />}
+            icon={<DeleteIcon height={14} width={14} fill='#090e1d' />}
           ></Button>
         </div>
         {/* 자식 컴포넌트 넣는 곳 */}

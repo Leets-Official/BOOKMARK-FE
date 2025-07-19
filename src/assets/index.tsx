@@ -18,6 +18,8 @@ import ProfileIcon from '@/assets/icons/Profile.svg?react';
 import FilteringIcon from '@/assets/icons/Filtering.svg?react';
 import FixedFilteringIcon from '@/assets/icons/FixedFiltering.svg?react';
 import FolderDetailIcon from '@/assets/icons/FolderDetail.svg?react';
+import WarningIcon from '@/assets/icons/Warning.svg?react';
+import RoundDeleteIcon from '@/assets/icons/RoundDelete.svg?react';
 
 export {
   KakaoLogoIcon,
@@ -40,4 +42,6 @@ export {
   FilteringIcon,
   FixedFilteringIcon,
   FolderDetailIcon,
+  WarningIcon,
+  RoundDeleteIcon,
 };
