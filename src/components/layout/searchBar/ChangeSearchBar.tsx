@@ -1,9 +1,8 @@
 // ChangeSearchBar.tsx
 import { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { isMobile } from 'react-device-detect';
 import clsx from 'clsx';
-import HomeSearchBar from './HomeSearchBar';
+import SearchBar from './SearchBar';
 import Button from '@/components/common/Button';
 import { BackArrowIcon } from '@/assets';
 import { useNavigate } from 'react-router-dom';
@@ -40,7 +39,7 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
     <>
       {/* 원래 위치의 검색바, props로 className을 전달해서 높이 조절 가능 */}
       <div ref={searchBarRef}>
-        <HomeSearchBar isBlur={isBlur} style={{ marginTop: `${barMarginTop}px` }} />
+        <SearchBar isBlur={isBlur} style={{ marginTop: `${barMarginTop}px` }} />
       </div>
 
       {/* 스크롤 후 고정되는 검색바 */}
@@ -63,10 +62,7 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
                   />
                 )}
                 <div className='flex-1 min-w-0'>
-                  <HomeSearchBar
-                    isFixed={true}
-                    className={clsx(isMobile ? '-translate-x-5' : '-translate-x/2')}
-                  />
+                  <SearchBar isFixed={true} type='isHome' />
                 </div>
               </div>
             </motion.div>

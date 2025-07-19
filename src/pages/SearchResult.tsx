@@ -41,7 +41,7 @@ const SearchResult = () => {
       <div
         ref={scrollContainerRef}
         className={clsx(
-          'flex flex-row gap-5 items-center overflow-x-auto px-4',
+          'flex flex-row gap-3 items-center overflow-x-auto px-4',
           hasScroll ? 'justify-start' : 'justify-center',
         )}
       >
