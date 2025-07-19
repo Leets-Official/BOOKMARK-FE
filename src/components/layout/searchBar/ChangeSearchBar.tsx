@@ -1,7 +1,6 @@
 // ChangeSearchBar.tsx
 import { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { isMobile } from 'react-device-detect';
 import clsx from 'clsx';
 import SearchBar from './SearchBar';
 import Button from '@/components/common/Button';
@@ -57,7 +56,7 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
               <div className='flex flex-row items-center w-full'>
                 {isBackButton && (
                   <Button
-                    icon={<BackArrowIcon width={24} height={24} strokeWidth={2.5} />}
+                    icon={<LeftIcon width={24} height={24} stroke='black' strokeWidth={2} />}
                     onClick={() => navigate('/')}
                     className='cursor-pointer mr-2'
                   />
@@ -66,7 +65,6 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
                   <SearchBar isFixed={true} type='isHome' />
                 </div>
               </div>
-              <SearchBar isFixed={true} type='isHome' />
             </motion.div>
             <motion.div
               initial={{ rotate: 0, opacity: 0 }}
