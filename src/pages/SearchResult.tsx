@@ -5,6 +5,7 @@ import { dummyCategoryList, dummyPlatformList, dummyTagList } from '@/contants/D
 import { useState, useRef, useEffect } from 'react';
 import type { ChipProps } from '@/types';
 import clsx from 'clsx';
+import SaveHeader from '@/components/layout/header/SaveHeader';
 
 const SearchResult = () => {
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
@@ -37,6 +38,7 @@ const SearchResult = () => {
 
   return (
     <div className='relative min-h-screen flex flex-col gap-4'>
+      <SaveHeader />
       <ChangeSearchBar barMarginTop={100} isBackButton={true} />
       <div
         ref={scrollContainerRef}
