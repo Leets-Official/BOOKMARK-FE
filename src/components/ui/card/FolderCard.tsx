@@ -40,11 +40,9 @@ const FolderCard = ({ category, images }: ICardProps) => {
       updateMenuPosition();
     });
 
-    // 관찰 시작
     resizeObserver.observe(document.body);
     window.addEventListener('resize', updateMenuPosition);
 
-    // 정리 함수
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', updateMenuPosition);
