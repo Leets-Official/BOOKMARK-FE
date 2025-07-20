@@ -27,8 +27,8 @@ const Input: React.FC<InputProps> = ({
       onChange={onChange}
       className={className}
       onKeyDown={onKeyDown}
-      onFocus={onFocus}
       onBlur={onBlur}
+      onFocus={onFocus}
     />
   );
 };

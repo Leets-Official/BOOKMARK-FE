@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Home, Search, SignUp } from './pages';
-import App from './App';
+import { Home, Login, Search, Save, Example, SearchResult } from '@/pages';
+import App from '@/App';
 
 const router = createBrowserRouter([
   {
@@ -12,14 +12,27 @@ const router = createBrowserRouter([
         element: <Home />,
         children: [
           {
+            path: 'save',
+            element: <Save />,
+          },
+          {
             path: 'search',
             element: <Search />,
           },
         ],
       },
       {
-        path: 'signup',
-        element: <SignUp />,
+        path: 'login',
+        element: <Login />,
+      },
+
+      {
+        path: 'search-result',
+        element: <SearchResult />,
+      },
+      {
+        path: 'example',
+        element: <Example />,
       },
     ],
   },
