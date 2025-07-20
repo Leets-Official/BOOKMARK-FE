@@ -6,8 +6,7 @@ import {
   timeOptionsAtom,
   visibleMemoAndAlarmAtom,
 } from '@/atoms';
-import Button from '@/components/common/Button';
-import Modal from '@/components/common/Modal';
+import { Button, Modal } from '@/components/common';
 import DateTimeDropDown from '@/components/layout/dropDown/DateTimeDropDown';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom, useAtomValue } from 'jotai';
@@ -100,6 +99,7 @@ const Alarm = () => {
       {isOpenAlarmModal && (
         <Modal
           title='알림 추가'
+          confirmLabel='추가하기'
           onCancel={() => {
             setIsOpenAlarmModal(false);
             resetTempAlarm();
