@@ -82,7 +82,6 @@ const CardList = ({ cardList }: HomeCardListProps) => {
         currentNum={`${index + 1} / ${maxIndex + 1}`}
         title='카테고리'
         showPagination={true}
-        showCategory={true}
       />
       <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden'>
         <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>

@@ -66,18 +66,10 @@ const TextField = ({
       e.currentTarget.blur();
       onChange(content);
     }
-
-    if (!isCreateType && onSubmit) {
-      onSubmit(content);
-    }
   };
 
   const handleBlur = () => {
     onChange(content);
-
-    if (!isCreateType && onSubmit) {
-      onSubmit(content);
-    }
   };
 
   return (

@@ -1,8 +1,4 @@
 import { LeftIcon, RightIcon } from '@/assets';
-import { Button } from '@/components/common';
-import TextField from '@/components/ui/TextField';
-import { ModalPortal } from '@/utils';
-import { useState } from 'react';
 import { isMobile } from 'react-device-detect';
 
 interface CardListHeaderProps {
@@ -23,94 +19,52 @@ const CardListHeader = ({
   currentNum,
   title,
   showPagination = false,
-  showCategory = false,
   showAllContent = false,
   sortLabel,
   onSortToggle,
 }: CardListHeaderProps) => {
-  const [content, setContent] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   return (
-    <>
-      <div className='w-4/5 mx-auto max-sm:w-9/10 mt-20'>
-        <div className='flex justify-between items-center'>
-          <div className='flex items-center gap-1'>
-            <p className='font-bold sm:mr-7 mr-3 overflow-hidden max-sm:text-base text-xl text-stone'>
-              {title}
-            </p>
-            {showPagination && (
-              <>
-                {!isMobile && (
-                  <div onClick={onPrev} className='hover:brightness-0'>
-                    <LeftIcon width={24} height={24} strokeWidth={1.5} stroke='#545966' />
-                  </div>
-                )}
-                <p className='overflow-hidden max-sm:text-base text-xl'>{currentNum}</p>
-                {!isMobile && (
-                  <div onClick={onNext} className='hover:brightness-0'>
-                    <RightIcon width={24} height={24} strokeWidth={1.5} />
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-          {showCategory && (
-            <div className='flex flex-row items-center gap-1.5 mr-3 font-semibold text-blue hover:brightness-75 cursor-pointer'>
-              <p className='max-sm:text-[20px] text-[24px]'>+</p>
-              <Button
-                onClick={() => {
-                  setIsModalOpen(true);
-                }}
-                className=' max-sm:text-sm text-base'
-              >
-                카테고리 추가
-              </Button>
-            </div>
-          )}
-          {showAllContent && (
-            <div
-              onClick={onSortToggle}
-              className='flex flex-row items-center gap-1 mr-3 font-semibold text-stone hover:brightness-75 cursor-pointer'
-            >
-              <p className=' max-sm:text-[12px] text-base'>{sortLabel}</p>
-              <span className='max-sm:text-[16px] text-[24px] rotate-90'>
-                <RightIcon
-                  width={16}
-                  height={16}
-                  strokeWidth={2.5}
-                  className='w-4 h-4 sm:w-6 sm:h-6'
-                />
-              </span>
-            </div>
+    <div className='w-4/5 mx-auto max-sm:w-9/10 mt-20'>
+      <div className='flex justify-between items-center'>
+        <div className='flex items-center gap-1'>
+          <p className='font-bold sm:mr-7 mr-3 overflow-hidden max-sm:text-base text-xl text-stone'>
+            {title}
+          </p>
+          {showPagination && (
+            <>
+              {!isMobile && (
+                <div onClick={onPrev} className='hover:brightness-0'>
+                  <LeftIcon width={24} height={24} strokeWidth={1.5} stroke='#545966' />
+                </div>
+              )}
+              <p className='overflow-hidden max-sm:text-base text-xl'>{currentNum}</p>
+              {!isMobile && (
+                <div onClick={onNext} className='hover:brightness-0'>
+                  <RightIcon width={24} height={24} strokeWidth={1.5} />
+                </div>
+              )}
+            </>
           )}
         </div>
-        <hr className='border-t border-gray-300 mt-5 mb-1' />
+        {showAllContent && (
+          <div
+            onClick={onSortToggle}
+            className='flex flex-row items-center gap-1 mr-3 font-semibold text-stone hover:brightness-75 cursor-pointer'
+          >
+            <p className=' max-sm:text-[12px] text-base'>{sortLabel}</p>
+            <span className='max-sm:text-[16px] text-[24px] rotate-90'>
+              <RightIcon
+                width={16}
+                height={16}
+                strokeWidth={2.5}
+                className='w-4 h-4 sm:w-6 sm:h-6'
+              />
+            </span>
+          </div>
+        )}
       </div>
-      <ModalPortal
-        isOpen={isModalOpen}
-        title='카테고리 추가'
-        confirmLabel='저장하기'
-        onCancel={() => {
-          setIsModalOpen(false);
-          setContent('');
-        }}
-        onConfirm={() => {
-          if (!content.trim()) return;
-          console.log('카테고리 추가됨:', content); // 실제 로직에 맞게 대체
-          setIsModalOpen(false);
-          setContent('');
-        }}
-        disabled={content.trim().length === 0}
-      >
-        <TextField
-          label='카테고리'
-          placeholder='추가할 카테고리를 입력해주세요'
-          maxLength={10}
-          onChange={(content) => setContent(content)}
-        />
-      </ModalPortal>
-    </>
+      <hr className='border-t border-gray-300 mt-5 mb-1' />
+    </div>
   );
 };
 
