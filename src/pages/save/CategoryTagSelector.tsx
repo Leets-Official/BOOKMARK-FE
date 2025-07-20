@@ -1,9 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import Button from '@/components/common/Button';
+import { Button, Chip, Modal } from '@/components/common';
 import { AddIcon, StarIcon } from '@/assets';
-import Chip from '@/components/common/Chip';
 import { useEffect, useState } from 'react';
-import Modal from '@/components/common/Modal';
 import TextField from '@/components/ui/TextField';
 import type { ChipProps } from '@/types';
 import {
@@ -332,6 +330,7 @@ const CategoryTagSelector = () => {
       {modalOpenType && (
         <Modal
           title={modalOpenType === 'category' ? '새 카테고리 추가' : '태그 추가'}
+          confirmLabel='추가하기'
           onCancel={() => {
             closeModal();
           }}

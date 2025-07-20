@@ -9,6 +9,7 @@ import Button from '@/components/common/Button';
 import LinkField from '@/pages/save/LinkField';
 import { isSaveButtonDisabledAtom } from '@/atoms';
 import { useAtomValue } from 'jotai';
+import { useScrollLock } from '@/components/hooks/ScrollLock';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -43,6 +44,9 @@ const SaveButton = tv({
 const Save = () => {
   const navigate = useNavigate();
   const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
+
+  useScrollLock(!isMobile); // PC일 때는 스크롤 방지
+
   const onClick = () => {
     navigate(-1);
   };

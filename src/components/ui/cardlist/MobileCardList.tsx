@@ -44,7 +44,7 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
   }, [cardList, x]);
 
   return (
-    <div className='mt-90'>
+    <div className='mt-70'>
       <CardListHeader currentNum={cardList.length.toString()} title='Folder' showCategory={true} />
       <div ref={containerRef} className='relative overflow-hidden w-4/5 max-sm:w-9/10 mx-auto'>
         <motion.div
@@ -63,7 +63,7 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
           className='flex justify-start items-center gap-3 cursor-grab active:cursor-grabbing'
         >
           {cardList.map((card) => (
-            <FolderCard key={card.id} category={card.category} images={card.images} />
+            <FolderCard key={card.id} {...card} />
           ))}
         </motion.div>
       </div>
