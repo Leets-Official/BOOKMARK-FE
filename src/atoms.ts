@@ -23,6 +23,9 @@ const selectedDateAtom = atom<string>('');
 const selectedTimeAtom = atom<string>('');
 const isSaveButtonDisabledAtom = atom<boolean>(true);
 const searchContentsAtom = atom<string>('');
+const selectedCategoriesAtom = atom<string[]>([]);
+const selectedTagsAtom = atom<string[]>([]);
+const selectedPlatformsAtom = atom<string[]>([]);
 
 export {
   linkAtom,
@@ -40,4 +43,7 @@ export {
   selectedTimeAtom,
   isSaveButtonDisabledAtom,
   searchContentsAtom,
+  selectedCategoriesAtom,
+  selectedTagsAtom,
+  selectedPlatformsAtom,
 };

@@ -1,4 +1,4 @@
-import { BackIcon, DeleteIcon, HistoryIcon } from '@/assets';
+import { BackArrowIcon, DeleteIcon, HistoryIcon } from '@/assets';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 import Chip from '@/components/common/Chip';
@@ -83,10 +83,8 @@ const FilterSearchBar: React.FC = () => {
     items.map((item) => (
       <Chip
         key={`${type}-${item}`}
-        id={item}
         content={item}
         isSelected={true}
-        type={type}
         onDelete={() => onDelete(item)}
       />
     ));
@@ -121,7 +119,7 @@ const FilterSearchBar: React.FC = () => {
       {/* 검색창 */}
       <div className='flex items-center w-full h-12 px-4 shadow-md bg-white z-10'>
         <div className='mr-2 cursor-pointer'>
-          <BackIcon />
+          <BackArrowIcon />
         </div>
         <Input
           value={searchContents}

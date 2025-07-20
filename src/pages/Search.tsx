@@ -68,7 +68,7 @@ const Search = () => {
           <div className='flex-1 overflow-y-auto px-4 py-6'>
             {/* 필터 제목 */}
             <div className='flex items-center font-semibold text-lg mb-4 ml-2'>
-              <FilterIcon className='w-5 h-5 mr-2 text-black' />
+              <FilterIcon className='w-6 h-6 mr-2 text-black' />
               필터
             </div>
 
@@ -80,9 +80,7 @@ const Search = () => {
                 {categories.map((category, idx) => (
                   <Chip
                     key={`category--${idx}`}
-                    id={`category--${idx}`}
                     content={category}
-                    type='category'
                     isSelected={selectedCategories.includes(category)}
                     onClick={() => toggleSelection(category, setSelectedCategories)}
                     className='h-7 px-3 py-0.5 text-sm max-w-[80px] truncate'
@@ -107,9 +105,7 @@ const Search = () => {
                         {tags.map((tag, idx) => (
                           <Chip
                             key={`tag--${idx}`}
-                            id={`tag--${idx}`}
                             content={tag}
-                            type='tag'
                             isSelected={selectedTags.includes(tag)}
                             onClick={() => toggleSelection(tag, setSelectedTags)}
                             className='h-7 px-3 py-0.5 text-sm max-w-[80px] truncate z-10'
@@ -129,9 +125,7 @@ const Search = () => {
                 {platforms.map((platform, idx) => (
                   <Chip
                     key={`platform--${idx}`}
-                    id={`platform--${idx}`}
                     content={platform}
-                    type='platform'
                     isSelected={selectedPlatforms.includes(platform)}
                     onClick={() => toggleSelection(platform, setSelectedPlatforms)}
                     className='h-7 px-3 py-0.5 text-sm max-w-[80px] truncate z-10'
@@ -155,7 +149,7 @@ const Search = () => {
                 onClick={() => {
                   console.log({ selectedCategories, selectedTags, selectedPlatforms });
                 }}
-                icon={<SearchIcon className='w-4 h-4' />}
+                icon={<SearchIcon className='w-4 h-4 ' stroke='white' />}
                 className='cursor-pointer flex items-center gap-2 px-6 py-2 bg-blue-500 text-white rounded-md text-sm'
               >
                 검색

@@ -4,16 +4,14 @@ import { BackArrowIcon, DeleteIcon } from '@/assets';
 import clsx from 'clsx';
 
 interface ChipProps {
-  id?: string;
   content: string;
-  className: string;
+  className?: string;
   isSelected: boolean;
   onClick?: () => void;
   onDelete?: () => void;
   disabled?: boolean;
   dropdownEnabled?: boolean;
   selectedClassName?: string;
-  type?: 'category' | 'tag' | 'suggestion' | 'platform';
 }
 
 const Chip = ({
@@ -23,8 +21,8 @@ const Chip = ({
   onDelete,
   disabled = false,
   dropdownEnabled = false,
-  className = '',
-  selectedClassName = '',
+  className,
+  selectedClassName,
 }: ChipProps) => {
   const hoverAnimation = disabled ? undefined : { scale: 1.05 };
   const tapAnimation = disabled ? undefined : { scale: 0.95 };

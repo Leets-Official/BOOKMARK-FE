@@ -20,8 +20,9 @@ import FixedFilteringIcon from '@/assets/icons/FixedFiltering.svg?react';
 import CheckIcon from '@/assets/icons/Check.svg?react';
 import ErrorIcon from '@/assets/icons/Error.svg?react';
 import FolderDetailIcon from '@/assets/icons/FolderDetail.svg?react';
-import BackIcon from './Icon/Back.svg?react';
-import HistoryIcon from './Icon/History.svg?react';
+import HistoryIcon from '@/assets/icons/History.svg?react';
+import WarningIcon from '@/assets/icons/Warning.svg?react';
+import RoundDeleteIcon from '@/assets/icons/RoundDelete.svg?react';
 
 export {
   KakaoLogoIcon,
@@ -46,6 +47,7 @@ export {
   CheckIcon,
   ErrorIcon,
   FolderDetailIcon,
-  BackIcon,
   HistoryIcon,
+  WarningIcon,
+  RoundDeleteIcon,
 };

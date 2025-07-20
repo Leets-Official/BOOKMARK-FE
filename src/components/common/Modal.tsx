@@ -1,7 +1,8 @@
 import { DeleteIcon } from '@/assets';
 import Button from './Button';
-import type React from 'react';
+import React from 'react';
 import { tv } from 'tailwind-variants';
+import clsx from 'clsx';
 
 interface ModalProps {
   title: string;
@@ -9,10 +10,12 @@ interface ModalProps {
   onCancel: () => void;
   children: React.ReactNode;
   disabled?: boolean;
+  className?: string;
+  confirmLabel: string;
 }
 
 const ButtonContainer = tv({
-  base: 'w-full h-[48px] font-semibold text-sm',
+  base: 'w-full h-[53px] font-medium text-sm',
   variants: {
     disabled: {
       true: 'bg-lightBlueGray text-veryLightGray',
@@ -21,28 +24,39 @@ const ButtonContainer = tv({
   },
 });
 
-const Modal = ({ title, onConfirm, onCancel, children, disabled = false }: ModalProps) => {
+const Modal = ({
+  title,
+  onConfirm,
+  onCancel,
+  children,
+  disabled = false,
+  className,
+  confirmLabel,
+}: ModalProps) => {
   return (
     <div
-      className='fixed inset-0 bg-black/50 flex justify-center items-center z-100 pb-[40vh]'
+      className={clsx(
+        'fixed inset-0 bg-black/50 flex justify-center items-center z-100 pb-[30vh]',
+        className,
+      )}
       onClick={onCancel}
     >
       <div
         className='bg-white shadow-xl w-[335px] flex flex-col rounded-[12px] overflow-hidden'
         onClick={(e) => e.stopPropagation()}
       >
-        <div className='w-full h-[48px] flex items-center justify-center relative'>
-          <div className='text-sm font-medium'>{title}</div>
+        <div className='w-full h-[53px] flex items-center justify-center relative'>
+          <div className='text-base font-semibold'>{title}</div>
           <Button
             onClick={onCancel}
             className='absolute right-3 top-1/2 -translate-y-1/2'
-            icon={<DeleteIcon height={24} width={24} fill='#090e1d' />}
+            icon={<DeleteIcon height={14} width={14} fill='#090e1d' />}
           ></Button>
         </div>
         {/* 자식 컴포넌트 넣는 곳 */}
-        <div className='flex flex-col pr-4 pl-4 pb-4'>{children}</div>
+        <div className='flex flex-col px-4 pt-4 pb-8'>{children}</div>
         <Button onClick={onConfirm} className={ButtonContainer({ disabled })} disabled={disabled}>
-          추가하기
+          {confirmLabel}
         </Button>
       </div>
     </div>
