@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import { MenuPortal } from '@/utils/';
 import { useMenuHandler } from '@/components/hooks/MenuPosition';
 import { useNavigate } from 'react-router-dom';
-
 import DeleteModal from '../modal/DeleteModal';
 import { useState } from 'react';
 
@@ -17,6 +16,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
   const navigate = useNavigate();
 
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
+
   return (
     <>
       <motion.div

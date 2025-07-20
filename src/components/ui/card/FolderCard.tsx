@@ -23,6 +23,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [content, setContent] = useState('');
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
+  const [isDisabled, setIsDisabled] = useState(true);
 
   return (
     <>
@@ -120,20 +121,23 @@ const FolderCard = ({ category, images }: ICardProps) => {
         onCancel={() => {
           setIsModalOpen(false);
           setContent('');
+          setIsDisabled(true);
         }}
         onConfirm={() => {
           if (!content.trim()) return;
           console.log('카테고리 수정됨:', content); // 실제 로직에 맞게 대체
           setIsModalOpen(false);
           setContent('');
+          setIsDisabled(true);
         }}
-        disabled={content.trim().length === 0}
+        disabled={isDisabled}
       >
         <TextField
           label='카테고리'
           placeholder={category}
           maxLength={10}
           onChange={(content) => setContent(content)}
+          setDisabled={(disabled) => setIsDisabled(disabled)}
         />
       </ModalPortal>
       {/**삭제 모달 */}

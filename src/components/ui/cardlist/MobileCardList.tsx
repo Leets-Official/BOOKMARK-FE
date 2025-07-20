@@ -44,7 +44,7 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
   }, [cardList, x]);
 
   return (
-    <div className='mt-90'>
+    <div className='mt-70'>
       <CardListHeader currentNum={cardList.length.toString()} title='Folder' showCategory={true} />
       <div ref={containerRef} className='relative overflow-hidden w-4/5 max-sm:w-9/10 mx-auto'>
         <motion.div

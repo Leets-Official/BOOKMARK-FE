@@ -28,11 +28,9 @@ const TextField = ({
   const [content, setContent] = useState('');
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (maxLength && e.target.value.length > maxLength) {
-      return;
-    }
+    if (maxLength && e.target.value.length > maxLength) return;
+
     setContent(e.target.value);
-    onChange(e.target.value);
 
     if (setDisabled) {
       if (e.target.value.length > 0) {

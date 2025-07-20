@@ -75,7 +75,7 @@ const CardList = ({ cardList }: HomeCardListProps) => {
   };
 
   return (
-    <div className='mt-100'>
+    <div className='mt-70'>
       <CardListHeader
         onNext={increaseIndex}
         onPrev={decreaseIndex}
