@@ -1,11 +1,10 @@
-import { BackArrowIcon, DeleteIcon, HistoryIcon } from '@/assets';
-import Input from '@/components/common/Input';
-import Button from '@/components/common/Button';
-import Chip from '@/components/common/Chip';
-import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
+import { DeleteIcon, HistoryIcon, LeftIcon, RoundDeleteIcon } from '@/assets';
+import { Input, Button, Chip } from '@/components/common';
+import React, { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
+import { useNavigate } from 'react-router-dom';
 
 interface AnimatedHeightProps {
   show: boolean;
@@ -16,7 +15,7 @@ const AnimatedHeight: React.FC<AnimatedHeightProps> = ({ show, children }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (show && ref.current) {
       setHeight(ref.current.scrollHeight);
     } else {
@@ -45,6 +44,9 @@ const FilterSearchBar: React.FC = () => {
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
+
+  const navigate = useNavigate();
+  const onPrev = () => navigate(-1);
 
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     setSearchContents(e.currentTarget.value);
@@ -79,15 +81,39 @@ const FilterSearchBar: React.FC = () => {
     // eslint-disable-next-line no-unused-vars
     onDelete: (item: string) => void,
     type: 'category' | 'tag' | 'platform',
-  ) =>
-    items.map((item) => (
+  ) => {
+    // 타입별로 다른 selectedClassName 정의
+    const getSelectedClassName = (chipType: 'category' | 'tag' | 'platform') => {
+      switch (chipType) {
+        case 'category':
+          return 'border-1 border-lightGreen bg-lightGreen text-white'; // 카테고리용 스타일
+        case 'tag':
+          return 'border-1 border-blue bg-blue/10 text-blue'; // 태그용 스타일
+        case 'platform':
+          return 'border-1 border-blue bg-blue/10'; // 플랫폼용 스타일
+      }
+    };
+    const getDeleteIconColor = (chipType: 'category' | 'tag' | 'platform') => {
+      switch (chipType) {
+        case 'category':
+          return '#545966';
+        case 'tag':
+        case 'platform':
+          return '#397FFF';
+      }
+    };
+
+    return items.map((item) => (
       <Chip
         key={`${type}-${item}`}
         content={item}
         isSelected={true}
+        selectedClassName={getSelectedClassName(type)}
         onDelete={() => onDelete(item)}
+        deleteIconColor={getDeleteIconColor(type)}
       />
     ));
+  };
 
   const hasSelectedChips =
     selectedCategories.length > 0 || selectedTags.length > 0 || selectedPlatforms.length > 0;
@@ -104,11 +130,13 @@ const FilterSearchBar: React.FC = () => {
   }, []);
 
   return (
-    <div className='w-full bg-white shadow-sm relative' ref={historyRef}>
-      {/* 선택된 Chip들 */}
+    <div className='w-full bg-white shadow-md relative' ref={historyRef}>
+      <div className='absolute top-3 left-2 z-20 cursor-pointer' onClick={onPrev}>
+        <LeftIcon width={30} height={30} stroke='#000000' />
+      </div>
       <AnimatePresence>
         <AnimatedHeight show={hasSelectedChips}>
-          <div className='px-4 pt-2 pb-1 border-t border-gray-200 bg-white flex flex-wrap gap-2'>
+          <div className='px-2 pt-2 pb-1 border-t border-gray-200 bg-white flex flex-wrap gap-2 ml-[46px]'>
             {renderChip(selectedCategories, handleDeleteCategory, 'category')}
             {renderChip(selectedTags, handleDeleteTag, 'tag')}
             {renderChip(selectedPlatforms, handleDeletePlatform, 'platform')}
@@ -117,30 +145,28 @@ const FilterSearchBar: React.FC = () => {
       </AnimatePresence>
 
       {/* 검색창 */}
-      <div className='flex items-center w-full h-12 px-4 shadow-md bg-white z-10'>
-        <div className='mr-2 cursor-pointer'>
-          <BackArrowIcon />
-        </div>
+      <div className='flex items-center w-full h-12 px-2 bg-white z-10 relative'>
+        <div className='w-[30px] mr-2'></div>
         <Input
           value={searchContents}
           onChange={onChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
-          className='flex-1 border-none focus:outline-none text-sm placeholder-gray-400 bg-transparent'
+          className='flex-1 border-none focus:outline-none text-15 placeholder-gray-400 bg-transparent'
           placeholder='제목, 메모, 태그'
         />
-        <div className='ml-2 cursor-pointer' onClick={clearInput}>
-          <DeleteIcon width={30} height={30} fill='#000000' />
+        <div className='mr-1 cursor-pointer' onClick={clearInput}>
+          <RoundDeleteIcon width={22} height={22} />
         </div>
       </div>
 
       {/* 최근 검색 기록 */}
       {isFocused && history.length > 0 && (
-        <div className='absolute top-full left-0 w-full bg-white px-4 shadow-md z-0'>
+        <div className='absolute top-full left-0 w-full  px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue'>
           {history.map((record, i) => (
             <div
               key={i}
-              className='flex items-center justify-between gap-2 my-4 text-sm text-black'
+              className='flex items-center justify-between gap-2 my-4 text-15 text-black'
             >
               <div
                 className='flex items-center gap-2 cursor-pointer hover:underline'
@@ -151,8 +177,11 @@ const FilterSearchBar: React.FC = () => {
               </div>
               <Button
                 className='cursor-pointer'
-                icon={<DeleteIcon width={20} height={20} fill='#000000' />}
-                onMouseDown={(e: React.MouseEvent<HTMLButtonElement>) => e.preventDefault()}
+                icon={<DeleteIcon width={12} height={12} fill='#545966' />}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
                 onClick={() => handleDeleteHistory(record)}
               />
             </div>

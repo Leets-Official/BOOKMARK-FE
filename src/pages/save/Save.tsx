@@ -47,9 +47,7 @@ const Save = () => {
 
   useScrollLock(!isMobile); // PC일 때는 스크롤 방지
 
-  const onClick = () => {
-    navigate(-1);
-  };
+  const onClick = () => navigate(-1);
 
   return (
     // PC : 모달형식, 모바일 : 전체화면

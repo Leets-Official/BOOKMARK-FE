@@ -45,7 +45,6 @@ const DeleteModal = ({ isOpen, onCancel, onDelete, warningText }: DeleteModalPro
             {warningText}
           </p>
         </div>
-
         <hr className='border-1 border-lightGrayBlue mt-5' />
         <div className='flex gap-3 justify-end text-center p-4'>
           <button

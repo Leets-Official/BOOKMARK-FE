@@ -12,6 +12,7 @@ interface ChipProps {
   disabled?: boolean;
   dropdownEnabled?: boolean;
   selectedClassName?: string;
+  deleteIconColor?: string;
 }
 
 const Chip = ({
@@ -23,6 +24,7 @@ const Chip = ({
   dropdownEnabled = false,
   className,
   selectedClassName,
+  deleteIconColor = '#000000',
 }: ChipProps) => {
   const hoverAnimation = disabled ? undefined : { scale: 1.05 };
   const tapAnimation = disabled ? undefined : { scale: 0.95 };
@@ -31,7 +33,7 @@ const Chip = ({
   return (
     <motion.div
       className={clsx(
-        'rounded-[100px] flex items-center justify-center border text-xs h-8 p-2 flex-row gap-1',
+        'rounded-[100px] flex items-center justify-center border text-sm h-8 p-2.5 flex-row gap-1.5',
         !disabled && 'cursor-pointer',
         !isSelected ? className : selectedClassName,
         ' group relative',
@@ -49,7 +51,7 @@ const Chip = ({
           onClick={() => {
             onDelete?.();
           }}
-          icon={<DeleteIcon height={16} width={16} fill='#000000' />}
+          icon={<DeleteIcon height={10} width={10} stroke={deleteIconColor} />}
         />
       )}
       {/* Chip 드롭다운 옵션*/}
