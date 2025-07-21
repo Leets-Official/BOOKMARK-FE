@@ -100,16 +100,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
             }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15'
           >
-            이름 수정
-          </Button>
-          <Button
-            onClick={() => {
-              isClose();
-              setIsDeleteModalOpen(true);
-            }}
-            className='text-left px-1 py-3 text-[#FF2C3D] hover:bg-gray-100 rounded text-15'
-          >
-            삭제
+            카테고리 수정
           </Button>
         </div>
       </MenuPortal>
@@ -133,12 +124,27 @@ const FolderCard = ({ category, images }: ICardProps) => {
         disabled={isDisabled}
       >
         <TextField
-          label='카테고리'
+          label='이름'
           placeholder={category}
           maxLength={10}
           onChange={(content) => setContent(content)}
           setDisabled={(disabled) => setIsDisabled(disabled)}
         />
+        <div className='text-xs mt-3'>
+          <p>작업</p>
+          <div
+            onClick={() => {
+              setIsModalOpen(false);
+              setIsDeleteModalOpen(true);
+            }}
+            className='hover:bg-gray-100 rounded mt-1.5 p-1 cursor-pointer'
+          >
+            <p className='text-base font-semibold mb-1.5'>카테고리 삭제</p>
+            <p className='text-xs text-stone'>
+              카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?
+            </p>
+          </div>
+        </div>
       </ModalPortal>
       {/**삭제 모달 */}
       <DeleteModal

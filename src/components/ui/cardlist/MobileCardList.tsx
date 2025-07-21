@@ -45,7 +45,11 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
 
   return (
     <div className='mt-70'>
-      <CardListHeader currentNum={cardList.length.toString()} title='Folder' showCategory={true} />
+      <CardListHeader
+        currentNum={cardList.length.toString()}
+        title='카테고리'
+        showCategory={true}
+      />
       <div ref={containerRef} className='relative overflow-hidden w-4/5 max-sm:w-9/10 mx-auto'>
         <motion.div
           ref={dragRef}

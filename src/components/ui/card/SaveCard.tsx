@@ -1,4 +1,4 @@
-import { FolderDetailIcon } from '@/assets';
+import { AlarmIcon, FolderDetailIcon } from '@/assets';
 import { Image, Chip, Button } from '@/components/common';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
@@ -58,7 +58,11 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
               <h3 className='font-semibold text-[20px] text-gray-900 mb-2'>{data.category}</h3>
               <p className='text-[15px] text-gray-600 leading-relaxed mb-2'>{data.memo}</p>
               <div className='absolute bottom-4 left-6 right-4 flex justify-between items-center'>
-                <p className='text-sm text-stone'>2025.07.17 저장</p>
+                <div className='flex items-center gap-2'>
+                  <p className='text-sm text-stone'>2025.07.17 18:28 저장</p>
+                  <AlarmIcon width={16} height={16} />
+                </div>
+
                 <div ref={iconRef} onClick={isOpen}>
                   <FolderDetailIcon
                     width={24}
