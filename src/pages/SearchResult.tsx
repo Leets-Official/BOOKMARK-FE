@@ -5,6 +5,7 @@ import { dummyCategoryList, dummyPlatformList, dummyTagList } from '@/contants/D
 import { useState, useRef, useEffect } from 'react';
 import type { ChipProps } from '@/types';
 import clsx from 'clsx';
+import { Outlet } from 'react-router-dom';
 
 const SearchResult = () => {
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
@@ -36,87 +37,90 @@ const SearchResult = () => {
   }, [categoryList, tagList, platformList]);
 
   return (
-    <div className='relative min-h-screen flex flex-col gap-4'>
-      <ChangeSearchBar barMarginTop={100} isBackButton={true} />
-      <div
-        ref={scrollContainerRef}
-        className={clsx(
-          'flex flex-row gap-3 items-center overflow-x-auto px-4',
-          hasScroll ? 'justify-start' : 'justify-center',
-        )}
-      >
-        {/* 카테고리, 태그, 플랫폼 칩 드롭다운 */}
-        <ChipDropDown title='카테고리' options={categoryList} onChange={setCategoryList} />
-        <ChipDropDown title='태그' options={tagList} onChange={setTagList} />
-        <ChipDropDown title='플랫폼' options={platformList} onChange={setPlatformList} />
+    <>
+      <div className='relative min-h-screen flex flex-col gap-4'>
+        <ChangeSearchBar barMarginTop={100} isBackButton={true} />
+        <div
+          ref={scrollContainerRef}
+          className={clsx(
+            'flex flex-row gap-3 items-center overflow-x-auto px-4',
+            hasScroll ? 'justify-start' : 'justify-center',
+          )}
+        >
+          {/* 카테고리, 태그, 플랫폼 칩 드롭다운 */}
+          <ChipDropDown title='카테고리' options={categoryList} onChange={setCategoryList} />
+          <ChipDropDown title='태그' options={tagList} onChange={setTagList} />
+          <ChipDropDown title='플랫폼' options={platformList} onChange={setPlatformList} />
+        </div>
+        {/* 카드 더미 리스트 */}
+        <div className='flex flex-col gap-5 px-4 mb-10'>
+          <CompactCard
+            title='제목'
+            src='https://picsum.photos/200/300'
+            memo='메모'
+            category='카테고리'
+            tags={['태그1', '태그2']}
+          />
+          <CompactCard
+            title='제목'
+            src='https://picsum.photos/200/300'
+            memo='메모'
+            category='카테고리'
+            tags={['태그1', '태그2']}
+          />
+          <CompactCard
+            title='제목'
+            src='https://picsum.photos/200/300'
+            memo='메모'
+            category='카테고리'
+            tags={['태그1', '태그2']}
+          />
+          <CompactCard
+            title='제목'
+            src='https://picsum.photos/200/300'
+            memo='메모'
+            category='카테고리'
+            tags={['태그1', '태그2']}
+          />
+          <CompactCard
+            title='제목'
+            src='https://picsum.photos/200/300'
+            memo='메모'
+            category='카테고리'
+            tags={['태그1', '태그2']}
+          />
+          <CompactCard
+            title='제목'
+            src='https://picsum.photos/200/300'
+            memo='메모'
+            category='카테고리'
+            tags={['태그1', '태그2']}
+          />
+          <CompactCard
+            title='제목'
+            src='https://picsum.photos/200/300'
+            memo='메모'
+            category='카테고리'
+            tags={['태그1', '태그2']}
+          />
+          <CompactCard
+            title='제목'
+            src='https://picsum.photos/200/300'
+            memo='메모'
+            category='카테고리'
+            tags={['태그1', '태그2']}
+          />
+          <CompactCard
+            title='제목'
+            src='https://picsum.photos/200/300'
+            memo='메모'
+            category='카테고리'
+            tags={['태그1', '태그2']}
+          />
+        </div>
       </div>
-      {/* 카드 더미 리스트 */}
-      <div className='flex flex-col gap-5 px-4 mb-10'>
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-      </div>
-    </div>
+      <Outlet />
+    </>
   );
 };
 
