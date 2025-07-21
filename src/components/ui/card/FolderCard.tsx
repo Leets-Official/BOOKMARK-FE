@@ -63,11 +63,11 @@ const FolderCard = ({ category, images }: ICardProps) => {
               <div className='w-2/3 h-full'>
                 <Image src={images[0]} className='w-full h-full object-cover rounded-l-2xl' />
               </div>
-              <div className='w-1/3 h-full flex flex-col'>
-                <div className='w-full h-1/2 border border-white'>
+              <div className='w-2/3 h-full flex flex-col'>
+                <div className='w-full h-1/2 border-l border-b border-white'>
                   <Image src={images[1]} className='w-full h-full object-cover' />
                 </div>
-                <div className='w-full h-1/2 border border-white'>
+                <div className='w-full h-1/2 border-l border-white'>
                   <Image src={images[2]} className='w-full h-full object-cover rounded-br-2xl' />
                 </div>
               </div>
@@ -140,7 +140,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
             className='hover:bg-gray-100 rounded mt-1.5 p-1 cursor-pointer'
           >
             <p className='text-base font-semibold mb-1.5'>카테고리 삭제</p>
-            <p className='text-xs text-stone'>
+            <p className='text-xs text-stone break-keep whitespace-pre-wrap'>
               카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?
             </p>
           </div>

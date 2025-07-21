@@ -1,4 +1,4 @@
-import { LeftIcon, RightIcon } from '@/assets';
+import { LeftIcon, ListOrderIcon, RightIcon } from '@/assets';
 import { isMobile } from 'react-device-detect';
 
 interface CardListHeaderProps {
@@ -52,8 +52,8 @@ const CardListHeader = ({
             className='flex flex-row items-center gap-1 mr-3 font-semibold text-stone hover:brightness-75 cursor-pointer'
           >
             <p className=' max-sm:text-[12px] text-base'>{sortLabel}</p>
-            <span className='max-sm:text-[16px] text-[24px] rotate-90'>
-              <RightIcon
+            <span className='max-sm:text-[16px] text-[24px]'>
+              <ListOrderIcon
                 width={16}
                 height={16}
                 strokeWidth={2.5}

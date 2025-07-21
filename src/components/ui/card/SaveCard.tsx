@@ -49,7 +49,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
             <Chip
               content={data.platform}
               isSelected={false}
-              className='border-[#EAEDF5] text-[15px] px-3 h-auto'
+              className='border-blue text-[15px] px-3 h-auto'
             />
           </div>
           <Image src={data.image} className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4' />
