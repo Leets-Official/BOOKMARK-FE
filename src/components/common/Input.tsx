@@ -6,6 +6,7 @@ interface InputProps {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   className: string;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }
 
@@ -15,6 +16,7 @@ const Input: React.FC<InputProps> = ({
   onChange,
   className = '',
   onKeyDown,
+  onFocus,
   onBlur,
 }) => {
   return (
@@ -26,6 +28,7 @@ const Input: React.FC<InputProps> = ({
       className={className}
       onKeyDown={onKeyDown}
       onBlur={onBlur}
+      onFocus={onFocus}
     />
   );
 };

@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 interface ChipProps {
   content: string;
-  className: string;
+  className?: string;
   isSelected: boolean;
   onClick?: () => void;
   onDelete?: () => void;

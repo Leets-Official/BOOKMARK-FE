@@ -8,12 +8,26 @@ interface ButtonProps {
   className?: string; // 추가 클래스명 전달
   onClick: () => void; // 클릭 이벤트 핸들러
   disabled?: boolean; // 비활성화 여부
+  onMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 // 실제 버튼 컴포넌트 정의
-const Button = ({ children, isLoading, icon, className, onClick, disabled }: ButtonProps) => {
+const Button = ({
+  children,
+  isLoading,
+  icon,
+  className,
+  onClick,
+  disabled,
+  onMouseDown,
+}: ButtonProps) => {
   return (
-    <button className={className} onClick={onClick} disabled={isLoading || disabled}>
+    <button
+      className={className}
+      onClick={onClick}
+      onMouseDown={onMouseDown}
+      disabled={isLoading || disabled}
+    >
       {isLoading ? (
         'Loading...'
       ) : (
