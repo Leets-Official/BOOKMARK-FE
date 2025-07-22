@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 const Alarm = ({ isOpen }: { isOpen?: boolean }) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
-  const visible = isOpen !== undefined ? isOpen : atomVisible;
+  const visible = isOpen ?? atomVisible;
   const dateOptions = useAtomValue(dateOptionsAtom);
   const timeOptions = useAtomValue(timeOptionsAtom);
   const [tempDate, setTempDate] = useState('');

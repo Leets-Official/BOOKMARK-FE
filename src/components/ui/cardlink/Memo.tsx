@@ -1,7 +1,8 @@
-import { memoAtom, visibleMemoAndAlarmAtom } from '@/atoms';
+import { visibleMemoAndAlarmAtom } from '@/atoms';
 import TextField from '@/components/ui/TextField';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
+import { useState } from 'react';
 
 interface IMemoProps {
   cardMemo?: string;
@@ -12,14 +13,14 @@ interface IMemoProps {
 
 const Memo = ({ cardMemo, setCardMemo, isOpen }: IMemoProps) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
-  const visible = isOpen !== undefined ? isOpen : atomVisible;
-  const setMemoFromAtom = useSetAtom(memoAtom);
+  const visible = isOpen ?? atomVisible;
+  const [memo, setMemo] = useState('');
 
-  const handleMemoChange = (value: string) => {
+  const handleMemo = (value: string) => {
     if (setCardMemo) {
       setCardMemo(value); // 로컬 state에서 온 경우
     } else {
-      setMemoFromAtom(value); // jotai atom을 사용하는 경우
+      setMemo(value);
     }
   };
 
@@ -40,8 +41,8 @@ const Memo = ({ cardMemo, setCardMemo, isOpen }: IMemoProps) => {
               label=''
               placeholder='메모를 입력해주세요'
               maxLength={50}
-              onChange={handleMemoChange}
-              initialValue={cardMemo}
+              onChange={handleMemo}
+              initialValue={cardMemo ?? memo}
               buttonVisible={false}
             />
           </motion.div>

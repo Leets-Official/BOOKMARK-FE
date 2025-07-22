@@ -4,13 +4,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useScrollLock } from '@/components/hooks/ScrollLock';
 import SaveHeader from '@/components/layout/header/SaveHeader';
 import { Button, Chip, Modal } from '@/components/common';
-import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
 import { useMemo, useState } from 'react';
 import type { SaveCardProps } from '@/types';
 import { dummyCardData } from '@/contants/DummyData';
 import { AddIcon } from '@/assets';
-import { Alarm, Memo } from '@/components/ui/cardlink';
+import { Alarm, LinkField, Memo } from '@/components/ui/cardlink';
 
 type ModalType = 'category' | 'tag';
 
@@ -41,7 +40,7 @@ const Edit = () => {
   const onPrev = () => navigate(-1);
   const editData: SaveCardProps = location.state?.editData; // Home의 SaveCard로 부터 링크 데이터를 가져옴
 
-  const [link, setLink] = useState(
+  const [cardLink, setCardLink] = useState(
     `https://example.com/${editData.title.replace(/\s+/g, '-').toLowerCase()}`,
   );
   const [cardmemo, setCardMemo] = useState(`${editData.memo}`);
@@ -134,26 +133,14 @@ const Edit = () => {
           {/* 카드 모음 */}
           <div className='flex flex-col items-center gap-3 w-full p-4 mt-3'>
             {/**링크 필드 */}
-            <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pb-4'>
-              <TextField
-                label={
-                  <div className='pt-2'>
-                    링크입력<span className='text-[#FF2C3D]'>*</span>
-                  </div>
-                }
-                placeholder='제목을 입력해주세요'
-                onChange={setLink}
-                initialValue={link}
-              />
-              <hr className='border-t-2 border-lightGrayBlue my-4' />
-              <LinkCard
-                title={editData.title}
-                platform={editData.platform}
-                isLoading={false}
-                editable={true}
-                image={editData.image}
-              />
-            </div>
+            <LinkField
+              isOpen={true}
+              cardLink={cardLink}
+              setCardLink={setCardLink}
+              title={editData.title}
+              platform={editData.platform}
+              image={editData.image}
+            />
             {/**카테고리 & 태그 */}
             <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
               <p className='text-sm text-stone font-semibold'>

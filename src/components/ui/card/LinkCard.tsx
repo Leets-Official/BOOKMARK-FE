@@ -10,7 +10,7 @@ interface CardProps {
   editable?: boolean;
 }
 
-const Card = ({ title, platform, image, isLoading, editable }: CardProps) => {
+const LinkCard = ({ title, platform, image, isLoading, editable }: CardProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previewImage, setPreviewImage] = useState<string | undefined>(undefined); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
@@ -103,4 +103,4 @@ const Card = ({ title, platform, image, isLoading, editable }: CardProps) => {
   );
 };
 
-export default Card;
+export default LinkCard;
