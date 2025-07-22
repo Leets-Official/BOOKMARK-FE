@@ -1,5 +1,5 @@
 import { isMobile } from 'react-device-detect';
-import SaveHeader from '@/components/layout/header/SaveHeader';
+import CommonHeader from '@/components/layout/header/CommonHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import CategoryTagSelector from '@/pages/save/CategoryTagSelector';
@@ -63,7 +63,7 @@ const Save = () => {
       >
         {/* 해더 */}
         <div className='sticky top-0 z-10 w-full'>
-          <SaveHeader />
+          <CommonHeader title='링크 저장' />
         </div>
         {/* 본문 */}
         <div className='flex-1 overflow-y-auto hide-scrollbar w-full'>
