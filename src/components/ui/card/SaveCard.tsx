@@ -85,7 +85,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
               isClose();
               navigate('edit', { state: { editData: data } });
             }}
-            className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15'
+            className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15 cursor-pointer'
           >
             수정
           </Button>
@@ -94,7 +94,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
               isClose();
               setIsDeleteModalOpen(true);
             }}
-            className='text-left px-1 py-3 text-[#FF2C3D] hover:bg-gray-100 rounded text-15'
+            className='text-left px-1 py-3 text-[#FF2C3D] hover:bg-gray-100 rounded text-15 cursor-pointer'
           >
             삭제
           </Button>

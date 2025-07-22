@@ -37,8 +37,8 @@ const DateTimeDropDown = ({
   return (
     <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef} isOpen={isOpen}>
       <DropDown.Trigger onClick={() => setIsOpen(!isOpen)} ref={parentRef}>
-        <div className='w-[150px] bg-white rounded-[8px] flex flex-row gap-2 items-center border border-lightBlueGray cursor-pointer relative p-2 justify-between'>
-          <div className='flex flex-row gap-2 items-center'>
+        <div className='w-[150px] bg-white rounded-[8px] flex flex-row gap-2 items-center border border-[#BCC0CC] cursor-pointer relative p-2 justify-between'>
+          <div className='flex flex-row gap-2 items-center text-stone'>
             {icon}
             <p>{selectedOption || title}</p>
           </div>
@@ -48,7 +48,7 @@ const DateTimeDropDown = ({
             }}
             transition={{ duration: 0.2 }}
           >
-            <BackArrowIcon width={24} height={24} />
+            <BackArrowIcon width={20} height={20} />
           </motion.div>
         </div>
       </DropDown.Trigger>
@@ -56,7 +56,7 @@ const DateTimeDropDown = ({
         isOpen={isOpen}
         parentRef={parentRef}
         ref={menuRef}
-        className='absolute top-full left-0 mt-2 bg-white rounded-[8px] flex flex-col gap-5 border border-lightBlueGray z-[9999] shadow-lg max-h-60 overflow-y-auto p-4 w-[150px]'
+        className='absolute top-full left-0 mt-2 bg-white rounded-[8px] flex flex-col gap-5 border border-areaBorder z-[9999] shadow-[0_2px_7px_rgba(2,34,94,0.1)] max-h-60 overflow-y-auto thin-scrollbar p-4 w-[150px]'
       >
         <p className='text-sm text-lightBlueGray font-medium'>{subTitle}</p>
         <div className='flex flex-col gap-5 text-gray'>

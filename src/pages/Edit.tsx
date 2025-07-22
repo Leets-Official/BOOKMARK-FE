@@ -3,14 +3,16 @@ import { isMobile } from 'react-device-detect';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useScrollLock } from '@/components/hooks/ScrollLock';
 import SaveHeader from '@/components/layout/header/SaveHeader';
-import Alarm from './save/Alarm';
 import { Button, Chip } from '@/components/common';
 import Card from '@/components/ui/card/Card';
 import TextField from '@/components/ui/TextField';
 import { useMemo, useState } from 'react';
 import type { SaveCardProps } from '@/types';
 import { dummyCardData } from '@/contants/DummyData';
-import { AddIcon } from '@/assets';
+import { AddIcon, CalendarIcon, ScheduleIcon } from '@/assets';
+import DateTimeDropDown from '@/components/layout/dropDown/DateTimeDropDown';
+import { useAtomValue } from 'jotai';
+import { dateOptionsAtom, timeOptionsAtom } from '@/atoms';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -44,7 +46,9 @@ const Edit = () => {
   const [memo, setMemo] = useState(`${editData.memo}`);
 
   const [selectedCategory, setSelectedCategory] = useState(editData.category);
+  const [selectedTag, setSelectedTag] = useState<string[]>(editData.tags ?? []);
 
+  // 겹치지 않는 모든 카테고리를 가져옴
   const allCategories = useMemo(() => {
     const categories = [...new Set(dummyCardData.map((item) => item.category))];
     return categories.map((category) => ({
@@ -58,8 +62,7 @@ const Edit = () => {
     setSelectedCategory(categoryId);
   };
 
-  const [selectedTag, setSelectedTag] = useState<string[]>(editData.tags ?? []);
-
+  // 각 카테고리 하위에 있는 모든 태그를 겹치지 않게 가져옴
   const allTags = useMemo(() => {
     const matchedItems = dummyCardData.filter((item) => item.category === selectedCategory);
     const tags = matchedItems.flatMap((item) => item.tags);
@@ -78,6 +81,13 @@ const Edit = () => {
     );
   };
 
+  const dateOptions = useAtomValue(dateOptionsAtom);
+  const timeOptions = useAtomValue(timeOptionsAtom);
+  const [tempDate, setTempDate] = useState('');
+  const [tempTime, setTempTime] = useState('');
+  const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
+  const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
+
   useScrollLock(!isMobile);
   return (
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
@@ -90,9 +100,9 @@ const Edit = () => {
             <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pb-4'>
               <TextField
                 label={
-                  <p className='pt-2'>
+                  <div className='pt-2'>
                     링크입력<span className='text-[#FF2C3D]'>*</span>
-                  </p>
+                  </div>
                 }
                 placeholder='제목을 입력해주세요'
                 onChange={setLink}
@@ -171,7 +181,35 @@ const Edit = () => {
                 buttonVisible={false}
               />
             </div>
-            <Alarm />
+            <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5 mb-60'>
+              <div className='flex flex-col gap-2 mt-2'>
+                <p className='text-sm font-semibold text-stone'>알림</p>
+                {/* 날짜 드롭다운 */}
+                <div className='flex flex-row gap-2 mt-2'>
+                  <DateTimeDropDown
+                    icon={<CalendarIcon width={24} height={24} />}
+                    options={dateOptions}
+                    title='날짜선택'
+                    subTitle='날짜'
+                    selectedOption={tempDate}
+                    setSelectedOption={setTempDate}
+                    isOpen={isDateDropDownOpen}
+                    setIsOpen={setIsDateDropDownOpen}
+                  />
+                  {/* 시간 드롭다운 */}
+                  <DateTimeDropDown
+                    icon={<ScheduleIcon width={24} height={24} />}
+                    options={timeOptions}
+                    title='시간선택'
+                    subTitle='시간'
+                    selectedOption={tempTime}
+                    setSelectedOption={setTempTime}
+                    isOpen={isTimeDropDownOpen}
+                    setIsOpen={setIsTimeDropDownOpen}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <Button

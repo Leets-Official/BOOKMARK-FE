@@ -56,7 +56,7 @@ const Alarm = () => {
   return (
     <div className='bg-white w-full rounded-[12px] shadow relative'>
       <div className='flex items-center justify-between p-2 my-1'>
-        <p className='text-sm font-semibold text-grayText'>알림</p>
+        <p className='text-sm font-semibold text-stone'>알림</p>
         {selectedDate === '' || selectedTime === '' ? null : (
           <Button
             onClick={resetAlarm}
@@ -113,9 +113,9 @@ const Alarm = () => {
           <div className='flex flex-row gap-2 mb-2 mt-2'>
             {/* 날짜 드롭다운 */}
             <DateTimeDropDown
-              icon={<CalendarIcon width={24} height={24} fill='#090E1D' />}
+              icon={<CalendarIcon width={24} height={24} />}
               options={dateOptions}
-              title='날짜선택'
+              title='날짜 선택'
               subTitle='날짜'
               selectedOption={tempDate}
               setSelectedOption={setTempDate}
@@ -124,9 +124,9 @@ const Alarm = () => {
             />
             {/* 시간 드롭다운 */}
             <DateTimeDropDown
-              icon={<ScheduleIcon width={24} height={24} fill='#090E1D' />}
+              icon={<ScheduleIcon width={24} height={24} />}
               options={timeOptions}
-              title='시간선택'
+              title='시간 선택'
               subTitle='시간'
               selectedOption={tempTime}
               setSelectedOption={setTempTime}

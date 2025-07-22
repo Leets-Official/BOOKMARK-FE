@@ -79,7 +79,7 @@ const TextField = ({
 
   return (
     <div className='flex flex-col'>
-      <p className='text-sm text-stone font-semibold my-2'>{label}</p>
+      <div className='text-sm text-stone font-semibold my-2'>{label}</div>
       <div className='flex items-center relative'>
         <Textarea
           className={clsx(
