@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import type { SaveCardProps } from '@/types';
 import { dummyCardData } from '@/contants/DummyData';
 import { AddIcon } from '@/assets';
-import { Alarm } from '@/components/ui/cardlink';
+import { Alarm, Memo } from '@/components/ui/cardlink';
 
 type ModalType = 'category' | 'tag';
 
@@ -44,7 +44,7 @@ const Edit = () => {
   const [link, setLink] = useState(
     `https://example.com/${editData.title.replace(/\s+/g, '-').toLowerCase()}`,
   );
-  const [memo, setMemo] = useState(`${editData.memo}`);
+  const [cardmemo, setCardMemo] = useState(`${editData.memo}`);
   const [content, setContent] = useState('');
 
   const [selectedCategory, setSelectedCategory] = useState(editData.category);
@@ -203,16 +203,7 @@ const Edit = () => {
               </div>
             </div>
             {/**메모  */}
-            <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5'>
-              <TextField
-                label='메모'
-                placeholder='메모를 입력해주세요'
-                maxLength={50}
-                onChange={setMemo}
-                initialValue={memo}
-                buttonVisible={false}
-              />
-            </div>
+            <Memo setCardMemo={setCardMemo} cardMemo={cardmemo} isOpen={true} />
             <Alarm isOpen={true} />
           </div>
         </div>
