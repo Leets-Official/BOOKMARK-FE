@@ -70,11 +70,15 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
   }, [selectedCategory, selectedTag]);
 
   const handleTags = (tagId: string) => {
-    setSelectedTag((prev) =>
-      prev.includes(tagId) ? prev.filter((tag) => tag !== tagId) : [...prev, tagId],
-    );
-    setVisibleMemoAndAlarm(true);
-    setIsSaveButtonDisabled(false);
+    setSelectedTag((prev) => {
+      const alreadySelected = prev.includes(tagId);
+      const updatedTag = alreadySelected ? prev.filter((tag) => tag !== tagId) : [...prev, tagId];
+
+      setVisibleMemoAndAlarm(updatedTag.length > 0);
+      setIsSaveButtonDisabled(updatedTag.length === 0);
+
+      return updatedTag;
+    });
   };
 
   const [modalType, setModalType] = useState<ModalType>('category');
