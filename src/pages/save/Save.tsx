@@ -9,6 +9,7 @@ import Button from '@/components/common/Button';
 import LinkField from '@/pages/save/LinkField';
 import { isSaveButtonDisabledAtom } from '@/atoms';
 import { useAtomValue } from 'jotai';
+import { useEffect } from 'react';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -46,6 +47,11 @@ const Save = () => {
   const onClick = () => {
     navigate(-1);
   };
+
+  // Save Page 창 열릴 때 스크롤 바 정지
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+  }, []);
 
   return (
     // PC : 모달형식, 모바일 : 전체화면
