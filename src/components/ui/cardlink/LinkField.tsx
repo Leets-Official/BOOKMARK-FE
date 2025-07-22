@@ -73,7 +73,6 @@ const LinkField = ({
         }
         placeholder='제목을 입력해주세요'
         onChange={handleLink}
-        isCreateType={false}
         initialValue={cardLink ?? link}
       />
       {visible && (

@@ -9,10 +9,6 @@ interface TextFieldProps {
   maxLength?: number;
   //eslint-disable-next-line
   onChange: (v: string) => void;
-  //eslint-disable-next-line
-  onSubmit?: (v: string) => void;
-  // create : 생성 버튼, reset : 초기화 버튼
-  isCreateType?: boolean;
   // eslint-disable-next-line
   setDisabled?: (v: boolean) => void;
   initialValue?: string;
@@ -24,8 +20,6 @@ const TextField = ({
   placeholder,
   maxLength,
   onChange,
-  onSubmit,
-  isCreateType = false,
   setDisabled,
   initialValue = '',
   buttonVisible = true,
@@ -55,17 +49,6 @@ const TextField = ({
     }
   };
 
-  const createContent = () => {
-    setContent('');
-    if (onSubmit) {
-      onSubmit(content);
-    }
-
-    if (setDisabled) {
-      setDisabled(true);
-    }
-  };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter') {
       e.currentTarget.blur();
@@ -79,8 +62,8 @@ const TextField = ({
 
   return (
     <div className='flex flex-col'>
-      <div className='text-sm text-stone font-semibold my-2'>{label}</div>
-      <div className='flex items-center relative'>
+      <div className='text-xs'>{label}</div>
+      <div className='flex items-center relative mt-2'>
         <Textarea
           className={clsx(
             'w-full rounded-[12px] text-15 p-4 py-3 leading-5',
@@ -95,15 +78,9 @@ const TextField = ({
         {content && buttonVisible && (
           <Button
             className='absolute top-3 right-3 bg-transparent hover:cursor-pointer h-6 w-6 text-xs text-primary font-semibold'
-            icon={
-              !isCreateType ? (
-                <RoundDeleteIcon width={20} height={20} className='hover:brightness-90' />
-              ) : null
-            }
-            onClick={isCreateType ? createContent : resetContent}
-          >
-            {isCreateType ? '등록' : undefined}
-          </Button>
+            icon={<RoundDeleteIcon width={20} height={20} className='hover:brightness-90' />}
+            onClick={resetContent}
+          ></Button>
         )}
       </div>
       {maxLength && (

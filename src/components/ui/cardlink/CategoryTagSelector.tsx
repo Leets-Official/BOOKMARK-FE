@@ -40,7 +40,6 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
   };
 
   const [content, setContent] = useState('');
-
   const [selectedCategory, setSelectedCategory] = useState(editCate ?? '');
   const [selectedTag, setSelectedTag] = useState<string[]>(editTag ?? []);
 
@@ -63,7 +62,6 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     const matchedItems = dummyCardData.filter((item) => item.category === selectedCategory);
     const tags = matchedItems.flatMap((item) => item.tags);
     const uniqueTags = Array.from(new Set(tags));
-
     return uniqueTags.map((tag) => ({
       id: tag,
       content: tag,
@@ -222,7 +220,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
           disabled={isDisabled}
         >
           <TextField
-            label='이름'
+            label=''
             placeholder={
               modalType === 'category'
                 ? '추가할 카테고리를 입력해주세요'
