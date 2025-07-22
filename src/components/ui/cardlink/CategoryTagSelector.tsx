@@ -1,59 +1,36 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Button, Chip, Modal } from '@/components/common';
-import { AddIcon, StarIcon } from '@/assets';
-import { useEffect, useState } from 'react';
+import { Chip, Modal } from '@/components/common';
+import { AddIcon } from '@/assets';
+import { useMemo, useState } from 'react';
 import TextField from '@/components/ui/TextField';
-import type { ChipProps } from '@/types';
 import {
-  categoryListAtom,
   isSaveButtonDisabledAtom,
-  memoAtom,
-  selectedDateAtom,
-  selectedTimeAtom,
   suggestionListAtom,
-  tagListAtom,
   visibleCategoryAtom,
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { dummyCardData } from '@/contants/DummyData';
 
-type ModalType = 'category' | 'tag' | null;
+type ModalType = 'category' | 'tag';
 
-const CategoryTagSelector = () => {
+interface ICateTagProps {
+  isOpen?: boolean;
+  editCate?: string;
+  editTag?: string[];
+}
+
+const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
   const visibleCategory = useAtomValue(visibleCategoryAtom);
   const [visibleTag, setVisibleTag] = useAtom(visibleTagAtom);
-  const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
-  const setIsSaveButtonDisabled = useSetAtom(isSaveButtonDisabledAtom);
-  const setMemo = useSetAtom(memoAtom);
-  const setSelectedDate = useSetAtom(selectedDateAtom);
-  const setSelectedTime = useSetAtom(selectedTimeAtom);
+  const openCate = isOpen ?? visibleCategory;
+  const openTag = isOpen ?? visibleTag;
 
-  const [categoryList, setCategoryList] = useAtom(categoryListAtom);
-  const [tagList, setTagList] = useAtom(tagListAtom);
-
-  // 태그 추가 시 모달에 임시로 저장할 태그 리스트
-  const [tempTagList, setTempTagList] = useState<ChipProps[]>([]);
+  const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom); // 메모, 알림
+  const setIsSaveButtonDisabled = useSetAtom(isSaveButtonDisabledAtom); // 저장하기 버튼
 
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
-
-  const [content, setContent] = useState('');
-  const [modalOpenType, setModalOpenType] = useState<ModalType>(null);
-
-  const [disabledSubmitButton, setDisabledSubmitButton] = useState(true);
-
-  const handleCategory = (id: number) => {
-    const newCategoryList = categoryList.map((c) =>
-      c.id === id ? { ...c, isSelected: true } : { ...c, isSelected: false },
-    );
-    setCategoryList(newCategoryList);
-    setVisibleTag(true);
-  };
-
-  const handleTag = (id: number) => {
-    const newTagList = tagList.map((t) => (t.id === id ? { ...t, isSelected: !t.isSelected } : t));
-    setTagList(newTagList);
-  };
 
   const handleSuggestion = (id: number) => {
     const newSuggestionList = suggestionList.map((s) =>
@@ -62,311 +39,199 @@ const CategoryTagSelector = () => {
     setSuggestionList(newSuggestionList);
   };
 
-  // add function
-  const addCategory = (content: string) => {
-    if (content === '') return;
+  const [content, setContent] = useState('');
 
-    const newCategoryList = categoryList.map((c) => ({ ...c, isSelected: false }));
-    setCategoryList([
-      ...newCategoryList,
-      { id: categoryList.length, content, isSelected: true, type: 'category', deleteable: true },
-    ]);
-  };
+  const [selectedCategory, setSelectedCategory] = useState(editCate ?? '');
+  const [selectedTag, setSelectedTag] = useState<string[]>(editTag ?? []);
 
-  const addTag = () => {
-    if (tempTagList.length === 0) return;
-    // id 중복 방지를 위한 id 초기화
-    const mergedList = [...tagList, ...tempTagList].map((item, idx) => ({
-      ...item,
-      id: idx,
+  const allCategories = useMemo(() => {
+    const categories = [...new Set(dummyCardData.map((item) => item.category))];
+    return categories.map((category) => ({
+      id: category,
+      content: category,
+      isSelected: category === selectedCategory,
     }));
-    setTagList(mergedList);
-    setTempTagList([]);
+  }, [selectedCategory]);
+
+  const handleCategory = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setVisibleTag(true);
   };
 
-  const addTempTag = (content: string) => {
-    if (content === '') return;
-    // id 중복 방지를 위한 id 초기화
-    const newTempTagList = tempTagList.map((t, index) => ({
-      ...t,
-      id: index,
-      isSelected: true,
-      deleteable: true,
+  // 각 카테고리 하위에 있는 모든 태그를 겹치지 않게 가져옴
+  const allTags = useMemo(() => {
+    const matchedItems = dummyCardData.filter((item) => item.category === selectedCategory);
+    const tags = matchedItems.flatMap((item) => item.tags);
+    const uniqueTags = Array.from(new Set(tags));
+
+    return uniqueTags.map((tag) => ({
+      id: tag,
+      content: tag,
+      isSelected: selectedTag.includes(tag),
     }));
-    setTempTagList([
-      ...newTempTagList,
-      {
-        id: newTempTagList.length,
-        content,
-        type: 'tag',
-        isSelected: true,
-        deleteable: true,
-        isNew: true,
-      },
-    ]);
+  }, [selectedCategory, selectedTag]);
+
+  const handleTags = (tagId: string) => {
+    setSelectedTag((prev) =>
+      prev.includes(tagId) ? prev.filter((tag) => tag !== tagId) : [...prev, tagId],
+    );
+    setVisibleMemoAndAlarm(true);
+    setIsSaveButtonDisabled(false);
   };
 
-  // delete function
-  const deleteTempTag = (id: number) => {
-    const newTempTagList = tempTagList.filter((t) => t.id !== id);
-    setTempTagList(newTempTagList);
+  const [modalType, setModalType] = useState<ModalType>('category');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
+
+  const handleOpenModal = (type: ModalType) => {
+    setModalType(type);
+    setIsModalOpen(true);
   };
 
-  // 카테고리가 선택되면 태그 보여주기
-  useEffect(() => {
-    if (categoryList.filter((c) => c.isSelected).length > 0) {
-      setVisibleTag(true);
-    } else {
-      setVisibleTag(false);
-      setTagList((prev) => prev.map((t) => ({ ...t, isSelected: false })));
-      setSuggestionList((prev) => prev.map((s) => ({ ...s, isSelected: false })));
+  const handleConfirmModal = () => {
+    if (!content.trim()) return;
+
+    if (modalType === 'category') {
+      handleAddCategory();
+    } else if (modalType === 'tag') {
+      handleAddTag();
     }
-  }, [categoryList, setVisibleTag, setTagList, setSuggestionList]);
 
-  // 태그 또는 제안 태그가 선택되면 메모 및 알림 보여주기
-  useEffect(() => {
-    if (
-      tagList.filter((t) => t.isSelected).length > 0 ||
-      suggestionList.filter((s) => s.isSelected).length > 0
-    ) {
-      setVisibleMemoAndAlarm(true);
-      setIsSaveButtonDisabled(false);
-    } else {
-      setVisibleMemoAndAlarm(false);
-      setIsSaveButtonDisabled(true);
-      setMemo('');
-      setSelectedDate('');
-      setSelectedTime('');
-    }
-  }, [
-    tagList,
-    suggestionList,
-    setVisibleMemoAndAlarm,
-    setIsSaveButtonDisabled,
-    setMemo,
-    setSelectedDate,
-    setSelectedTime,
-  ]);
-
-  const openModal = (type: ModalType) => {
-    setModalOpenType(type);
-    if (type === 'tag') {
-      // 새로 만들어진 태그를 다시 임시 태그 리스트에 추가
-      const newTempTagList = tagList.filter((t) => t.isNew);
-      setTempTagList(newTempTagList);
-      const newTagList = tagList.filter((t) => !t.isNew);
-      setTagList(newTagList);
-    }
-  };
-
-  const closeModal = () => {
-    setModalOpenType(null);
-    setDisabledSubmitButton(true);
-  };
-
-  const handleCategoryModal = () => {
-    addCategory(content);
+    setIsModalOpen(false);
     setContent('');
-    closeModal();
+    setIsDisabled(true);
   };
 
-  const tagModalSubmit = () => {
-    setContent(content);
-    addTempTag(content);
-    setContent('');
+  const handleAddCategory = () => {
+    const newCategory = content;
+    const template = dummyCardData[0];
+    dummyCardData.push({
+      ...template,
+      category: newCategory,
+      tags: [],
+    });
+    setSelectedCategory(newCategory);
   };
 
-  const tagModalConfirm = () => {
-    addTag();
-    closeModal();
+  const handleAddTag = () => {
+    const newTag = content;
+    const index = dummyCardData.findIndex((item) => item.category === selectedCategory);
+    if (index !== -1) {
+      dummyCardData[index].tags = [...(dummyCardData[index].tags || []), newTag];
+      setSelectedTag((prev) => [...prev, newTag]);
+    }
   };
 
   return (
-    <div className='bg-white w-full rounded-[12px] shadow p-2'>
-      <div className='flex flex-col gap-2 pt-2 origin-top'>
-        <div className='flex flex-row items-center justify-between mb-1'>
-          <AnimatePresence mode='wait'>
-            {visibleCategory ? (
-              <>
-                {/* 카테고리를 선택할 수 있을 떄 보일 컴포넌트 */}
-                <motion.div
-                  key='category-with-file'
-                  className='text-sm font-semibold flex flex-row items-center'
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                >
-                  <p className='text-grayText'>카테고리</p>
-                  <p className='text-redText'>*</p>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                >
-                  <Button
-                    icon={<AddIcon width={18} height={18} fill='#397FFF' />}
-                    onClick={() => openModal('category')}
-                    className='cursor-pointer text-xs font-semibold text-primary flex items-center gap-1'
-                  >
-                    카테고리 추가
-                  </Button>
-                </motion.div>
-              </>
-            ) : (
-              // 카테고리를 선택할 수 없을 떄 보일 컴포넌트
-              <motion.p
-                key='category-only'
-                className='text-sm font-semibold text-grayText'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ ease: 'easeInOut' }}
-              >
-                카테고리, 태그
-                <span className='text-redText'>*</span>
-              </motion.p>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-
-      <div className='flex flex-col gap-2 pt-1 origin-top'>
-        <AnimatePresence>
-          {visibleCategory && (
-            <motion.div
-              key='categoryContainer'
-              initial={{ height: 0 }}
-              animate={{ height: 'auto' }}
-              exit={{ height: 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className='overflow-hidden'
-            >
-              <div className='flex flex-wrap gap-2 m-1'>
-                {categoryList.map((category) => (
-                  <Chip
-                    key={category.id}
-                    content={category.content}
-                    isSelected={category.isSelected}
-                    className='border-grayText'
-                    selectedClassName='bg-lightGray'
-                    onClick={() => handleCategory(category.id)}
-                  />
-                ))}
-              </div>
-              {/* 태그 영역 */}
-              <div className='flex flex-col gap-2 bg-grayBg rounded-[12px] p-2 pr-2 pt-1 mt-3 origin-top'>
-                <div className='flex flex-row items-center justify-between mb-1 mt-2 pl-1'>
-                  <div className='flex flex-row items-center text-sm font-semibold '>
-                    <p className='text-grayText'>태그</p>
-                    <p className='text-redText'>*</p>
-                  </div>
-                  {visibleTag && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    >
-                      <Button
-                        icon={<AddIcon width={18} height={18} fill='#397FFF' />}
-                        onClick={() => openModal('tag')}
-                        className='cursor-pointer text-xs font-semibold text-primary flex items-center gap-1'
-                      >
-                        태그 추가
-                      </Button>
-                    </motion.div>
-                  )}
-                </div>
-                {/* 태그를 선택할 수 있을 떄 보일 컴포넌트 */}
-                {visibleTag && (
-                  <motion.div
-                    key='tagContainer'
-                    initial={{ height: 0 }}
-                    animate={{ height: 'auto' }}
-                    exit={{ height: 0 }}
-                    transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    className='overflow-hidden'
-                  >
-                    <div className='flex flex-wrap gap-2 m-1 max-h-[200px] overflow-y-auto hide-scrollbar p-1'>
-                      {tagList.map((tag) => (
-                        <Chip
-                          key={tag.id}
-                          content={tag.content}
-                          isSelected={tag.isSelected}
-                          className='border-lightGrayBlue bg-white'
-                          selectedClassName='bg-lightGray'
-                          onClick={() => handleTag(tag.id)}
-                        />
-                      ))}
-                    </div>
-                    <div className='flex flex-row items-center mb-1 mt-2 pl-1 gap-1'>
-                      <StarIcon width={18} height={18} stroke='#007AFF' />
-                      <p className='text-sm text-primary'>추천</p>
-                    </div>
-                    <div className='flex flex-wrap gap-2 m-1'>
-                      {suggestionList.map((suggestion) => (
-                        <Chip
-                          key={suggestion.id}
-                          content={suggestion.content}
-                          isSelected={suggestion.isSelected}
-                          className='border-lightGrayBlue bg-white'
-                          selectedClassName='border-primary bg-lightPrimary'
-                          onClick={() => handleSuggestion(suggestion.id)}
-                        />
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* 카테고리, 태그 추가 모달 */}
-      {modalOpenType && (
-        <Modal
-          title={modalOpenType === 'category' ? '새 카테고리 추가' : '태그 추가'}
-          confirmLabel='추가하기'
-          onCancel={() => {
-            closeModal();
-          }}
-          onConfirm={() => {
-            modalOpenType === 'category' ? handleCategoryModal() : tagModalConfirm();
-          }}
-          disabled={modalOpenType === 'category' ? disabledSubmitButton : tempTagList.length === 0}
-        >
-          <TextField
-            label='카테고리'
-            placeholder='추가할 카테고리를 입력해주세요.'
-            maxLength={10}
-            onChange={(content) => {
-              setContent(content);
-            }}
-            onSubmit={() => {
-              modalOpenType === 'category' ? undefined : tagModalSubmit();
-            }}
-            setDisabled={setDisabledSubmitButton}
-            isCreateType={modalOpenType === 'category' ? false : true}
-          />
-          <div className='flex flex-wrap gap-2 m-0.5 max-h-[200px] overflow-y-auto hide-scrollbar'>
-            {modalOpenType === 'tag' &&
-              tempTagList.map((item) => (
+    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
+      <p className='text-sm text-stone font-semibold'>
+        카테고리<span className='text-[#FF2C3D]'>*</span>
+      </p>
+      <AnimatePresence mode='wait'>
+        {openCate && (
+          <motion.div
+            key='categoryContainer'
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className='overflow-hidden'
+          >
+            <div className='flex flex-wrap gap-2 p-0.5'>
+              {allCategories.map((category) => (
                 <Chip
-                  key={item.id}
-                  content={item.content}
-                  isSelected={item.isSelected}
-                  className='border-lightGrayBlue bg-white'
-                  selectedClassName='bg-lightGray'
-                  onClick={() => handleTag(item.id)}
-                  disabled={true}
-                  onDelete={item.deleteable ? () => deleteTempTag(item.id) : undefined}
+                  key={category.id}
+                  content={category.content}
+                  isSelected={category.isSelected}
+                  className='border-lightGrayBlue'
+                  selectedClassName='border border-lightGreen bg-lightGreen text-white'
+                  onClick={() => handleCategory(category.id)}
                 />
               ))}
-          </div>
+              <Chip
+                key='add-category'
+                content={<AddIcon width={16} height={16} fill='balck' />}
+                isSelected={false}
+                className='border-lightGrayBlue px-2.5'
+                onClick={() => handleOpenModal('category')}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <hr className='border-t-2 border-lightGrayBlue my-1' />
+      <p className='text-sm text-stone font-semibold'>
+        태그<span className='text-[#FF2C3D]'>*</span>
+      </p>
+      <AnimatePresence mode='wait'>
+        {openTag && (
+          <motion.div
+            key='tagContainer'
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className='overflow-hidden'
+          >
+            {' '}
+            <div className='flex flex-wrap gap-2 p-0.5'>
+              {suggestionList.map((suggestion) => (
+                <Chip
+                  key={suggestion.id}
+                  content={suggestion.content}
+                  isSelected={suggestion.isSelected}
+                  className='border-lightGrayBlue bg-white'
+                  selectedClassName='border-primary bg-lightPrimary'
+                  onClick={() => handleSuggestion(suggestion.id)}
+                />
+              ))}
+
+              {allTags.map((tag) => (
+                <Chip
+                  key={tag.id}
+                  content={tag.content}
+                  isSelected={tag.isSelected}
+                  className='border-lightGrayBlue'
+                  selectedClassName='border-1 border-blue bg-blue/10 text-blue'
+                  onClick={() => handleTags(tag.id)}
+                />
+              ))}
+              <Chip
+                key='add-tag'
+                content={<AddIcon width={16} height={16} fill='balck' />}
+                isSelected={false}
+                className='border-lightGrayBlue px-2.5'
+                onClick={() => handleOpenModal('tag')}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {isModalOpen && (
+        <Modal
+          title={modalType === 'category' ? '카테고리 추가' : '태그 추가'}
+          confirmLabel='저장하기'
+          onCancel={() => {
+            setIsModalOpen(false);
+            setContent('');
+            setIsDisabled(true);
+          }}
+          onConfirm={() => {
+            handleConfirmModal();
+          }}
+          disabled={isDisabled}
+        >
+          <TextField
+            label='이름'
+            placeholder={
+              modalType === 'category'
+                ? '추가할 카테고리를 입력해주세요'
+                : '추가할 태그을 입력해주세요'
+            }
+            maxLength={10}
+            onChange={(content) => setContent(content)}
+            setDisabled={(disabled) => setIsDisabled(disabled)}
+          />
         </Modal>
       )}
     </div>
