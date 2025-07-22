@@ -2,22 +2,24 @@ import CompactCard from '@/components/ui/card/CompactCard';
 import ChipDropDown from '@/components/layout/dropDown/ChipDropDown';
 import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
 import {
+  dummyCardData,
   dummyCategoryList,
-  dummyCompactCardList,
   dummyPlatformList,
   dummyTagList,
 } from '@/contants/DummyData';
 import { useState, useRef, useEffect } from 'react';
-import type { ChipProps, CompactCardProps } from '@/types';
+import type { ChipProps, SaveCardProps } from '@/types';
 import clsx from 'clsx';
 import SaveHeader from '@/components/layout/header/SaveHeader';
+import { isMobile } from 'react-device-detect';
+import SaveCard from '@/components/ui/card/SaveCard';
 
 const SearchResult = () => {
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
   const [categoryList, setCategoryList] = useState<ChipProps[]>(dummyCategoryList);
   const [tagList, setTagList] = useState<ChipProps[]>(dummyTagList);
   const [platformList, setPlatformList] = useState<ChipProps[]>(dummyPlatformList);
-  const [cardList, setCardList] = useState<CompactCardProps[]>(dummyCompactCardList);
+  const [cardList, setCardList] = useState<SaveCardProps[]>(dummyCardData);
 
   // 스크롤 감지를 위한 상태와 ref
   const [hasScroll, setHasScroll] = useState(false);
@@ -60,17 +62,25 @@ const SearchResult = () => {
       </div>
       {/* 카드 더미 리스트 */}
       <div className='flex flex-col gap-5 px-4 mb-10'>
-        {cardList.map((card) => (
-          <CompactCard
-            key={card.id}
-            id={card.id}
-            title={card.title}
-            image={card.image}
-            memo={card.memo}
-            category={card.category}
-            tags={card.tags}
-          />
-        ))}
+        {isMobile ? (
+          cardList.map((card) => (
+            <CompactCard
+              key={card.id}
+              id={card.id}
+              title={card.memo}
+              image={card.image}
+              memo={card.memo}
+              category={card.category}
+              tags={card.tags}
+            />
+          ))
+        ) : (
+          <div className='w-4/5 max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+            {cardList.map((card) => (
+              <SaveCard key={card.id} data={card} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -45,10 +45,11 @@ const Save = () => {
   const navigate = useNavigate();
   const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
   const onClick = () => {
+    document.body.style.overflow = '';
     navigate(-1);
   };
 
-  // Save Page 창 열릴 때 스크롤 바 정지
+  // Save Page 창 열릴 때 body 스크롤 바 정지
   useEffect(() => {
     document.body.style.overflow = 'hidden';
   }, []);

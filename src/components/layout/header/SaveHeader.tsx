@@ -5,6 +5,7 @@ const SaveHeader = () => {
   const navigate = useNavigate();
 
   const onClick = () => {
+    document.body.style.overflow = '';
     navigate(-1);
   };
 
