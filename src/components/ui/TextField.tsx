@@ -1,6 +1,6 @@
 import { RoundDeleteIcon } from '@/assets';
 import { Button, Textarea } from '@/components/common';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface TextFieldProps {
   label: string;
@@ -26,39 +26,47 @@ const TextField = ({
   setDisabled,
 }: TextFieldProps) => {
   const [content, setContent] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (setDisabled) setDisabled(true);
+    setErrorMessage('추가할 카테고리를 입력해주세요.');
+  }, [setDisabled]);
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (maxLength && e.target.value.length > maxLength) return;
+    const value = e.target.value;
 
-    setContent(e.target.value);
-
-    if (setDisabled) {
-      if (e.target.value.length > 0) {
-        setDisabled(false);
-      } else {
-        setDisabled(true);
-      }
+    if (value.length === 0) {
+      setErrorMessage('추가할 카테고리를 입력해주세요.');
+      setDisabled?.(true);
+    } else if (maxLength && value.length > maxLength) {
+      setErrorMessage(`최대 ${maxLength}글자까지 입력가능해요`);
+      setDisabled?.(true);
+      return;
+    } else {
+      setErrorMessage('');
+      setDisabled?.(false);
     }
+
+    setContent(value);
   };
 
   const resetContent = () => {
     setContent('');
+    setErrorMessage('');
     onChange('');
-
-    if (setDisabled) {
-      setDisabled(true);
-    }
+    setDisabled?.(true);
   };
 
   const createContent = () => {
+    if (content.trim().length === 0) {
+      setErrorMessage('추가할 카테고리를 입력해주세요.');
+      return;
+    }
     setContent('');
-    if (onSubmit) {
-      onSubmit(content);
-    }
-
-    if (setDisabled) {
-      setDisabled(true);
-    }
+    setErrorMessage('');
+    onSubmit?.(content);
+    setDisabled?.(true);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -98,6 +106,9 @@ const TextField = ({
           </Button>
         )}
       </div>
+
+      {errorMessage && <p className='text-[12px] text-redText mt-1 ml-1'>{errorMessage}</p>}
+
       {maxLength && (
         <p className='text-[12px] text-grayText text-right w-full mt-1'>
           {content.length}/{maxLength}
