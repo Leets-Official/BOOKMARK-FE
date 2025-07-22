@@ -121,6 +121,7 @@ const dummyTimeOptions = [
 const dummyCardData: SaveCardProps[] = [
   {
     id: 1,
+    title: '홍대 파스타 맛집 추천',
     category: '맛집',
     tags: ['파스타', '이탈리안', '데이트'],
     image: 'https://cdn.pixabay.com/photo/2018/04/26/16/31/marine-3352341_1280.jpg',
@@ -129,6 +130,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 2,
+    title: '리액트 기초 문법 정리',
     category: '리액트',
     tags: ['JSX', '컴포넌트', '훅스'],
     image: 'https://cdn.pixabay.com/photo/2016/03/08/20/03/flag-1244648_1280.jpg',
@@ -137,6 +139,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 3,
+    title: '갤럭시 워치 실사용 후기',
     category: '갤럭시 워치',
     tags: ['헬스', '알림', '배터리'],
     image: 'https://cdn.pixabay.com/photo/2018/04/26/12/14/travel-3351825_1280.jpg',
@@ -145,6 +148,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 4,
+    title: 'Node.js와 Express로 API 만들기',
     category: '백엔드',
     tags: ['Node.js', 'Express', 'REST'],
     image: 'https://cdn.pixabay.com/photo/2013/03/01/18/40/crispus-87928_1280.jpg',
@@ -153,6 +157,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 5,
+    title: '집에서 하는 홈트 루틴',
     category: '운동',
     tags: ['홈트', '루틴', '근력'],
     image: 'https://cdn.pixabay.com/photo/2013/02/01/18/14/url-77169_1280.jpg',
@@ -161,6 +166,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 6,
+    title: 'MongoDB로 NoSQL 배우기',
     category: '개발',
     tags: ['MongoDB', 'NoSQL', '스키마'],
     image: 'https://cdn.pixabay.com/photo/2020/09/19/19/37/landscape-5585247_1280.jpg',
@@ -169,6 +175,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 7,
+    title: 'Next.js로 SSR 구현하기',
     category: '리액트',
     tags: ['Next.js', 'SSR', '라우팅'],
     image: 'https://cdn.pixabay.com/photo/2017/01/28/17/43/fish-2016013_1280.jpg',
@@ -177,6 +184,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 8,
+    title: 'Git 협업 전략 요약',
     category: '깃허브',
     tags: ['푸시', '브랜치', '머지'],
     image: 'https://cdn.pixabay.com/photo/2013/01/29/00/47/google-76517_1280.png',
@@ -185,6 +193,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 9,
+    title: '성수 브런치 카페 리스트',
     category: '맛집',
     tags: ['브런치', '카페', '디저트'],
     image: 'https://cdn.pixabay.com/photo/2024/02/05/18/54/sunlight-8555108_1280.jpg',
@@ -193,6 +202,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 10,
+    title: 'GraphQL + Apollo 기초 연결',
     category: 'API',
     tags: ['GraphQL', 'Apollo', '쿼리'],
     image: 'https://cdn.pixabay.com/photo/2024/05/22/21/51/dog-8781844_640.jpg',
@@ -201,6 +211,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 11,
+    title: '아침 요가 루틴',
     category: '운동',
     tags: ['요가', '스트레칭', '밸런스'],
     image: 'https://cdn.pixabay.com/photo/2025/05/16/07/22/arcades-9603171_1280.jpg',
@@ -209,6 +220,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 12,
+    title: 'Docker로 배포 자동화하기',
     category: '개발',
     tags: ['Docker', '컨테이너', '배포'],
     image: 'https://cdn.pixabay.com/photo/2022/01/16/13/02/budapest-6941969_1280.jpg',
@@ -217,6 +229,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 13,
+    title: '헬스장 입문자를 위한 가이드',
     category: '운동',
     tags: ['헬스장', '스쿼트', '데드리프트'],
     image: 'https://cdn.pixabay.com/photo/2025/07/16/07/19/british-shorthair-9717301_1280.jpg',
@@ -225,6 +238,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 14,
+    title: 'SWR vs React Query 비교',
     category: 'API',
     tags: ['SWR', 'React Query', '캐싱'],
     image: 'https://cdn.pixabay.com/photo/2022/03/07/10/47/bird-7053394_1280.jpg',
@@ -233,6 +247,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 15,
+    title: '갤럭시 워치 페이스 커스터마이징',
     category: '갤럭시 워치',
     tags: ['앱', '커스텀', '페이스'],
     image: 'https://cdn.pixabay.com/photo/2022/11/05/22/11/channel-7572879_1280.jpg',
@@ -241,6 +256,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 16,
+    title: 'GitHub Actions로 CI/CD 구축',
     category: '개발',
     tags: ['CI/CD', 'Actions', '자동화'],
     image: 'https://cdn.pixabay.com/photo/2021/08/17/09/52/woman-6552517_1280.jpg',
@@ -249,6 +265,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 17,
+    title: 'Tailwind CSS로 빠른 스타일링',
     category: 'TailWind',
     tags: ['반응형', '유틸리티', '스타일'],
     image: 'https://cdn.pixabay.com/photo/2022/08/21/08/02/animal-7400625_1280.jpg',
@@ -257,6 +274,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 18,
+    title: 'Storybook으로 UI 관리',
     category: '리액트',
     tags: ['Storybook', 'UI', '컴포넌트'],
     image: 'https://cdn.pixabay.com/photo/2025/04/15/05/45/heat-9534673_1280.jpg',
@@ -265,6 +283,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 19,
+    title: '마라톤 완주 훈련 계획',
     category: '운동',
     tags: ['러닝', '마라톤', '페이스'],
     image: 'https://cdn.pixabay.com/photo/2025/05/02/23/23/australia-9574728_1280.jpg',
@@ -273,6 +292,7 @@ const dummyCardData: SaveCardProps[] = [
   },
   {
     id: 20,
+    title: 'React Native로 앱 만들기',
     category: '리액트',
     tags: ['React Native', '모바일', '크로스플랫폼'],
     image: 'https://cdn.pixabay.com/photo/2025/07/12/13/27/shellfish-9710628_1280.jpg',

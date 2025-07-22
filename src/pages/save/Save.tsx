@@ -53,12 +53,12 @@ const Save = () => {
     // PC : 모달형식, 모바일 : 전체화면
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onClick : undefined}>
       <div
-        className={Container({ isMobile }) + ' flex flex-col'}
+        className={Container({ isMobile }) + 'flex flex-col'}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 해더 */}
         <div className='sticky top-0 z-10 w-full'>
-          <SaveHeader />
+          <SaveHeader title='링크 저장' />
         </div>
         {/* 본문 */}
         <div className='flex-1 overflow-y-auto hide-scrollbar w-full'>

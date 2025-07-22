@@ -2,9 +2,10 @@ import { motion } from 'framer-motion';
 import Button from './Button';
 import { BackArrowIcon, DeleteIcon } from '@/assets';
 import clsx from 'clsx';
+import type React from 'react';
 
 interface ChipProps {
-  content: string;
+  content: React.ReactNode;
   className?: string;
   isSelected: boolean;
   onClick?: () => void;

@@ -12,10 +12,8 @@ import { useState } from 'react';
 
 const SaveCard = ({ data }: { data: SaveCardProps }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  const navigate = useNavigate();
-
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -36,26 +34,26 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
             <Chip
               content={data.category}
               isSelected={false}
-              className='bg-[#80CA14] text-white border-[#EAEDF5] text-[15px] px-3 h-auto'
+              className='bg-[#80CA14] text-white border-[#EAEDF5] text-[15px] px-3 h-[40px]'
             />
             {data.tags.map((tag, i) => (
               <Chip
                 key={i}
                 content={tag}
                 isSelected={false}
-                className='border-[#EAEDF5] text-[15px] px-3 h-auto'
+                className='border-[#EAEDF5] text-[15px] px-3 h-[36px]'
               />
             ))}
             <Chip
               content={data.platform}
               isSelected={false}
-              className='border-blue text-[15px] px-3 h-auto'
+              className='border-blue text-[15px] px-3 h-[36px]'
             />
           </div>
           <Image src={data.image} className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4' />
           <div className='flex justify-between items-start pl-2 pb-2'>
             <div className='flex-1'>
-              <h3 className='font-semibold text-[20px] text-gray-900 mb-2'>{data.category}</h3>
+              <h3 className='font-semibold text-[20px] text-gray-900 mb-2'>{data.title}</h3>
               <p className='text-[15px] text-gray-600 leading-relaxed mb-2'>{data.memo}</p>
               <div className='absolute bottom-4 left-6 right-4 flex justify-between items-center'>
                 <div className='flex items-center gap-2'>
@@ -85,7 +83,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
           <Button
             onClick={() => {
               isClose();
-              navigate('save');
+              navigate('edit', { state: { editData: data } });
             }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15'
           >
