@@ -38,7 +38,7 @@ const Edit = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
-  const editData: SaveCardProps = location.state?.editData;
+  const editData: SaveCardProps = location.state?.editData; // Home의 SaveCard로 부터 링크 데이터를 가져옴
 
   const [link, setLink] = useState(
     `https://example.com/${editData.title.replace(/\s+/g, '-').toLowerCase()}`,
@@ -47,6 +47,12 @@ const Edit = () => {
 
   const [selectedCategory, setSelectedCategory] = useState(editData.category);
   const [selectedTag, setSelectedTag] = useState<string[]>(editData.tags ?? []);
+  const dateOptions = useAtomValue(dateOptionsAtom);
+  const timeOptions = useAtomValue(timeOptionsAtom);
+  const [tempDate, setTempDate] = useState('');
+  const [tempTime, setTempTime] = useState('');
+  const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
+  const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
 
   // 겹치지 않는 모든 카테고리를 가져옴
   const allCategories = useMemo(() => {
@@ -81,12 +87,29 @@ const Edit = () => {
     );
   };
 
-  const dateOptions = useAtomValue(dateOptionsAtom);
-  const timeOptions = useAtomValue(timeOptionsAtom);
-  const [tempDate, setTempDate] = useState('');
-  const [tempTime, setTempTime] = useState('');
-  const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
-  const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
+  const [categoryCount, setCategoryCount] = useState(1); // 고유 ID 생성용
+  const [tagCount, setTagCount] = useState(1);
+
+  const handleAddCategory = () => {
+    const newCategory = `새 카테고리 ${categoryCount}`;
+    setSelectedCategory(newCategory);
+    dummyCardData.push({
+      ...editData,
+      category: newCategory,
+      tags: [],
+    });
+    setCategoryCount((prev) => prev + 1);
+  };
+
+  const handleAddTag = () => {
+    const newTag = `새 태그 ${tagCount}`;
+    setSelectedTag((prev) => [...prev, newTag]);
+    const index = dummyCardData.findIndex((item) => item.category === selectedCategory);
+    if (index !== -1) {
+      dummyCardData[index].tags = [...(dummyCardData[index].tags || []), newTag];
+    }
+    setTagCount((prev) => prev + 1);
+  };
 
   useScrollLock(!isMobile);
   return (
@@ -138,10 +161,7 @@ const Edit = () => {
                   content={<AddIcon width={16} height={16} fill='balck' />}
                   isSelected={false}
                   className='border-lightGrayBlue px-2.5'
-                  onClick={() => {
-                    // 나중에 카테고리 추가 기능 넣을 자리
-                    console.log('카테고리 추가 버튼 클릭됨');
-                  }}
+                  onClick={handleAddCategory}
                 />
               </div>
               <hr className='border-t-2 border-lightGrayBlue my-1' />
@@ -164,13 +184,11 @@ const Edit = () => {
                   content={<AddIcon width={16} height={16} fill='balck' />}
                   isSelected={false}
                   className='border-lightGrayBlue px-2.5'
-                  onClick={() => {
-                    // 나중에 카테고리 추가 기능 넣을 자리
-                    console.log('카테고리 추가 버튼 클릭됨');
-                  }}
+                  onClick={handleAddTag}
                 />
               </div>
             </div>
+            {/**메모  */}
             <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5'>
               <TextField
                 label='메모'
