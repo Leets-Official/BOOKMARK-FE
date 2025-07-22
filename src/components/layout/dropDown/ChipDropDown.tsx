@@ -26,6 +26,12 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
     onChange(newOptions);
   };
 
+  // 초기화 버튼 클릭 시 모든 옵션 선택 해제
+  const handleResetClick = () => {
+    const newOptions = options.map((o) => ({ ...o, isSelected: false }));
+    onChange(newOptions);
+  };
+
   // Menu(옵션) 선택 시 Tigger text와 Chip 색상 변경
   useEffect(() => {
     const selectedOptions = options.filter((o) => o.isSelected);
@@ -66,7 +72,7 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
         <div className='bg-white rounded-[8px] flex flex-col border border-lightBlueGray z-[9999] shadow-lg p-4 mt-1'>
           <div className='flex flex-col gap-5 h-[114px] overflow-y-auto'>
             <p className='text-15 text-stone font-semibold'>{title}</p>
-            <div className='flex flex-row gap-2 flex-wrap pl-1'>
+            <div className='flex flex-row gap-2 flex-wrap px-1 pb-1'>
               {options.map((option) => (
                 <DropDown.Item key={option.id} onClick={() => console.log('clicked')}>
                   <Chip
@@ -87,7 +93,7 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
             <div className='mb-3 items-start pl-3'>
               <Button
                 className='border-b-2 pb-1 font-medium cursor-pointer'
-                onClick={() => console.log('clicked')}
+                onClick={handleResetClick}
               >
                 초기화
               </Button>
