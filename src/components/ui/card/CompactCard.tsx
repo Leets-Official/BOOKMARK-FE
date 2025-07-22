@@ -4,11 +4,11 @@ import Image from '@/components/common/Image';
 import type { CompactCardProps } from '@/types';
 import clsx from 'clsx';
 
-const CompactCard = ({ title, src, memo, category, tags }: CompactCardProps) => {
+const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) => {
   return (
     <div className='w-full border border-gray-200 shadow-md rounded-lg p-2 flex items-stretch flex-row gap-4'>
       <Image
-        src={src}
+        src={image}
         alt='CompactCard'
         className={clsx('aspect-square rounded-lg object-cover', 'h-26', 'sm:h-26', 'md:h-30')}
       />

@@ -1,9 +1,14 @@
 import CompactCard from '@/components/ui/card/CompactCard';
 import ChipDropDown from '@/components/layout/dropDown/ChipDropDown';
 import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
-import { dummyCategoryList, dummyPlatformList, dummyTagList } from '@/contants/DummyData';
+import {
+  dummyCategoryList,
+  dummyCompactCardList,
+  dummyPlatformList,
+  dummyTagList,
+} from '@/contants/DummyData';
 import { useState, useRef, useEffect } from 'react';
-import type { ChipProps } from '@/types';
+import type { ChipProps, CompactCardProps } from '@/types';
 import clsx from 'clsx';
 import SaveHeader from '@/components/layout/header/SaveHeader';
 
@@ -12,6 +17,7 @@ const SearchResult = () => {
   const [categoryList, setCategoryList] = useState<ChipProps[]>(dummyCategoryList);
   const [tagList, setTagList] = useState<ChipProps[]>(dummyTagList);
   const [platformList, setPlatformList] = useState<ChipProps[]>(dummyPlatformList);
+  const [cardList, setCardList] = useState<CompactCardProps[]>(dummyCompactCardList);
 
   // 스크롤 감지를 위한 상태와 ref
   const [hasScroll, setHasScroll] = useState(false);
@@ -54,69 +60,17 @@ const SearchResult = () => {
       </div>
       {/* 카드 더미 리스트 */}
       <div className='flex flex-col gap-5 px-4 mb-10'>
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
-        <CompactCard
-          title='제목'
-          src='https://picsum.photos/200/300'
-          memo='메모'
-          category='카테고리'
-          tags={['태그1', '태그2']}
-        />
+        {cardList.map((card) => (
+          <CompactCard
+            key={card.id}
+            id={card.id}
+            title={card.title}
+            image={card.image}
+            memo={card.memo}
+            category={card.category}
+            tags={card.tags}
+          />
+        ))}
       </div>
     </div>
   );

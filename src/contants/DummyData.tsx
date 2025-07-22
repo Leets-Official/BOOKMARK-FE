@@ -33,29 +33,33 @@ const dummyPlatformList: ChipProps[] = [
 
 const dummyCompactCardList: CompactCardProps[] = [
   {
+    id: 1,
     title: 'SEMIHARU CITY PO',
-    src: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
+    image: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
     memo: '작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트.',
     category: '카테고리',
     tags: ['태그', '태그', '태그'],
   },
   {
+    id: 2,
     title: 'SEMIHARU CITY PO',
-    src: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
+    image: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
     memo: '작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트.',
     category: '카테고리',
     tags: ['태그', '태그', '태그'],
   },
   {
+    id: 3,
     title: 'SEMIHARU CITY PO',
-    src: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
+    image: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
     memo: '작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트.',
     category: '카테고리',
     tags: ['태그', '태그', '태그'],
   },
   {
+    id: 4,
     title: 'SEMIHARU CITY PO',
-    src: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
+    image: 'https://cdn.pixabay.com/photo/2021/03/18/19/56/keyboard-6105750_960_720.jpg',
     memo: '작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트. 친구에게 추천받음. 내가 딱 좋아하는 시티팝 재질. 작업하면서 듣기 좋은 플레이리스트.',
     category: '카테고리',
     tags: ['태그', '태그', '태그'],
