@@ -17,6 +17,10 @@ import {
   visibleTagAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { modalAddSchema } from '@/schema/save';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 type ModalType = 'category' | 'tag' | null;
 
@@ -38,6 +42,8 @@ const CategoryTagSelector = () => {
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
 
   const [content, setContent] = useState('');
+
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [modalOpenType, setModalOpenType] = useState<ModalType>(null);
 
   const [disabledSubmitButton, setDisabledSubmitButton] = useState(true);
@@ -151,11 +157,14 @@ const CategoryTagSelector = () => {
   const openModal = (type: ModalType) => {
     setModalOpenType(type);
     if (type === 'tag') {
+      setIsCategoryModalOpen(false);
       // 새로 만들어진 태그를 다시 임시 태그 리스트에 추가
       const newTempTagList = tagList.filter((t) => t.isNew);
       setTempTagList(newTempTagList);
       const newTagList = tagList.filter((t) => !t.isNew);
       setTagList(newTagList);
+    } else {
+      setIsCategoryModalOpen(true);
     }
   };
 
@@ -180,6 +189,16 @@ const CategoryTagSelector = () => {
     addTag();
     closeModal();
   };
+
+  const schema = modalAddSchema(modalOpenType === 'tag' ? 'tag' : 'category');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+  });
 
   return (
     <div className='bg-white w-full rounded-[12px] shadow p-2'>
@@ -329,25 +348,29 @@ const CategoryTagSelector = () => {
       {/* 카테고리, 태그 추가 모달 */}
       {modalOpenType && (
         <Modal
-          title={modalOpenType === 'category' ? '새 카테고리 추가' : '태그 추가'}
+          title={isCategoryModalOpen ? '새 카테고리 추가' : '태그 추가'}
           confirmLabel='추가하기'
           onCancel={() => {
             closeModal();
           }}
           onConfirm={() => {
-            modalOpenType === 'category' ? handleCategoryModal() : tagModalConfirm();
+            isCategoryModalOpen ? handleCategoryModal() : tagModalConfirm();
           }}
-          disabled={modalOpenType === 'category' ? disabledSubmitButton : tempTagList.length === 0}
+          disabled={isCategoryModalOpen ? disabledSubmitButton : tempTagList.length === 0}
         >
           <TextField
-            label='카테고리'
-            placeholder='추가할 카테고리를 입력해주세요.'
+            label={isCategoryModalOpen ? '카테고리' : '태그'}
+            placeholder={
+              isCategoryModalOpen
+                ? '추가할 카테고리를 입력해주세요.'
+                : '추가할 태그를 입력해주세요.'
+            }
             maxLength={10}
             onChange={(content) => {
               setContent(content);
             }}
             onSubmit={() => {
-              modalOpenType === 'category' ? undefined : tagModalSubmit();
+              isCategoryModalOpen ? undefined : tagModalSubmit();
             }}
             setDisabled={setDisabledSubmitButton}
             isCreateType={modalOpenType === 'category' ? false : true}

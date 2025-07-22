@@ -12,18 +12,15 @@ const saveSchema = z.object({
   time: z.string().optional(),
 });
 
-// category 추가 Modal Schema
-const categorySchema = z.object({
-  category: z.string().min(1, { message: '추가할 카테고리를 입력해주세요.' }).max(10, {
-    message: '최대 10자까지 입력가능해요.',
-  }),
-});
+// 추가 Modal Schema
+const modalAddSchema = (type: 'tag' | 'category') =>
+  z.object({
+    [type]: z
+      .string()
+      .min(1, {
+        message: type === 'tag' ? '추가할 태그를 입력해주세요.' : '추가할 카테고리를 입력해주세요.',
+      })
+      .max(10, { message: '최대 10자까지 입력가능해요.' }),
+  });
 
-// tag 추가 Modal Schema
-const tagSchema = z.object({
-  tag: z.string().min(1, { message: '추가할 태그를 입력해주세요.' }).max(10, {
-    message: '최대 10자까지 입력가능해요.',
-  }),
-});
-
-export { saveSchema, categorySchema, tagSchema };
+export { saveSchema, modalAddSchema };
