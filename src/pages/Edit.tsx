@@ -3,7 +3,7 @@ import { isMobile } from 'react-device-detect';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useScrollLock } from '@/components/hooks/ScrollLock';
 import SaveHeader from '@/components/layout/header/SaveHeader';
-import { Button, Chip } from '@/components/common';
+import { Button, Chip, Modal } from '@/components/common';
 import Card from '@/components/ui/card/Card';
 import TextField from '@/components/ui/TextField';
 import { useMemo, useState } from 'react';
@@ -13,6 +13,8 @@ import { AddIcon, CalendarIcon, ScheduleIcon } from '@/assets';
 import DateTimeDropDown from '@/components/layout/dropDown/DateTimeDropDown';
 import { useAtomValue } from 'jotai';
 import { dateOptionsAtom, timeOptionsAtom } from '@/atoms';
+
+type ModalType = 'category' | 'tag';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -35,6 +37,7 @@ const Container = tv({
 });
 
 const Edit = () => {
+  useScrollLock(!isMobile);
   const location = useLocation();
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
@@ -44,6 +47,7 @@ const Edit = () => {
     `https://example.com/${editData.title.replace(/\s+/g, '-').toLowerCase()}`,
   );
   const [memo, setMemo] = useState(`${editData.memo}`);
+  const [content, setContent] = useState('');
 
   const [selectedCategory, setSelectedCategory] = useState(editData.category);
   const [selectedTag, setSelectedTag] = useState<string[]>(editData.tags ?? []);
@@ -53,6 +57,9 @@ const Edit = () => {
   const [tempTime, setTempTime] = useState('');
   const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
   const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [modalType, setModalType] = useState<ModalType>('category');
 
   // 겹치지 않는 모든 카테고리를 가져옴
   const allCategories = useMemo(() => {
@@ -87,33 +94,48 @@ const Edit = () => {
     );
   };
 
-  const [categoryCount, setCategoryCount] = useState(1); // 고유 ID 생성용
-  const [tagCount, setTagCount] = useState(1);
-
   const handleAddCategory = () => {
-    const newCategory = `새 카테고리 ${categoryCount}`;
-    setSelectedCategory(newCategory);
+    const newCategory = content;
     dummyCardData.push({
       ...editData,
       category: newCategory,
       tags: [],
     });
-    setCategoryCount((prev) => prev + 1);
+    setSelectedCategory(newCategory);
   };
 
   const handleAddTag = () => {
-    const newTag = `새 태그 ${tagCount}`;
-    setSelectedTag((prev) => [...prev, newTag]);
+    const newTag = content;
     const index = dummyCardData.findIndex((item) => item.category === selectedCategory);
     if (index !== -1) {
       dummyCardData[index].tags = [...(dummyCardData[index].tags || []), newTag];
+      setSelectedTag((prev) => [...prev, newTag]);
     }
-    setTagCount((prev) => prev + 1);
   };
 
-  useScrollLock(!isMobile);
+  const handleOpenModal = (type: ModalType) => {
+    setModalType(type);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmModal = () => {
+    if (!content.trim()) return;
+
+    if (modalType === 'category') {
+      handleAddCategory();
+    } else if (modalType === 'tag') {
+      handleAddTag();
+    }
+
+    setIsModalOpen(false);
+    setContent('');
+    setIsDisabled(true);
+  };
+
+  useScrollLock(!isMobile || !isModalOpen);
+
   return (
-    <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
+    <div className={Overlay({ isMobile })} onClick={!isMobile && !isModalOpen ? onPrev : undefined}>
       <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
         <SaveHeader title='링크 수정' />
         <div className='flex-1 overflow-y-auto hide-scrollbar w-full'>
@@ -161,7 +183,7 @@ const Edit = () => {
                   content={<AddIcon width={16} height={16} fill='balck' />}
                   isSelected={false}
                   className='border-lightGrayBlue px-2.5'
-                  onClick={handleAddCategory}
+                  onClick={() => handleOpenModal('category')}
                 />
               </div>
               <hr className='border-t-2 border-lightGrayBlue my-1' />
@@ -169,22 +191,22 @@ const Edit = () => {
                 태그<span className='text-[#FF2C3D]'>*</span>
               </p>
               <div className='flex flex-wrap gap-2 p-0.5'>
-                {allTags.map((category) => (
+                {allTags.map((tag) => (
                   <Chip
-                    key={category.id}
-                    content={category.content}
-                    isSelected={category.isSelected}
+                    key={tag.id}
+                    content={tag.content}
+                    isSelected={tag.isSelected}
                     className='border-lightGrayBlue'
                     selectedClassName='border-1 border-blue bg-blue/10 text-blue'
-                    onClick={() => handleTags(category.id)}
+                    onClick={() => handleTags(tag.id)}
                   />
                 ))}
                 <Chip
-                  key='add-category'
+                  key='add-tag'
                   content={<AddIcon width={16} height={16} fill='balck' />}
                   isSelected={false}
                   className='border-lightGrayBlue px-2.5'
-                  onClick={handleAddTag}
+                  onClick={() => handleOpenModal('tag')}
                 />
               </div>
             </div>
@@ -207,7 +229,7 @@ const Edit = () => {
                   <DateTimeDropDown
                     icon={<CalendarIcon width={24} height={24} />}
                     options={dateOptions}
-                    title='날짜선택'
+                    title='날짜 선택'
                     subTitle='날짜'
                     selectedOption={tempDate}
                     setSelectedOption={setTempDate}
@@ -240,6 +262,33 @@ const Edit = () => {
           수정 완료
         </Button>
       </div>
+      {isModalOpen && (
+        <Modal
+          title={modalType === 'category' ? '카테고리 추가' : '태그 추가'}
+          confirmLabel='저장하기'
+          onCancel={() => {
+            setIsModalOpen(false);
+            setContent('');
+            setIsDisabled(true);
+          }}
+          onConfirm={() => {
+            handleConfirmModal();
+          }}
+          disabled={isDisabled}
+        >
+          <TextField
+            label='이름'
+            placeholder={
+              modalType === 'category'
+                ? '추가할 카테고리를 입력해주세요'
+                : '추가할 태그을 입력해주세요'
+            }
+            maxLength={10}
+            onChange={(content) => setContent(content)}
+            setDisabled={(disabled) => setIsDisabled(disabled)}
+          />
+        </Modal>
+      )}
     </div>
   );
 };

@@ -116,7 +116,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
         }}
         onConfirm={() => {
           if (!content.trim()) return;
-          console.log('카테고리 수정됨:', content); // 실제 로직에 맞게 대체
+          console.log('카테고리 수정됨:', content);
           setIsModalOpen(false);
           setContent('');
           setIsDisabled(true);
