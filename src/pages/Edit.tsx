@@ -4,15 +4,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useScrollLock } from '@/components/hooks/ScrollLock';
 import SaveHeader from '@/components/layout/header/SaveHeader';
 import { Button, Chip, Modal } from '@/components/common';
-import Card from '@/components/ui/card/Card';
+import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
 import { useMemo, useState } from 'react';
 import type { SaveCardProps } from '@/types';
 import { dummyCardData } from '@/contants/DummyData';
-import { AddIcon, CalendarIcon, ScheduleIcon } from '@/assets';
-import DateTimeDropDown from '@/components/layout/dropDown/DateTimeDropDown';
-import { useAtomValue } from 'jotai';
-import { dateOptionsAtom, timeOptionsAtom } from '@/atoms';
+import { AddIcon } from '@/assets';
+import { Alarm } from '@/components/ui/cardlink';
 
 type ModalType = 'category' | 'tag';
 
@@ -51,12 +49,6 @@ const Edit = () => {
 
   const [selectedCategory, setSelectedCategory] = useState(editData.category);
   const [selectedTag, setSelectedTag] = useState<string[]>(editData.tags ?? []);
-  const dateOptions = useAtomValue(dateOptionsAtom);
-  const timeOptions = useAtomValue(timeOptionsAtom);
-  const [tempDate, setTempDate] = useState('');
-  const [tempTime, setTempTime] = useState('');
-  const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
-  const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
   const [modalType, setModalType] = useState<ModalType>('category');
@@ -154,7 +146,7 @@ const Edit = () => {
                 initialValue={link}
               />
               <hr className='border-t-2 border-lightGrayBlue my-4' />
-              <Card
+              <LinkCard
                 title={editData.title}
                 platform={editData.platform}
                 isLoading={false}
@@ -221,35 +213,7 @@ const Edit = () => {
                 buttonVisible={false}
               />
             </div>
-            <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5 mb-60'>
-              <div className='flex flex-col gap-2 mt-2'>
-                <p className='text-sm font-semibold text-stone'>알림</p>
-                {/* 날짜 드롭다운 */}
-                <div className='flex flex-row gap-2 mt-2'>
-                  <DateTimeDropDown
-                    icon={<CalendarIcon width={24} height={24} />}
-                    options={dateOptions}
-                    title='날짜 선택'
-                    subTitle='날짜'
-                    selectedOption={tempDate}
-                    setSelectedOption={setTempDate}
-                    isOpen={isDateDropDownOpen}
-                    setIsOpen={setIsDateDropDownOpen}
-                  />
-                  {/* 시간 드롭다운 */}
-                  <DateTimeDropDown
-                    icon={<ScheduleIcon width={24} height={24} />}
-                    options={timeOptions}
-                    title='시간선택'
-                    subTitle='시간'
-                    selectedOption={tempTime}
-                    setSelectedOption={setTempTime}
-                    isOpen={isTimeDropDownOpen}
-                    setIsOpen={setIsTimeDropDownOpen}
-                  />
-                </div>
-              </div>
-            </div>
+            <Alarm isOpen={true} />
           </div>
         </div>
         <Button
@@ -257,7 +221,7 @@ const Edit = () => {
             console.log('수정 완료');
             onPrev();
           }}
-          className='bg-blue text-base text-white text-center font-medium mb-8 p-4 w-[90%] rounded-[10px]'
+          className='bg-blue text-base text-white text-center font-medium mb-8 p-4 w-[90%] rounded-[10px] hover:brightness-90'
         >
           수정 완료
         </Button>

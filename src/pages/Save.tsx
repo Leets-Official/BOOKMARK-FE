@@ -47,20 +47,13 @@ const Save = () => {
 
   useScrollLock(!isMobile); // PC일 때는 스크롤 방지
 
-  const onClick = () => navigate(-1);
+  const onPrev = () => navigate(-1);
 
   return (
     // PC : 모달형식, 모바일 : 전체화면
-    <div className={Overlay({ isMobile })} onClick={!isMobile ? onClick : undefined}>
-      <div
-        className={Container({ isMobile }) + 'flex flex-col'}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 해더 */}
-        <div className='sticky top-0 z-10 w-full'>
-          <SaveHeader title='링크 저장' />
-        </div>
-        {/* 본문 */}
+    <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
+      <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
+        <SaveHeader title='링크 저장' />
         <div className='flex-1 overflow-y-auto hide-scrollbar w-full'>
           {/* 카드 모음 */}
           <div className='flex flex-col items-center gap-3 w-full p-4 mt-3'>
@@ -73,7 +66,8 @@ const Save = () => {
         {/* 저장 버튼 */}
         <Button
           onClick={() => {
-            // console.log('저장하기', link, memo, selectedDate, selectedTime);
+            console.log('저장 완료');
+            onPrev();
           }}
           className={SaveButton({ isDisabled: isSaveButtonDisabled })}
           disabled={isSaveButtonDisabled}

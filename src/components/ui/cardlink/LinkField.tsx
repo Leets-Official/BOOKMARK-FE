@@ -7,7 +7,7 @@ import {
   visibleCardAtom,
   visibleCategoryAtom,
 } from '@/atoms';
-import Card from '@/components/ui/card/Card';
+import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
@@ -58,8 +58,12 @@ const LinkField = () => {
         onChange={handleLink}
         isCreateType={false}
       />
-      <hr className='border-t-2 border-lightGrayBlue my-1' />
-      {visibleCard && <Card title={link} platform='youtube' isLoading={false} editable={true} />}
+      {visibleCard && (
+        <>
+          <hr className='border-t-2 border-lightGrayBlue my-1' />
+          <LinkCard title={link} platform='youtube' isLoading={false} editable={true} />
+        </>
+      )}
     </div>
   );
 };
