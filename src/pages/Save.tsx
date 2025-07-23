@@ -13,7 +13,7 @@ import {
   visibleTagAtom,
 } from '@/atoms';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { useScrollLock } from '@/components/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/ScrollLock';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
