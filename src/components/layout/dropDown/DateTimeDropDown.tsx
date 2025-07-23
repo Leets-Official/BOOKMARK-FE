@@ -37,7 +37,7 @@ const DateTimeDropDown = ({
   return (
     <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef}>
       <DropDown.Trigger onClick={() => setIsOpen(!isOpen)} ref={parentRef}>
-        <div className='w-[152px] bg-white rounded-[8px] flex flex-row gap-2 items-center border border-[#BCC0CC] cursor-pointer relative p-2 justify-between'>
+        <div className='w-[152px] bg-white rounded-[8px] flex flex-row gap-2 items-center border border-gray cursor-pointer relative p-2 justify-between'>
           <div className='flex flex-row gap-2 items-center text-stone'>
             {icon}
             <p>{selectedOption || title}</p>

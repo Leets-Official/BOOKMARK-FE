@@ -4,8 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardlink';
 import Button from '@/components/common/Button';
-import { isSaveButtonDisabledAtom } from '@/atoms';
-import { useAtomValue } from 'jotai';
+import {
+  isSaveButtonDisabledAtom,
+  linkAtom,
+  visibleCardAtom,
+  visibleCategoryAtom,
+  visibleTagAtom,
+} from '@/atoms';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useScrollLock } from '@/components/hooks/ScrollLock';
 
 const Overlay = tv({
@@ -29,11 +35,11 @@ const Container = tv({
 });
 
 const SaveButton = tv({
-  base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] rounded-[10px] hover:brightness-90 transition',
+  base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] rounded-[10px]',
   variants: {
     isDisabled: {
       true: 'bg-lightBlueGray text-veryLightGray',
-      false: 'bg-blue text-white cursor-pointer',
+      false: 'bg-blue text-white cursor-pointer hover:brightness-90 transition',
     },
   },
 });
@@ -42,8 +48,19 @@ const Save = () => {
   useScrollLock(true); // PC일 때는 스크롤 방지
   const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
   const navigate = useNavigate();
-  const onPrev = () => navigate(-1);
 
+  const resetLink = useSetAtom(linkAtom);
+  const resetCard = useSetAtom(visibleCardAtom);
+  const resetVisibleCate = useSetAtom(visibleCategoryAtom);
+  const resetVisibleTag = useSetAtom(visibleTagAtom);
+
+  const onPrev = () => {
+    resetLink('');
+    resetCard(false);
+    resetVisibleCate(false);
+    resetVisibleTag(false);
+    navigate(-1);
+  };
   return (
     // PC : 모달형식, 모바일 : 전체화면
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>

@@ -12,6 +12,7 @@ import {
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { dummyCardData } from '@/contants/DummyData';
+import clsx from 'clsx';
 
 type ModalType = 'category' | 'tag';
 
@@ -32,13 +33,6 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
 
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
 
-  const handleSuggestion = (id: number) => {
-    const newSuggestionList = suggestionList.map((s) =>
-      s.id === id ? { ...s, isSelected: !s.isSelected } : s,
-    );
-    setSuggestionList(newSuggestionList);
-  };
-
   const [content, setContent] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(editCate ?? '');
   const [selectedTag, setSelectedTag] = useState<string[]>(editTag ?? []);
@@ -57,19 +51,39 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     setVisibleTag(true);
   };
 
-  // 각 카테고리 하위에 있는 모든 태그를 겹치지 않게 가져옴
+  // 카테고리별 태그와 suggestionList를 통합하여 관리 (suggestion 태그를 앞에 배치)
   const allTags = useMemo(() => {
     const matchedItems = dummyCardData.filter((item) => item.category === selectedCategory);
-    const tags = matchedItems.flatMap((item) => item.tags);
-    const uniqueTags = Array.from(new Set(tags));
-    return uniqueTags.map((tag) => ({
-      id: tag,
-      content: tag,
-      isSelected: selectedTag.includes(tag),
-    }));
-  }, [selectedCategory, selectedTag]);
+    const categoryTags = matchedItems.flatMap((item) => item.tags);
 
-  const handleTags = (tagId: string) => {
+    // suggestionList의 태그들을 먼저 추가
+    const suggestionTags = suggestionList.map((s) => s.content);
+
+    // 중복 제거 (suggestion 태그가 우선)
+    const allTagsArray = [...suggestionTags, ...categoryTags];
+    const uniqueTags = Array.from(new Set(allTagsArray));
+
+    return uniqueTags.map((tag) => {
+      const suggestionItem = suggestionList.find((s) => s.content === tag);
+      return {
+        id: tag,
+        content: tag,
+        isSelected: selectedTag.includes(tag),
+        isSuggestion: !!suggestionItem,
+        suggestionId: suggestionItem?.id,
+      };
+    });
+  }, [selectedCategory, selectedTag, suggestionList]);
+
+  const handleTags = (tagId: string, isSuggestion?: boolean, suggestionId?: number) => {
+    // suggestionList에서 온 태그인 경우 해당 아이템의 선택 상태도 업데이트
+    if (isSuggestion && suggestionId !== undefined) {
+      const newSuggestionList = suggestionList.map((s) =>
+        s.id === suggestionId ? { ...s, isSelected: !s.isSelected } : s,
+      );
+      setSuggestionList(newSuggestionList);
+    }
+
     setSelectedTag((prev) => {
       const alreadySelected = prev.includes(tagId);
       const updatedTag = alreadySelected ? prev.filter((tag) => tag !== tagId) : [...prev, tagId];
@@ -83,9 +97,26 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     setIsSaveButtonDisabled(selectedTag.length === 0);
   }, [selectedTag, setIsSaveButtonDisabled, setVisibleMemoAndAlarm]);
 
+  // 저장 페이지가 닫힐 때 모든 입력값 초기화
+  useEffect(() => {
+    // editCate나 editTag가 있으면 수정 모드이므로 초기화하지 않음
+    if (!editCate && !editTag && !openCate && !openTag) {
+      setSelectedCategory('');
+      setSelectedTag([]);
+      setSuggestionList(suggestionList.map((s) => ({ ...s, isSelected: false })));
+    }
+  }, [openCate, openTag, editCate, editTag, setSuggestionList, suggestionList]);
+
+  useEffect(() => {
+    if (editCate || editTag) {
+      setSuggestionList([]); // 수정 모드에서는 suggestion 초기화
+    }
+  }, [editCate, editTag, setSuggestionList]);
+
   const [modalType, setModalType] = useState<ModalType>('category');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
+  const isCategoryType = modalType === 'category';
 
   const handleOpenModal = (type: ModalType) => {
     setModalType(type);
@@ -95,12 +126,11 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
   const handleConfirmModal = () => {
     if (!content.trim()) return;
 
-    if (modalType === 'category') {
+    if (isCategoryType) {
       handleAddCategory();
-    } else if (modalType === 'tag') {
+    } else {
       handleAddTag();
     }
-
     setIsModalOpen(false);
     setContent('');
     setIsDisabled(true);
@@ -179,27 +209,16 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className='overflow-hidden'
           >
-            {' '}
             <div className='flex flex-wrap gap-2 p-0.5'>
-              {suggestionList.map((suggestion) => (
-                <Chip
-                  key={suggestion.id}
-                  content={suggestion.content}
-                  isSelected={suggestion.isSelected}
-                  className='border-lightGrayBlue bg-white'
-                  selectedClassName='border-primary bg-lightPrimary'
-                  onClick={() => handleSuggestion(suggestion.id)}
-                />
-              ))}
-
               {allTags.map((tag) => (
                 <Chip
                   key={tag.id}
                   content={tag.content}
                   isSelected={tag.isSelected}
-                  className='border-lightGrayBlue'
+                  className={clsx('border-lightGrayBlue bg-white', tag.isSuggestion && 'text-blue')}
                   selectedClassName='border-1 border-blue bg-blue/10 text-blue'
-                  onClick={() => handleTags(tag.id)}
+                  suggestion={tag.isSuggestion}
+                  onClick={() => handleTags(tag.id, tag.isSuggestion, tag.suggestionId)}
                 />
               ))}
               <Chip
@@ -215,7 +234,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
       </AnimatePresence>
       {isModalOpen && (
         <Modal
-          title={modalType === 'category' ? '카테고리 추가' : '태그 추가'}
+          title={isCategoryType ? '카테고리 추가' : '태그 추가'}
           confirmLabel='저장하기'
           onCancel={() => {
             setIsModalOpen(false);
@@ -230,9 +249,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
           <TextField
             label=''
             placeholder={
-              modalType === 'category'
-                ? '추가할 카테고리를 입력해주세요'
-                : '추가할 태그을 입력해주세요'
+              isCategoryType ? '추가할 카테고리를 입력해주세요' : '추가할 태그을 입력해주세요'
             }
             maxLength={10}
             onChange={(content) => setContent(content)}

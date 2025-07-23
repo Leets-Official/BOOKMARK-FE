@@ -1,8 +1,16 @@
 import { getSuggestionTag } from '@/agent/TagAgent';
-import { linkAtom, suggestionListAtom, visibleCardAtom, visibleCategoryAtom } from '@/atoms';
+import {
+  linkAtom,
+  memoAtom,
+  suggestionListAtom,
+  visibleCardAtom,
+  visibleCategoryAtom,
+  visibleMemoAndAlarmAtom,
+  visibleTagAtom,
+} from '@/atoms';
 import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 
 interface ILinkField {
   isOpen?: boolean;
@@ -29,9 +37,11 @@ const LinkField = ({
   const [visibleCard, setVisibleCard] = useAtom(visibleCardAtom);
   const visible = isOpen ?? visibleCard;
   const setVisibleCategory = useSetAtom(visibleCategoryAtom);
+  const setVsibleTag = useSetAtom(visibleTagAtom);
   const setSuggestionList = useSetAtom(suggestionListAtom);
-  const suggestionList = useAtomValue(suggestionListAtom);
+  const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const [link, setLink] = useAtom(linkAtom);
+  const resetMemo = useSetAtom(memoAtom);
 
   const handleLink = (v: string) => {
     if (setCardLink) {
@@ -56,10 +66,13 @@ const LinkField = ({
         );
       });
     } else {
-      // 링크가 없으면 카테고리 안보여주기 및 카테고리 선택 초기화
+      // 링크가 없으면 전부 안보여주기
       setVisibleCard(false);
       setVisibleCategory(false);
-      setSuggestionList(suggestionList.map((s) => ({ ...s, isSelected: false })));
+      setVsibleTag(false);
+      setVisibleMemoAndAlarm(false);
+      setSuggestionList([]); // 제안 리스트 빈 배열로 초기화
+      resetMemo('');
     }
   };
 

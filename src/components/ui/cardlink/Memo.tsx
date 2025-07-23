@@ -1,8 +1,7 @@
-import { visibleMemoAndAlarmAtom } from '@/atoms';
+import { memoAtom, visibleMemoAndAlarmAtom } from '@/atoms';
 import TextField from '@/components/ui/TextField';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAtomValue } from 'jotai';
-import { useState } from 'react';
+import { useAtom, useAtomValue } from 'jotai';
 
 interface IMemoProps {
   cardMemo?: string;
@@ -14,7 +13,7 @@ interface IMemoProps {
 const Memo = ({ cardMemo, setCardMemo, isOpen }: IMemoProps) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
   const visible = isOpen ?? atomVisible;
-  const [memo, setMemo] = useState('');
+  const [memo, setMemo] = useAtom(memoAtom);
 
   const handleMemo = (value: string) => {
     if (setCardMemo) {
