@@ -7,6 +7,8 @@ import { Button } from '@/components/common';
 import { useState } from 'react';
 import type { SaveCardProps } from '@/types';
 import { Alarm, CategoryTagSelector, LinkField, Memo } from '@/components/ui/cardlink';
+import { linkAtom, visibleCardAtom, visibleCategoryAtom, visibleTagAtom } from '@/atoms';
+import { useSetAtom } from 'jotai';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -32,13 +34,26 @@ const Edit = () => {
   useScrollLock(true);
   const location = useLocation();
   const navigate = useNavigate();
-  const onPrev = () => navigate(-1);
+
   const editData: SaveCardProps = location.state?.editData; // Home의 SaveCard로 부터 링크 데이터를 가져옴
 
   const [cardLink, setCardLink] = useState(
     `https://example.com/${editData.title.replace(/\s+/g, '-').toLowerCase()}`,
   );
   const [cardmemo, setCardMemo] = useState(`${editData.memo}`);
+
+  const resetLink = useSetAtom(linkAtom);
+  const resetCard = useSetAtom(visibleCardAtom);
+  const resetVisibleCate = useSetAtom(visibleCategoryAtom);
+  const resetVisibleTag = useSetAtom(visibleTagAtom);
+
+  const onPrev = () => {
+    resetLink('');
+    resetCard(false);
+    resetVisibleCate(false);
+    resetVisibleTag(false);
+    navigate(-1);
+  };
 
   return (
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>

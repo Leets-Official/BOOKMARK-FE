@@ -61,6 +61,7 @@ const Save = () => {
     resetVisibleTag(false);
     navigate(-1);
   };
+
   return (
     // PC : 모달형식, 모바일 : 전체화면
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
