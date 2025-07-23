@@ -1,3 +1,4 @@
+import Button from '@/components/common/Button';
 import Chip from '@/components/common/Chip';
 import DropDown from '@/components/ui/DropDown';
 import type { ChipProps } from '@/types';
@@ -25,6 +26,12 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
     onChange(newOptions);
   };
 
+  // 초기화 버튼 클릭 시 모든 옵션 선택 해제
+  const handleResetClick = () => {
+    const newOptions = options.map((o) => ({ ...o, isSelected: false }));
+    onChange(newOptions);
+  };
+
   // Menu(옵션) 선택 시 Tigger text와 Chip 색상 변경
   useEffect(() => {
     const selectedOptions = options.filter((o) => o.isSelected);
@@ -49,9 +56,9 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
           isSelected={isOpen}
           className={clsx(
             'cursor-pointer min-w-0',
-            isSelectedOption ? 'border-base bg-lightGray' : 'border-lightGrayBlue bg-white',
+            isSelectedOption ? 'border-primary bg-lightPrimary' : 'border-lightGrayBlue bg-white',
           )}
-          selectedClassName='bg-lightGray'
+          selectedClassName='border-primary bg-lightPrimary'
           dropdownEnabled={true}
         />
       </DropDown.Trigger>
@@ -62,21 +69,35 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
         className='fixed left-0 top-0 px-2 w-full'
         ref={menuRef}
       >
-        <div className='bg-white rounded-[8px] flex flex-col gap-5 border border-lightBlueGray z-[9999] shadow-lg h-[144px] overflow-y-auto p-4 mt-1'>
-          <p className='text-15 text-stone font-semibold'>{title}</p>
-          <div className='flex flex-row gap-2 flex-wrap'>
-            {options.map((option) => (
-              <DropDown.Item key={option.id} onClick={() => console.log('clicked')}>
-                <Chip
-                  key={option.id}
-                  content={option.content}
-                  isSelected={option.isSelected}
-                  className='border-lightGrayBlue bg-white'
-                  dropdownEnabled={false}
-                  onClick={() => handleChipClick(option.id)}
-                />
-              </DropDown.Item>
-            ))}
+        <div className='bg-white rounded-[8px] flex flex-col border border-lightBlueGray z-[9999] shadow-lg p-4 mt-1'>
+          <div className='flex flex-col gap-5 h-[114px] overflow-y-auto'>
+            <p className='text-15 text-stone font-semibold'>{title}</p>
+            <div className='flex flex-row gap-2 flex-wrap px-1 pb-1'>
+              {options.map((option) => (
+                <DropDown.Item key={option.id} onClick={() => console.log('clicked')}>
+                  <Chip
+                    key={option.id}
+                    content={option.content}
+                    isSelected={option.isSelected}
+                    className='border-lightGrayBlue bg-white'
+                    selectedClassName='border-primary bg-lightPrimary'
+                    dropdownEnabled={false}
+                    onClick={() => handleChipClick(option.id)}
+                  />
+                </DropDown.Item>
+              ))}
+            </div>
+          </div>
+          <div className='flex flex-col gap-3'>
+            <hr className='border-lightGrayBlue border-0.5' />
+            <div className='mb-3 items-start pl-3'>
+              <Button
+                className='border-b-2 pb-1 font-medium cursor-pointer'
+                onClick={handleResetClick}
+              >
+                초기화
+              </Button>
+            </div>
           </div>
         </div>
       </DropDown.Menu>

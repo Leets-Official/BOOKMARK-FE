@@ -57,7 +57,7 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
                   <Button
                     icon={<LeftIcon width={24} height={24} stroke='black' strokeWidth={2} />}
                     onClick={() => navigate('/')}
-                    className='cursor-pointer mr-2'
+                    className='cursor-pointer mr-2 p-2 rounded-full border-[rgba(234,237,245,1)] shadow-[0_2px_7px_rgba(28,37,53,0.1)] bg-[#FCFCFCCC]/80'
                   />
                 )}
                 <div className='flex-1 min-w-0'>
