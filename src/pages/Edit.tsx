@@ -19,7 +19,7 @@ const Overlay = tv({
 });
 
 const Container = tv({
-  base: 'flex flex-col items-center bg-grayBg/60 backdrop-blur-md overflow-hidden hide-scrollbar border-none',
+  base: 'flex flex-col items-center bg-grayBg/60 backdrop-blur-md overflow-y-auto hide-scrollbar border-none',
   variants: {
     isMobile: {
       true: 'h-full w-full',

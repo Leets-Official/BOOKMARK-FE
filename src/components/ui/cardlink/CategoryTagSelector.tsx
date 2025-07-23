@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Chip, Modal } from '@/components/common';
 import { AddIcon } from '@/assets';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import TextField from '@/components/ui/TextField';
 import {
   isSaveButtonDisabledAtom,
@@ -73,13 +73,15 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     setSelectedTag((prev) => {
       const alreadySelected = prev.includes(tagId);
       const updatedTag = alreadySelected ? prev.filter((tag) => tag !== tagId) : [...prev, tagId];
-
-      setVisibleMemoAndAlarm(updatedTag.length > 0);
-      setIsSaveButtonDisabled(updatedTag.length === 0);
-
       return updatedTag;
     });
   };
+
+  // selectedTag가 렌더링이 끝나면 상태 업데이트 진행
+  useEffect(() => {
+    setVisibleMemoAndAlarm(selectedTag.length > 0);
+    setIsSaveButtonDisabled(selectedTag.length === 0);
+  }, [selectedTag, setIsSaveButtonDisabled, setVisibleMemoAndAlarm]);
 
   const [modalType, setModalType] = useState<ModalType>('category');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -113,6 +115,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
       tags: [],
     });
     setSelectedCategory(newCategory);
+    setVisibleTag(true);
   };
 
   const handleAddTag = () => {
@@ -122,6 +125,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
       dummyCardData[index].tags = [...(dummyCardData[index].tags || []), newTag];
       setSelectedTag((prev) => [...prev, newTag]);
     }
+    setVisibleMemoAndAlarm(true);
   };
 
   return (
