@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 import { isMobile } from 'react-device-detect';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useScrollLock } from '@/components/hooks/ScrollLock';
-import SaveHeader from '@/components/layout/header/SaveHeader';
+import CommonHeader from '@/components/layout/header/CommonHeader';
 import { Button } from '@/components/common';
 import { useState } from 'react';
 import type { SaveCardProps } from '@/types';
@@ -19,7 +19,7 @@ const Overlay = tv({
 });
 
 const Container = tv({
-  base: 'flex flex-col items-center bg-grayBg overflow-y-auto hide-scrollbar',
+  base: 'flex flex-col items-center bg-grayBg/60 backdrop-blur-md overflow-hidden hide-scrollbar border-none',
   variants: {
     isMobile: {
       true: 'h-full w-full',
@@ -45,10 +45,12 @@ const Edit = () => {
   return (
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
       <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
-        <SaveHeader title='링크 수정' />
-        <div className='flex-1 overflow-y-auto hide-scrollbar w-full'>
+        <div className='absolute top-0 left-0 right-0 z-10'>
+          <CommonHeader title='링크 수정' />
+        </div>
+        <div className='flex-1 overflow-y-auto hide-scrollbar w-full pt-13 pb-20'>
           {/* 카드 모음 */}
-          <div className='flex flex-col items-center gap-3 w-full p-4 mt-3'>
+          <div className='flex flex-col items-center gap-3 w-full p-4'>
             {/**링크 필드 */}
             <LinkField
               isOpen={true}
@@ -69,15 +71,17 @@ const Edit = () => {
             <Alarm isOpen={true} />
           </div>
         </div>
-        <Button
-          onClick={() => {
-            console.log('수정 완료');
-            onPrev();
-          }}
-          className='bg-blue text-base text-white text-center font-medium mb-8 p-4 w-[90%] rounded-[10px] hover:brightness-90'
-        >
-          수정 완료
-        </Button>
+        <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
+          <Button
+            onClick={() => {
+              console.log('수정 완료');
+              onPrev();
+            }}
+            className='bg-blue text-base text-white text-center font-medium p-4 w-[90%] rounded-[10px] hover:brightness-90 transition'
+          >
+            수정 완료
+          </Button>
+        </div>
       </div>
     </div>
   );

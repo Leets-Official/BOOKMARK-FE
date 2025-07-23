@@ -1,5 +1,5 @@
 import { isMobile } from 'react-device-detect';
-import SaveHeader from '@/components/layout/header/SaveHeader';
+import CommonHeader from '@/components/layout/header/CommonHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardlink';
@@ -19,7 +19,7 @@ const Overlay = tv({
 });
 
 const Container = tv({
-  base: 'flex flex-col items-center bg-grayBg overflow-y-auto hide-scrollbar',
+  base: 'flex flex-col items-center bg-grayBg/60 backdrop-blur-md overflow-y-auto hide-scrollbar border-none',
   variants: {
     isMobile: {
       true: 'h-full w-full',
@@ -29,7 +29,7 @@ const Container = tv({
 });
 
 const SaveButton = tv({
-  base: 'bg-blue text-base text-white text-center font-medium mb-8 p-4 w-[90%] rounded-[10px]',
+  base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] rounded-[10px] hover:brightness-90 transition',
   variants: {
     isDisabled: {
       true: 'bg-lightBlueGray text-veryLightGray',
@@ -50,27 +50,30 @@ const Save = () => {
     // PC : 모달형식, 모바일 : 전체화면
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
       <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
-        <SaveHeader title='링크 저장' />
-        <div className='flex-1 overflow-y-auto hide-scrollbar w-full'>
+        <div className='absolute top-0 left-0 right-0 z-10'>
+          <CommonHeader title='링크 저장' />
+        </div>
+        <div className='flex-1 overflow-y-auto hide-scrollbar w-full pt-13 pb-20'>
           {/* 카드 모음 */}
-          <div className='flex flex-col items-center gap-3 w-full p-4 mt-3'>
+          <div className='flex flex-col items-center gap-3 w-full p-4'>
             <LinkField />
             <CategoryTagSelector />
             <Memo />
             <Alarm />
           </div>
         </div>
-        {/* 저장 버튼 */}
-        <Button
-          onClick={() => {
-            console.log('저장 완료');
-            onPrev();
-          }}
-          className={SaveButton({ isDisabled: isSaveButtonDisabled })}
-          disabled={isSaveButtonDisabled}
-        >
-          저장하기
-        </Button>
+        <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
+          <Button
+            onClick={() => {
+              console.log('저장 완료');
+              onPrev();
+            }}
+            className={SaveButton({ isDisabled: isSaveButtonDisabled })}
+            disabled={isSaveButtonDisabled}
+          >
+            저장하기
+          </Button>
+        </div>
       </div>
     </div>
   );
