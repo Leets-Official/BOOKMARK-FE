@@ -2,7 +2,7 @@ import { isMobile } from 'react-device-detect';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardLink';
+import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardlink';
 import Button from '@/components/common/Button';
 import {
   isSaveButtonDisabledAtom,
