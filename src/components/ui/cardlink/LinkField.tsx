@@ -65,12 +65,11 @@ const LinkField = ({
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pb-4'>
+      <p className='text-sm text-stone font-semibold mt-4'>
+        링크 입력<span className='text-[#FF2C3D]'>*</span>
+      </p>
       <TextField
-        label={
-          <div className='py-2'>
-            링크입력<span className='text-[#FF2C3D]'>*</span>
-          </div>
-        }
+        label=''
         placeholder='제목을 입력해주세요'
         onChange={handleLink}
         initialValue={cardLink ?? link}

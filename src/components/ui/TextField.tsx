@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import React, { useState } from 'react';
 
 interface TextFieldProps {
-  label: React.ReactNode;
+  label: string;
   placeholder: string;
   maxLength?: number;
   //eslint-disable-next-line

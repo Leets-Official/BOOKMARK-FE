@@ -39,11 +39,9 @@ const SaveButton = tv({
 });
 
 const Save = () => {
-  const navigate = useNavigate();
+  useScrollLock(true); // PC일 때는 스크롤 방지
   const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
-
-  useScrollLock(!isMobile); // PC일 때는 스크롤 방지
-
+  const navigate = useNavigate();
   const onPrev = () => navigate(-1);
 
   return (

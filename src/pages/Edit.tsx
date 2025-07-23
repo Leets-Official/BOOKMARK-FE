@@ -29,7 +29,7 @@ const Container = tv({
 });
 
 const Edit = () => {
-  useScrollLock(!isMobile);
+  useScrollLock(true);
   const location = useLocation();
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
@@ -39,8 +39,6 @@ const Edit = () => {
     `https://example.com/${editData.title.replace(/\s+/g, '-').toLowerCase()}`,
   );
   const [cardmemo, setCardMemo] = useState(`${editData.memo}`);
-
-  useScrollLock(!isMobile);
 
   return (
     <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
