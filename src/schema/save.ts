@@ -17,6 +17,7 @@ const modalAddSchema = (type: 'tag' | 'category') =>
   z.object({
     [type]: z
       .string()
+      .nonempty({ message: '추가할 태그를 입력해주세요.' })
       .min(1, {
         message: type === 'tag' ? '추가할 태그를 입력해주세요.' : '추가할 카테고리를 입력해주세요.',
       })

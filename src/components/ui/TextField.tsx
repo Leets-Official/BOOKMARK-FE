@@ -34,7 +34,6 @@ const TextField = ({
       setDisabled?.(true);
     } else if (maxLength && value.length > maxLength) {
       setDisabled?.(true);
-      return;
     } else {
       setDisabled?.(false);
     }

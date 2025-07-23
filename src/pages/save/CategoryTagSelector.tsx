@@ -21,6 +21,7 @@ import { modalAddSchema } from '@/schema/save';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { Controller } from 'react-hook-form';
 
 type ModalType = 'category' | 'tag' | null;
 
@@ -40,8 +41,6 @@ const CategoryTagSelector = () => {
   const [tempTagList, setTempTagList] = useState<ChipProps[]>([]);
 
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
-
-  const [content, setContent] = useState('');
 
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [modalOpenType, setModalOpenType] = useState<ModalType>(null);
@@ -173,31 +172,31 @@ const CategoryTagSelector = () => {
     setDisabledSubmitButton(true);
   };
 
-  const handleCategoryModal = () => {
-    addCategory(content);
-    setContent('');
+  const handleCategoryModal = (data: z.infer<typeof schema>) => {
+    addCategory(data.category);
     closeModal();
+    reset();
   };
 
-  const tagModalSubmit = () => {
-    setContent(content);
-    addTempTag(content);
-    setContent('');
-  };
-
-  const tagModalConfirm = () => {
-    addTag();
+  const tagModalSubmit = (data: z.infer<typeof schema>) => {
+    addTempTag(data.tag);
     closeModal();
+    reset();
   };
 
   const schema = modalAddSchema(modalOpenType === 'tag' ? 'tag' : 'category');
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
+    control,
+    reset,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      category: '',
+      tag: '',
+    },
   });
 
   return (
@@ -354,42 +353,53 @@ const CategoryTagSelector = () => {
             closeModal();
           }}
           onConfirm={() => {
-            isCategoryModalOpen ? handleCategoryModal() : tagModalConfirm();
+            document
+              .getElementById('modal-form')
+              ?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
           }}
           disabled={isCategoryModalOpen ? disabledSubmitButton : tempTagList.length === 0}
         >
-          <TextField
-            label={isCategoryModalOpen ? '카테고리' : '태그'}
-            placeholder={
-              isCategoryModalOpen
-                ? '추가할 카테고리를 입력해주세요.'
-                : '추가할 태그를 입력해주세요.'
+          <form
+            id='modal-form'
+            onSubmit={
+              isCategoryModalOpen ? handleSubmit(handleCategoryModal) : handleSubmit(tagModalSubmit)
             }
-            maxLength={10}
-            onChange={(content) => {
-              setContent(content);
-            }}
-            onSubmit={() => {
-              isCategoryModalOpen ? undefined : tagModalSubmit();
-            }}
-            setDisabled={setDisabledSubmitButton}
-            isCreateType={modalOpenType === 'category' ? false : true}
-          />
-          <div className='flex flex-wrap gap-2 m-0.5 max-h-[200px] overflow-y-auto hide-scrollbar'>
-            {modalOpenType === 'tag' &&
-              tempTagList.map((item) => (
-                <Chip
-                  key={item.id}
-                  content={item.content}
-                  isSelected={item.isSelected}
-                  className='border-lightGrayBlue bg-white'
-                  selectedClassName='bg-lightGray'
-                  onClick={() => handleTag(item.id)}
-                  disabled={true}
-                  onDelete={item.deleteable ? () => deleteTempTag(item.id) : undefined}
+          >
+            <Controller
+              name={isCategoryModalOpen ? 'category' : 'tag'}
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  label={isCategoryModalOpen ? '카테고리' : '태그'}
+                  placeholder={
+                    isCategoryModalOpen
+                      ? '추가할 카테고리를 입력해주세요.'
+                      : '추가할 태그를 입력해주세요.'
+                  }
+                  maxLength={10}
+                  onChange={field.onChange}
+                  errorMessage={fieldState.error?.message}
+                  setDisabled={setDisabledSubmitButton}
                 />
-              ))}
-          </div>
+              )}
+            />
+
+            <div className='flex flex-wrap gap-2 m-0.5 max-h-[200px] overflow-y-auto hide-scrollbar'>
+              {!isCategoryModalOpen &&
+                tempTagList.map((item) => (
+                  <Chip
+                    key={item.id}
+                    content={item.content}
+                    isSelected={item.isSelected}
+                    className='border-lightGrayBlue bg-white'
+                    selectedClassName='bg-lightGray'
+                    onClick={() => handleTag(item.id)}
+                    disabled={true}
+                    onDelete={item.deleteable ? () => deleteTempTag(item.id) : undefined}
+                  />
+                ))}
+            </div>
+          </form>
         </Modal>
       )}
     </div>
