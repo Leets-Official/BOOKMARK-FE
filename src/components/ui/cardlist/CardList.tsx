@@ -93,7 +93,7 @@ const CardList = ({ cardList }: HomeCardListProps) => {
             animate='variant'
             exit='end'
             transition={{ type: 'tween', duration: 1, ease: 'easeInOut' }}
-            className='absolute flex w-full justify-start px-2 pt-1 gap-3'
+            className='absolute flex w-full justify-start px-2 pt-1 gap-5'
             style={{ willChange: 'transform' }} // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
           >
             {cardSlice.map((card) => (
