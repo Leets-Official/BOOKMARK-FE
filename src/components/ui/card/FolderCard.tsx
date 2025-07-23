@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import { motion } from 'framer-motion';
 import { MenuPortal, ModalPortal } from '@/utils';
-import { useMenuHandler } from '@/components/hooks/MenuPosition';
+import { useMenuHandler } from '@/hooks/MenuPosition';
 import { useState } from 'react';
 import DeleteModal from '../modal/DeleteModal';
 import TextField from '../TextField';

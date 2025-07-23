@@ -1,7 +1,7 @@
 import { tv } from 'tailwind-variants';
 import { isMobile } from 'react-device-detect';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useScrollLock } from '@/components/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/ScrollLock';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import { Button } from '@/components/common';
 import { useState } from 'react';

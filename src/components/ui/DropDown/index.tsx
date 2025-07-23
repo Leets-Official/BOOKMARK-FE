@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import DropDownItem from './Item';
 import DropDownMenu from './Menu';
 import DropDownTrigger from './Trigger';
-import { useScrollLock } from '@/components/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/ScrollLock';
 
 interface DropDownProps {
   children: React.ReactNode;

@@ -1,6 +1,5 @@
 import { AlertIcon, FolderDetailIcon } from '@/assets';
-import Button from '@/components/common/Button';
-import Image from '@/components/common/Image';
+import { Button, Image } from '@/components/common';
 import type { CompactCardProps } from '@/types';
 import clsx from 'clsx';
 
