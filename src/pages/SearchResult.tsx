@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import SaveCard from '@/components/ui/card/SaveCard';
 import CommonHeader from '@/components/layout/header/CommonHeader';
+import { Outlet } from 'react-router-dom';
 
 const SearchResult = () => {
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
@@ -46,7 +47,7 @@ const SearchResult = () => {
 
   return (
     <div className='relative min-h-screen flex flex-col gap-4'>
-      <CommonHeader title='링크 검색' />
+      {isMobile && <CommonHeader title='링크 검색' />}
       <ChangeSearchBar barMarginTop={100} isBackButton={true} />
       <div
         ref={scrollContainerRef}
@@ -75,13 +76,15 @@ const SearchResult = () => {
             />
           ))
         ) : (
-          <div className='w-4/5 max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+          <div className='w-4/5 max-sm:w-full mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
             {cardList.map((card) => (
               <SaveCard key={card.id} data={card} />
             ))}
           </div>
         )}
       </div>
+
+      <Outlet />
     </div>
   );
 };
