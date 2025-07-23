@@ -103,10 +103,14 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     if (!editCate && !editTag && !openCate && !openTag) {
       setSelectedCategory('');
       setSelectedTag([]);
-      setSuggestionList(suggestionList.map((s) => ({ ...s, isSelected: false })));
+
+      const hasSelected = suggestionList.some((s) => s.isSelected);
+      if (hasSelected) {
+        // 선택된 항목만 있을 때만 업데이트
+        setSuggestionList(suggestionList.map((s) => ({ ...s, isSelected: false })));
+      }
     }
   }, [openCate, openTag, editCate, editTag, setSuggestionList, suggestionList]);
-
   useEffect(() => {
     if (editCate || editTag) {
       setSuggestionList([]); // 수정 모드에서는 suggestion 초기화

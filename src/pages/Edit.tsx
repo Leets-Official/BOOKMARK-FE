@@ -6,8 +6,8 @@ import CommonHeader from '@/components/layout/header/CommonHeader';
 import { Button } from '@/components/common';
 import { useState } from 'react';
 import type { SaveCardProps } from '@/types';
-import { Alarm, CategoryTagSelector, LinkField, Memo } from '@/components/ui/cardlink';
-import { linkAtom, visibleCardAtom, visibleCategoryAtom, visibleTagAtom } from '@/atoms';
+import { Alarm, CategoryTagSelector, LinkField, Memo } from '@/components/ui/cardLink';
+import { linkAtom, memoAtom, visibleCardAtom, visibleCategoryAtom, visibleTagAtom } from '@/atoms';
 import { useSetAtom } from 'jotai';
 
 const Overlay = tv({
@@ -46,12 +46,14 @@ const Edit = () => {
   const resetCard = useSetAtom(visibleCardAtom);
   const resetVisibleCate = useSetAtom(visibleCategoryAtom);
   const resetVisibleTag = useSetAtom(visibleTagAtom);
+  const resetMemo = useSetAtom(memoAtom);
 
   const onPrev = () => {
     resetLink('');
     resetCard(false);
     resetVisibleCate(false);
     resetVisibleTag(false);
+    resetMemo('');
     navigate(-1);
   };
 

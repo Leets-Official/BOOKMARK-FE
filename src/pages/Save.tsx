@@ -2,11 +2,12 @@ import { isMobile } from 'react-device-detect';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardlink';
+import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardLink';
 import Button from '@/components/common/Button';
 import {
   isSaveButtonDisabledAtom,
   linkAtom,
+  memoAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
@@ -53,12 +54,14 @@ const Save = () => {
   const resetCard = useSetAtom(visibleCardAtom);
   const resetVisibleCate = useSetAtom(visibleCategoryAtom);
   const resetVisibleTag = useSetAtom(visibleTagAtom);
+  const resetMemo = useSetAtom(memoAtom);
 
   const onPrev = () => {
     resetLink('');
     resetCard(false);
     resetVisibleCate(false);
     resetVisibleTag(false);
+    resetMemo('');
     navigate(-1);
   };
 

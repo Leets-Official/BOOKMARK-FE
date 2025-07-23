@@ -6,6 +6,7 @@ const CommonHeader = ({ title }: { title: string }) => {
   const navigate = useNavigate();
 
   const onClick = () => {
+    document.body.style.overflow = '';
     navigate(-1);
   };
 
@@ -15,7 +16,7 @@ const CommonHeader = ({ title }: { title: string }) => {
         icon={<BackArrowIcon width={20} height={20} />}
         onClick={onClick}
         className='absolute left-4 rounded-[100px] bg-[#EAEDF5]/90 p-2.5 hover:brightness-90 transition'
-      ></Button>
+      />
       <p className='text-base font-medium'>{title}</p>
     </div>
   );

@@ -11,7 +11,7 @@ interface ModalProps {
   children: React.ReactNode;
   disabled?: boolean;
   className?: string;
-  confirmLabel: string;
+  confirmLabel?: string;
 }
 
 const ButtonContainer = tv({

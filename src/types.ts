@@ -8,8 +8,9 @@ export interface ChipProps {
 }
 
 export interface CompactCardProps {
+  id: number;
   title: string;
-  src: string;
+  image: string;
   memo: string;
   category: string;
   tags: string[];
