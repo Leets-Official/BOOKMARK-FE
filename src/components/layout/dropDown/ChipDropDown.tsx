@@ -41,7 +41,7 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
   }, [options, title]);
 
   return (
-    <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef}>
+    <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef} isOpen={isOpen}>
       <DropDown.Trigger onClick={() => setIsOpen((prev) => !prev)} ref={parentRef}>
         <Chip
           disabled={true}
