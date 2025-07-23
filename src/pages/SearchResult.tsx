@@ -8,7 +8,7 @@ import {
   dummyTagList,
 } from '@/contants/DummyData';
 import { useState, useRef, useEffect } from 'react';
-import type { ChipProps, SaveCardProps } from '@/types';
+import type { ChipProps } from '@/types';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import SaveCard from '@/components/ui/card/SaveCard';
@@ -20,7 +20,6 @@ const SearchResult = () => {
   const [categoryList, setCategoryList] = useState<ChipProps[]>(dummyCategoryList);
   const [tagList, setTagList] = useState<ChipProps[]>(dummyTagList);
   const [platformList, setPlatformList] = useState<ChipProps[]>(dummyPlatformList);
-  const [cardList, setCardList] = useState<SaveCardProps[]>(dummyCardData);
 
   // 스크롤 감지를 위한 상태와 ref
   const [hasScroll, setHasScroll] = useState(false);
@@ -64,7 +63,7 @@ const SearchResult = () => {
       {/* 카드 더미 리스트 */}
       <div className='flex flex-col gap-5 px-4 mb-10'>
         {isMobile ? (
-          cardList.map((card) => (
+          dummyCardData.map((card) => (
             <CompactCard
               key={card.id}
               id={card.id}
@@ -77,13 +76,12 @@ const SearchResult = () => {
           ))
         ) : (
           <div className='w-4/5 max-sm:w-full mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-            {cardList.map((card) => (
+            {dummyCardData.map((card) => (
               <SaveCard key={card.id} data={card} />
             ))}
           </div>
         )}
       </div>
-
       <Outlet />
     </div>
   );

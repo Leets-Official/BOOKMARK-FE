@@ -28,6 +28,7 @@ const ModalExample = () => {
           onConfirm={() => {
             setIsOpen(true);
           }}
+          confirmLabel='저장'
         >
           <p>자식 컴포넌트</p>
         </Modal>

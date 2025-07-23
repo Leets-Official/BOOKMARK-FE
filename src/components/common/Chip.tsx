@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import Button from './Button';
-import { BackArrowIcon, DeleteIcon } from '@/assets';
+import { BackArrowIcon, DeleteIcon, StarIcon } from '@/assets';
 import clsx from 'clsx';
+import type React from 'react';
 
 interface ChipProps {
-  content: string;
+  content: React.ReactNode;
   className?: string;
   isSelected: boolean;
   onClick?: () => void;
@@ -13,6 +14,7 @@ interface ChipProps {
   dropdownEnabled?: boolean;
   selectedClassName?: string;
   deleteIconColor?: string;
+  suggestion?: boolean;
 }
 
 const Chip = ({
@@ -25,6 +27,7 @@ const Chip = ({
   className,
   selectedClassName,
   deleteIconColor = '#000000',
+  suggestion,
 }: ChipProps) => {
   const hoverAnimation = disabled ? undefined : { scale: 1.05 };
   const tapAnimation = disabled ? undefined : { scale: 0.95 };
@@ -44,6 +47,7 @@ const Chip = ({
       whileTap={tapAnimation}
       onClick={handleClick}
     >
+      {suggestion && <StarIcon width={20} height={20} />}
       <p className='whitespace-nowrap'>{content}</p>
       {/* 삭제 함수가 있을시 활성화 */}
       {onDelete && (

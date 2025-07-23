@@ -1,4 +1,5 @@
 import { BackArrowIcon } from '@/assets';
+import { Button } from '@/components/common';
 import { useNavigate } from 'react-router-dom';
 
 const CommonHeader = ({ title }: { title: string }) => {
@@ -10,8 +11,12 @@ const CommonHeader = ({ title }: { title: string }) => {
   };
 
   return (
-    <div className='flex flex-row items-center w-full justify-center relative px-4 h-[48px]'>
-      <BackArrowIcon width={24} height={24} className='absolute left-4' onClick={onClick} />
+    <div className='flex flex-row items-center w-full justify-center relative mt-5'>
+      <Button
+        icon={<BackArrowIcon width={20} height={20} />}
+        onClick={onClick}
+        className='absolute left-4 rounded-[100px] bg-[#EAEDF5]/90 p-2.5 hover:brightness-90 transition'
+      />
       <p className='text-base font-medium'>{title}</p>
     </div>
   );

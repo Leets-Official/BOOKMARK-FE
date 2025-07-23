@@ -18,6 +18,7 @@ export interface CompactCardProps {
 
 export interface SaveCardProps {
   id: number;
+  title: string;
   category: string;
   tags: string[];
   image: string;
