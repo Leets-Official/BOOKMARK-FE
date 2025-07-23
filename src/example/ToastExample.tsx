@@ -4,14 +4,14 @@ import { useState } from 'react';
 // ToastItem 타입 정의
 interface ToastItem {
   id: string;
-  type: 'positive' | 'error';
+  type: 'success' | 'error';
   message: string;
 }
 
 const ToastExample = () => {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
-  const showToast = (type: 'positive' | 'error', message: string) => {
+  const showToast = (type: 'success' | 'error', message: string) => {
     // 고유한 ID를 생성하여 새로운 Toast 객체를 만듬
     const newToast = {
       id: Date.now().toString(),
@@ -28,10 +28,10 @@ const ToastExample = () => {
 
   return (
     <>
-      <button className='bg-green-100 p-4' onClick={() => showToast('positive', '성공했습니다!')}>
+      <button className='bg-green-100 p-4' onClick={() => showToast('success', '저장 완료!')}>
         성공
       </button>
-      <button className='bg-red-100 p-4' onClick={() => showToast('error', '실패했습니다.')}>
+      <button className='bg-red-100 p-4' onClick={() => showToast('error', '저장 실패')}>
         실패
       </button>
 

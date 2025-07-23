@@ -15,16 +15,17 @@ const router = createBrowserRouter([
             path: 'save',
             element: <Save />,
           },
+          {
+            path: 'search',
+            element: <Search />,
+          },
         ],
       },
       {
         path: 'login',
         element: <Login />,
       },
-      {
-        path: 'search',
-        element: <Search />,
-      },
+
       {
         path: 'search-result',
         element: <SearchResult />,

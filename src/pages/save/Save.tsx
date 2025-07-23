@@ -9,7 +9,7 @@ import Button from '@/components/common/Button';
 import LinkField from '@/pages/save/LinkField';
 import { isSaveButtonDisabledAtom } from '@/atoms';
 import { useAtomValue } from 'jotai';
-import { useEffect } from 'react';
+import { useScrollLock } from '@/components/hooks/ScrollLock';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -44,15 +44,9 @@ const SaveButton = tv({
 const Save = () => {
   const navigate = useNavigate();
   const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
-  const onClick = () => {
-    document.body.style.overflow = '';
-    navigate(-1);
-  };
 
-  // Save Page 창 열릴 때 body 스크롤 바 정지
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-  }, []);
+  useScrollLock(!isMobile); // PC일 때는 스크롤 방지
+  const onClick = () => navigate(-1);
 
   return (
     // PC : 모달형식, 모바일 : 전체화면

@@ -1,5 +1,4 @@
-import Button from '@/components/common/Button';
-import Image from '@/components/common/Image';
+import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
 import React, { useRef, useState } from 'react';
 
