@@ -8,6 +8,10 @@ import { useMenuHandler } from '@/hooks/MenuPosition';
 import { useState } from 'react';
 import DeleteModal from '../modal/DeleteModal';
 import TextField from '../TextField';
+import { modalAddSchema } from '@/schema/save';
+import { zodResolver } from '@hookform/resolvers/zod';
+import type z from 'zod';
+import { Controller, useForm } from 'react-hook-form';
 
 interface ICardProps {
   category: string;
@@ -21,9 +25,25 @@ const TitleText =
 const FolderCard = ({ category, images }: ICardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [content, setContent] = useState('');
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
   const [isDisabled, setIsDisabled] = useState(true);
+
+  const schema = modalAddSchema('category');
+
+  const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      category: '',
+    },
+  });
+
+  const handleConfirmModal = (data: z.infer<typeof schema>) => {
+    if (!data.category.trim()) return;
+    console.log('카테고리 수정됨:', data.category);
+    setIsModalOpen(false);
+    reset();
+    setIsDisabled(true);
+  };
 
   return (
     <>
@@ -111,24 +131,27 @@ const FolderCard = ({ category, images }: ICardProps) => {
         confirmLabel='저장하기'
         onCancel={() => {
           setIsModalOpen(false);
-          setContent('');
+          reset();
           setIsDisabled(true);
         }}
-        onConfirm={() => {
-          if (!content.trim()) return;
-          console.log('카테고리 수정됨:', content);
-          setIsModalOpen(false);
-          setContent('');
-          setIsDisabled(true);
-        }}
+        onConfirm={handleSubmit(handleConfirmModal)}
         disabled={isDisabled}
       >
-        <TextField
-          label='이름'
-          placeholder={category}
-          maxLength={10}
-          onChange={(content) => setContent(content)}
-          setDisabled={(disabled) => setIsDisabled(disabled)}
+        <Controller
+          name='category'
+          control={control}
+          render={({ field, fieldState }) => (
+            <TextField
+              label='이름'
+              placeholder={category}
+              maxLength={10}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              errorMessage={fieldState.error?.message}
+              setDisabled={(disabled) => setIsDisabled(disabled)}
+            />
+          )}
         />
         <div className='text-xs mt-3'>
           <p>작업</p>
