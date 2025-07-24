@@ -3,7 +3,6 @@ import CommonHeader from '@/components/layout/header/CommonHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardLink';
-import Button from '@/components/common/Button';
 import {
   isSaveButtonDisabledAtom,
   linkAtom,
@@ -14,6 +13,10 @@ import {
 } from '@/atoms';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useScrollLock } from '@/hooks/ScrollLock';
+import { saveSchema } from '@/schema/save';
+import { zodResolver } from '@hookform/resolvers/zod';
+import type z from 'zod';
+import { useForm } from 'react-hook-form';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -62,39 +65,60 @@ const Save = () => {
     resetVisibleCate(false);
     resetVisibleTag(false);
     resetMemo('');
+    reset();
     navigate(-1);
+  };
+
+  const schema = saveSchema;
+
+  const { handleSubmit, control, setValue, reset } = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      url: '',
+      tags: [],
+      category: [],
+      title: '',
+      platform: '',
+      memo: '',
+      date: '',
+      time: '',
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof schema>) => {
+    console.log('저장 완료');
+    console.log(data);
   };
 
   return (
     // PC : 모달형식, 모바일 : 전체화면
-    <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
-      <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
-        <div className='absolute top-0 left-0 right-0 z-10'>
-          <CommonHeader title='링크 저장' />
-        </div>
-        <div className='flex-1 overflow-y-auto hide-scrollbar w-full pt-13 pb-20'>
-          {/* 카드 모음 */}
-          <div className='flex flex-col items-center gap-3 w-full p-4'>
-            <LinkField />
-            <CategoryTagSelector />
-            <Memo />
-            <Alarm />
+    <form id='save-form' onSubmit={handleSubmit(onSubmit)}>
+      <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
+        <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
+          <div className='absolute top-0 left-0 right-0 z-10'>
+            <CommonHeader title='링크 저장' />
+          </div>
+          <div className='flex-1 overflow-y-auto hide-scrollbar w-full pt-13 pb-20'>
+            {/* 카드 모음 */}
+            <div className='flex flex-col items-center gap-3 w-full p-4'>
+              <LinkField control={control} setValue={setValue} />
+              <CategoryTagSelector control={control} />
+              <Memo control={control} />
+              <Alarm control={control} />
+            </div>
+          </div>
+          <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
+            <button
+              type='submit'
+              form='save-form'
+              className={SaveButton({ isDisabled: isSaveButtonDisabled })}
+            >
+              저장하기
+            </button>
           </div>
         </div>
-        <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
-          <Button
-            onClick={() => {
-              console.log('저장 완료');
-              onPrev();
-            }}
-            className={SaveButton({ isDisabled: isSaveButtonDisabled })}
-            disabled={isSaveButtonDisabled}
-          >
-            저장하기
-          </Button>
-        </div>
       </div>
-    </div>
+    </form>
   );
 };
 
