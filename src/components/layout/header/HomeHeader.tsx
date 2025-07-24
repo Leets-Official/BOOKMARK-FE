@@ -9,7 +9,7 @@ const HomeHeader = () => {
         <img
           src={profileImage}
           alt='profile'
-          className='sm:w-[40px] sm:h-[40px] text-stone active:text-black rounded-[25%]'
+          className='w-[40px] h-[40px] sm:w-[30px] sm:h-[30px] text-stone active:text-black rounded-[25%]'
         />
       ) : (
         <ProfileIcon
