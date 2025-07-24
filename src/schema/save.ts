@@ -12,6 +12,7 @@ const saveSchema = z.object({
   category: z.string().min(1, { message: '카테고리를 선택해주세요' }),
   title: z.string(),
   platform: z.string(),
+  image: z.string(),
   memo: z.string().max(50, { message: '최대 50자까지 입력가능해요' }).optional(),
   date: z.string().optional(),
   time: z.string().optional(),

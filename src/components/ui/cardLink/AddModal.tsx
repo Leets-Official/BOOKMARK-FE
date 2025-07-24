@@ -97,7 +97,9 @@ const AddModal = ({
               isCategoryType ? '추가할 카테고리를 입력해주세요' : '추가할 태그을 입력해주세요'
             }
             maxLength={10}
+            value={field.value}
             onChange={field.onChange}
+            onBlur={field.onBlur}
             errorMessage={fieldState.error?.message}
             setDisabled={(disabled) => setIsDisabled(disabled)}
           />

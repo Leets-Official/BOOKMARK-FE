@@ -17,6 +17,8 @@ import { saveSchema } from '@/schema/save';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type z from 'zod';
 import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -48,7 +50,11 @@ const SaveButton = tv({
   },
 });
 
-const Save = () => {
+interface SaveInterfaceProps {
+  type: 'create' | 'edit';
+}
+
+const Save = ({ type }: SaveInterfaceProps) => {
   useScrollLock(true); // PC일 때는 스크롤 방지
   const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
   const navigate = useNavigate();
@@ -58,6 +64,17 @@ const Save = () => {
   const resetVisibleCate = useSetAtom(visibleCategoryAtom);
   const resetVisibleTag = useSetAtom(visibleTagAtom);
   const resetMemo = useSetAtom(memoAtom);
+  const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
+    url: '',
+    tags: [],
+    category: '',
+    title: '',
+    platform: '',
+    image: '',
+    memo: '',
+    date: '',
+    time: '',
+  });
 
   const onPrev = () => {
     resetLink('');
@@ -77,19 +94,31 @@ const Save = () => {
     setValue,
     reset,
     formState: { errors },
+    getValues,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      url: '',
-      tags: [],
-      category: '',
-      title: '',
-      platform: '',
-      memo: '',
-      date: '',
-      time: '',
-    },
+    defaultValues,
   });
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      const newValues = {
+        url: 'https://www.google.com',
+        tags: ['파스타', '이탈리안', '데이트', '인스타'],
+        category: '맛집',
+        title: '홍대 파스타 맛집 추천',
+        platform: '인스타그램',
+        image: 'https://www.google.com/image.png',
+        memo: '홍대 파스타 맛집 추천',
+        date: '2025-07-24',
+        time: '12:00',
+      };
+      setDefaultValues(newValues);
+      reset(newValues);
+    }
+  }, [id, reset, getValues]);
 
   const onSubmit = (data: z.infer<typeof schema>) => {
     console.log('저장 완료');
@@ -119,7 +148,7 @@ const Save = () => {
               form='save-form'
               className={SaveButton({ isDisabled: isSaveButtonDisabled })}
             >
-              저장하기
+              {type === 'create' ? '저장하기' : '수정하기'}
             </button>
           </div>
         </div>

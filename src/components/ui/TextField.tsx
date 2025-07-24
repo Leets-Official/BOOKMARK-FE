@@ -1,7 +1,7 @@
 import { RoundDeleteIcon } from '@/assets';
 import { Button, Textarea } from '@/components/common';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React from 'react';
 
 interface TextFieldProps {
   label: string;
@@ -9,10 +9,11 @@ interface TextFieldProps {
   maxLength?: number;
   //eslint-disable-next-line
   onChange: (v: string) => void;
+  onBlur: () => void;
   // eslint-disable-next-line
   setDisabled?: (v: boolean) => void;
   errorMessage?: string;
-  initialValue?: string;
+  value?: string;
   buttonVisible?: boolean;
 }
 
@@ -21,13 +22,12 @@ const TextField = ({
   placeholder,
   maxLength,
   onChange,
+  onBlur,
   setDisabled,
   errorMessage,
-  initialValue = '',
+  value,
   buttonVisible = true,
 }: TextFieldProps) => {
-  const [content, setContent] = useState(initialValue);
-
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
 
@@ -39,11 +39,10 @@ const TextField = ({
       setDisabled?.(false);
     }
 
-    setContent(value);
+    onChange(value);
   };
 
   const resetContent = () => {
-    setContent('');
     onChange('');
     if (setDisabled) {
       setDisabled(true);
@@ -53,12 +52,8 @@ const TextField = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter') {
       e.currentTarget.blur();
-      onChange(content);
+      onBlur();
     }
-  };
-
-  const handleBlur = () => {
-    onChange(content);
   };
 
   return (
@@ -70,13 +65,12 @@ const TextField = ({
             'w-full rounded-[12px] text-15 p-4 py-3 leading-5',
             buttonVisible && 'pr-8',
           )}
-          value={content}
+          value={value ?? ''}
           placeholder={placeholder}
           onChange={onChangeContent}
           onKeyDown={handleKeyDown}
-          onBlur={handleBlur}
         />
-        {content && buttonVisible && (
+        {value && buttonVisible && (
           <Button
             className='absolute top-3 right-3 bg-transparent hover:cursor-pointer h-6 w-6 text-xs text-primary font-semibold'
             icon={<RoundDeleteIcon width={20} height={20} className='hover:brightness-90' />}
@@ -89,7 +83,7 @@ const TextField = ({
         {errorMessage && <p className='text-xs text-redText mt-1 ml-1 w-full'>{errorMessage}</p>}
         {maxLength && (
           <p className='text-[12px] text-grayText text-right w-full mt-1'>
-            {content.length}/{maxLength}
+            {value?.length}/{maxLength}
           </p>
         )}
       </div>

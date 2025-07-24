@@ -11,6 +11,7 @@ import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
 import type { saveSchema } from '@/schema/save';
 import { useAtom, useSetAtom } from 'jotai';
+import { useEffect } from 'react';
 import { Controller, type Control, type UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
 
@@ -43,12 +44,20 @@ const LinkField = ({
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const resetMemo = useSetAtom(memoAtom);
 
+  // 링크가 있으면 카테고리 보여주기
+  useEffect(() => {
+    if (control._formValues.url) {
+      setVisibleCard(true);
+      setVisibleCategory(true);
+    }
+  }, [control._formValues.url, setVisibleCard, setVisibleCategory]);
+
   const handleLink = (v: string) => {
     // 임시로 링크가 있으면 카테고리 보여주기 -> 추후에는 링크가 올바른지 및 추출 구현 필요
-
-    // 임시 제목, 플랫폼 설정
+    // 임시 제목, 플랫폼, 이미지 설정
     setValue('title', '제목');
     setValue('platform', '플랫폼');
+    setValue('image', 'https://www.google.com/image.png');
 
     if (v.length > 0) {
       setVisibleCard(true);
@@ -64,8 +73,14 @@ const LinkField = ({
           })),
         );
       });
+    }
+  };
+
+  const handleSetVisible = (e: string) => {
+    if (e.length > 0) {
+      setVisibleCard(true);
+      setVisibleCategory(true);
     } else {
-      // 링크가 없으면 전부 안보여주기
       setVisibleCard(false);
       setVisibleCategory(false);
       setVsibleTag(false);
@@ -89,8 +104,13 @@ const LinkField = ({
             placeholder='링크를 입력해주세요'
             onChange={(e) => {
               field.onChange(e);
-              handleLink(e);
+              handleSetVisible(e);
             }}
+            onBlur={() => {
+              field.onBlur();
+              handleLink(field.value);
+            }}
+            value={field.value}
             errorMessage={fieldState.error?.message}
           />
         )}

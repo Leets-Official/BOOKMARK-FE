@@ -1,18 +1,17 @@
-import { memoAtom, visibleMemoAndAlarmAtom } from '@/atoms';
+import { visibleMemoAndAlarmAtom } from '@/atoms';
 import TextField from '@/components/ui/TextField';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { Controller, type Control } from 'react-hook-form';
 import type z from 'zod';
 import type { saveSchema } from '@/schema/save';
 
 interface IMemoProps {
-  cardMemo?: string;
   isOpen?: boolean;
   control: Control<z.infer<typeof saveSchema>>;
 }
 
-const Memo = ({ cardMemo, isOpen, control }: IMemoProps) => {
+const Memo = ({ isOpen, control }: IMemoProps) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
   const visible = isOpen ?? atomVisible;
 
@@ -37,6 +36,8 @@ const Memo = ({ cardMemo, isOpen, control }: IMemoProps) => {
                   label=''
                   placeholder='메모를 입력해주세요'
                   maxLength={50}
+                  value={field.value}
+                  onBlur={field.onBlur}
                   onChange={field.onChange}
                   errorMessage={fieldState.error?.message}
                   buttonVisible={false}
