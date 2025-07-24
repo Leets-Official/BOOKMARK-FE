@@ -13,6 +13,10 @@ import {
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { dummyCardData } from '@/contants/DummyData';
 import clsx from 'clsx';
+import { modalAddSchema } from '@/schema/save';
+import type z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm } from 'react-hook-form';
 
 type ModalType = 'category' | 'tag';
 
@@ -33,7 +37,6 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
 
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
 
-  const [content, setContent] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(editCate ?? '');
   const [selectedTag, setSelectedTag] = useState<string[]>(editTag ?? []);
 
@@ -127,20 +130,20 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     setIsModalOpen(true);
   };
 
-  const handleConfirmModal = () => {
-    if (!content.trim()) return;
-
+  const handleConfirmModal = (data: z.infer<typeof schema>) => {
     if (isCategoryType) {
-      handleAddCategory();
+      if (!data.category.trim()) return;
+      handleAddCategory(data.category);
     } else {
-      handleAddTag();
+      if (!data.tag.trim()) return;
+      handleAddTag(data.tag);
     }
     setIsModalOpen(false);
-    setContent('');
+    reset();
     setIsDisabled(true);
   };
 
-  const handleAddCategory = () => {
+  const handleAddCategory = (content: string) => {
     const newCategory = content;
     const template = dummyCardData[0];
     dummyCardData.push({
@@ -152,7 +155,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     setVisibleTag(true);
   };
 
-  const handleAddTag = () => {
+  const handleAddTag = (content: string) => {
     const newTag = content;
     const index = dummyCardData.findIndex((item) => item.category === selectedCategory);
     if (index !== -1) {
@@ -161,6 +164,17 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     }
     setVisibleMemoAndAlarm(true);
   };
+
+  // 모달 추가 스키마
+  const schema = modalAddSchema(isCategoryType ? 'category' : 'tag');
+
+  const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      category: '',
+      tag: '',
+    },
+  });
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
@@ -242,23 +256,34 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
           confirmLabel='저장하기'
           onCancel={() => {
             setIsModalOpen(false);
-            setContent('');
+            reset();
             setIsDisabled(true);
           }}
           onConfirm={() => {
-            handleConfirmModal();
+            document
+              .getElementById('modal-form')
+              ?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
           }}
           disabled={isDisabled}
         >
-          <TextField
-            label=''
-            placeholder={
-              isCategoryType ? '추가할 카테고리를 입력해주세요' : '추가할 태그을 입력해주세요'
-            }
-            maxLength={10}
-            onChange={(content) => setContent(content)}
-            setDisabled={(disabled) => setIsDisabled(disabled)}
-          />
+          <form id='modal-form' onSubmit={handleSubmit(handleConfirmModal)}>
+            <Controller
+              name={isCategoryType ? 'category' : 'tag'}
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  label={isCategoryType ? '카테고리' : '태그'}
+                  placeholder={
+                    isCategoryType ? '추가할 카테고리를 입력해주세요' : '추가할 태그을 입력해주세요'
+                  }
+                  maxLength={10}
+                  onChange={field.onChange}
+                  errorMessage={fieldState.error?.message}
+                  setDisabled={(disabled) => setIsDisabled(disabled)}
+                />
+              )}
+            />
+          </form>
         </Modal>
       )}
     </div>
