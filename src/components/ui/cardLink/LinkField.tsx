@@ -25,7 +25,7 @@ interface ILinkField {
 const LinkField = ({ editable = true, isLoading = false, control, setValue }: ILinkField) => {
   const [visibleCard, setVisibleCard] = useAtom(visibleCardAtom);
   const setVisibleCategory = useSetAtom(visibleCategoryAtom);
-  const setVsibleTag = useSetAtom(visibleTagAtom);
+  const setVisibleTag = useSetAtom(visibleTagAtom);
   const setSuggestionList = useSetAtom(suggestionListAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const resetMemo = useSetAtom(memoAtom);
@@ -48,6 +48,10 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
     if (v.length > 0) {
       setVisibleCard(true);
       setVisibleCategory(true);
+      // 카테고리가 이미 선택되어 있는 경우(edit) 태그 보여주기
+      if (control._formValues.category) {
+        setVisibleTag(true);
+      }
       // 제목이 있으면 태그 제안 가져오기
       getSuggestionTag(v).then((res) => {
         setSuggestionList(
@@ -69,7 +73,7 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
     } else {
       setVisibleCard(false);
       setVisibleCategory(false);
-      setVsibleTag(false);
+      setVisibleTag(false);
       setVisibleMemoAndAlarm(false);
       setSuggestionList([]); // 제안 리스트 빈 배열로 초기화
       resetMemo('');
