@@ -6,7 +6,7 @@ import CommonHeader from '@/components/layout/header/CommonHeader';
 import { Button } from '@/components/common';
 import { useState } from 'react';
 import type { SaveCardProps } from '@/types';
-import { Alarm, CategoryTagSelector, LinkField, Memo } from '@/components/ui/cardlink';
+import { Alarm, CategoryTagSelector, LinkField, Memo } from '@/components/ui/cardLink';
 import { linkAtom, memoAtom, visibleCardAtom, visibleCategoryAtom, visibleTagAtom } from '@/atoms';
 import { useSetAtom } from 'jotai';
 
