@@ -8,6 +8,7 @@ import HomeFooter from '@/components/layout/footer/HomeFooter';
 import SaveCardList from '@/components/ui/cardlist/SaveCardList';
 import { dummyCardData } from '@/contants/DummyData';
 import { getGroupedCardList } from '@/utils/GroupedCardList';
+import HomLogo from '@/components/ui/HomLogo';
 
 const Home = () => {
   const cardList = getGroupedCardList(dummyCardData);
@@ -15,7 +16,8 @@ const Home = () => {
   return (
     <div className='relative min-h-screen'>
       <HomeHeader />
-      <ChangeSearchBar barMarginTop={200} />
+      <HomLogo />
+      <ChangeSearchBar barMarginTop={260} />
       {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />}
       <SaveCardList />
       <HomeFooter />

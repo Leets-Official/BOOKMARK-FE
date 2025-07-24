@@ -9,7 +9,7 @@ import { useAtom } from 'jotai';
 import { useNavigate } from 'react-router-dom';
 import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
 import { dummyCardData } from '@/contants/DummyData';
-import { useScrollLock } from '@/components/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/ScrollLock';
 
 const overlayStyle = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',

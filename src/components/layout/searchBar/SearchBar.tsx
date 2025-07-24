@@ -105,7 +105,7 @@ const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearch
         </div>
         <div
           className={filterIconStyle({ isFixed, isBlur })}
-          onClick={() => navigate('/search')} // 아이콘 누르면 /search로 이동
+          onClick={() => navigate('search', { relative: 'path' })} // 아이콘 누르면 /search로 이동
         >
           {isFixed ? <FixedFilteringIcon /> : <FilteringIcon />}
         </div>

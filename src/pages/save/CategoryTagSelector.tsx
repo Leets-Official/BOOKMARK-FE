@@ -78,17 +78,6 @@ const CategoryTagSelector = () => {
     ]);
   };
 
-  const addTag = () => {
-    if (tempTagList.length === 0) return;
-    // id 중복 방지를 위한 id 초기화
-    const mergedList = [...tagList, ...tempTagList].map((item, idx) => ({
-      ...item,
-      id: idx,
-    }));
-    setTagList(mergedList);
-    setTempTagList([]);
-  };
-
   const addTempTag = (content: string) => {
     if (content === '') return;
     // id 중복 방지를 위한 id 초기화
@@ -186,12 +175,7 @@ const CategoryTagSelector = () => {
 
   const schema = modalAddSchema(modalOpenType === 'tag' ? 'tag' : 'category');
 
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-    reset,
-  } = useForm<z.infer<typeof schema>>({
+  const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       category: '',

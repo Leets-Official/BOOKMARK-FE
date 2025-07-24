@@ -3,13 +3,14 @@ import { useRef } from 'react';
 import DropDownItem from './Item';
 import DropDownMenu from './Menu';
 import DropDownTrigger from './Trigger';
+import { useScrollLock } from '@/hooks/ScrollLock';
 
 interface DropDownProps {
   children: React.ReactNode;
   /** 드롭다운 메뉴 닫기 함수 */
   handleClose: () => void;
   menuRef: React.RefObject<HTMLDivElement | null>;
-  isOpen: boolean;
+  isOpen?: boolean;
 }
 
 interface DropDownStatic extends FC<DropDownProps> {
@@ -18,18 +19,8 @@ interface DropDownStatic extends FC<DropDownProps> {
   Item: typeof DropDownItem;
 }
 
-const DropDown = (({ children, handleClose, menuRef, isOpen }: DropDownProps) => {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
-
+const DropDown = (({ children, handleClose, menuRef, isOpen = false }: DropDownProps) => {
+  useScrollLock(isOpen);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

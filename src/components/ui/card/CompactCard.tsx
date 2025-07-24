@@ -1,17 +1,22 @@
-import Image from '@/components/common/Image';
+import { AlertIcon, FolderDetailIcon } from '@/assets';
+import { Button, Image } from '@/components/common';
 import type { CompactCardProps } from '@/types';
 import clsx from 'clsx';
 
-const CompactCard = ({ title, src, memo, category, tags }: CompactCardProps) => {
+const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) => {
   return (
-    <div className='w-full border border-gray-200 shadow-md rounded-lg p-2 flex items-stretch flex-row gap-4'>
-      <Image
-        src={src}
-        alt='CompactCard'
-        className={clsx('aspect-square rounded-lg object-cover', 'h-26', 'sm:h-26', 'md:h-30')}
-      />
-      <div className='flex flex-col gap-2 justify-between'>
-        <p className='text-base font-semibold'>{title}</p>
+    <div className='w-full border border-gray-200 shadow-md rounded-lg p-2 flex items-center flex-row gap-4'>
+      <div className='relative aspect-square w-[104px] md:w-[160px]'>
+        <Image
+          src={image}
+          alt='CompactCard'
+          className='absolute inset-0 w-full h-full object-cover rounded-lg'
+          onClick={() => console.log('Image clicked')}
+        />
+        <AlertIcon width={16} height={16} stroke='white' className='absolute top-1 right-1' />
+      </div>
+      <div className='flex flex-col gap-2 justify-between w-full'>
+        <p className='text-sm sm:text-base font-semibold line-clamp-1'>{title}</p>
         <p
           className={clsx(
             'text-sm text-grayText line-clamp-2',
@@ -21,17 +26,29 @@ const CompactCard = ({ title, src, memo, category, tags }: CompactCardProps) => 
         >
           {memo}
         </p>
-        <div className='flex flex-row items-center gap-2'>
-          <p className='text-sm text-darkGray bg-snowGray rounded-lg px-2 py-1 font-medium'>
-            {category}
-          </p>
-          <div className='flex flex-row gap-2'>
-            {tags.map((tag, index) => (
-              <p key={index} className='text-sm text-grayText font-medium'>
-                {tag}
-              </p>
-            ))}
+        <div className='flex flex-row items-center justify-between pr-2'>
+          <div className='gap-2 flex flex-row items-center whitespace-nowrap'>
+            <p className='text-[10px] text-darkGray bg-snowGray rounded-lg px-2 py-1 font-medium'>
+              {category}
+            </p>
+            <div className='flex flex-row gap-2 '>
+              {tags.map((tag, index) => (
+                <p key={index} className='text-[10px] text-grayText font-medium'>
+                  {tag}
+                </p>
+              ))}
+            </div>
           </div>
+          <Button
+            onClick={() => console.log('clicked')}
+            icon={
+              <FolderDetailIcon
+                width={24}
+                height={24}
+                className='text-white hover:text-grayBg transition-colors w-6 h-6'
+              />
+            }
+          />
         </div>
       </div>
     </div>
