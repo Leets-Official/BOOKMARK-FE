@@ -26,6 +26,7 @@ const searchContentsAtom = atom<string>('');
 const selectedCategoriesAtom = atom<string[]>([]);
 const selectedTagsAtom = atom<string[]>([]);
 const selectedPlatformsAtom = atom<string[]>([]);
+const previewImageAtom = atom<string | undefined>(undefined);
 
 export {
   linkAtom,
@@ -46,4 +47,5 @@ export {
   selectedCategoriesAtom,
   selectedTagsAtom,
   selectedPlatformsAtom,
+  previewImageAtom,
 };

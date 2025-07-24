@@ -7,11 +7,12 @@ import {
   isSaveButtonDisabledAtom,
   linkAtom,
   memoAtom,
+  previewImageAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
 } from '@/atoms';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useScrollLock } from '@/hooks/ScrollLock';
 import { saveSchema } from '@/schema/save';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -64,6 +65,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const resetVisibleCate = useSetAtom(visibleCategoryAtom);
   const resetVisibleTag = useSetAtom(visibleTagAtom);
   const resetMemo = useSetAtom(memoAtom);
+  const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
   const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
     url: '',
     tags: [],
@@ -110,7 +112,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
         category: '맛집',
         title: '홍대 파스타 맛집 추천',
         platform: '인스타그램',
-        image: 'https://www.google.com/image.png',
+        image: 'https://cdn.pixabay.com/photo/2018/04/26/16/31/marine-3352341_1280.jpg',
         memo: '홍대 파스타 맛집 추천',
         date: '내일 (금)',
         time: '12:00',
@@ -123,11 +125,25 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const onSubmit = (data: z.infer<typeof schema>) => {
     console.log('저장 완료');
     console.log(data);
+
+    // 미리보기 이미지 초기화
+    setPreviewImage(undefined);
+  };
+
+  const handleSave = () => {
+    if (previewImage) {
+      setValue('image', previewImage);
+      setTimeout(() => {
+        handleSubmit(onSubmit)();
+      }, 0);
+    } else {
+      handleSubmit(onSubmit)();
+    }
   };
 
   return (
     // PC : 모달형식, 모바일 : 전체화면
-    <form id='save-form' onSubmit={handleSubmit(onSubmit)}>
+    <form id='save-form' onSubmit={handleSubmit(handleSave)}>
       <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
         <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
           <div className='absolute top-0 left-0 right-0 z-10'>

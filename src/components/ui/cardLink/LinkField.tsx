@@ -16,25 +16,13 @@ import { Controller, type Control, type UseFormSetValue } from 'react-hook-form'
 import type z from 'zod';
 
 interface ILinkField {
-  isOpen?: boolean;
-  title?: string;
-  platform?: string;
   editable?: boolean;
   isLoading?: boolean;
-  image?: string;
   control: Control<z.infer<typeof saveSchema>>;
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
 }
 
-const LinkField = ({
-  title = '제목',
-  platform = '플랫폼',
-  image,
-  editable = true,
-  isLoading = false,
-  control,
-  setValue,
-}: ILinkField) => {
+const LinkField = ({ editable = true, isLoading = false, control, setValue }: ILinkField) => {
   const [visibleCard, setVisibleCard] = useAtom(visibleCardAtom);
   const setVisibleCategory = useSetAtom(visibleCategoryAtom);
   const setVsibleTag = useSetAtom(visibleTagAtom);
@@ -117,11 +105,11 @@ const LinkField = ({
         <>
           <hr className='border-t-2 border-lightGrayBlue my-4' />
           <LinkCard
-            title={title}
-            platform={platform}
+            title={control._formValues.title}
+            platform={control._formValues.platform}
+            image={control._formValues.image}
             isLoading={isLoading}
             editable={editable}
-            image={image}
           />
         </>
       )}
