@@ -70,6 +70,9 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
     if (e.length > 0) {
       setVisibleCard(true);
       setVisibleCategory(true);
+      if (control._formValues.category) {
+        setVisibleTag(true);
+      }
     } else {
       setVisibleCard(false);
       setVisibleCategory(false);
