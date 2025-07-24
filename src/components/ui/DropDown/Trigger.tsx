@@ -13,7 +13,7 @@ const DropDownTrigger = forwardRef<HTMLButtonElement, DropDownTriggerProps>(
       if (e.key === 'Escape') onClick();
     };
     return (
-      <button ref={ref} onClick={onClick} onKeyDown={onClickHandler}>
+      <button ref={ref} onClick={onClick} onKeyDown={onClickHandler} type='button'>
         {children}
       </button>
     );

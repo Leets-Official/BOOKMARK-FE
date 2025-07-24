@@ -3,17 +3,30 @@ import { dateOptionsAtom, timeOptionsAtom, visibleMemoAndAlarmAtom } from '@/ato
 import DateTimeDropDown from '@/components/layout/dropDown/DateTimeDropDown';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtomValue } from 'jotai';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { saveSchema } from '@/schema/save';
+import type { UseFormSetValue } from 'react-hook-form';
+import type z from 'zod';
 
-const Alarm = ({ isOpen }: { isOpen?: boolean }) => {
+interface AlarmProps {
+  isOpen?: boolean;
+  setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
+}
+
+const Alarm = ({ isOpen, setValue }: AlarmProps) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
   const visible = isOpen ?? atomVisible;
   const dateOptions = useAtomValue(dateOptionsAtom);
   const timeOptions = useAtomValue(timeOptionsAtom);
-  const [tempDate, setTempDate] = useState('');
-  const [tempTime, setTempTime] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
   const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
   const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
+
+  useEffect(() => {
+    setValue('date', selectedDate);
+    setValue('time', selectedTime);
+  }, [selectedDate, selectedTime, setValue]);
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5 mb-60'>
@@ -36,8 +49,8 @@ const Alarm = ({ isOpen }: { isOpen?: boolean }) => {
                 options={dateOptions}
                 title='날짜 선택'
                 subTitle='날짜'
-                selectedOption={tempDate}
-                setSelectedOption={setTempDate}
+                selectedOption={selectedDate}
+                setSelectedOption={setSelectedDate}
                 isOpen={isDateDropDownOpen}
                 setIsOpen={setIsDateDropDownOpen}
               />
@@ -47,8 +60,8 @@ const Alarm = ({ isOpen }: { isOpen?: boolean }) => {
                 options={timeOptions}
                 title='시간선택'
                 subTitle='시간'
-                selectedOption={tempTime}
-                setSelectedOption={setTempTime}
+                selectedOption={selectedTime}
+                setSelectedOption={setSelectedTime}
                 isOpen={isTimeDropDownOpen}
                 setIsOpen={setIsTimeDropDownOpen}
               />

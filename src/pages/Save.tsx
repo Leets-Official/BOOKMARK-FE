@@ -110,7 +110,7 @@ const Save = () => {
               <LinkField control={control} setValue={setValue} />
               <CategoryTagSelector setValue={setValue} error={errors} />
               <Memo control={control} />
-              <Alarm setValue={control} />
+              <Alarm setValue={setValue} />
             </div>
           </div>
           <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
