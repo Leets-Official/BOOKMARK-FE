@@ -8,9 +8,17 @@ interface TextareaProps {
   placeholder: string;
   onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
   onKeyDown?: React.KeyboardEventHandler<HTMLTextAreaElement>;
+  onBlur?: React.FocusEventHandler<HTMLTextAreaElement>;
 }
 
-const Textarea = ({ className, value, placeholder, onChange, onKeyDown }: TextareaProps) => {
+const Textarea = ({
+  className,
+  value,
+  placeholder,
+  onChange,
+  onKeyDown,
+  onBlur,
+}: TextareaProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -35,6 +43,7 @@ const Textarea = ({ className, value, placeholder, onChange, onKeyDown }: Textar
       value={value}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
+      onBlur={onBlur}
     />
   );
 };

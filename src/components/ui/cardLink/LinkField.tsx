@@ -27,7 +27,6 @@ interface ILinkField {
 }
 
 const LinkField = ({
-  isOpen,
   title = '제목',
   platform = '플랫폼',
   image,
@@ -37,7 +36,6 @@ const LinkField = ({
   setValue,
 }: ILinkField) => {
   const [visibleCard, setVisibleCard] = useAtom(visibleCardAtom);
-  const visible = isOpen ?? visibleCard;
   const setVisibleCategory = useSetAtom(visibleCategoryAtom);
   const setVsibleTag = useSetAtom(visibleTagAtom);
   const setSuggestionList = useSetAtom(suggestionListAtom);
@@ -115,7 +113,7 @@ const LinkField = ({
           />
         )}
       />
-      {visible && (
+      {visibleCard && (
         <>
           <hr className='border-t-2 border-lightGrayBlue my-4' />
           <LinkCard

@@ -106,13 +106,13 @@ const Save = ({ type }: SaveInterfaceProps) => {
     if (id) {
       const newValues = {
         url: 'https://www.google.com',
-        tags: ['파스타', '이탈리안', '데이트', '인스타'],
+        tags: ['파스타', '이탈리안', '데이트'],
         category: '맛집',
         title: '홍대 파스타 맛집 추천',
         platform: '인스타그램',
         image: 'https://www.google.com/image.png',
         memo: '홍대 파스타 맛집 추천',
-        date: '2025-07-24',
+        date: '내일 (금)',
         time: '12:00',
       };
       setDefaultValues(newValues);
@@ -137,9 +137,18 @@ const Save = ({ type }: SaveInterfaceProps) => {
             {/* 카드 모음 */}
             <div className='flex flex-col items-center gap-3 w-full p-4'>
               <LinkField control={control} setValue={setValue} />
-              <CategoryTagSelector setValue={setValue} error={errors} />
+              <CategoryTagSelector
+                setValue={setValue}
+                error={errors}
+                editCate={defaultValues.category}
+                editTag={defaultValues.tags}
+              />
               <Memo control={control} />
-              <Alarm setValue={setValue} />
+              <Alarm
+                setValue={setValue}
+                editDate={defaultValues.date}
+                editTime={defaultValues.time}
+              />
             </div>
           </div>
           <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>

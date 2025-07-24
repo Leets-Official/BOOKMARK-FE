@@ -69,6 +69,7 @@ const TextField = ({
           placeholder={placeholder}
           onChange={onChangeContent}
           onKeyDown={handleKeyDown}
+          onBlur={onBlur}
         />
         {value && buttonVisible && (
           <Button

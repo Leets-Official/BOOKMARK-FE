@@ -9,19 +9,30 @@ import type { UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
 
 interface AlarmProps {
-  isOpen?: boolean;
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
+  editDate?: string;
+  editTime?: string;
 }
 
-const Alarm = ({ isOpen, setValue }: AlarmProps) => {
+const Alarm = ({ editDate, editTime, setValue }: AlarmProps) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
-  const visible = isOpen ?? atomVisible;
+  const visible = atomVisible;
   const dateOptions = useAtomValue(dateOptionsAtom);
   const timeOptions = useAtomValue(timeOptionsAtom);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
   const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
+
+  // 수정 모드일 때 초기값 설정
+  useEffect(() => {
+    if (editDate) {
+      setSelectedDate(editDate);
+    }
+    if (editTime) {
+      setSelectedTime(editTime);
+    }
+  }, [editDate, editTime]);
 
   useEffect(() => {
     setValue('date', selectedDate);

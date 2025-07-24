@@ -20,26 +20,36 @@ import type z from 'zod';
 type ModalType = 'category' | 'tag';
 
 interface ICateTagProps {
-  isOpen?: boolean;
   editCate?: string;
   editTag?: string[];
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
   error: FieldErrors<z.infer<typeof saveSchema>>;
 }
 
-const CategoryTagSelector = ({ isOpen, editCate, editTag, setValue, error }: ICateTagProps) => {
+const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagProps) => {
   const visibleCategory = useAtomValue(visibleCategoryAtom);
   const [visibleTag, setVisibleTag] = useAtom(visibleTagAtom);
-  const openCate = isOpen ?? visibleCategory;
-  const openTag = isOpen ?? visibleTag;
+  const openCate = visibleCategory;
+  const openTag = visibleTag;
 
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom); // 메모, 알림
   const setIsSaveButtonDisabled = useSetAtom(isSaveButtonDisabledAtom); // 저장하기 버튼
 
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
 
-  const [selectedCategory, setSelectedCategory] = useState(editCate ?? '');
-  const [selectedTag, setSelectedTag] = useState<string[]>(editTag ?? []);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedTag, setSelectedTag] = useState<string[]>([]);
+
+  // 수정 모드일 때 초기값 설정
+  useEffect(() => {
+    if (editCate) {
+      setSelectedCategory(editCate);
+      setVisibleTag(true);
+    }
+    if (editTag) {
+      setSelectedTag(editTag);
+    }
+  }, [editCate, editTag, setVisibleTag]);
 
   const allCategories = useMemo(() => {
     const categories = [...new Set(dummyCardData.map((item) => item.category))];
@@ -115,6 +125,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag, setValue, error }: ICa
       }
     }
   }, [openCate, openTag, editCate, editTag, setSuggestionList, suggestionList]);
+
   useEffect(() => {
     if (editCate || editTag) {
       setSuggestionList([]); // 수정 모드에서는 suggestion 초기화
