@@ -1,8 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Chip, Modal } from '@/components/common';
+import { Chip } from '@/components/common';
 import { AddIcon } from '@/assets';
 import { useEffect, useMemo, useState } from 'react';
-import TextField from '@/components/ui/TextField';
 import {
   isSaveButtonDisabledAtom,
   suggestionListAtom,
@@ -13,10 +12,7 @@ import {
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { dummyCardData } from '@/contants/DummyData';
 import clsx from 'clsx';
-import { modalAddSchema } from '@/schema/save';
-import type z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import AddModal from './AddModal';
 
 type ModalType = 'category' | 'tag';
 
@@ -122,59 +118,12 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
 
   const [modalType, setModalType] = useState<ModalType>('category');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(true);
   const isCategoryType = modalType === 'category';
 
   const handleOpenModal = (type: ModalType) => {
     setModalType(type);
     setIsModalOpen(true);
   };
-
-  const handleConfirmModal = (data: z.infer<typeof schema>) => {
-    if (isCategoryType) {
-      if (!data.category.trim()) return;
-      handleAddCategory(data.category);
-    } else {
-      if (!data.tag.trim()) return;
-      handleAddTag(data.tag);
-    }
-    setIsModalOpen(false);
-    reset();
-    setIsDisabled(true);
-  };
-
-  const handleAddCategory = (content: string) => {
-    const newCategory = content;
-    const template = dummyCardData[0];
-    dummyCardData.push({
-      ...template,
-      category: newCategory,
-      tags: [],
-    });
-    setSelectedCategory(newCategory);
-    setVisibleTag(true);
-  };
-
-  const handleAddTag = (content: string) => {
-    const newTag = content;
-    const index = dummyCardData.findIndex((item) => item.category === selectedCategory);
-    if (index !== -1) {
-      dummyCardData[index].tags = [...(dummyCardData[index].tags || []), newTag];
-      setSelectedTag((prev) => [...prev, newTag]);
-    }
-    setVisibleMemoAndAlarm(true);
-  };
-
-  // 모달 추가 스키마
-  const schema = modalAddSchema(isCategoryType ? 'category' : 'tag');
-
-  const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      category: '',
-      tag: '',
-    },
-  });
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
@@ -250,41 +199,16 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/** 카테고리, 태그 추가 모달 */}
       {isModalOpen && (
-        <Modal
-          title={isCategoryType ? '카테고리 추가' : '태그 추가'}
-          confirmLabel='저장하기'
-          onCancel={() => {
-            setIsModalOpen(false);
-            reset();
-            setIsDisabled(true);
-          }}
-          onConfirm={() => {
-            document
-              .getElementById('modal-form')
-              ?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-          }}
-          disabled={isDisabled}
-        >
-          <form id='modal-form' onSubmit={handleSubmit(handleConfirmModal)}>
-            <Controller
-              name={isCategoryType ? 'category' : 'tag'}
-              control={control}
-              render={({ field, fieldState }) => (
-                <TextField
-                  label={isCategoryType ? '카테고리' : '태그'}
-                  placeholder={
-                    isCategoryType ? '추가할 카테고리를 입력해주세요' : '추가할 태그을 입력해주세요'
-                  }
-                  maxLength={10}
-                  onChange={field.onChange}
-                  errorMessage={fieldState.error?.message}
-                  setDisabled={(disabled) => setIsDisabled(disabled)}
-                />
-              )}
-            />
-          </form>
-        </Modal>
+        <AddModal
+          setIsOpen={setIsModalOpen}
+          isCategoryType={isCategoryType}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          setSelectedTag={setSelectedTag}
+        />
       )}
     </div>
   );
