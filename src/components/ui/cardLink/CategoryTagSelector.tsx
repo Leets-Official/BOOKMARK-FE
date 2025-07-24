@@ -13,6 +13,9 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { dummyCardData } from '@/contants/DummyData';
 import clsx from 'clsx';
 import AddModal from './AddModal';
+import type { saveSchema } from '@/schema/save';
+import type { FieldErrors, UseFormSetValue } from 'react-hook-form';
+import type z from 'zod';
 
 type ModalType = 'category' | 'tag';
 
@@ -20,9 +23,11 @@ interface ICateTagProps {
   isOpen?: boolean;
   editCate?: string;
   editTag?: string[];
+  setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
+  error: FieldErrors<z.infer<typeof saveSchema>>;
 }
 
-const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
+const CategoryTagSelector = ({ isOpen, editCate, editTag, setValue, error }: ICateTagProps) => {
   const visibleCategory = useAtomValue(visibleCategoryAtom);
   const [visibleTag, setVisibleTag] = useAtom(visibleTagAtom);
   const openCate = isOpen ?? visibleCategory;
@@ -125,11 +130,19 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     setIsModalOpen(true);
   };
 
+  useEffect(() => {
+    setValue('category', selectedCategory);
+    setValue('tags', selectedTag);
+  }, [selectedCategory, selectedTag, setValue]);
+
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
-      <p className='text-sm text-stone font-semibold'>
-        카테고리<span className='text-[#FF2C3D]'>*</span>
-      </p>
+      <div className='flex flex-col gap-1'>
+        <p className='text-sm text-stone font-semibold'>
+          카테고리<span className='text-[#FF2C3D]'>*</span>
+        </p>
+        {error.category && <p className='text-xs text-redText'>{error.category?.message}</p>}
+      </div>
       <AnimatePresence mode='wait'>
         {openCate && (
           <motion.div
@@ -163,9 +176,12 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
         )}
       </AnimatePresence>
       <hr className='border-t-2 border-lightGrayBlue my-1' />
-      <p className='text-sm text-stone font-semibold'>
-        태그<span className='text-[#FF2C3D]'>*</span>
-      </p>
+      <div className='flex flex-col gap-1'>
+        <p className='text-sm text-stone font-semibold'>
+          태그<span className='text-[#FF2C3D]'>*</span>
+        </p>
+        {error.tags && <p className='text-xs text-redText'>{error.tags?.message}</p>}
+      </div>
       <AnimatePresence mode='wait'>
         {openTag && (
           <motion.div

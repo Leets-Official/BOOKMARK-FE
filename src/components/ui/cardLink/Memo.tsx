@@ -2,26 +2,19 @@ import { memoAtom, visibleMemoAndAlarmAtom } from '@/atoms';
 import TextField from '@/components/ui/TextField';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom, useAtomValue } from 'jotai';
+import { Controller, type Control } from 'react-hook-form';
+import type z from 'zod';
+import type { saveSchema } from '@/schema/save';
 
 interface IMemoProps {
   cardMemo?: string;
-  // eslint-disable-next-line no-unused-vars
-  setCardMemo?: (value: string) => void;
   isOpen?: boolean;
+  control: Control<z.infer<typeof saveSchema>>;
 }
 
-const Memo = ({ cardMemo, setCardMemo, isOpen }: IMemoProps) => {
+const Memo = ({ cardMemo, isOpen, control }: IMemoProps) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
   const visible = isOpen ?? atomVisible;
-  const [memo, setMemo] = useAtom(memoAtom);
-
-  const handleMemo = (value: string) => {
-    if (setCardMemo) {
-      setCardMemo(value); // 로컬 state에서 온 경우
-    } else {
-      setMemo(value);
-    }
-  };
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5'>
@@ -36,13 +29,19 @@ const Memo = ({ cardMemo, setCardMemo, isOpen }: IMemoProps) => {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className='overflow-hidden'
           >
-            <TextField
-              label=''
-              placeholder='메모를 입력해주세요'
-              maxLength={50}
-              onChange={handleMemo}
-              initialValue={cardMemo ?? memo}
-              buttonVisible={false}
+            <Controller
+              name='memo'
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  label=''
+                  placeholder='메모를 입력해주세요'
+                  maxLength={50}
+                  onChange={field.onChange}
+                  errorMessage={fieldState.error?.message}
+                  buttonVisible={false}
+                />
+              )}
             />
           </motion.div>
         )}

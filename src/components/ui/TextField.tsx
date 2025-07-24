@@ -85,13 +85,14 @@ const TextField = ({
         )}
       </div>
 
-      {errorMessage && <p className='text-[12px] text-redText mt-1 ml-1'>{errorMessage}</p>}
-
-      {maxLength && (
-        <p className='text-[12px] text-grayText text-right w-full mt-1'>
-          {content.length}/{maxLength}
-        </p>
-      )}
+      <div className='flex justify-between w-full whitespace-nowrap'>
+        {errorMessage && <p className='text-xs text-redText mt-1 ml-1 w-full'>{errorMessage}</p>}
+        {maxLength && (
+          <p className='text-[12px] text-grayText text-right w-full mt-1'>
+            {content.length}/{maxLength}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

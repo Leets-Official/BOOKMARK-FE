@@ -83,30 +83,26 @@ const AddModal = ({
         setIsDisabled(true);
       }}
       onConfirm={() => {
-        document
-          .getElementById('modal-form')
-          ?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        handleSubmit(handleConfirmModal)();
       }}
       disabled={isDisabled}
     >
-      <form id='modal-form' onSubmit={handleSubmit(handleConfirmModal)}>
-        <Controller
-          name={isCategoryType ? 'category' : 'tag'}
-          control={control}
-          render={({ field, fieldState }) => (
-            <TextField
-              label={isCategoryType ? '카테고리' : '태그'}
-              placeholder={
-                isCategoryType ? '추가할 카테고리를 입력해주세요' : '추가할 태그을 입력해주세요'
-              }
-              maxLength={10}
-              onChange={field.onChange}
-              errorMessage={fieldState.error?.message}
-              setDisabled={(disabled) => setIsDisabled(disabled)}
-            />
-          )}
-        />
-      </form>
+      <Controller
+        name={isCategoryType ? 'category' : 'tag'}
+        control={control}
+        render={({ field, fieldState }) => (
+          <TextField
+            label={isCategoryType ? '카테고리' : '태그'}
+            placeholder={
+              isCategoryType ? '추가할 카테고리를 입력해주세요' : '추가할 태그을 입력해주세요'
+            }
+            maxLength={10}
+            onChange={field.onChange}
+            errorMessage={fieldState.error?.message}
+            setDisabled={(disabled) => setIsDisabled(disabled)}
+          />
+        )}
+      />
     </Modal>
   );
 };

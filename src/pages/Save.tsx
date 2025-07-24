@@ -71,12 +71,18 @@ const Save = () => {
 
   const schema = saveSchema;
 
-  const { handleSubmit, control, setValue, reset } = useForm<z.infer<typeof schema>>({
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       url: '',
       tags: [],
-      category: [],
+      category: '',
       title: '',
       platform: '',
       memo: '',
@@ -102,9 +108,9 @@ const Save = () => {
             {/* 카드 모음 */}
             <div className='flex flex-col items-center gap-3 w-full p-4'>
               <LinkField control={control} setValue={setValue} />
-              <CategoryTagSelector control={control} />
+              <CategoryTagSelector setValue={setValue} error={errors} />
               <Memo control={control} />
-              <Alarm control={control} />
+              <Alarm setValue={control} />
             </div>
           </div>
           <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
