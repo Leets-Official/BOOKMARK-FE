@@ -1,14 +1,26 @@
 import { KakaoLogoIcon } from '@/assets';
 import Button from '@/components/common/Button';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
+
+const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
+const KAKAO_REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
+
+const KAKAO_LOGIN_URL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URI}&scope=account_email,profile_nickname,profile_image,talk_message`;
 
 const Login = () => {
   const navigate = useNavigate();
 
   const handleKakaoLogin = () => {
-    console.log('카카오 로그인 클릭');
-    navigate('/home');
+    window.location.href = KAKAO_LOGIN_URL;
   };
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      navigate('/', { replace: true }); // 이미 로그인된 경우 홈으로 이동
+    }
+  }, [navigate]);
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-white px-4'>
