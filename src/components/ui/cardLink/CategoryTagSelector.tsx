@@ -12,7 +12,7 @@ import {
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { dummyCardData } from '@/contants/DummyData';
 import clsx from 'clsx';
-import AddModal from './AddModal';
+import AddModal from '@/components/ui/modal/AddModal';
 import type { saveSchema } from '@/schema/save';
 import type { FieldErrors, UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
