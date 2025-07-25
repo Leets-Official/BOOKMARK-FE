@@ -13,15 +13,14 @@ export const createCategory = async (categoryName: string) => {
   }
 };
 
-export const fetchCategories = async () => {
+export const getCategories = async () => {
   try {
     const response = await api.get('/categories');
-    return { success: true, data: response.data.data };
-  } catch (error) {
-    console.error(error);
+    return response.data;
+  } catch (error: any) {
     return {
-      success: false,
-      message: '알 수 없는 에러가 발생했습니다.',
+      error: true,
+      message: error.response?.data?.message || '카테고리 조회에 실패했습니다.',
     };
   }
 };

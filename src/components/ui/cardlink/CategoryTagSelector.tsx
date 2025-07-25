@@ -13,8 +13,8 @@ import {
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { dummyCardData } from '@/contants/DummyData';
 import clsx from 'clsx';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createCategory } from '@/api/Category';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { createCategory, getCategories } from '@/api/Category';
 
 type ModalType = 'category' | 'tag';
 
@@ -22,6 +22,13 @@ interface ICateTagProps {
   isOpen?: boolean;
   editCate?: string;
   editTag?: string[];
+}
+
+interface Category {
+  id: number;
+  categoryName: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
@@ -39,17 +46,34 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
   const [selectedCategory, setSelectedCategory] = useState(editCate ?? '');
   const [selectedTag, setSelectedTag] = useState<string[]>(editTag ?? []);
 
-  const allCategories = useMemo(() => {
-    const categories = [...new Set(dummyCardData.map((item) => item.category))];
-    return categories.map((category) => ({
-      id: category,
-      content: category,
-      isSelected: category === selectedCategory,
-    }));
-  }, [selectedCategory]);
+  const {
+    data: categoriesData,
+    isLoading,
+    isError,
+  } = useQuery<Category[]>({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const res = await getCategories();
+      return res.data ?? []; // <- data.data 형태에 맞게 처리
+    },
+  });
 
-  const handleCategory = (categoryId: string) => {
-    setSelectedCategory(categoryId);
+  const allCategories = useMemo(() => {
+    if (!categoriesData || isError) return [];
+
+    const sorted = [...categoriesData].sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+
+    return sorted.map((category) => ({
+      id: category.id,
+      content: category.categoryName,
+      isSelected: category.categoryName === selectedCategory,
+    }));
+  }, [categoriesData, isError, selectedCategory]);
+
+  const handleCategory = (categoryName: string) => {
+    setSelectedCategory(categoryName);
     setVisibleTag(true);
   };
 
@@ -164,7 +188,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
       return res;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['postCategory'] });
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: () => {
       console.log('카테고리 생성 실패');
@@ -185,6 +209,15 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     }
     setVisibleMemoAndAlarm(true);
   };
+
+  const renderStatus = (message: string) => (
+    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center text-gray-500'>
+      {message}
+    </div>
+  );
+
+  if (isLoading) return renderStatus('카테고리를 불러오는 중...');
+  if (isError) return renderStatus('카테고리 정보를 불러오지 못했습니다.');
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
@@ -209,7 +242,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
                   isSelected={category.isSelected}
                   className='border-lightGrayBlue'
                   selectedClassName='border border-lightGreen bg-lightGreen text-white'
-                  onClick={() => handleCategory(category.id)}
+                  onClick={() => handleCategory(category.content)}
                 />
               ))}
               <Chip
