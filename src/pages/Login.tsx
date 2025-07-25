@@ -1,14 +1,22 @@
+import { kakaoLogin } from '@/api/auth/auth_api';
 import { KakaoLogoIcon } from '@/assets';
 import Button from '@/components/common/Button';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 const Login = () => {
   const navigate = useNavigate();
 
   const handleKakaoLogin = () => {
-    console.log('카카오 로그인 클릭');
-    navigate('/home');
+    kakaoLogin();
   };
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      navigate('/', { replace: true }); // 이미 로그인된 경우 홈으로 이동
+    }
+  }, [navigate]);
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-white px-4'>

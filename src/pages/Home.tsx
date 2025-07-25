@@ -9,9 +9,18 @@ import SaveCardList from '@/components/ui/cardList/SaveCardList';
 import { dummyCardData } from '@/contants/DummyData';
 import { getGroupedCardList } from '@/utils/GroupedCardList';
 import HomLogo from '@/components/ui/HomLogo';
+import { useEffect } from 'react';
 
 const Home = () => {
   const cardList = getGroupedCardList(dummyCardData);
+
+  useEffect(() => {
+    // 저장된 토큰 콘솔에 출력
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    console.log('🔑 Access Token:', accessToken);
+    console.log('🔄 Refresh Token:', refreshToken);
+  }, []);
 
   return (
     <div className='relative min-h-screen'>
