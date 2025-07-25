@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import kakaoLoginApi from '@/api/auth/auth_api';
+import { kakaoLoginApi } from '@/api/auth/auth_api';
 
 function KakaoCallBack() {
   const navigate = useNavigate();
@@ -34,8 +34,11 @@ function KakaoCallBack() {
       console.log('Authorization code is not found');
       return;
     }
-    console.log('code', code);
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+
     kakaoLoginMutation.mutate(code);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <div>카카오 로그인 처리 중...</div>;

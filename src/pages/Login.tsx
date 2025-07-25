@@ -1,18 +1,14 @@
+import { kakaoLogin } from '@/api/auth/auth_api';
 import { KakaoLogoIcon } from '@/assets';
 import Button from '@/components/common/Button';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
-const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
-const KAKAO_REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
-
-const KAKAO_LOGIN_URL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URI}&scope=account_email,profile_nickname,profile_image,talk_message`;
-
 const Login = () => {
   const navigate = useNavigate();
 
   const handleKakaoLogin = () => {
-    window.location.href = KAKAO_LOGIN_URL;
+    kakaoLogin();
   };
 
   useEffect(() => {
