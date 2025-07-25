@@ -5,6 +5,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
 import { useNavigate } from 'react-router-dom';
+import { getSearchHistory, postSearchHistory } from '@/api/searchHistory/searchHistory_api';
+import { useQuery } from '@tanstack/react-query';
 
 interface AnimatedHeightProps {
   show: boolean;
@@ -38,7 +40,6 @@ const AnimatedHeight: React.FC<AnimatedHeightProps> = ({ show, children }) => {
 const FilterSearchBar: React.FC = () => {
   const [searchContents, setSearchContents] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const [history, setHistory] = useState<string[]>([]);
   const historyRef = useRef<HTMLDivElement>(null);
 
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
@@ -48,15 +49,22 @@ const FilterSearchBar: React.FC = () => {
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
 
+  const { data: history, refetch } = useQuery({
+    queryKey: ['searchHistory'],
+    queryFn: () => {
+      return getSearchHistory();
+    },
+  });
+
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     setSearchContents(e.currentTarget.value);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchContents.trim()) {
-      setHistory((prev) =>
-        [searchContents, ...prev.filter((v) => v !== searchContents)].slice(0, 3),
-      );
+      // 검색어 조회 query 업데이트
+      postSearchHistory(searchContents);
+      refetch();
       console.log('검색어:', searchContents);
       setSearchContents('');
     }
@@ -65,7 +73,8 @@ const FilterSearchBar: React.FC = () => {
   const clearInput = () => setSearchContents('');
 
   const handleDeleteHistory = (target: string) => {
-    setHistory((prev) => prev.filter((item) => item !== target));
+    console.log(target);
+    //setHistory((prev) => prev.filter((item) => item !== target));
   };
 
   const handleDeleteCategory = (category: string) =>
@@ -163,17 +172,17 @@ const FilterSearchBar: React.FC = () => {
       {/* 최근 검색 기록 */}
       {isFocused && history.length > 0 && (
         <div className='absolute top-full left-0 w-full  px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue'>
-          {history.map((record, i) => (
+          {history.map(({ keyword, id }: { keyword: string; id: number }) => (
             <div
-              key={i}
+              key={id}
               className='flex items-center justify-between gap-2 my-4 text-15 text-black'
             >
               <div
                 className='flex items-center gap-2 cursor-pointer hover:underline'
-                onClick={() => setSearchContents(record)}
+                onClick={() => setSearchContents(keyword)}
               >
                 <HistoryIcon />
-                {record}
+                {keyword}
               </div>
               <Button
                 className='cursor-pointer'
@@ -182,7 +191,7 @@ const FilterSearchBar: React.FC = () => {
                   e.preventDefault();
                   e.stopPropagation();
                 }}
-                onClick={() => handleDeleteHistory(record)}
+                onClick={() => handleDeleteHistory(keyword)}
               />
             </div>
           ))}
