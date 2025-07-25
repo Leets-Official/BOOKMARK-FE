@@ -25,8 +25,8 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
           'mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] cursor-pointer',
           !isMobile && 'hover:border hover:border-gray-300',
           isMenuOpen &&
-            !isMobile &&
-            'shadow-[0_2px_7px_rgba(2,34,94,0.1)] border border-gray-300 hover:border hover:border-gray-300',
+          !isMobile &&
+          'shadow-[0_2px_7px_rgba(2,34,94,0.1)] border border-gray-300 hover:border hover:border-gray-300',
         )}
       >
         <div className='p-3.5 pb-10'>
@@ -83,7 +83,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
           <Button
             onClick={() => {
               isClose();
-              navigate('edit', { state: { editData: data } });
+              navigate(`edit/${data.id}`);
             }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15 cursor-pointer'
           >

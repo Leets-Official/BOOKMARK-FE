@@ -13,11 +13,15 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'save',
-            element: <Save />,
+            element: <Save type='create' />,
           },
           {
             path: 'search',
             element: <Search />,
+          },
+          {
+            path: 'edit/:id',
+            element: <Save type='edit' />,
           },
         ],
       },
@@ -28,6 +32,10 @@ const router = createBrowserRouter([
           {
             path: 'search',
             element: <Search />,
+          },
+          {
+            path: 'edit/:id',
+            element: <Save type='edit' />,
           },
         ],
       },

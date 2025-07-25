@@ -1,5 +1,7 @@
+import { previewImageAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
+import { useAtom } from 'jotai';
 import React, { useRef, useState } from 'react';
 
 interface CardProps {
@@ -12,7 +14,7 @@ interface CardProps {
 
 const LinkCard = ({ title, platform, image, isLoading, editable }: CardProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | undefined>(undefined); // 미리보기용 이미지 URL 상태
+  const [previewImage, setPreviewImage] = useAtom(previewImageAtom); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
 
   // 버튼 클릭 시 숨겨진 파일 입력창 엶
