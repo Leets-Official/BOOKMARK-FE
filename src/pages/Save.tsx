@@ -99,6 +99,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     getValues,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
+    mode: 'onChange',
     defaultValues,
   });
 
@@ -128,6 +129,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
     // 미리보기 이미지 초기화
     setPreviewImage(undefined);
+    onPrev();
   };
 
   const handleSave = () => {
@@ -172,6 +174,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
               type='submit'
               form='save-form'
               className={SaveButton({ isDisabled: isSaveButtonDisabled })}
+              disabled={isSaveButtonDisabled}
             >
               {type === 'create' ? '저장하기' : '수정하기'}
             </button>

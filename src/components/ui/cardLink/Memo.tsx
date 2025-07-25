@@ -7,13 +7,12 @@ import type z from 'zod';
 import type { saveSchema } from '@/schema/save';
 
 interface IMemoProps {
-  isOpen?: boolean;
   control: Control<z.infer<typeof saveSchema>>;
 }
 
-const Memo = ({ isOpen, control }: IMemoProps) => {
+const Memo = ({ control }: IMemoProps) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
-  const visible = isOpen ?? atomVisible;
+  const visible = atomVisible;
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5'>
