@@ -2,7 +2,6 @@ import api from './api';
 
 export const createTag = async (categoryId: number, tagName: string) => {
   try {
-    console.log('📦 보내는 태그명:', tagName);
     const response = await api.post('/tags', { categoryId, tagName });
     return response.data;
   } catch (error: any) {

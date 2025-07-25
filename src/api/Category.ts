@@ -2,7 +2,6 @@ import api from './api';
 
 export const createCategory = async (categoryName: string) => {
   try {
-    console.log('📦 보내는 카테고리명:', categoryName);
     const response = await api.post('/categories', { categoryName });
     return response.data;
   } catch (error: any) {
