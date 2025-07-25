@@ -143,9 +143,9 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
   };
 
   const categoryMutation = useMutation({
-    mutationFn: () => postCategory(),
+    mutationFn: (categoryName: string) => postCategory(categoryName),
     onSuccess: (data) => {
-      console.log('✅ 카테고리 생성 성공:', data);
+      console.log('카테고리 생성 성공:', data);
       const newCategory = content;
       const template = dummyCardData[0];
       dummyCardData.push({
@@ -162,7 +162,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
   });
 
   const handleAddCategory = () => {
-    categoryMutation.mutate();
+    categoryMutation.mutate(content);
   };
 
   const handleAddTag = () => {

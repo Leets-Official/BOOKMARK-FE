@@ -1,20 +1,14 @@
-import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 
-function App() {
-  useEffect(() => {
-    // 개발 환경에서만, 토큰이 없을 때만 설정
-    if (import.meta.env.DEV) {
-      localStorage.setItem('accessToken', 'your-test-token-here');
-      localStorage.setItem('refreshToken', 'your-refresh-token-here');
-      console.log('🔑 개발용 토큰 설정 완료');
-    }
-  }, []);
-  return (
-    <div>
-      <Outlet />
-    </div>
-  );
-}
+const App = () => {
+  const accessToken = localStorage.getItem('accessToken');
+
+  // 로그인이 되어 있지 않으면 로그인 페이지로 이동
+  if (!accessToken) {
+    return <Navigate to='/login' />;
+  }
+
+  return <Outlet />;
+};
 
 export default App;

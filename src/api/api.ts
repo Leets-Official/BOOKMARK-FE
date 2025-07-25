@@ -17,7 +17,9 @@ const getRefreshToken = async () => {
   if (!refreshToken) throw new Error('refreshToken not found');
 
   try {
-    const response = await api.post('/auth/reissue', { refreshToken });
+    const response = await api.post('/auth/reissue', {
+      refreshToken,
+    });
     if (response.data.code === 200) {
       const { accessToken, newRefreshToken } = response.data.data;
       localStorage.setItem('accessToken', accessToken);
@@ -73,8 +75,7 @@ api.interceptors.response.use(
         console.error('refreshToken 갱신 실패', refreshError);
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.href = '/';
-        alert('로그인이 만료되었습니다');
+        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }

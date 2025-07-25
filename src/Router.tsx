@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Home, Login, Search, Save, Example, SearchResult, Edit } from '@/pages';
+import { Home, Login, Search, Save, Example, SearchResult, Edit, KakaoCallBack } from '@/pages';
 import App from '@/App';
 
 const router = createBrowserRouter([
@@ -26,11 +26,6 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: 'login',
-        element: <Login />,
-      },
-
-      {
         path: 'search-result',
         element: <SearchResult />,
         children: [
@@ -49,6 +44,14 @@ const router = createBrowserRouter([
         element: <Example />,
       },
     ],
+  },
+  {
+    path: '/login/',
+    element: <Login />,
+  },
+  {
+    path: '/auth/login/kakao',
+    element: <KakaoCallBack />,
   },
 ]);
 

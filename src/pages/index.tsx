@@ -5,5 +5,6 @@ import Search from './Search';
 import Example from './Example';
 import SearchResult from './SearchResult';
 import Edit from './Edit';
+import KakaoCallBack from './KakaoCallBack';
 
-export { Home, Login, Save, Search, Example, SearchResult, Edit };
+export { Home, Login, Save, Search, Example, SearchResult, Edit, KakaoCallBack };

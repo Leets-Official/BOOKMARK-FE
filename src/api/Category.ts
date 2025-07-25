@@ -1,9 +1,9 @@
 import api from './api';
 import axios from 'axios';
 
-export const postCategory = async () => {
+export const postCategory = async (categoryName: string) => {
   try {
-    const response = await api.post('/api/v1/categories');
+    const response = await api.post('/categories', { categoryName });
     return { success: true, data: response.data };
   } catch (error) {
     console.error(error);
@@ -22,7 +22,7 @@ export const postCategory = async () => {
 
 export const fetchCategories = async () => {
   try {
-    const response = await api.get('/api/v1/categories');
+    const response = await api.get('/categories');
     return { success: true, data: response.data.data };
   } catch (error) {
     console.error(error);
