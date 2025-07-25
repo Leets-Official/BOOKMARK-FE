@@ -13,8 +13,8 @@ import {
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { dummyCardData } from '@/contants/DummyData';
 import clsx from 'clsx';
-import { useMutation } from '@tanstack/react-query';
-import { postCategory } from '@/api/Category';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createCategory } from '@/api/Category';
 
 type ModalType = 'category' | 'tag';
 
@@ -142,26 +142,37 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     setIsDisabled(true);
   };
 
+  const queryClient = useQueryClient();
+
   const categoryMutation = useMutation({
-    mutationFn: (categoryName: string) => postCategory(categoryName),
-    onSuccess: (data) => {
-      console.log('카테고리 생성 성공:', data);
-      const newCategory = content;
+    mutationFn: async (categoryName: string) => {
+      const res = await createCategory(categoryName);
+      console.log('🧾 응답 확인:', res);
+
+      const newCategory = res.data?.name ?? categoryName;
+
       const template = dummyCardData[0];
       dummyCardData.push({
         ...template,
         category: newCategory,
         tags: [],
       });
+
       setSelectedCategory(newCategory);
       setVisibleTag(true);
+
+      return res;
     },
-    onError: (error: Error) => {
-      alert(error.message);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['postCategory'] });
+    },
+    onError: () => {
+      console.log('카테고리 생성 실패');
     },
   });
 
   const handleAddCategory = () => {
+    console.log('📥 현재 입력된 카테고리:', content);
     categoryMutation.mutate(content);
   };
 
