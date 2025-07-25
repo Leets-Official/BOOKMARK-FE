@@ -32,6 +32,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
 
   const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
+    mode: 'onChange',
     defaultValues: {
       category: '',
     },

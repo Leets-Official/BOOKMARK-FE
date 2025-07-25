@@ -55,7 +55,7 @@ const Modal = ({
         </div>
         {/* 자식 컴포넌트 넣는 곳 */}
         <div className='flex flex-col px-4 pt-4 pb-6'>{children}</div>
-        <Button onClick={onConfirm} className={ButtonContainer({ disabled })}>
+        <Button onClick={onConfirm} className={ButtonContainer({ disabled })} disabled={disabled}>
           {confirmLabel}
         </Button>
       </div>
