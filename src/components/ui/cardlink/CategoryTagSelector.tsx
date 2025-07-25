@@ -11,11 +11,10 @@ import {
   visibleTagAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { dummyCardData } from '@/contants/DummyData';
 import clsx from 'clsx';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { createCategory, getCategories } from '@/api/Category';
-import { createTag } from '@/api/Tag';
+import { createTag, getTags } from '@/api/Tag';
 
 type ModalType = 'category' | 'tag';
 
@@ -49,8 +48,8 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
 
   const {
     data: categoriesData,
-    isLoading,
-    isError,
+    isLoading: isCateLoading,
+    isError: isCateError,
   } = useQuery<ICategory[]>({
     queryKey: ['categories'],
     queryFn: async () => {
@@ -60,7 +59,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
   });
 
   const allCategories = useMemo(() => {
-    if (!categoriesData || isError) return [];
+    if (!categoriesData || isCateError) return [];
 
     const sortedCate = [...categoriesData].sort(
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
@@ -71,24 +70,39 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
       content: category.categoryName,
       isSelected: category.categoryName === selectedCategory,
     }));
-  }, [categoriesData, isError, selectedCategory]);
+  }, [categoriesData, isCateError, selectedCategory]);
 
   const handleCategory = (categoryName: string) => {
     setSelectedCategory(categoryName);
     setVisibleTag(true);
   };
 
+  const selectedCategoryData = useMemo(() => {
+    return categoriesData?.find((c) => c.categoryName === selectedCategory);
+  }, [categoriesData, selectedCategory]);
+
+  const {
+    data: tagsData,
+    isLoading: isTagsLoading,
+    isError: isTagsError,
+  } = useQuery({
+    queryKey: ['tags', selectedCategoryData?.id],
+    queryFn: async () => {
+      if (selectedCategoryData?.id == null) return [];
+      const res = await getTags(selectedCategoryData.id);
+      return res.data ?? [];
+    },
+    enabled: !!selectedCategoryData?.id, // id 있을 때만 실행
+  });
+
   // 카테고리별 태그와 suggestionList를 통합하여 관리 (suggestion 태그를 앞에 배치)
   const allTags = useMemo(() => {
-    const matchedItems = dummyCardData.filter((item) => item.category === selectedCategory);
-    const categoryTags = matchedItems.flatMap((item) => item.tags);
-
-    // suggestionList의 태그들을 먼저 추가
     const suggestionTags = suggestionList.map((s) => s.content);
+    const fetchedTags = tagsData?.map((tag: any) => tag.tagName) ?? [];
 
-    // 중복 제거 (suggestion 태그가 우선)
-    const allTagsArray = [...suggestionTags, ...categoryTags];
-    const uniqueTags = Array.from(new Set(allTagsArray));
+    // suggestion이 우선순위
+    const combinedTags = [...suggestionTags, ...fetchedTags];
+    const uniqueTags = Array.from(new Set(combinedTags));
 
     return uniqueTags.map((tag) => {
       const suggestionItem = suggestionList.find((s) => s.content === tag);
@@ -100,7 +114,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
         suggestionId: suggestionItem?.id,
       };
     });
-  }, [selectedCategory, selectedTag, suggestionList]);
+  }, [tagsData, selectedTag, suggestionList]);
 
   const handleTags = (tagId: string, isSuggestion?: boolean, suggestionId?: number) => {
     // suggestionList에서 온 태그인 경우 해당 아이템의 선택 상태도 업데이트
@@ -199,7 +213,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
       return res;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] }); // 또는 필요한 key
+      queryClient.invalidateQueries({ queryKey: ['tags'] });
     },
     onError: () => {
       console.log('태그 생성 실패');
@@ -224,7 +238,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
   const statusWrapperClass =
     'bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center';
 
-  if (isLoading) {
+  if (isCateLoading || isTagsLoading) {
     return (
       <div className={statusWrapperClass}>
         <div className='w-6 h-6 border-4 border-gray-400 border-t-gray-200 rounded-full animate-spin' />
@@ -232,7 +246,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     );
   }
 
-  if (isError) {
+  if (isCateError || isTagsError) {
     return <div className={statusWrapperClass + 'text-gray-500'}>정보를 불러오지 못했습니다.</div>;
   }
 
