@@ -15,6 +15,7 @@ import { dummyCardData } from '@/contants/DummyData';
 import clsx from 'clsx';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { createCategory, getCategories } from '@/api/Category';
+import { createTag } from '@/api/Tag';
 
 type ModalType = 'category' | 'tag';
 
@@ -24,7 +25,7 @@ interface ICateTagProps {
   editTag?: string[];
 }
 
-interface Category {
+interface ICategory {
   id: number;
   categoryName: string;
   createdAt: string;
@@ -50,22 +51,22 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     data: categoriesData,
     isLoading,
     isError,
-  } = useQuery<Category[]>({
+  } = useQuery<ICategory[]>({
     queryKey: ['categories'],
     queryFn: async () => {
       const res = await getCategories();
-      return res.data ?? []; // <- data.data 형태에 맞게 처리
+      return res.data ?? [];
     },
   });
 
   const allCategories = useMemo(() => {
     if (!categoriesData || isError) return [];
 
-    const sorted = [...categoriesData].sort(
+    const sortedCate = [...categoriesData].sort(
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
 
-    return sorted.map((category) => ({
+    return sortedCate.map((category) => ({
       id: category.id,
       content: category.categoryName,
       isSelected: category.categoryName === selectedCategory,
@@ -174,17 +175,8 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
       console.log('🧾 응답 확인:', res);
 
       const newCategory = res.data?.name ?? categoryName;
-
-      const template = dummyCardData[0];
-      dummyCardData.push({
-        ...template,
-        category: newCategory,
-        tags: [],
-      });
-
       setSelectedCategory(newCategory);
       setVisibleTag(true);
-
       return res;
     },
     onSuccess: () => {
@@ -200,24 +192,49 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     categoryMutation.mutate(content);
   };
 
+  const tagMutation = useMutation({
+    mutationFn: async ({ categoryId, tagName }: { categoryId: number; tagName: string }) => {
+      const res = await createTag(categoryId, tagName);
+      console.log('🧾 태그 생성 응답:', res);
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] }); // 또는 필요한 key
+    },
+    onError: () => {
+      console.log('태그 생성 실패');
+    },
+  });
+
   const handleAddTag = () => {
-    const newTag = content;
-    const index = dummyCardData.findIndex((item) => item.category === selectedCategory);
-    if (index !== -1) {
-      dummyCardData[index].tags = [...(dummyCardData[index].tags || []), newTag];
-      setSelectedTag((prev) => [...prev, newTag]);
-    }
+    if (!categoriesData) return;
+
+    const selectedCategoryData = categoriesData.find((c) => c.categoryName === selectedCategory);
+    if (!selectedCategoryData) return;
+
+    tagMutation.mutate({
+      categoryId: selectedCategoryData.id,
+      tagName: content,
+    });
+
+    setSelectedTag((prev) => [...prev, content]);
     setVisibleMemoAndAlarm(true);
   };
 
-  const renderStatus = (message: string) => (
-    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center text-gray-500'>
-      {message}
-    </div>
-  );
+  const statusWrapperClass =
+    'bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center';
 
-  if (isLoading) return renderStatus('카테고리를 불러오는 중...');
-  if (isError) return renderStatus('카테고리 정보를 불러오지 못했습니다.');
+  if (isLoading) {
+    return (
+      <div className={statusWrapperClass}>
+        <div className='w-6 h-6 border-4 border-gray-400 border-t-gray-200 rounded-full animate-spin' />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return <div className={statusWrapperClass + 'text-gray-500'}>정보를 불러오지 못했습니다.</div>;
+  }
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
