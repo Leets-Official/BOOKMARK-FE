@@ -1,8 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Chip, Modal } from '@/components/common';
+import { Chip } from '@/components/common';
 import { AddIcon } from '@/assets';
 import { useEffect, useMemo, useState } from 'react';
-import TextField from '@/components/ui/TextField';
 import {
   isSaveButtonDisabledAtom,
   suggestionListAtom,
@@ -11,98 +10,72 @@ import {
   visibleTagAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { dummyCardData } from '@/contants/DummyData';
 import clsx from 'clsx';
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { createCategory, getCategories } from '@/api/Category';
-import { createTag, getTags } from '@/api/Tag';
+import AddModal from '@/components/ui/modal/AddModal';
+import type { saveSchema } from '@/schema/save';
+import type { FieldErrors, UseFormSetValue } from 'react-hook-form';
+import type z from 'zod';
 
 type ModalType = 'category' | 'tag';
 
 interface ICateTagProps {
-  isOpen?: boolean;
   editCate?: string;
   editTag?: string[];
+  setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
+  error: FieldErrors<z.infer<typeof saveSchema>>;
 }
 
-interface ICategory {
-  id: number;
-  categoryName: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
+const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagProps) => {
   const visibleCategory = useAtomValue(visibleCategoryAtom);
   const [visibleTag, setVisibleTag] = useAtom(visibleTagAtom);
-  const openCate = isOpen ?? visibleCategory;
-  const openTag = isOpen ?? visibleTag;
+  const openCate = visibleCategory;
+  const openTag = visibleTag;
 
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom); // 메모, 알림
   const setIsSaveButtonDisabled = useSetAtom(isSaveButtonDisabledAtom); // 저장하기 버튼
 
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
 
-  const [content, setContent] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(editCate ?? '');
-  const [selectedTag, setSelectedTag] = useState<string[]>(editTag ?? []);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedTag, setSelectedTag] = useState<string[]>([]);
 
-  const {
-    data: categoriesData,
-    isLoading: isCateLoading,
-    isError: isCateError,
-  } = useQuery<ICategory[]>({
-    queryKey: ['categories'],
-    queryFn: async () => {
-      const res = await getCategories();
-      return res.data ?? [];
-    },
-  });
+  // 수정 모드일 때 초기값 설정
+  useEffect(() => {
+    if (editCate) {
+      setSelectedCategory(editCate);
+      setVisibleTag(true);
+    }
+    if (editTag) {
+      setSelectedTag(editTag);
+    }
+  }, [editCate, editTag, setVisibleTag]);
 
   const allCategories = useMemo(() => {
-    if (!categoriesData || isCateError) return [];
-
-    const sortedCate = [...categoriesData].sort(
-      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-    );
-
-    return sortedCate.map((category) => ({
-      id: category.id,
-      content: category.categoryName,
-      isSelected: category.categoryName === selectedCategory,
+    const categories = [...new Set(dummyCardData.map((item) => item.category))];
+    return categories.map((category) => ({
+      id: category,
+      content: category,
+      isSelected: category === selectedCategory,
     }));
-  }, [categoriesData, isCateError, selectedCategory]);
+  }, [selectedCategory]);
 
-  const handleCategory = (categoryName: string) => {
-    setSelectedCategory(categoryName);
+  const handleCategory = (categoryId: string) => {
+    setSelectedCategory(categoryId);
     setVisibleTag(true);
   };
 
-  const selectedCategoryData = useMemo(() => {
-    return categoriesData?.find((c) => c.categoryName === selectedCategory);
-  }, [categoriesData, selectedCategory]);
-
-  const {
-    data: tagsData,
-    isLoading: isTagsLoading,
-    isError: isTagsError,
-  } = useQuery({
-    queryKey: ['tags', selectedCategoryData?.id],
-    queryFn: async () => {
-      if (selectedCategoryData?.id == null) return [];
-      const res = await getTags(selectedCategoryData.id);
-      return res.data ?? [];
-    },
-    enabled: !!selectedCategoryData?.id, // id 있을 때만 실행
-  });
-
   // 카테고리별 태그와 suggestionList를 통합하여 관리 (suggestion 태그를 앞에 배치)
   const allTags = useMemo(() => {
-    const suggestionTags = suggestionList.map((s) => s.content);
-    const fetchedTags = tagsData?.map((tag: any) => tag.tagName) ?? [];
+    const matchedItems = dummyCardData.filter((item) => item.category === selectedCategory);
+    const categoryTags = matchedItems.flatMap((item) => item.tags);
 
-    // suggestion이 우선순위
-    const combinedTags = [...suggestionTags, ...fetchedTags];
-    const uniqueTags = Array.from(new Set(combinedTags));
+    // suggestionList의 태그들을 먼저 추가
+    const suggestionTags = suggestionList.map((s) => s.content);
+
+    // 중복 제거 (suggestion 태그가 우선)
+    const allTagsArray = [...suggestionTags, ...categoryTags];
+    const uniqueTags = Array.from(new Set(allTagsArray));
 
     return uniqueTags.map((tag) => {
       const suggestionItem = suggestionList.find((s) => s.content === tag);
@@ -114,7 +87,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
         suggestionId: suggestionItem?.id,
       };
     });
-  }, [tagsData, selectedTag, suggestionList]);
+  }, [selectedCategory, selectedTag, suggestionList]);
 
   const handleTags = (tagId: string, isSuggestion?: boolean, suggestionId?: number) => {
     // suggestionList에서 온 태그인 경우 해당 아이템의 선택 상태도 업데이트
@@ -152,6 +125,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
       }
     }
   }, [openCate, openTag, editCate, editTag, setSuggestionList, suggestionList]);
+
   useEffect(() => {
     if (editCate || editTag) {
       setSuggestionList([]); // 수정 모드에서는 suggestion 초기화
@@ -160,7 +134,6 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
 
   const [modalType, setModalType] = useState<ModalType>('category');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(true);
   const isCategoryType = modalType === 'category';
 
   const handleOpenModal = (type: ModalType) => {
@@ -168,93 +141,19 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
     setIsModalOpen(true);
   };
 
-  const handleConfirmModal = () => {
-    if (!content.trim()) return;
-
-    if (isCategoryType) {
-      handleAddCategory();
-    } else {
-      handleAddTag();
-    }
-    setIsModalOpen(false);
-    setContent('');
-    setIsDisabled(true);
-  };
-
-  const queryClient = useQueryClient();
-
-  const categoryMutation = useMutation({
-    mutationFn: async (categoryName: string) => {
-      const res = await createCategory(categoryName);
-      console.log('🧾 응답 확인:', res);
-
-      const newCategory = res.data?.name ?? categoryName;
-      setSelectedCategory(newCategory);
-      setVisibleTag(true);
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-    },
-    onError: () => {
-      console.log('카테고리 생성 실패');
-    },
-  });
-
-  const handleAddCategory = () => {
-    console.log('📥 현재 입력된 카테고리:', content);
-    categoryMutation.mutate(content);
-  };
-
-  const tagMutation = useMutation({
-    mutationFn: async ({ categoryId, tagName }: { categoryId: number; tagName: string }) => {
-      const res = await createTag(categoryId, tagName);
-      console.log('🧾 태그 생성 응답:', res);
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tags'] });
-    },
-    onError: () => {
-      console.log('태그 생성 실패');
-    },
-  });
-
-  const handleAddTag = () => {
-    if (!categoriesData) return;
-
-    const selectedCategoryData = categoriesData.find((c) => c.categoryName === selectedCategory);
-    if (!selectedCategoryData) return;
-
-    tagMutation.mutate({
-      categoryId: selectedCategoryData.id,
-      tagName: content,
-    });
-
-    setSelectedTag((prev) => [...prev, content]);
-    setVisibleMemoAndAlarm(true);
-  };
-
-  const statusWrapperClass =
-    'bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center';
-
-  if (isCateLoading || isTagsLoading) {
-    return (
-      <div className={statusWrapperClass}>
-        <div className='w-6 h-6 border-4 border-gray-400 border-t-gray-200 rounded-full animate-spin' />
-      </div>
-    );
-  }
-
-  if (isCateError || isTagsError) {
-    return <div className={statusWrapperClass + 'text-gray-500'}>정보를 불러오지 못했습니다.</div>;
-  }
+  useEffect(() => {
+    setValue('category', selectedCategory);
+    setValue('tags', selectedTag);
+  }, [selectedCategory, selectedTag, setValue]);
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
-      <p className='text-sm text-stone font-semibold'>
-        카테고리<span className='text-[#FF2C3D]'>*</span>
-      </p>
+      <div className='flex flex-col gap-1'>
+        <p className='text-sm text-stone font-semibold'>
+          카테고리<span className='text-[#FF2C3D]'>*</span>
+        </p>
+        {error.category && <p className='text-xs text-redText'>{error.category?.message}</p>}
+      </div>
       <AnimatePresence mode='wait'>
         {openCate && (
           <motion.div
@@ -273,7 +172,7 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
                   isSelected={category.isSelected}
                   className='border-lightGrayBlue'
                   selectedClassName='border border-lightGreen bg-lightGreen text-white'
-                  onClick={() => handleCategory(category.content)}
+                  onClick={() => handleCategory(category.id)}
                 />
               ))}
               <Chip
@@ -288,9 +187,12 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
         )}
       </AnimatePresence>
       <hr className='border-t-2 border-lightGrayBlue my-1' />
-      <p className='text-sm text-stone font-semibold'>
-        태그<span className='text-[#FF2C3D]'>*</span>
-      </p>
+      <div className='flex flex-col gap-1'>
+        <p className='text-sm text-stone font-semibold'>
+          태그<span className='text-[#FF2C3D]'>*</span>
+        </p>
+        {error.tags && <p className='text-xs text-redText'>{error.tags?.message}</p>}
+      </div>
       <AnimatePresence mode='wait'>
         {openTag && (
           <motion.div
@@ -324,30 +226,16 @@ const CategoryTagSelector = ({ isOpen, editCate, editTag }: ICateTagProps) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/** 카테고리, 태그 추가 모달 */}
       {isModalOpen && (
-        <Modal
-          title={isCategoryType ? '카테고리 추가' : '태그 추가'}
-          confirmLabel='저장하기'
-          onCancel={() => {
-            setIsModalOpen(false);
-            setContent('');
-            setIsDisabled(true);
-          }}
-          onConfirm={() => {
-            handleConfirmModal();
-          }}
-          disabled={isDisabled}
-        >
-          <TextField
-            label=''
-            placeholder={
-              isCategoryType ? '추가할 카테고리를 입력해주세요' : '추가할 태그을 입력해주세요'
-            }
-            maxLength={10}
-            onChange={(content) => setContent(content)}
-            setDisabled={(disabled) => setIsDisabled(disabled)}
-          />
-        </Modal>
+        <AddModal
+          setIsOpen={setIsModalOpen}
+          isCategoryType={isCategoryType}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          setSelectedTag={setSelectedTag}
+        />
       )}
     </div>
   );

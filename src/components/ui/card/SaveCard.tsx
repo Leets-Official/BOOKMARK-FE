@@ -83,7 +83,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
           <Button
             onClick={() => {
               isClose();
-              navigate('edit', { state: { editData: data } });
+              navigate(`edit/${data.id}`);
             }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15 cursor-pointer'
           >
