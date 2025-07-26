@@ -29,7 +29,7 @@ export const getCategoriesWithTag = async () => {
   }
 };
 
-export const patchCategory = async (
+export const updateCategory = async (
   categoryId: number,
   categoryName: string,
 ): Promise<ApiResponse<string>> => {
@@ -37,5 +37,12 @@ export const patchCategory = async (
     method: 'PATCH',
     url: `/categories/${categoryId}`,
     data: { categoryName },
+  });
+};
+
+export const deleteCategory = async (categoryId: number): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'DELETE',
+    url: `/categories/${categoryId}`,
   });
 };

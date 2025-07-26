@@ -15,7 +15,7 @@ import { Controller, useForm } from 'react-hook-form';
 import type { CategoryProps } from '@/types/api/category';
 import { getBookmarks } from '@/api/bookmark/bookmark';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { patchCategory } from '@/api/category/category';
+import { deleteCategory, updateCategory } from '@/api/category/category';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
@@ -42,8 +42,8 @@ const FolderCard = (category: CategoryProps) => {
     queryFn: () => getBookmarks(category.id),
   });
 
-  const { mutate: updateCategory } = useMutation({
-    mutationFn: (categoryName: string) => patchCategory(category.id, categoryName),
+  const { mutate: updateCategoryMutation } = useMutation({
+    mutationFn: (categoryName: string) => updateCategory(category.id, categoryName),
     onMutate: async (newCategoryName) => {
       // 진행 중인 쿼리 취소
       await queryClient.cancelQueries({ queryKey: ['categories'] });
@@ -61,13 +61,41 @@ const FolderCard = (category: CategoryProps) => {
 
       return { previousCategories };
     },
-    onError: (err, _, context) => {
-      // 실패 시 이전 데이터로 롤백
-      queryClient.setQueryData(['categories'], context?.previousCategories);
-      console.error('카테고리 수정 실패:', err);
+    onSettled: (data, error, _, context) => {
+      if (data?.error || error) {
+        const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
+        console.log('카테고리 수정 실패:', errorMessage);
+        queryClient.setQueryData(['categories'], context?.previousCategories);
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
-    onSettled: () => {
-      // 성공/실패 관계없이 서버와 동기화
+  });
+
+  const { mutate: deleteCategoryMutation } = useMutation({
+    mutationFn: (categoryId: number) => deleteCategory(categoryId),
+    onMutate: async (categoryId) => {
+      // 진행 중인 쿼리 취소
+      await queryClient.cancelQueries({ queryKey: ['categories'] });
+
+      // 이전 데이터 백업
+      const previousCategories = queryClient.getQueryData(['categories']);
+
+      // 즉시 UI 업데이트 (낙관적 업데이트)
+      queryClient.setQueryData(['categories'], (old: any) => ({
+        ...old,
+        data: old.data.filter((cat: CategoryProps) => cat.id !== categoryId),
+      }));
+
+      return { previousCategories };
+    },
+    onSettled: (data, error, _, context) => {
+      if (data?.error || error) {
+        const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
+        console.log('카테고리 삭제 실패:', errorMessage);
+        queryClient.setQueryData(['categories'], context?.previousCategories);
+      }
+
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
@@ -81,7 +109,7 @@ const FolderCard = (category: CategoryProps) => {
 
   const handleConfirmModal = (data: z.infer<typeof schema>) => {
     if (!data.category.trim()) return;
-    updateCategory(data.category);
+    updateCategoryMutation(data.category);
     setIsModalOpen(false);
     reset();
     setIsDisabled(true);
@@ -238,7 +266,7 @@ const FolderCard = (category: CategoryProps) => {
         subText={`카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?`}
         onDelete={() => {
           setIsDeleteModalOpen(false);
-          console.log('삭제:', category);
+          deleteCategoryMutation(category.id);
         }}
       />
     </>
