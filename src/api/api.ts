@@ -1,3 +1,4 @@
+import type { ReissueRefreshTokenResponse } from '@/types/api/auth';
 import type { ApiResponse } from '@/types/common/api-response';
 import axios, { type AxiosRequestConfig } from 'axios';
 
@@ -17,23 +18,23 @@ const getRefreshToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
   if (!refreshToken) throw new Error('refreshToken not found');
 
-  try {
-    const response = await api.post('/auth/reissue', {
+  const response = await apiRequest<ReissueRefreshTokenResponse>({
+    method: 'POST',
+    url: '/auth/reissue',
+    data: {
       refreshToken: refreshToken,
-    });
-    if (response.data.code === 200) {
-      const { accessToken, newRefreshToken } = response.data.data;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', newRefreshToken);
+    },
+  });
 
-      return { accessToken, refreshToken: newRefreshToken };
-    } else {
-      throw new Error('refreshToken 갱신 실패');
-    }
-  } catch (error) {
-    console.error('refreshToken 요청 실패', error);
-    throw error;
+  if (response.error) {
+    throw new Error(response.message || 'refreshToken 갱신 실패');
   }
+
+  const { accessToken, refreshToken: newRefreshToken } = response.data;
+  localStorage.setItem('accessToken', accessToken);
+  localStorage.setItem('refreshToken', newRefreshToken);
+
+  return { accessToken, refreshToken: newRefreshToken };
 };
 
 // request interceptor

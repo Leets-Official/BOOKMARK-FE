@@ -4,3 +4,8 @@ export interface KakaoLoginResponse {
   jwtAccessToken: string;
   jwtRefreshToken: string;
 }
+
+export interface ReissueRefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
+}
