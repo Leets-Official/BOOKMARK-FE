@@ -78,9 +78,12 @@ const Save = ({ type }: SaveInterfaceProps) => {
     time: '',
   });
 
-  const onPrev = () => {
+  useEffect(() => {
     resetLink('');
     resetCard(false);
+  }, [resetLink, resetCard]);
+
+  const onPrev = () => {
     resetVisibleCate(false);
     resetVisibleTag(false);
     resetMemo('');

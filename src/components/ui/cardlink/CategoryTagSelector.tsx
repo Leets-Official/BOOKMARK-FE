@@ -8,6 +8,7 @@ import {
   visibleCategoryAtom,
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
+  isSuggestionLoadingAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { dummyCardData } from '@/contants/DummyData';
@@ -36,6 +37,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const setIsSaveButtonDisabled = useSetAtom(isSaveButtonDisabledAtom); // 저장하기 버튼
 
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
+  const isSuggestionLoading = useAtomValue(isSuggestionLoadingAtom); // 아직 제안 태그 못가져 왔으면 로딩상태
 
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTag, setSelectedTag] = useState<string[]>([]);
@@ -101,6 +103,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     setSelectedTag((prev) => {
       const alreadySelected = prev.includes(tagId);
       const updatedTag = alreadySelected ? prev.filter((tag) => tag !== tagId) : [...prev, tagId];
+      setValue('tags', updatedTag, { shouldValidate: true });
       return updatedTag;
     });
   };
@@ -192,6 +195,9 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
           태그<span className='text-[#FF2C3D]'>*</span>
         </p>
         {error.tags && <p className='text-xs text-redText'>{error.tags?.message}</p>}
+        {isSuggestionLoading && suggestionList.length === 0 && (
+          <p className='text-base text-gray-400'>추천 태그 가져오는 중...</p>
+        )}
       </div>
       <AnimatePresence mode='wait'>
         {openTag && (

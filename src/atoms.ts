@@ -27,6 +27,7 @@ const selectedCategoriesAtom = atom<string[]>([]);
 const selectedTagsAtom = atom<string[]>([]);
 const selectedPlatformsAtom = atom<string[]>([]);
 const previewImageAtom = atom<string | undefined>(undefined);
+const isSuggestionLoadingAtom = atom(false);
 
 export {
   linkAtom,
@@ -48,4 +49,5 @@ export {
   selectedTagsAtom,
   selectedPlatformsAtom,
   previewImageAtom,
+  isSuggestionLoadingAtom,
 };
