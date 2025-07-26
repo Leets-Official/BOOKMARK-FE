@@ -1,9 +1,10 @@
 import api from '@/api/api';
+import type { SearchHistoryProps } from '@/types';
 
 const getSearchHistory = async () => {
   try {
     const response = await api.get('/search-histories');
-    return response.data.data;
+    return response.data.data as SearchHistoryProps[];
   } catch (error: any) {
     return {
       error: true,

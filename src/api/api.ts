@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosRequestConfig } from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -81,5 +81,24 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+// api Helper
+export async function apiRequest<T>(
+  config: AxiosRequestConfig,
+): Promise<{ data: T; error: false } | { data: null; error: true; message: string }> {
+  try {
+    const response = await api(config);
+    return { data: response.data.data, error: false };
+  } catch (error: any) {
+    if (error.response && error.response.status < 500) {
+      return {
+        data: null,
+        error: true,
+        message: error.response.data?.message || '요청에 실패했습니다.',
+      };
+    }
+    throw error;
+  }
+}
 
 export default api;
