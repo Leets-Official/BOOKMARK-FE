@@ -40,7 +40,9 @@ const Search = () => {
   const [tags, setTags] = useState<{ id: number; content: string }[]>([]);
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
-  useScrollLock(!isMobile);
+
+  // 스크롤 제한
+  useScrollLock(true);
 
   useEffect(() => {
     const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(

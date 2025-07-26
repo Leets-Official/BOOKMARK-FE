@@ -18,7 +18,7 @@ const getRefreshToken = async () => {
 
   try {
     const response = await api.post('/auth/reissue', {
-      refreshToken,
+      refreshToken: refreshToken,
     });
     if (response.data.code === 200) {
       const { accessToken, newRefreshToken } = response.data.data;
@@ -52,24 +52,23 @@ api.interceptors.request.use(
 
 // response interceptor
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   async (error) => {
-    const { request } = error.config;
+    console.log('error', error);
+    const request = error.config;
+    if (!request) return Promise.reject(error);
 
-    // login request error
-    if (request.url?.includes('/auth/login')) {
+    // 토큰 갱신 요청은 무한 반복 방지
+    if (request.url?.includes('/auth/reissue')) {
       return Promise.reject(error);
     }
 
-    if (error.response.status === 401 && !request._retry) {
+    if (error.response && error.response.status === 401 && !request._retry) {
       request._retry = true;
-
       try {
+        console.log('refreshToken 갱신');
         const { accessToken } = await getRefreshToken();
         request.headers.Authorization = `Bearer ${accessToken}`;
-
         return api(request);
       } catch (refreshError) {
         console.error('refreshToken 갱신 실패', refreshError);
