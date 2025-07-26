@@ -3,7 +3,12 @@ import { Input, Button, Chip } from '@/components/common';
 import React, { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
-import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
+import {
+  selectedCategoriesAtom,
+  selectedTagsAtom,
+  selectedPlatformsAtom,
+  searchContentsAtom,
+} from '@/atoms';
 import { useNavigate } from 'react-router-dom';
 import { deleteSearchHistory, getSearchHistory } from '@/api/searchHistory/searchHistory';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -38,20 +43,14 @@ const AnimatedHeight: React.FC<AnimatedHeightProps> = ({ show, children }) => {
   );
 };
 
-interface FilterSearchBarProps {
-  searchContents: string;
-  // eslint-disable-next-line no-unused-vars
-  setSearchContents: (value: string) => void;
-}
-
-const FilterSearchBar: React.FC<FilterSearchBarProps> = ({ searchContents, setSearchContents }) => {
+const FilterSearchBar: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false);
   const historyRef = useRef<HTMLDivElement>(null);
 
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
-
+  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
 

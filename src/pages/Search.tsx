@@ -7,7 +7,12 @@ import { Chip, Button } from '@/components/common';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import { useNavigate } from 'react-router-dom';
-import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
+import {
+  selectedCategoriesAtom,
+  selectedTagsAtom,
+  selectedPlatformsAtom,
+  searchContentsAtom,
+} from '@/atoms';
 import { dummyCardData } from '@/contants/DummyData';
 import { useScrollLock } from '@/hooks/ScrollLock';
 import { postSearchHistory } from '@/api/searchHistory/searchHistory';
@@ -34,7 +39,7 @@ const modalStyle = tv({
 });
 
 const Search = () => {
-  const [searchContents, setSearchContents] = useState('');
+  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
@@ -115,7 +120,7 @@ const Search = () => {
   return (
     <div className={overlayStyle({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
       <div className={modalStyle({ isMobile })} onClick={(e) => e.stopPropagation()}>
-        <FilterSearchBar searchContents={searchContents} setSearchContents={setSearchContents} />
+        <FilterSearchBar />
 
         {/* 스크롤 가능한 컨텐츠 영역 */}
         <div className='flex-1 overflow-y-auto p-3 pb-4 hide-scrollbar'>
