@@ -13,7 +13,7 @@ import {
   visibleTagAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { useScrollLock } from '@/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/scrollLock';
 import { saveSchema } from '@/schema/save';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type z from 'zod';

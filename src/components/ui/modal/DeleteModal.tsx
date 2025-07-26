@@ -1,7 +1,7 @@
 import { WarningIcon } from '@/assets';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useScrollLock } from '@/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/scrollLock';
 
 interface DeleteModalProps {
   isOpen: boolean;

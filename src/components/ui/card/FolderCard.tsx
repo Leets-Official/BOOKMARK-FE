@@ -3,7 +3,7 @@ import { Image, Button } from '@/components/common';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import { MenuPortal, ModalPortal } from '@/utils';
-import { useMenuHandler } from '@/hooks/MenuPosition';
+import { useMenuHandler } from '@/hooks/menuPosition';
 import { useState } from 'react';
 import DeleteModal from '../modal/DeleteModal';
 import TextField from '../TextField';

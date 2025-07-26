@@ -16,7 +16,7 @@ import AddModal from '@/components/ui/modal/AddModal';
 import type { saveSchema } from '@/schema/save';
 import type { FieldErrors, UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
-import { getCategoriesWithTag } from '@/api/Category/Category';
+import { getCategoriesWithTag } from '@/api/Category/category';
 import { useQuery } from '@tanstack/react-query';
 
 type ModalType = 'category' | 'tag';

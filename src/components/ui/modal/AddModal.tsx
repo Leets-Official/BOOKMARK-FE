@@ -8,8 +8,8 @@ import React, { useState } from 'react';
 import { visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
 import { useSetAtom } from 'jotai';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createCategory } from '@/api/Category/Category';
-import { createTag } from '@/api/Category/Tag';
+import { createCategory } from '@/api/Category/category';
+import { createTag } from '@/api/Tag/tag';
 
 interface ITag {
   tagId: number;

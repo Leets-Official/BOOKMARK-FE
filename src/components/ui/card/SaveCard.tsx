@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect';
 import type { SaveCardProps } from '@/types';
 import { motion } from 'framer-motion';
 import { MenuPortal } from '@/utils/';
-import { useMenuHandler } from '@/hooks/MenuPosition';
+import { useMenuHandler } from '@/hooks/menuPosition';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../modal/DeleteModal';
 import { useState } from 'react';
