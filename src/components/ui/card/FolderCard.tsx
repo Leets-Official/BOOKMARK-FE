@@ -14,7 +14,7 @@ import type z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import type { CategoryProps } from '@/types/api/category';
 import { getBookmarks } from '@/api/bookmark/bookmark';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { patchCategory } from '@/api/category/category';
 
 // 제목 텍스트 스타일 (반응형)
@@ -28,7 +28,7 @@ const FolderCard = (category: CategoryProps) => {
   const [isDisabled, setIsDisabled] = useState(true);
 
   const schema = modalAddSchema('category');
-
+  const queryClient = useQueryClient();
   const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'onChange',
@@ -44,14 +44,31 @@ const FolderCard = (category: CategoryProps) => {
 
   const { mutate: updateCategory } = useMutation({
     mutationFn: (categoryName: string) => patchCategory(category.id, categoryName),
-    onSuccess: (res) => {
-      if (res.error) {
-        console.error('카테고리 수정 실패:', res.message);
-      }
-      console.log('카테고리 수정 성공:', res.data);
+    onMutate: async (newCategoryName) => {
+      // 진행 중인 쿼리 취소
+      await queryClient.cancelQueries({ queryKey: ['categories'] });
+
+      // 이전 데이터 백업
+      const previousCategories = queryClient.getQueryData(['categories']);
+
+      // 즉시 UI 업데이트 (낙관적 업데이트)
+      queryClient.setQueryData(['categories'], (old: any) => ({
+        ...old,
+        data: old.data.map((cat: CategoryProps) =>
+          cat.id === category.id ? { ...cat, categoryName: newCategoryName } : cat,
+        ),
+      }));
+
+      return { previousCategories };
     },
-    onError: (error) => {
-      console.error('카테고리 수정 실패:', error);
+    onError: (err, _, context) => {
+      // 실패 시 이전 데이터로 롤백
+      queryClient.setQueryData(['categories'], context?.previousCategories);
+      console.error('카테고리 수정 실패:', err);
+    },
+    onSettled: () => {
+      // 성공/실패 관계없이 서버와 동기화
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 
