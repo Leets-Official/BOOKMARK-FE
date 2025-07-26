@@ -9,8 +9,9 @@ import {
   deleteSearchHistory,
   getSearchHistory,
   postSearchHistory,
-} from '@/api/searchHistory/searchHistory_api';
+} from '@/api/searchHistory/searchHistory';
 import { useQuery } from '@tanstack/react-query';
+import type { SearchHistoryProps } from '@/types';
 
 interface AnimatedHeightProps {
   show: boolean;
@@ -53,7 +54,7 @@ const FilterSearchBar: React.FC = () => {
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
 
-  const { data: history, refetch } = useQuery({
+  const { data: history, refetch } = useQuery<SearchHistoryProps[]>({
     queryKey: ['searchHistory'],
     queryFn: () => {
       return getSearchHistory();
@@ -182,9 +183,9 @@ const FilterSearchBar: React.FC = () => {
       </div>
 
       {/* 최근 검색 기록 */}
-      {isFocused && history.length > 0 && (
+      {isFocused && history && history.length > 0 && (
         <div className='absolute top-full left-0 w-full px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue max-h-[128px] overflow-y-auto'>
-          {history.map(({ keyword, id }: { keyword: string; id: number }) => (
+          {history.map(({ keyword, id }: SearchHistoryProps) => (
             <div
               key={id}
               className='flex items-center justify-between gap-2 my-4 text-15 text-black'

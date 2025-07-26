@@ -16,18 +16,6 @@ export interface CompactCardProps {
   tags: string[];
 }
 
-export interface CategoryProps {
-  id: number;
-  categoryName: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ErrorProps {
-  error: boolean;
-  message: string;
-}
-
 export interface CategoryCardProps {
   id: number;
   title: string;
@@ -42,4 +30,23 @@ export interface SaveCardProps {
   image: string;
   memo: string;
   platform: string;
+}
+
+// api response
+export interface SearchHistoryProps {
+  id: number;
+  keyword: string;
+  searchedAt: string;
+}
+
+export interface CategoryProps {
+  id: number;
+  categoryName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ErrorProps {
+  error: boolean;
+  message: string;
 }
