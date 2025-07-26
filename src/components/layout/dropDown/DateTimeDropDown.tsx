@@ -59,7 +59,7 @@ const DateTimeDropDown = ({
         className='absolute top-full left-0 mt-2 bg-white rounded-[8px] flex flex-col gap-5 border border-areaBorder z-120 shadow-[0_2px_7px_rgba(2,34,94,0.1)] max-h-60 overflow-y-auto thin-scrollbar p-4'
       >
         <p className='text-sm text-areaBorder font-medium'>{subTitle}</p>
-        <div className='flex flex-col gap-5 text-gray'>
+        <div className='flex flex-col gap-5 text-gray text-stone'>
           {options.map((option) => (
             <DropDown.Item key={option.id} onClick={() => onItemClick(option.name)}>
               {option.name}

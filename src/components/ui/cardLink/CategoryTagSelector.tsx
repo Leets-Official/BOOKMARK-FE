@@ -16,8 +16,9 @@ import AddModal from '@/components/ui/modal/AddModal';
 import type { saveSchema } from '@/schema/save';
 import type { FieldErrors, UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
-import { getCategoriesWithTag } from '@/api/Category/category';
+import { getCategoriesWithTag } from '@/api/category/category';
 import { useQuery } from '@tanstack/react-query';
+import type { ICategoryWithTags } from '@/types/api/categoryAndTag';
 
 type ModalType = 'category' | 'tag';
 
@@ -26,18 +27,6 @@ interface ICateTagProps {
   editTag?: string[];
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
   error: FieldErrors<z.infer<typeof saveSchema>>;
-}
-
-interface ITag {
-  tagId: number;
-  tagName: string;
-}
-
-interface ICategoryWithTags {
-  categoryId: number;
-  categoryName: string;
-  createdAt: string;
-  tags: ITag[];
 }
 
 const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagProps) => {
@@ -74,8 +63,11 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   } = useQuery<ICategoryWithTags[]>({
     queryKey: ['categoriesWithTags'],
     queryFn: async () => {
-      const data = await getCategoriesWithTag();
-      return data ?? [];
+      const res = await getCategoriesWithTag();
+      if (res.error) {
+        throw new Error(res.message); // react-query가 에러로 처리함
+      }
+      return res.data;
     },
     gcTime: 5 * 60 * 1000, // 5분동안 캐시 유지
   });

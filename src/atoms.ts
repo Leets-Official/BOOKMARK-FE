@@ -5,7 +5,7 @@ import {
   dummyTagList,
   dummyTimeOptions,
 } from './contants/DummyData';
-import type { ChipProps } from './types';
+import type { ChipProps } from './types/components/components';
 
 // Save Page Atoms
 const linkAtom = atom('');

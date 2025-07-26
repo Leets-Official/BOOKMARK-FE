@@ -8,13 +8,9 @@ import React, { useState } from 'react';
 import { visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
 import { useSetAtom } from 'jotai';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createCategory } from '@/api/Category/category';
-import { createTag } from '@/api/Tag/tag';
-
-interface ITag {
-  tagId: number;
-  tagName: string;
-}
+import { createCategory } from '@/api/category/category';
+import { createTag } from '@/api/tag/tag';
+import type { ITag } from '@/types/api/categoryAndTag';
 
 interface AddModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,7 +38,8 @@ const AddModal = ({
   const categoryMutation = useMutation({
     mutationFn: async (categoryName: string) => {
       const res = await createCategory(categoryName);
-      return res;
+      if (res.error) throw new Error(res.message);
+      return res.data;
     },
     onSuccess: (categoryName) => {
       queryClient.refetchQueries({ queryKey: ['categoriesWithTags'] }); // 새로고침 하지 않아도 즉시 반영
