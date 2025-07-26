@@ -63,11 +63,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (
-      error.response &&
-      (error.response.status === 403 || error.response.status === 401) &&
-      !request._retry
-    ) {
+    if (error.response && error.response.status === 401 && !request._retry) {
       request._retry = true;
       try {
         console.log('refreshToken 갱신');

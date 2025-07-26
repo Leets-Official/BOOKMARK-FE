@@ -29,17 +29,14 @@ interface ICateTagProps {
 }
 
 interface ITag {
-  id: number;
+  tagId: number;
   tagName: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 interface ICategoryWithTags {
-  id: number;
+  categoryId: number;
   categoryName: string;
   createdAt: string;
-  updatedAt: string;
   tags: ITag[];
 }
 
@@ -91,7 +88,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     );
 
     return sortedCate.map((category) => ({
-      id: category.id,
+      id: category.categoryId,
       content: category.categoryName,
       isSelected: category.categoryName === selectedCategory,
     }));
@@ -297,6 +294,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           setSelectedTag={setSelectedTag}
+          categoriesWithTagsData={categoriesWithTagsData}
         />
       )}
     </div>
