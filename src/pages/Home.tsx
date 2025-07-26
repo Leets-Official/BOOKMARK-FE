@@ -6,13 +6,12 @@ import HomeHeader from '@/components/layout/header/HomeHeader';
 import { Outlet } from 'react-router-dom';
 import HomeFooter from '@/components/layout/footer/HomeFooter';
 import SaveCardList from '@/components/ui/cardList/SaveCardList';
-import { useGetGroupedCardList } from '@/utils/GroupedCardList';
 import HomLogo from '@/components/ui/HomLogo';
 import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getCategories } from '@/api/category/category';
 
 const Home = () => {
-  const cardList = useGetGroupedCardList();
-
   useEffect(() => {
     // 저장된 토큰 콘솔에 출력
     const accessToken = localStorage.getItem('accessToken');
@@ -21,12 +20,33 @@ const Home = () => {
     console.log('🔄 Refresh Token:', refreshToken);
   }, []);
 
+  // 카테고리 조회
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => {
+      return getCategories();
+    },
+  });
+
+  if (!categories || categories.error || !categories.data) {
+    if (categories?.error) {
+      console.error('카테고리 조회 실패:', categories.message);
+    }
+    return <div>카테고리 조회 실패</div>;
+  }
+
+  console.log(categories.data);
+
   return (
     <div className='relative min-h-screen'>
       <HomeHeader />
       <HomLogo />
       <ChangeSearchBar barMarginTop={260} />
-      {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />}
+      {isMobile ? (
+        <MobileCardList categories={categories.data} />
+      ) : (
+        <CardList categories={categories.data} />
+      )}
       <SaveCardList />
       <HomeFooter />
       <Outlet />

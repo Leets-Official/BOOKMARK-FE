@@ -12,17 +12,15 @@ import { modalAddSchema } from '@/schema/save';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
-
-interface ICardProps {
-  category: string;
-  images: string[];
-}
+import type { CategoryProps } from '@/types/api/category';
+import { getBookmarks } from '@/api/bookmark/bookmark';
+import { useQuery } from '@tanstack/react-query';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
   'overflow-hidden font-sans font-semibold text-ellipsis whitespace-nowrap ml-1 md:text-xl text-base';
 
-const FolderCard = ({ category, images }: ICardProps) => {
+const FolderCard = (category: CategoryProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
@@ -45,6 +43,20 @@ const FolderCard = ({ category, images }: ICardProps) => {
     reset();
     setIsDisabled(true);
   };
+
+  const { data: bookmarks } = useQuery({
+    queryKey: ['bookmarks', category.id],
+    queryFn: () => getBookmarks(category.id),
+  });
+
+  if (!bookmarks || bookmarks.error || !bookmarks.data) {
+    if (bookmarks?.error) {
+      console.error('북마크 조회 실패:', bookmarks.message);
+    }
+    return;
+  }
+
+  const images = bookmarks.data.slice(0, 3).map((bookmark) => bookmark.thumbnailUrl);
 
   return (
     <>
@@ -96,7 +108,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
           )}
         </div>
         <div className='flex items-center justify-between pt-2'>
-          <p className={TitleText}>{category}</p>
+          <p className={TitleText}>{category.categoryName}</p>
           <div ref={iconRef} onClick={isOpen}>
             <FolderDetailIcon
               width={24}
@@ -144,7 +156,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
           render={({ field, fieldState }) => (
             <TextField
               label='이름'
-              placeholder={category}
+              placeholder={category.categoryName}
               maxLength={10}
               value={field.value}
               onChange={field.onChange}
@@ -174,7 +186,7 @@ const FolderCard = ({ category, images }: ICardProps) => {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onCancel={() => setIsDeleteModalOpen(false)}
-        warningText={`"${category}"카테고리를 정말 삭제할까요?`}
+        warningText={`"${category.categoryName}"카테고리를 정말 삭제할까요?`}
         onDelete={() => {
           setIsDeleteModalOpen(false);
           console.log('삭제:', category);
