@@ -96,8 +96,11 @@ const FilterSearchBar: React.FC = () => {
   };
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchContents.trim()) {
-      addSearchHistory(searchContents);
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsFocused(false);
+      e.currentTarget.blur();
     }
   };
 
@@ -211,7 +214,10 @@ const FilterSearchBar: React.FC = () => {
             >
               <div
                 className='flex items-center gap-2 cursor-pointer hover:underline'
-                onClick={() => setSearchContents(keyword)}
+                onClick={() => {
+                  setSearchContents(keyword);
+                  setIsFocused(false);
+                }}
               >
                 <HistoryIcon />
                 {keyword}
