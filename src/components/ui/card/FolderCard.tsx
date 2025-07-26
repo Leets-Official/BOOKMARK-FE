@@ -77,6 +77,7 @@ const FolderCard = (category: CategoryProps) => {
     onSuccess: (res) => {
       if (res.error) {
         console.error('카테고리 삭제 실패:', res.message);
+        return;
       }
       // 삭제 후 페이지 새로고침
       window.location.reload();
