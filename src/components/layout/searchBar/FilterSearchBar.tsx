@@ -102,7 +102,7 @@ const FilterSearchBar: React.FC = () => {
   const handleDeletePlatform = (platform: string) =>
     setSelectedPlatforms((prev) => prev.filter((p) => p !== platform));
 
-  const hasHistory = history && !history.error && history.data.length > 0;
+  const hasHistory = history && !history.error && history.data?.length > 0;
 
   const renderChip = (
     items: string[],
