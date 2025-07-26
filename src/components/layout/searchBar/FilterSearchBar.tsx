@@ -54,7 +54,7 @@ const FilterSearchBar: React.FC = () => {
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
 
-  const { data: history, refetch } = useQuery<SearchHistoryProps[] | ErrorProps>({
+  const { data: history, refetch } = useQuery({
     queryKey: ['searchHistory'],
     queryFn: () => {
       return getSearchHistory();
@@ -183,7 +183,7 @@ const FilterSearchBar: React.FC = () => {
       </div>
 
       {/* 최근 검색 기록 */}
-      {isFocused && history && !('error' in history) && history.length > 0 && (
+      {isFocused && history && !('error' in history) &&& history.length > 0 && (
         <div className='absolute top-full left-0 w-full px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue max-h-[128px] overflow-y-auto'>
           {history.map(({ keyword, id }: SearchHistoryProps) => (
             <div

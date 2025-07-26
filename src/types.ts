@@ -35,12 +35,12 @@ export interface SaveCardProps {
 // api response
 export interface SuccessResponse<T> {
   data: T;
-  error: boolean;
+  error: false;
 }
 
 export interface ErrorResponse {
   data: null;
-  error: boolean;
+  error: true;
   message: string;
 }
 
