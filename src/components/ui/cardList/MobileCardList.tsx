@@ -38,12 +38,6 @@ const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
     return () => window.removeEventListener('resize', updateConstraints);
   }, [categories, x]);
 
-  useEffect(() => {
-    console.log('constraints:', constraints);
-    console.log('dragRef:', dragRef.current);
-    console.log('containerRef:', containerRef.current);
-  }, [constraints]);
-
   return (
     <div className='mt-70'>
       <CardListHeader
