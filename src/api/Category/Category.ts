@@ -1,4 +1,4 @@
-import api from './api';
+import api from '../api';
 
 export const createCategory = async (categoryName: string) => {
   try {
@@ -27,6 +27,8 @@ export const getCategories = async () => {
 export const getCategoriesWithTag = async () => {
   try {
     const response = await api.get('/categories/with-tags');
+    console.log(response);
+    console.log(response.data);
     return response.data;
   } catch (error: any) {
     return {

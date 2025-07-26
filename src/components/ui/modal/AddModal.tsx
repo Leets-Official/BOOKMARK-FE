@@ -8,8 +8,8 @@ import React, { useState } from 'react';
 import { visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
 import { useSetAtom } from 'jotai';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createCategory } from '@/api/Category';
-import { createTag } from '@/api/Tag';
+import { createCategory } from '@/api/Category/Category';
+import { createTag } from '@/api/Category/Tag';
 
 interface ITag {
   tagId: number;
@@ -154,7 +154,13 @@ const AddModal = ({
     setIsDisabled(true);
   };
 
-  const schema = modalAddSchema(isCategoryType ? 'category' : 'tag');
+  const existingValues = isCategoryType
+    ? (categoriesWithTagsData?.map((c) => c.categoryName) ?? [])
+    : (categoriesWithTagsData
+        ?.find((c) => c.categoryName === selectedCategory)
+        ?.tags.map((t) => t.tagName) ?? []);
+
+  const schema = modalAddSchema(isCategoryType ? 'category' : 'tag', existingValues);
 
   const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
