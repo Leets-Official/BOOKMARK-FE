@@ -1,40 +1,27 @@
-import api from '@/api/api';
-import type { SearchHistoryProps } from '@/types/api/searchHistory';
+import { apiRequest } from '@/api/api';
+import type { GetSearchHistoryProps } from '@/types/api/searchHistory';
+import type { ApiResponse } from '@/types/common/api-response';
 
-const getSearchHistory = async () => {
-  try {
-    const response = await api.get('/search-histories');
-    return response.data.data as SearchHistoryProps[];
-  } catch (error: any) {
-    return {
-      error: true,
-      message: error.response?.data?.message || '검색 기록 조회에 실패했습니다.',
-    };
-  }
+const getSearchHistory = async (): Promise<ApiResponse<GetSearchHistoryProps[]>> => {
+  return apiRequest<GetSearchHistoryProps[]>({
+    method: 'GET',
+    url: '/search-histories',
+  });
 };
 
-const postSearchHistory = async (searchContent: string) => {
-  try {
-    const response = await api.post('/search-histories', { keyword: searchContent });
-    return response.data.data;
-  } catch (error: any) {
-    return {
-      error: true,
-      message: error.response?.data?.message || '검색 기록 생성에 실패했습니다.',
-    };
-  }
+const postSearchHistory = async (searchContent: string): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'POST',
+    url: '/search-histories',
+    data: { keyword: searchContent },
+  });
 };
 
-const deleteSearchHistory = async (searchHistoryId: number) => {
-  try {
-    const response = await api.delete(`/search-histories/${searchHistoryId}`);
-    return response.data.data;
-  } catch (error: any) {
-    return {
-      error: true,
-      message: error.response?.data?.message || '검색 기록 삭제에 실패했습니다.',
-    };
-  }
+const deleteSearchHistory = async (searchHistoryId: number): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'DELETE',
+    url: `/search-histories/${searchHistoryId}`,
+  });
 };
 
 export { getSearchHistory, postSearchHistory, deleteSearchHistory };

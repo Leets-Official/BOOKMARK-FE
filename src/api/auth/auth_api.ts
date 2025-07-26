@@ -1,5 +1,6 @@
 import { apiRequest } from '@/api/api';
 import type { KakaoLoginResponse } from '@/types/api/auth';
+import type { ApiResponse } from '@/types/common/api-response';
 
 const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
 const KAKAO_REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
@@ -13,7 +14,7 @@ const kakaoLogin = async () => {
   }
 };
 
-const kakaoLoginApi = async (code: string) => {
+const kakaoLoginApi = async (code: string): Promise<ApiResponse<KakaoLoginResponse>> => {
   return apiRequest<KakaoLoginResponse>({
     method: 'GET',
     url: '/auth/login/kakao',
