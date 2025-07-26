@@ -7,9 +7,16 @@ import { Chip, Button } from '@/components/common';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import { useNavigate } from 'react-router-dom';
-import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
+import {
+  selectedCategoriesAtom,
+  selectedTagsAtom,
+  selectedPlatformsAtom,
+  searchContentsAtom,
+} from '@/atoms';
 import { dummyCardData } from '@/contants/DummyData';
 import { useScrollLock } from '@/hooks/ScrollLock';
+import { postSearchHistory } from '@/api/searchHistory/searchHistory';
+import { useMutation } from '@tanstack/react-query';
 
 const overlayStyle = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -32,6 +39,7 @@ const modalStyle = tv({
 });
 
 const Search = () => {
+  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
@@ -40,9 +48,7 @@ const Search = () => {
   const [tags, setTags] = useState<{ id: number; content: string }[]>([]);
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
-
-  // 스크롤 제한
-  useScrollLock(true);
+  useScrollLock(!isMobile);
 
   useEffect(() => {
     const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(
@@ -84,10 +90,31 @@ const Search = () => {
     });
   };
 
+  // 검색어 추가
+  const { mutate: addSearchHistory } = useMutation({
+    mutationFn: postSearchHistory,
+    onSuccess: (res) => {
+      if (res.error) {
+        console.error('검색 기록 저장 실패:', res.message);
+        return;
+      }
+      setSearchContents('');
+    },
+    onError: (error) => {
+      console.error('검색 기록 저장 실패:', error);
+    },
+  });
+
   const resetAll = () => {
+    setSearchContents('');
     setSelectedCategories([]);
     setSelectedTags([]);
     setSelectedPlatforms([]);
+  };
+
+  const handleSearch = () => {
+    console.log({ selectedCategories, selectedTags, selectedPlatforms });
+    addSearchHistory(searchContents);
   };
 
   return (
@@ -169,9 +196,7 @@ const Search = () => {
             <ResetButtonIcon width={87} height={60} />
           </div>
           <Button
-            onClick={() => {
-              console.log({ selectedCategories, selectedTags, selectedPlatforms });
-            }}
+            onClick={() => handleSearch()}
             icon={<SearchIcon className='w-4 h-4' stroke='white' />}
             className='cursor-pointer flex items-center gap-2 px-6 py-3 bg-blue text-white rounded-[10px] text-15 hover:brightness-90 transition'
           >

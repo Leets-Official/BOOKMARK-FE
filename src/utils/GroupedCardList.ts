@@ -1,11 +1,26 @@
 // CardList, MobileCardList에서만 사용 (나중에 API 연동 시 바뀔 수 있음)
-import type { SaveCardProps } from '@/types';
+import { getCategories } from '@/api/category/category';
+import type { CategoryCardProps, CategoryProps, ErrorProps } from '@/types/components/components';
+import { useQuery } from '@tanstack/react-query';
 
-interface GroupedByCategoryType {
-  [category: string]: SaveCardProps[];
-}
+export const useGetGroupedCardList = () => {
+  const categoryCards = [] as CategoryCardProps[];
 
-export const getGroupedCardList = (dummyCardData: SaveCardProps[]) => {
+  const { data: categories } = useQuery<CategoryProps[] | ErrorProps>({
+    queryKey: ['categories'],
+    queryFn: () => {
+      return getCategories();
+    },
+  });
+
+  categories?.forEach((category: CategoryProps) => {
+    categoryCards.push({
+      id: category.id,
+      title: category.categoryName,
+      image: category.image,
+    });
+  });
+
   // 카테고리 기준으로 그룹화
   const groupedByCategory = dummyCardData.reduce((groupedCards, card) => {
     if (!groupedCards[card.category]) groupedCards[card.category] = [];

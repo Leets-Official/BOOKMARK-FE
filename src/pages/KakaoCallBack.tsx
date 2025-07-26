@@ -16,14 +16,20 @@ function KakaoCallBack() {
   const kakaoLoginMutation = useMutation({
     mutationFn: kakaoLoginApi,
     onSuccess: (res) => {
-      console.log('kakao login 성공', res);
-      localStorage.setItem('accessToken', res.jwtAccessToken);
-      localStorage.setItem('refreshToken', res.jwtRefreshToken);
-      localStorage.setItem('profileImage', res.profileImage);
+      if (res.error) {
+        console.error('kakao login 실패, error', res.message);
+        navigate('/login', { replace: true });
+        return;
+      }
+
+      const { jwtAccessToken, jwtRefreshToken, profileImage } = res.data;
+      localStorage.setItem('accessToken', jwtAccessToken);
+      localStorage.setItem('refreshToken', jwtRefreshToken);
+      localStorage.setItem('profileImage', profileImage);
       navigate('/', { replace: true });
     },
-    onError: () => {
-      console.error('kakao login 실패');
+    onError: (error) => {
+      console.error('kakao login 실패, error', error);
       navigate('/login', { replace: true });
     },
   });

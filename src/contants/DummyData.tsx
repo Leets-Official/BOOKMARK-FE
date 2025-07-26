@@ -1,5 +1,5 @@
 // 더미 데이터(카테고리, 태그)
-import type { ChipProps, CompactCardProps, SaveCardProps } from '@/types';
+import type { ChipProps, CompactCardProps, SaveCardProps } from '@/types/components/components';
 
 const dummyCategoryList: ChipProps[] = [
   { id: 0, content: '개발', isSelected: false, type: 'category' },

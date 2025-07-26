@@ -3,14 +3,16 @@ import { Input, Button, Chip } from '@/components/common';
 import React, { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
-import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
-import { useNavigate } from 'react-router-dom';
 import {
-  deleteSearchHistory,
-  getSearchHistory,
-  postSearchHistory,
-} from '@/api/searchHistory/searchHistory_api';
-import { useQuery } from '@tanstack/react-query';
+  selectedCategoriesAtom,
+  selectedTagsAtom,
+  selectedPlatformsAtom,
+  searchContentsAtom,
+} from '@/atoms';
+import { useNavigate } from 'react-router-dom';
+import { deleteSearchHistory, getSearchHistory } from '@/api/searchHistory/searchHistory';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type { GetSearchHistoryProps } from '@/types/api/searchHistory';
 
 interface AnimatedHeightProps {
   show: boolean;
@@ -42,21 +44,34 @@ const AnimatedHeight: React.FC<AnimatedHeightProps> = ({ show, children }) => {
 };
 
 const FilterSearchBar: React.FC = () => {
-  const [searchContents, setSearchContents] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const historyRef = useRef<HTMLDivElement>(null);
 
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
-
+  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
 
+  // 검색 기록 조회
   const { data: history, refetch } = useQuery({
     queryKey: ['searchHistory'],
-    queryFn: () => {
-      return getSearchHistory();
+    queryFn: getSearchHistory,
+  });
+
+  // 검색어 삭제
+  const { mutate: removeSearchHistory } = useMutation({
+    mutationFn: (searchHistoryId: number) => deleteSearchHistory(searchHistoryId),
+    onSuccess: (res) => {
+      if (res.error) {
+        console.error('검색 기록 삭제 실패:', res.message);
+        return;
+      }
+      refetch();
+    },
+    onError: (error) => {
+      console.error('검색 기록 삭제 실패:', error);
     },
   });
 
@@ -65,28 +80,18 @@ const FilterSearchBar: React.FC = () => {
   };
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchContents.trim()) {
-      try {
-        // 검색어 조회 query 업데이트
-        await postSearchHistory(searchContents);
-        refetch();
-        console.log('검색어:', searchContents);
-        setSearchContents('');
-      } catch (error) {
-        console.error('검색 기록 저장 실패:', error);
-      }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsFocused(false);
+      e.currentTarget.blur();
     }
   };
 
   const clearInput = () => setSearchContents('');
 
-  const handleDeleteHistory = async (searchHistoryId: number) => {
-    try {
-      await deleteSearchHistory(searchHistoryId);
-      refetch();
-    } catch (error) {
-      console.error('검색 기록 삭제 실패:', error);
-    }
+  const handleDeleteHistory = (searchHistoryId: number) => {
+    removeSearchHistory(searchHistoryId);
   };
 
   const handleDeleteCategory = (category: string) =>
@@ -96,6 +101,8 @@ const FilterSearchBar: React.FC = () => {
 
   const handleDeletePlatform = (platform: string) =>
     setSelectedPlatforms((prev) => prev.filter((p) => p !== platform));
+
+  const hasHistory = history && !history.error && history.data?.length > 0;
 
   const renderChip = (
     items: string[],
@@ -182,16 +189,19 @@ const FilterSearchBar: React.FC = () => {
       </div>
 
       {/* 최근 검색 기록 */}
-      {isFocused && history.length > 0 && (
+      {isFocused && hasHistory && (
         <div className='absolute top-full left-0 w-full px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue max-h-[128px] overflow-y-auto'>
-          {history.map(({ keyword, id }: { keyword: string; id: number }) => (
+          {history.data.map(({ keyword, id }: GetSearchHistoryProps) => (
             <div
               key={id}
               className='flex items-center justify-between gap-2 my-4 text-15 text-black'
             >
               <div
                 className='flex items-center gap-2 cursor-pointer hover:underline'
-                onClick={() => setSearchContents(keyword)}
+                onClick={() => {
+                  setSearchContents(keyword);
+                  setIsFocused(false);
+                }}
               >
                 <HistoryIcon />
                 {keyword}

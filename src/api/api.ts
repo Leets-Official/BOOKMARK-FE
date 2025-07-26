@@ -1,4 +1,6 @@
-import axios from 'axios';
+import type { ReissueRefreshTokenResponse } from '@/types/api/auth';
+import type { ApiResponse } from '@/types/common/api-response';
+import axios, { type AxiosRequestConfig } from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -16,23 +18,23 @@ const getRefreshToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
   if (!refreshToken) throw new Error('refreshToken not found');
 
-  try {
-    const response = await api.post('/auth/reissue', {
+  const response = await apiRequest<ReissueRefreshTokenResponse>({
+    method: 'POST',
+    url: '/auth/reissue',
+    data: {
       refreshToken: refreshToken,
-    });
-    if (response.data.code === 200) {
-      const { accessToken, newRefreshToken } = response.data.data;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', newRefreshToken);
+    },
+  });
 
-      return { accessToken, refreshToken: newRefreshToken };
-    } else {
-      throw new Error('refreshToken 갱신 실패');
-    }
-  } catch (error) {
-    console.error('refreshToken 요청 실패', error);
-    throw error;
+  if (response.error) {
+    throw new Error(response.message || 'refreshToken 갱신 실패');
   }
+
+  const { accessToken, refreshToken: newRefreshToken } = response.data;
+  localStorage.setItem('accessToken', accessToken);
+  localStorage.setItem('refreshToken', newRefreshToken);
+
+  return { accessToken, refreshToken: newRefreshToken };
 };
 
 // request interceptor
@@ -81,5 +83,22 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+// api Helper
+export async function apiRequest<T>(config: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  try {
+    const response = await api(config);
+    return { data: response.data.data, error: false };
+  } catch (error: any) {
+    if (error.response && error.response.status < 500) {
+      return {
+        data: null,
+        error: true,
+        message: error.response.data?.message || '요청에 실패했습니다.',
+      };
+    }
+    throw error;
+  }
+}
 
 export default api;

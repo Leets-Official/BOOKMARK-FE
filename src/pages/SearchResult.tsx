@@ -8,7 +8,7 @@ import {
   dummyTagList,
 } from '@/contants/DummyData';
 import { useState, useRef, useEffect } from 'react';
-import type { ChipProps } from '@/types';
+import type { ChipProps } from '@/types/components/components';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import SaveCard from '@/components/ui/card/SaveCard';

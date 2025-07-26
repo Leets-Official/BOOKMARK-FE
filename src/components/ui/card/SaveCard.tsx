@@ -2,7 +2,7 @@ import { AlertIcon, FolderDetailIcon } from '@/assets';
 import { Image, Chip, Button } from '@/components/common';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
-import type { SaveCardProps } from '@/types';
+import type { SaveCardProps } from '@/types/components/components';
 import { motion } from 'framer-motion';
 import { MenuPortal } from '@/utils/';
 import { useMenuHandler } from '@/hooks/MenuPosition';
