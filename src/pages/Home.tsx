@@ -35,8 +35,6 @@ const Home = () => {
     return <div>카테고리 조회 실패</div>;
   }
 
-  console.log(categories.data);
-
   return (
     <div className='relative min-h-screen'>
       <HomeHeader />

@@ -2,16 +2,12 @@ import api, { apiRequest } from '@/api/api';
 import type { CategoryProps } from '@/types/api/category';
 import type { ApiResponse } from '@/types/common/api-response';
 
-export const createCategory = async (categoryName: string) => {
-  try {
-    const response = await api.post('/categories', { categoryName });
-    return response.data.data;
-  } catch (error: any) {
-    return {
-      error: true,
-      message: error.response?.data?.message || '카테고리 생성에 실패했습니다.',
-    };
-  }
+export const createCategory = async (categoryName: string): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'POST',
+    url: '/categories',
+    data: { categoryName },
+  });
 };
 
 export const getCategories = async (): Promise<ApiResponse<CategoryProps[]>> => {
