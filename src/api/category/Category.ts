@@ -32,3 +32,14 @@ export const getCategoriesWithTag = async () => {
     };
   }
 };
+
+export const patchCategory = async (
+  categoryId: number,
+  categoryName: string,
+): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'PATCH',
+    url: `/categories/${categoryId}`,
+    data: { categoryName },
+  });
+};

@@ -14,7 +14,8 @@ import type z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import type { CategoryProps } from '@/types/api/category';
 import { getBookmarks } from '@/api/bookmark/bookmark';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { patchCategory } from '@/api/category/category';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
@@ -36,17 +37,22 @@ const FolderCard = (category: CategoryProps) => {
     },
   });
 
-  const handleConfirmModal = (data: z.infer<typeof schema>) => {
-    if (!data.category.trim()) return;
-    console.log('카테고리 수정됨:', data.category);
-    setIsModalOpen(false);
-    reset();
-    setIsDisabled(true);
-  };
-
   const { data: bookmarks } = useQuery({
     queryKey: ['bookmarks', category.id],
     queryFn: () => getBookmarks(category.id),
+  });
+
+  const { mutate: updateCategory } = useMutation({
+    mutationFn: (categoryName: string) => patchCategory(category.id, categoryName),
+    onSuccess: (res) => {
+      if (res.error) {
+        console.error('카테고리 수정 실패:', res.message);
+      }
+      console.log('카테고리 수정 성공:', res.data);
+    },
+    onError: (error) => {
+      console.error('카테고리 수정 실패:', error);
+    },
   });
 
   if (!bookmarks || bookmarks.error || !bookmarks.data) {
@@ -55,6 +61,14 @@ const FolderCard = (category: CategoryProps) => {
     }
     return;
   }
+
+  const handleConfirmModal = (data: z.infer<typeof schema>) => {
+    if (!data.category.trim()) return;
+    updateCategory(data.category);
+    setIsModalOpen(false);
+    reset();
+    setIsDisabled(true);
+  };
 
   const images = bookmarks.data.slice(0, 3).map((bookmark) => bookmark.thumbnailUrl);
 
