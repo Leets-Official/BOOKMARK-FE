@@ -1,23 +1,31 @@
 // CardList, MobileCardList에서만 사용 (나중에 API 연동 시 바뀔 수 있음)
 import { getCategories } from '@/api/category/category';
-import type { CategoryCardProps, CategoryProps, ErrorProps } from '@/types/components/components';
+import type { CategoryCardProps } from '@/types/components/components';
+import type { CategoryProps } from '@/types/api/category';
 import { useQuery } from '@tanstack/react-query';
 
-export const useGetGroupedCardList = () => {
+export function useGetGroupedCardList(): CategoryCardProps[] {
   const categoryCards = [] as CategoryCardProps[];
 
-  const { data: categories } = useQuery<CategoryProps[] | ErrorProps>({
+  const { data: categories } = useQuery({
     queryKey: ['categories'],
     queryFn: () => {
       return getCategories();
     },
   });
 
-  categories?.forEach((category: CategoryProps) => {
+  if (!categories || categories.error || !categories.data) {
+    if (categories?.error) {
+      console.error('카테고리 조회 실패:', categories.message);
+    }
+    return [];
+  }
+
+  categories.data.forEach((category: CategoryProps) => {
     categoryCards.push({
       id: category.id,
       title: category.categoryName,
-      image: category.image,
+      image: [],
     });
   });
 
@@ -39,4 +47,4 @@ export const useGetGroupedCardList = () => {
   });
 
   return cardList;
-};
+}

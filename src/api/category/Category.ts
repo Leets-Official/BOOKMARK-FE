@@ -1,5 +1,6 @@
-import api from '@/api/api';
+import api, { apiRequest } from '@/api/api';
 import type { CategoryProps } from '@/types/api/category';
+import type { ApiResponse } from '@/types/common/api-response';
 
 export const createCategory = async (categoryName: string) => {
   try {
@@ -13,16 +14,11 @@ export const createCategory = async (categoryName: string) => {
   }
 };
 
-export const getCategories = async () => {
-  try {
-    const response = await api.get('/categories');
-    return response.data.data as CategoryProps[];
-  } catch (error: any) {
-    return {
-      error: true,
-      message: error.response?.data?.message || '카테고리 조회에 실패했습니다.',
-    };
-  }
+export const getCategories = async (): Promise<ApiResponse<CategoryProps[]>> => {
+  return apiRequest<CategoryProps[]>({
+    method: 'GET',
+    url: '/categories',
+  });
 };
 
 export const getCategoriesWithTag = async () => {
