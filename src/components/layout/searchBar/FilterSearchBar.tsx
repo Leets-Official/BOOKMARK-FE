@@ -5,11 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
 import { useNavigate } from 'react-router-dom';
-import {
-  deleteSearchHistory,
-  getSearchHistory,
-  postSearchHistory,
-} from '@/api/searchHistory/searchHistory';
+import { deleteSearchHistory, getSearchHistory } from '@/api/searchHistory/searchHistory';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { GetSearchHistoryProps } from '@/types/api/searchHistory';
 
@@ -42,8 +38,13 @@ const AnimatedHeight: React.FC<AnimatedHeightProps> = ({ show, children }) => {
   );
 };
 
-const FilterSearchBar: React.FC = () => {
-  const [searchContents, setSearchContents] = useState('');
+interface FilterSearchBarProps {
+  searchContents: string;
+  // eslint-disable-next-line no-unused-vars
+  setSearchContents: (value: string) => void;
+}
+
+const FilterSearchBar: React.FC<FilterSearchBarProps> = ({ searchContents, setSearchContents }) => {
   const [isFocused, setIsFocused] = useState(false);
   const historyRef = useRef<HTMLDivElement>(null);
 
@@ -58,22 +59,6 @@ const FilterSearchBar: React.FC = () => {
   const { data: history, refetch } = useQuery({
     queryKey: ['searchHistory'],
     queryFn: getSearchHistory,
-  });
-
-  // 검색어 추가
-  const { mutate: addSearchHistory } = useMutation({
-    mutationFn: postSearchHistory,
-    onSuccess: (res) => {
-      if (res.error) {
-        console.error('검색 기록 저장 실패:', res.message);
-        return;
-      }
-      refetch();
-      setSearchContents('');
-    },
-    onError: (error) => {
-      console.error('검색 기록 저장 실패:', error);
-    },
   });
 
   // 검색어 삭제

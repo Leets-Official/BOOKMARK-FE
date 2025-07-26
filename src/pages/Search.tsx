@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
 import { dummyCardData } from '@/contants/DummyData';
 import { useScrollLock } from '@/hooks/ScrollLock';
+import { postSearchHistory } from '@/api/searchHistory/searchHistory';
+import { useMutation } from '@tanstack/react-query';
 
 const overlayStyle = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -32,6 +34,7 @@ const modalStyle = tv({
 });
 
 const Search = () => {
+  const [searchContents, setSearchContents] = useState('');
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
@@ -40,9 +43,7 @@ const Search = () => {
   const [tags, setTags] = useState<{ id: number; content: string }[]>([]);
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
-
-  // 스크롤 제한
-  useScrollLock(true);
+  useScrollLock(!isMobile);
 
   useEffect(() => {
     const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(
@@ -84,16 +85,37 @@ const Search = () => {
     });
   };
 
+  // 검색어 추가
+  const { mutate: addSearchHistory } = useMutation({
+    mutationFn: postSearchHistory,
+    onSuccess: (res) => {
+      if (res.error) {
+        console.error('검색 기록 저장 실패:', res.message);
+        return;
+      }
+      setSearchContents('');
+    },
+    onError: (error) => {
+      console.error('검색 기록 저장 실패:', error);
+    },
+  });
+
   const resetAll = () => {
+    setSearchContents('');
     setSelectedCategories([]);
     setSelectedTags([]);
     setSelectedPlatforms([]);
   };
 
+  const handleSearch = () => {
+    console.log({ selectedCategories, selectedTags, selectedPlatforms });
+    addSearchHistory(searchContents);
+  };
+
   return (
     <div className={overlayStyle({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
       <div className={modalStyle({ isMobile })} onClick={(e) => e.stopPropagation()}>
-        <FilterSearchBar />
+        <FilterSearchBar searchContents={searchContents} setSearchContents={setSearchContents} />
 
         {/* 스크롤 가능한 컨텐츠 영역 */}
         <div className='flex-1 overflow-y-auto p-3 pb-4 hide-scrollbar'>
@@ -169,9 +191,7 @@ const Search = () => {
             <ResetButtonIcon width={87} height={60} />
           </div>
           <Button
-            onClick={() => {
-              console.log({ selectedCategories, selectedTags, selectedPlatforms });
-            }}
+            onClick={() => handleSearch()}
             icon={<SearchIcon className='w-4 h-4' stroke='white' />}
             className='cursor-pointer flex items-center gap-2 px-6 py-3 bg-blue text-white rounded-[10px] text-15 hover:brightness-90 transition'
           >
