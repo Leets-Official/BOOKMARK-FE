@@ -15,9 +15,11 @@ const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
   useEffect(() => {
     const updateConstraints = () => {
       if (dragRef.current && containerRef.current) {
-        const dragWidth = dragRef.current.scrollWidth; // 전체 카드 리스트 너비
+        const cardWidth = 160;
+        const gap = 12;
+        const totalCardWidth = categories.length * cardWidth + (categories.length - 1) * gap; // 전체 카드 리스트 너비
         const containerWidth = containerRef.current.offsetWidth; // 외부 컨테이너 너비
-        const maxDrag = dragWidth - containerWidth; // 최대로 드래그 했을 때 움직 일 수 있는 거리
+        const maxDrag = totalCardWidth - containerWidth; // 최대로 드래그 했을 때 움직 일 수 있는 거리
         const newLeft = -Math.max(0, maxDrag); // 왼쪽으로 갈 수 있는 최대 거리 계산
 
         setConstraints({ left: newLeft, right: 0 }); // 오른쪽은 0으로 고정
@@ -36,6 +38,12 @@ const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
     return () => window.removeEventListener('resize', updateConstraints);
   }, [categories, x]);
 
+  useEffect(() => {
+    console.log('constraints:', constraints);
+    console.log('dragRef:', dragRef.current);
+    console.log('containerRef:', containerRef.current);
+  }, [constraints]);
+
   return (
     <div className='mt-70'>
       <CardListHeader
@@ -48,7 +56,7 @@ const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
           ref={dragRef}
           style={{
             x,
-            willChange: 'transform', // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
+            willChange: 'transform', // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해
           }}
           drag='x'
           dragConstraints={constraints}
