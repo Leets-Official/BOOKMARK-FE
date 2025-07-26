@@ -33,6 +33,26 @@ export interface SaveCardProps {
 }
 
 // api response
+export interface SuccessResponse<T> {
+  data: T;
+  error: boolean;
+}
+
+export interface ErrorResponse {
+  data: null;
+  error: boolean;
+  message: string;
+}
+
+export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
+
+export interface KakaoLoginResponse {
+  userId: number;
+  profileImage: string;
+  jwtAccessToken: string;
+  jwtRefreshToken: string;
+}
+
 export interface SearchHistoryProps {
   id: number;
   keyword: string;

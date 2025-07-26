@@ -1,4 +1,5 @@
-import api from '@/api/api';
+import { apiRequest } from '@/api/api';
+import type { KakaoLoginResponse } from '@/types';
 
 const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
 const KAKAO_REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
@@ -13,15 +14,11 @@ const kakaoLogin = async () => {
 };
 
 const kakaoLoginApi = async (code: string) => {
-  try {
-    const response = await api.get('/auth/login/kakao', {
-      params: { code },
-    });
-    return response.data.data;
-  } catch (error) {
-    console.error('kakao login 실패', error);
-    throw error;
-  }
+  return apiRequest<KakaoLoginResponse>({
+    method: 'GET',
+    url: '/auth/login/kakao',
+    params: { code },
+  });
 };
 
 export { kakaoLogin, kakaoLoginApi };

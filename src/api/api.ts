@@ -1,3 +1,4 @@
+import type { ApiResponse } from '@/types';
 import axios, { type AxiosRequestConfig } from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -83,9 +84,7 @@ api.interceptors.response.use(
 );
 
 // api Helper
-export async function apiRequest<T>(
-  config: AxiosRequestConfig,
-): Promise<{ data: T; error: false } | { data: null; error: true; message: string }> {
+export async function apiRequest<T>(config: AxiosRequestConfig): Promise<ApiResponse<T>> {
   try {
     const response = await api(config);
     return { data: response.data.data, error: false };

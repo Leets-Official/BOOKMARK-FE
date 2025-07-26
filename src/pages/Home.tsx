@@ -7,12 +7,12 @@ import { Outlet } from 'react-router-dom';
 import HomeFooter from '@/components/layout/footer/HomeFooter';
 import SaveCardList from '@/components/ui/cardList/SaveCardList';
 import { dummyCardData } from '@/contants/DummyData';
-import { getGroupedCardList } from '@/utils/GroupedCardList';
+// import { getGroupedCardList } from '@/utils/GroupedCardList';
 import HomLogo from '@/components/ui/HomLogo';
 import { useEffect } from 'react';
 
 const Home = () => {
-  const cardList = getGroupedCardList(dummyCardData);
+  // const cardList = getGroupedCardList(dummyCardData);
 
   useEffect(() => {
     // 저장된 토큰 콘솔에 출력
@@ -27,7 +27,7 @@ const Home = () => {
       <HomeHeader />
       <HomLogo />
       <ChangeSearchBar barMarginTop={260} />
-      {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />}
+      {/* {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />} */}
       <SaveCardList />
       <HomeFooter />
       <Outlet />
