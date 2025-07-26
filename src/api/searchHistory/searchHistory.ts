@@ -1,5 +1,5 @@
 import api from '@/api/api';
-import type { SearchHistoryProps } from '@/types';
+import type { SearchHistoryProps } from '@/types/api/searchHistory';
 
 const getSearchHistory = async () => {
   try {

@@ -1,6 +1,6 @@
 import { AlertIcon, FolderDetailIcon } from '@/assets';
 import { Button, Image } from '@/components/common';
-import type { CompactCardProps } from '@/types';
+import type { CompactCardProps } from '@/types/components/components';
 import clsx from 'clsx';
 
 const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) => {

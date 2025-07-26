@@ -1,5 +1,5 @@
 import { apiRequest } from '@/api/api';
-import type { KakaoLoginResponse } from '@/types';
+import type { KakaoLoginResponse } from '@/types/api/auth';
 
 const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
 const KAKAO_REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;

@@ -11,7 +11,7 @@ import {
   postSearchHistory,
 } from '@/api/searchHistory/searchHistory';
 import { useQuery } from '@tanstack/react-query';
-import type { ErrorProps, SearchHistoryProps } from '@/types';
+import type { ErrorProps, SearchHistoryProps } from '@/types/components/components';
 
 interface AnimatedHeightProps {
   show: boolean;

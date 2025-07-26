@@ -1,7 +1,7 @@
 import Button from '@/components/common/Button';
 import Chip from '@/components/common/Chip';
 import DropDown from '@/components/ui/DropDown';
-import type { ChipProps } from '@/types';
+import type { ChipProps } from '@/types/components/components';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 

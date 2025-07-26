@@ -1,5 +1,5 @@
 import api from '@/api/api';
-import type { CategoryProps } from '@/types';
+import type { CategoryProps } from '@/types/api/category';
 
 export const createCategory = async (categoryName: string) => {
   try {

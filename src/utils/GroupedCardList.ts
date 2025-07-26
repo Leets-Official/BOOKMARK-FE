@@ -1,6 +1,6 @@
 // CardList, MobileCardList에서만 사용 (나중에 API 연동 시 바뀔 수 있음)
 import { getCategories } from '@/api/category/category';
-import type { CategoryCardProps, CategoryProps, ErrorProps } from '@/types';
+import type { CategoryCardProps, CategoryProps, ErrorProps } from '@/types/components/components';
 import { useQuery } from '@tanstack/react-query';
 
 export const useGetGroupedCardList = () => {

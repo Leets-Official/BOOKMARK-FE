@@ -1,4 +1,4 @@
-import type { ApiResponse } from '@/types';
+import type { ApiResponse } from '@/types/common/api-response';
 import axios, { type AxiosRequestConfig } from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
