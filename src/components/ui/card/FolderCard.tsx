@@ -74,29 +74,15 @@ const FolderCard = (category: CategoryProps) => {
 
   const { mutate: deleteCategoryMutation } = useMutation({
     mutationFn: (categoryId: number) => deleteCategory(categoryId),
-    onMutate: async (categoryId) => {
-      // 진행 중인 쿼리 취소
-      await queryClient.cancelQueries({ queryKey: ['categories'] });
-
-      // 이전 데이터 백업
-      const previousCategories = queryClient.getQueryData(['categories']);
-
-      // 즉시 UI 업데이트 (낙관적 업데이트)
-      queryClient.setQueryData(['categories'], (old: any) => ({
-        ...old,
-        data: old.data.filter((cat: CategoryProps) => cat.id !== categoryId),
-      }));
-
-      return { previousCategories };
-    },
-    onSettled: (data, error, _, context) => {
-      if (data?.error || error) {
-        const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
-        console.log('카테고리 삭제 실패:', errorMessage);
-        queryClient.setQueryData(['categories'], context?.previousCategories);
+    onSuccess: (res) => {
+      if (res.error) {
+        console.error('카테고리 삭제 실패:', res.message);
       }
-
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      // 삭제 후 페이지 새로고침
+      window.location.reload();
+    },
+    onError: (error) => {
+      console.error('카테고리 삭제 실패:', error);
     },
   });
 
