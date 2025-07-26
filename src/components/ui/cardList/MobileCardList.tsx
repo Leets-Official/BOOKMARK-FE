@@ -2,17 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 import FolderCard from '../card/FolderCard';
 import CardListHeader from '@/components/layout/header/CardListHeader';
-
-interface HomeCardListProps {
-  cardList: {
-    id: number;
-    category: string;
-    images: string[];
-  }[];
-}
+import type { CategoryProps } from '@/types/api/category';
 
 // 모바일 용 카드리스트
-const MobileCardList = ({ cardList }: HomeCardListProps) => {
+const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
   const x = useMotionValue(0); // 드래그 위치 상태
   const dragRef = useRef<HTMLDivElement>(null); // 드래그 가능한 카드 리스트 영역
   const containerRef = useRef<HTMLDivElement>(null); // 외부 컨테이너 영역 (실제 보이는 영역)
@@ -41,12 +34,12 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
     updateConstraints();
     window.addEventListener('resize', updateConstraints); // 창 크기 변경 시 재계산
     return () => window.removeEventListener('resize', updateConstraints);
-  }, [cardList, x]);
+  }, [categories, x]);
 
   return (
     <div className='mt-70'>
       <CardListHeader
-        currentNum={cardList.length.toString()}
+        currentNum={categories.length.toString()}
         title='카테고리'
         showCategory={true}
       />
@@ -66,8 +59,8 @@ const MobileCardList = ({ cardList }: HomeCardListProps) => {
           }}
           className='flex justify-start items-center gap-3 cursor-grab active:cursor-grabbing'
         >
-          {cardList.map((card) => (
-            <FolderCard key={card.id} {...card} />
+          {categories.map((category) => (
+            <FolderCard key={category.id} {...category} />
           ))}
         </motion.div>
       </div>
