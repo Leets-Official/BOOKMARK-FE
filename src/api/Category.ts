@@ -23,3 +23,15 @@ export const getCategories = async () => {
     };
   }
 };
+
+export const getCategoriesWithTag = async () => {
+  try {
+    const response = await api.get('/categories/with-tags');
+    return response.data;
+  } catch (error: any) {
+    return {
+      error: true,
+      message: error.response?.data?.message || '카테고리 및 태그 조회에 실패했습니다.',
+    };
+  }
+};

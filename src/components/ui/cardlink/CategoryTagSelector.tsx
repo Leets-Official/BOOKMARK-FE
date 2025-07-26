@@ -11,12 +11,13 @@ import {
   isSuggestionLoadingAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { dummyCardData } from '@/contants/DummyData';
 import clsx from 'clsx';
 import AddModal from '@/components/ui/modal/AddModal';
 import type { saveSchema } from '@/schema/save';
 import type { FieldErrors, UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
+import { getCategoriesWithTag } from '@/api/Category';
+import { useQuery } from '@tanstack/react-query';
 
 type ModalType = 'category' | 'tag';
 
@@ -25,6 +26,21 @@ interface ICateTagProps {
   editTag?: string[];
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
   error: FieldErrors<z.infer<typeof saveSchema>>;
+}
+
+interface ITag {
+  id: number;
+  tagName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ICategoryWithTags {
+  id: number;
+  categoryName: string;
+  createdAt: string;
+  updatedAt: string;
+  tags: ITag[];
 }
 
 const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagProps) => {
@@ -53,31 +69,56 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     }
   }, [editCate, editTag, setVisibleTag]);
 
-  const allCategories = useMemo(() => {
-    const categories = [...new Set(dummyCardData.map((item) => item.category))];
-    return categories.map((category) => ({
-      id: category,
-      content: category,
-      isSelected: category === selectedCategory,
-    }));
-  }, [selectedCategory]);
+  // 전체 카테고리와 태그를 한 번에 조회
+  const {
+    data: categoriesWithTagsData,
+    isLoading: isDataLoading,
+    isError: isDataError,
+  } = useQuery<ICategoryWithTags[]>({
+    queryKey: ['categoriesWithTags'],
+    queryFn: async () => {
+      const res = await getCategoriesWithTag();
+      return res.data ?? [];
+    },
+  });
 
-  const handleCategory = (categoryId: string) => {
-    setSelectedCategory(categoryId);
+  // 카테고리 목록 생성
+  const allCategories = useMemo(() => {
+    if (!categoriesWithTagsData || isDataError) return [];
+
+    const sortedCate = [...categoriesWithTagsData].sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+
+    return sortedCate.map((category) => ({
+      id: category.id,
+      content: category.categoryName,
+      isSelected: category.categoryName === selectedCategory,
+    }));
+  }, [categoriesWithTagsData, isDataError, selectedCategory]);
+
+  const handleCategory = (categoryName: string) => {
+    setSelectedCategory(categoryName);
     setVisibleTag(true);
   };
 
+  // 선택된 카테고리의 태그 목록 생성
+  const selectedCategoryTags = useMemo(() => {
+    if (!categoriesWithTagsData || !selectedCategory) return [];
+
+    const category = categoriesWithTagsData.find((c) => c.categoryName === selectedCategory);
+
+    return category?.tags?.map((tag) => tag.tagName) ?? [];
+  }, [categoriesWithTagsData, selectedCategory]);
+
   // 카테고리별 태그와 suggestionList를 통합하여 관리 (suggestion 태그를 앞에 배치)
   const allTags = useMemo(() => {
-    const matchedItems = dummyCardData.filter((item) => item.category === selectedCategory);
-    const categoryTags = matchedItems.flatMap((item) => item.tags);
-
-    // suggestionList의 태그들을 먼저 추가
     const suggestionTags = suggestionList.map((s) => s.content);
+    const fetchedTags = selectedCategoryTags;
 
-    // 중복 제거 (suggestion 태그가 우선)
-    const allTagsArray = [...suggestionTags, ...categoryTags];
-    const uniqueTags = Array.from(new Set(allTagsArray));
+    // suggestion 태그 먼저 배치
+    const combinedTags = [...suggestionTags, ...fetchedTags];
+    const uniqueTags = Array.from(new Set(combinedTags));
 
     return uniqueTags.map((tag) => {
       const suggestionItem = suggestionList.find((s) => s.content === tag);
@@ -89,7 +130,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
         suggestionId: suggestionItem?.id,
       };
     });
-  }, [selectedCategory, selectedTag, suggestionList]);
+  }, [selectedCategoryTags, selectedTag, suggestionList]);
 
   const handleTags = (tagId: string, isSuggestion?: boolean, suggestionId?: number) => {
     // suggestionList에서 온 태그인 경우 해당 아이템의 선택 상태도 업데이트
@@ -149,6 +190,21 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     setValue('tags', selectedTag);
   }, [selectedCategory, selectedTag, setValue]);
 
+  const statusWrapperClass =
+    'bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center';
+
+  if (isDataLoading) {
+    return (
+      <div className={statusWrapperClass}>
+        <div className='w-6 h-6 border-4 border-gray-400 border-t-gray-200 rounded-full animate-spin' />
+      </div>
+    );
+  }
+
+  if (isDataError) {
+    return <div className={statusWrapperClass + 'text-gray-500'}>정보를 불러오지 못했습니다.</div>;
+  }
+
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
       <div className='flex flex-col gap-1'>
@@ -175,7 +231,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
                   isSelected={category.isSelected}
                   className='border-lightGrayBlue'
                   selectedClassName='border border-lightGreen bg-lightGreen text-white'
-                  onClick={() => handleCategory(category.id)}
+                  onClick={() => handleCategory(category.content)}
                 />
               ))}
               <Chip
