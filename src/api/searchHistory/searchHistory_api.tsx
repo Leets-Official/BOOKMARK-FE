@@ -19,4 +19,15 @@ const postSearchHistory = async (searchContent: string) => {
     throw error;
   }
 };
-export { getSearchHistory, postSearchHistory };
+
+const deleteSearchHistory = async (searchHistoryId: number) => {
+  try {
+    const response = await api.delete(`/search-histories/${searchHistoryId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error('deleteSearchHistory 실패', error);
+    throw error;
+  }
+};
+
+export { getSearchHistory, postSearchHistory, deleteSearchHistory };

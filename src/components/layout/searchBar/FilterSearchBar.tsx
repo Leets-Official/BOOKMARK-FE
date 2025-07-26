@@ -5,7 +5,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
 import { useNavigate } from 'react-router-dom';
-import { getSearchHistory, postSearchHistory } from '@/api/searchHistory/searchHistory_api';
+import {
+  deleteSearchHistory,
+  getSearchHistory,
+  postSearchHistory,
+} from '@/api/searchHistory/searchHistory_api';
 import { useQuery } from '@tanstack/react-query';
 
 interface AnimatedHeightProps {
@@ -56,8 +60,6 @@ const FilterSearchBar: React.FC = () => {
     },
   });
 
-  console.log(history);
-
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     setSearchContents(e.currentTarget.value);
   };
@@ -78,9 +80,13 @@ const FilterSearchBar: React.FC = () => {
 
   const clearInput = () => setSearchContents('');
 
-  const handleDeleteHistory = (target: string) => {
-    console.log(target);
-    //setHistory((prev) => prev.filter((item) => item !== target));
+  const handleDeleteHistory = async (searchHistoryId: number) => {
+    try {
+      await deleteSearchHistory(searchHistoryId);
+      refetch();
+    } catch (error) {
+      console.error('검색 기록 삭제 실패:', error);
+    }
   };
 
   const handleDeleteCategory = (category: string) =>
@@ -177,7 +183,7 @@ const FilterSearchBar: React.FC = () => {
 
       {/* 최근 검색 기록 */}
       {isFocused && history.length > 0 && (
-        <div className='absolute top-full left-0 w-full  px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue hide-scrollbar'>
+        <div className='absolute top-full left-0 w-full px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue max-h-[128px] overflow-y-auto'>
           {history.map(({ keyword, id }: { keyword: string; id: number }) => (
             <div
               key={id}
@@ -192,12 +198,12 @@ const FilterSearchBar: React.FC = () => {
               </div>
               <Button
                 className='cursor-pointer'
-                icon={<DeleteIcon width={12} height={12} fill='#545966' />}
+                icon={<DeleteIcon width={12} height={12} stroke='#545966' />}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                 }}
-                onClick={() => handleDeleteHistory(keyword)}
+                onClick={() => handleDeleteHistory(id)}
               />
             </div>
           ))}
