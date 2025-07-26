@@ -44,10 +44,10 @@ const AddModal = ({
       const res = await createCategory(categoryName);
       return res;
     },
-    onSuccess: (res, categoryName) => {
+    onSuccess: (categoryName) => {
       queryClient.refetchQueries({ queryKey: ['categoriesWithTags'] }); // 새로고침 하지 않아도 즉시 반영
 
-      const newCategoryName = res.data?.name ?? categoryName;
+      const newCategoryName = categoryName;
       if (newCategoryName !== categoryName) {
         setSelectedCategory(newCategoryName);
       }

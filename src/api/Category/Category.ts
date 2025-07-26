@@ -3,7 +3,7 @@ import api from '../api';
 export const createCategory = async (categoryName: string) => {
   try {
     const response = await api.post('/categories', { categoryName });
-    return response.data;
+    return response.data.data;
   } catch (error: any) {
     return {
       error: true,
@@ -15,7 +15,7 @@ export const createCategory = async (categoryName: string) => {
 export const getCategories = async () => {
   try {
     const response = await api.get('/categories');
-    return response.data;
+    return response.data.data;
   } catch (error: any) {
     return {
       error: true,
@@ -27,9 +27,7 @@ export const getCategories = async () => {
 export const getCategoriesWithTag = async () => {
   try {
     const response = await api.get('/categories/with-tags');
-    console.log(response);
-    console.log(response.data);
-    return response.data;
+    return response.data.data;
   } catch (error: any) {
     return {
       error: true,

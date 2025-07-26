@@ -3,7 +3,7 @@ import api from '../api';
 export const createTag = async (categoryId: number, tagName: string) => {
   try {
     const response = await api.post('/tags', { categoryId, tagName });
-    return response.data;
+    return response.data.data;
   } catch (error: any) {
     return {
       error: true,
@@ -15,7 +15,7 @@ export const createTag = async (categoryId: number, tagName: string) => {
 export const getTags = async (categoryId: number) => {
   try {
     const response = await api.get('/tags', { params: { categoryId } });
-    return response.data;
+    return response.data.data;
   } catch (error: any) {
     return {
       error: true,

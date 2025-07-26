@@ -74,8 +74,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   } = useQuery<ICategoryWithTags[]>({
     queryKey: ['categoriesWithTags'],
     queryFn: async () => {
-      const res = await getCategoriesWithTag();
-      return res.data ?? [];
+      const data = await getCategoriesWithTag();
+      return data ?? [];
     },
     gcTime: 5 * 60 * 1000, // 5분동안 캐시 유지
   });
