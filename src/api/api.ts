@@ -72,9 +72,9 @@ api.interceptors.response.use(
         return api(request);
       } catch (refreshError) {
         console.error('refreshToken 갱신 실패', refreshError);
-        // localStorage.removeItem('accessToken');
-        // localStorage.removeItem('refreshToken');
-        // window.location.href = '/login';
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
