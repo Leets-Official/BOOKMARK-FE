@@ -77,6 +77,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
       const res = await getCategoriesWithTag();
       return res.data ?? [];
     },
+    gcTime: 5 * 60 * 1000, // 5분동안 캐시 유지
   });
 
   // 카테고리 목록 생성

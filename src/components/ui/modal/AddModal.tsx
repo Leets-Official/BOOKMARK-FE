@@ -42,36 +42,63 @@ const AddModal = ({
   const categoryMutation = useMutation({
     mutationFn: async (categoryName: string) => {
       const res = await createCategory(categoryName);
-      console.log('🧾 카테고리 생성 응답:', res);
-
-      const newCategoryName = res.data?.name ?? categoryName;
-      setSelectedCategory(newCategoryName);
-      setVisibleTag(true);
       return res;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+    onSuccess: (res, categoryName) => {
+      queryClient.refetchQueries({ queryKey: ['categoriesWithTags'] }); // 새로고침 하지 않아도 즉시 반영
+
+      const newCategoryName = res.data?.name ?? categoryName;
+      if (newCategoryName !== categoryName) {
+        setSelectedCategory(newCategoryName);
+      }
     },
     onError: () => {
       console.log('카테고리 생성 실패');
+      setSelectedCategory('');
+      setVisibleTag(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] }); // 다음에 해당 데이터를 사용할때 자동으로 최신화
     },
   });
 
   const handleAddCategory = (content: string) => {
+    // 즉시 UI 업데이트
+    setSelectedCategory(content);
+    setVisibleTag(true);
+
+    // 캐시에 임시로 새 카테고리 추가
+    queryClient.setQueryData(['categoriesWithTags'], (oldData: any) => {
+      if (!oldData) return [];
+      return [
+        ...oldData,
+        {
+          categoryId: Date.now(), // 임시 ID
+          categoryName: content,
+          createdAt: new Date().toISOString(),
+          tags: [],
+        },
+      ];
+    });
+
+    // 서버 요청
     categoryMutation.mutate(content);
   };
 
   const tagMutation = useMutation({
     mutationFn: async ({ categoryId, tagName }: { categoryId: number; tagName: string }) => {
       const res = await createTag(categoryId, tagName);
-      console.log('🧾 태그 생성 응답:', res);
       return res;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+      queryClient.refetchQueries({ queryKey: ['categoriesWithTags'] });
     },
     onError: () => {
       console.log('태그 생성 실패');
+      setVisibleMemoAndAlarm(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] }); // 다음에 해당 데이터를 사용할때 자동으로 최신화
     },
   });
 
@@ -83,9 +110,31 @@ const AddModal = ({
     );
     if (!selectedCategoryData) return;
 
+    // 즉시 UI 업데이트
     setSelectedTag((prev) => [...prev, tagName]);
     setVisibleMemoAndAlarm(true);
 
+    // 캐시에 임시로 새 태그 추가
+    queryClient.setQueryData(['categoriesWithTags'], (oldData: any) => {
+      if (!oldData) return oldData;
+      return oldData.map((category: any) => {
+        if (category.categoryId === selectedCategoryData.categoryId) {
+          return {
+            ...category,
+            tags: [
+              ...category.tags,
+              {
+                tagId: Date.now(), // 임시 ID
+                tagName: tagName,
+              },
+            ],
+          };
+        }
+        return category;
+      });
+    });
+
+    // 서버 요청
     tagMutation.mutate({
       categoryId: selectedCategoryData.categoryId,
       tagName,
