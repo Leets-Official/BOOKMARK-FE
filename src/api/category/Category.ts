@@ -1,4 +1,5 @@
 import api from '@/api/api';
+import type { CategoryProps } from '@/types';
 
 export const createCategory = async (categoryName: string) => {
   try {
@@ -15,7 +16,7 @@ export const createCategory = async (categoryName: string) => {
 export const getCategories = async () => {
   try {
     const response = await api.get('/categories');
-    return response.data.data;
+    return response.data.data as CategoryProps[];
   } catch (error: any) {
     return {
       error: true,
