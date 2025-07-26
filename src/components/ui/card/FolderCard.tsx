@@ -37,7 +37,7 @@ const FolderCard = (category: CategoryProps) => {
     },
   });
 
-  const { data: bookmarks } = useQuery({
+  const { data: bookmarks, isLoading: isBookmarksLoading } = useQuery({
     queryKey: ['bookmarks', category.id],
     queryFn: () => getBookmarks(category.id),
   });
@@ -89,6 +89,46 @@ const FolderCard = (category: CategoryProps) => {
 
   const images = bookmarks.data.slice(0, 3).map((bookmark) => bookmark.thumbnailUrl);
 
+  // 이미지 렌더링
+  const renderImages = (images: string[]) => {
+    if (images.length === 1) {
+      return <Image src={images[0]} className='w-full h-full object-cover rounded-2xl' />;
+    }
+
+    if (images.length === 2) {
+      return (
+        <>
+          <div className='w-1/2 h-full'>
+            <Image src={images[0]} className='w-full h-full object-cover rounded-l-2xl' />
+          </div>
+          <div className='w-1/2 h-full'>
+            <Image src={images[1]} className='w-full h-full object-cover rounded-r-2xl' />
+          </div>
+        </>
+      );
+    }
+
+    if (images.length >= 3) {
+      return (
+        <>
+          <div className='w-2/3 h-full'>
+            <Image src={images[0]} className='w-full h-full object-cover rounded-l-2xl' />
+          </div>
+          <div className='w-2/3 h-full flex flex-col'>
+            <div className='w-full h-1/2 border-l border-b border-white'>
+              <Image src={images[1]} className='w-full h-full object-cover' />
+            </div>
+            <div className='w-full h-1/2 border-l border-white'>
+              <Image src={images[2]} className='w-full h-full object-cover rounded-br-2xl' />
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <>
       <motion.div
@@ -107,35 +147,12 @@ const FolderCard = (category: CategoryProps) => {
       >
         {/**카테고리에 카드가 하나만 있으면 폴더에 하나만, 두개 있으면 1 : 1 비율... 3개까지 표시 */}
         <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex'>
-          {images.length === 1 && (
-            <Image src={images[0]} className='w-full h-full object-cover rounded-2xl' />
-          )}
-
-          {images.length === 2 && (
-            <>
-              <div className='w-1/2 h-full'>
-                <Image src={images[0]} className='w-full h-full object-cover rounded-l-2xl' />
-              </div>
-              <div className='w-1/2 h-full'>
-                <Image src={images[1]} className='w-full h-full object-cover rounded-r-2xl' />
-              </div>
-            </>
-          )}
-
-          {images.length >= 3 && (
-            <>
-              <div className='w-2/3 h-full'>
-                <Image src={images[0]} className='w-full h-full object-cover rounded-l-2xl' />
-              </div>
-              <div className='w-2/3 h-full flex flex-col'>
-                <div className='w-full h-1/2 border-l border-b border-white'>
-                  <Image src={images[1]} className='w-full h-full object-cover' />
-                </div>
-                <div className='w-full h-1/2 border-l border-white'>
-                  <Image src={images[2]} className='w-full h-full object-cover rounded-br-2xl' />
-                </div>
-              </div>
-            </>
+          {isBookmarksLoading ? (
+            <div className='w-full h-full flex items-center justify-center'>
+              <div className='w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin'></div>
+            </div>
+          ) : (
+            renderImages(images)
           )}
         </div>
         <div className='flex items-center justify-between pt-2'>

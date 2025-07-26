@@ -4,6 +4,8 @@ import CardListHeader from '@/components/layout/header/CardListHeader';
 import { useEffect, useState } from 'react';
 import { getCardsPerSlide } from '@/utils/CardPerSlide';
 import type { CategoryProps } from '@/types/api/category';
+import { useQueryClient } from '@tanstack/react-query';
+import { getBookmarks } from '@/api/bookmark/bookmark';
 
 // 슬라이드 애니메이션용 variants 정의
 const rowVariants = {
@@ -23,6 +25,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const [leaving, setLeaving] = useState(false);
   const [cardsPerSlide, setCardsPerSlide] = useState(getCardsPerSlide()); // 초기 계산
+  const queryClient = useQueryClient();
 
   // 현재 카드 수에 따라 최대 슬라이드 인덱스 계산
   const maxIndex = Math.floor((categories.length - 1) / cardsPerSlide);
@@ -61,6 +64,37 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [categories.length]); // 카드 수가 변할 때만 다시 바인딩
+
+  // 다음 슬라이드 미리 로드
+  useEffect(() => {
+    if (categories.length === 0) return;
+
+    // 현재 페이지의 북마크도 미리 로드 (안전장치)
+    const currentCategories = categories.slice(index * cardsPerSlide, (index + 1) * cardsPerSlide);
+
+    currentCategories.forEach((category) => {
+      queryClient.prefetchQuery({
+        queryKey: ['bookmarks', category.id],
+        queryFn: () => getBookmarks(category.id),
+      });
+    });
+
+    // 다음 페이지가 있다면 다음 페이지도 미리 로드
+    if (index < maxIndex) {
+      const nextIndex = index + 1;
+      const nextCategories = categories.slice(
+        nextIndex * cardsPerSlide,
+        (nextIndex + 1) * cardsPerSlide,
+      );
+
+      nextCategories.forEach((category) => {
+        queryClient.prefetchQuery({
+          queryKey: ['bookmarks', category.id],
+          queryFn: () => getBookmarks(category.id),
+        });
+      });
+    }
+  }, [index, categories, cardsPerSlide, maxIndex, queryClient]);
 
   const toggleLeaving = () => {
     setLeaving(false);
