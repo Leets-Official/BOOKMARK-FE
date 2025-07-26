@@ -63,7 +63,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response && error.response.status === 403 && !request._retry) {
+    if (error.response && error.response.status === 401 && !request._retry) {
       request._retry = true;
       try {
         console.log('refreshToken 갱신');
@@ -72,9 +72,9 @@ api.interceptors.response.use(
         return api(request);
       } catch (refreshError) {
         console.error('refreshToken 갱신 실패', refreshError);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        // localStorage.removeItem('accessToken');
+        // localStorage.removeItem('refreshToken');
+        // window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }

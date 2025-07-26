@@ -56,17 +56,23 @@ const FilterSearchBar: React.FC = () => {
     },
   });
 
+  console.log(history);
+
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     setSearchContents(e.currentTarget.value);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchContents.trim()) {
-      // 검색어 조회 query 업데이트
-      postSearchHistory(searchContents);
-      refetch();
-      console.log('검색어:', searchContents);
-      setSearchContents('');
+      try {
+        // 검색어 조회 query 업데이트
+        await postSearchHistory(searchContents);
+        refetch();
+        console.log('검색어:', searchContents);
+        setSearchContents('');
+      } catch (error) {
+        console.error('검색 기록 저장 실패:', error);
+      }
     }
   };
 
@@ -171,7 +177,7 @@ const FilterSearchBar: React.FC = () => {
 
       {/* 최근 검색 기록 */}
       {isFocused && history.length > 0 && (
-        <div className='absolute top-full left-0 w-full  px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue'>
+        <div className='absolute top-full left-0 w-full  px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue hide-scrollbar'>
           {history.map(({ keyword, id }: { keyword: string; id: number }) => (
             <div
               key={id}
