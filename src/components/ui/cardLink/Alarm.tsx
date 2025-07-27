@@ -56,7 +56,7 @@ const Alarm = ({ editDate, editTime, setValue }: AlarmProps) => {
           >
             <div className='flex flex-row gap-2 mt-4'>
               <DateTimeDropDown
-                icon={<CalendarIcon width={24} height={24} />}
+                icon={<CalendarIcon width={22} height={22} />}
                 options={dateOptions}
                 title='날짜 선택'
                 subTitle='날짜'
@@ -67,7 +67,7 @@ const Alarm = ({ editDate, editTime, setValue }: AlarmProps) => {
               />
               {/* 시간 드롭다운 */}
               <DateTimeDropDown
-                icon={<ScheduleIcon width={24} height={24} />}
+                icon={<ScheduleIcon width={22} height={22} />}
                 options={timeOptions}
                 title='시간선택'
                 subTitle='시간'
