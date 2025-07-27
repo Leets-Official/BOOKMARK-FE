@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import DropDown from '@/components/ui/DropDown';
-import { motion } from 'framer-motion';
 import { BackArrowIcon } from '@/assets';
+import clsx from 'clsx';
 
 interface DateTimeDropDownProps {
   isOpen: boolean;
@@ -37,19 +37,24 @@ const DateTimeDropDown = ({
   return (
     <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef}>
       <DropDown.Trigger onClick={() => setIsOpen(!isOpen)} ref={parentRef}>
-        <div className='w-[152px] bg-white rounded-[8px] flex flex-row gap-2 items-center border border-gray cursor-pointer relative p-2 justify-between'>
-          <div className='flex flex-row gap-2 items-center text-stone'>
-            {icon}
+        <div
+          className={clsx(
+            'w-[152px] h-[40px] rounded-[8px] flex flex-row items-center border border-gray cursor-pointer relative p-2 justify-between',
+            isOpen ? 'bg-snowGray' : 'bg-white',
+          )}
+        >
+          <div className='flex flex-row gap-2 items-center text-stone text-15 font-medium'>
+            {!isOpen && icon}
             <p>{selectedOption || title}</p>
           </div>
-          <motion.div
-            animate={{
-              rotate: isOpen ? 90 : -90,
-            }}
-            transition={{ duration: 0.2 }}
+          <div
+            className={clsx(
+              'transform transition-transform duration-300',
+              isOpen ? 'rotate-90' : '-rotate-90',
+            )}
           >
-            <BackArrowIcon width={20} height={20} />
-          </motion.div>
+            <BackArrowIcon width={18} height={18} />
+          </div>
         </div>
       </DropDown.Trigger>
       <DropDown.Menu
@@ -58,8 +63,8 @@ const DateTimeDropDown = ({
         ref={menuRef}
         className='absolute top-full left-0 mt-2 bg-white rounded-[8px] flex flex-col gap-5 border border-areaBorder z-120 shadow-[0_2px_7px_rgba(2,34,94,0.1)] max-h-60 overflow-y-auto thin-scrollbar p-4'
       >
-        <p className='text-sm text-areaBorder font-medium'>{subTitle}</p>
-        <div className='flex flex-col gap-5 text-gray'>
+        <p className='text-[13px] text-areaBorder'>{subTitle}</p>
+        <div className='flex flex-col gap-5 text-15 text-stone'>
           {options.map((option) => (
             <DropDown.Item key={option.id} onClick={() => onItemClick(option.name)}>
               {option.name}
