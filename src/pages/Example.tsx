@@ -1,7 +1,5 @@
-import ToastExample from '@/example/ToastExample';
-
 const Example = () => {
-  return <ToastExample />;
+  return <div>Example</div>;
 };
 
 export default Example;
