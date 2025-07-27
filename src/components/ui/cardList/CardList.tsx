@@ -1,12 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import FolderCard from '../card/FolderCard';
 import CardListHeader from '@/components/layout/header/CardListHeader';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { getCardsPerSlide } from '@/utils/CardPerSlide';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { getBookmarks } from '@/api/bookmark/bookmark';
-import { getCategories } from '@/api/category/category';
 import Loading from '../loading/Loading';
+import type { CategoryProps } from '@/types/api/category';
 
 // 슬라이드 애니메이션용 variants 정의
 const rowVariants = {
@@ -21,23 +21,18 @@ const rowVariants = {
   }),
 };
 
-const CardList = () => {
+const CardList = ({
+  categories,
+  isLoading,
+}: {
+  categories: CategoryProps[];
+  isLoading: boolean;
+}) => {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const [leaving, setLeaving] = useState(false);
   const [cardsPerSlide, setCardsPerSlide] = useState(getCardsPerSlide()); // 초기 계산
   const queryClient = useQueryClient();
-
-  // 카테고리 조회
-  const { data: categoriesResponse, isLoading } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => {
-      return getCategories();
-    },
-  });
-
-  // 카테고리 데이터 추출 (안전한 기본값 제공)
-  const categories = useMemo(() => categoriesResponse?.data || [], [categoriesResponse?.data]);
 
   // 현재 카드 수에 따라 최대 슬라이드 인덱스 계산
   const maxIndex = Math.floor((categories.length - 1) / cardsPerSlide);
@@ -125,10 +120,6 @@ const CardList = () => {
       <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden'>
         {isLoading ? (
           <Loading className=' bg-white w-full min-h-[200px] rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center' />
-        ) : categoriesResponse?.error ? (
-          <div className='text-center text-red-500'>
-            카테고리 조회에 실패했습니다: {categoriesResponse.message}
-          </div>
         ) : (
           <>
             <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>

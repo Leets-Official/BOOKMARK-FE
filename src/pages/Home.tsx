@@ -20,12 +20,24 @@ const Home = () => {
     console.log('🔄 Refresh Token:', refreshToken);
   }, []);
 
+  // 카테고리 조회
+  const { data: categories, isLoading } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => {
+      return getCategories();
+    },
+  });
+
   return (
     <div className='relative min-h-screen'>
       <HomeHeader />
       <HomLogo />
       <ChangeSearchBar barMarginTop={260} />
-      {isMobile ? <MobileCardList categories={categories.data} /> : <CardList />}
+      {isMobile ? (
+        <MobileCardList categories={categories?.data || []} isLoading={isLoading} />
+      ) : (
+        <CardList categories={categories?.data || []} isLoading={isLoading} />
+      )}
       <SaveCardList />
       <HomeFooter />
       <Outlet />
