@@ -15,7 +15,7 @@ import { Controller, useForm } from 'react-hook-form';
 import type { CategoryProps } from '@/types/api/category';
 import { getBookmarks } from '@/api/bookmark/bookmark';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deleteCategory, updateCategory } from '@/api/category/Category';
+import { deleteCategory, updateCategory } from '@/api/category/category';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
