@@ -1,4 +1,11 @@
-import { BackArrow2Icon, LogoutIcon, ImageIcon, DeleteIcon, Delete2Icon } from '@/assets';
+import {
+  BackArrow2Icon,
+  LogoutIcon,
+  ImageIcon,
+  DeleteIcon,
+  Delete2Icon,
+  GroupIcon,
+} from '@/assets';
 import AccountSettingPage from './AccountSettingPage';
 import { useState } from 'react';
 
@@ -10,6 +17,7 @@ const MyPage = ({ onClose }: MyPageProps) => {
   const [showAccountSetting, setShowAccountSetting] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [contactEmail, setContactEmail] = useState('insightboxxx@gmail.com');
+  const [copied, setCopied] = useState(false);
 
   const handleOpenAccountSetting = () => setShowAccountSetting(true);
   const handleCloseAccountSetting = () => setShowAccountSetting(false);
@@ -19,7 +27,8 @@ const MyPage = ({ onClose }: MyPageProps) => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(contactEmail);
-    alert('이메일이 복사되었습니다!');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -88,13 +97,15 @@ const MyPage = ({ onClose }: MyPageProps) => {
       {showContactModal && (
         <div className='fixed inset-0 bg-black/30 flex items-center justify-center z-50'>
           <div className='w-[330px] bg-white rounded-[20px] shadow-md pt-6 pb-0 relative flex flex-col px-0'>
-            <div className='flex justify-between items-center mb-4 px-6'>
-              <h3 className='text-[15px] font-semibold text-center flex-1'>문의하기</h3>
-              <button onClick={handleCloseContactModal} className='ml-auto px-6'>
+            {/* 헤더 중앙 정렬 */}
+            <div className='relative mb-4 px-6 h-[24px]'>
+              <h3 className='text-[15px] font-semibold text-center absolute left-1/2 -translate-x-1/2 top-0'>
+                문의하기
+              </h3>
+              <button onClick={handleCloseContactModal} className='absolute right-0 top-0'>
                 <DeleteIcon width={20} height={20} className='w-5 h-5 text-black' />
               </button>
             </div>
-
             <div className='relative mb-1 px-6'>
               <input
                 type='text'
@@ -115,15 +126,25 @@ const MyPage = ({ onClose }: MyPageProps) => {
             </div>
 
             <p className='text-xs text-gray-400 mb-4 text-right select-none px-6'>
-              {contactEmail.length} / 10
+              {contactEmail.length} / 50
             </p>
 
-            <button
-              onClick={handleCopy}
-              className='w-full h-[44px] bg-[#2F70FF] text-white rounded-b-[20px] text-sm font-semibold mt-auto'
-            >
-              복사하기
-            </button>
+            {/* 복사하기 버튼 */}
+            <div className='relative px-6 pb-6'>
+              <button
+                onClick={handleCopy}
+                className='w-full h-[44px] bg-[#2F70FF] text-white rounded-[20px] text-sm font-semibold'
+              >
+                복사하기
+              </button>
+
+              {copied && (
+                <div className='absolute left-1/2 -translate-x-1/2 top-[90px] flex items-center gap-2 px-3 py-2 rounded-full bg-gray-700 text-white text-xs font-medium shadow-md'>
+                  <GroupIcon className='w-4 h-4 text-white' />
+                  복사 완료!
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
