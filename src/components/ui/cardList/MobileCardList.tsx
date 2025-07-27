@@ -62,7 +62,7 @@ const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
           className='flex justify-start items-center gap-3 cursor-grab active:cursor-grabbing'
         >
           {categories.map((category) => (
-            <FolderCard key={category.id} {...category} />
+            <FolderCard key={category.id} category={category} />
           ))}
         </motion.div>
       </div>

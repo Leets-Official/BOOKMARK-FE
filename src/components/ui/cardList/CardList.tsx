@@ -28,7 +28,8 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   const queryClient = useQueryClient();
 
   // 현재 카드 수에 따라 최대 슬라이드 인덱스 계산
-  const maxIndex = Math.floor((categories.length - 1) / cardsPerSlide);
+  const maxIndex =
+    categories.length === 0 ? 0 : Math.floor((categories.length - 1) / cardsPerSlide);
 
   // 현재 슬라이드에 보여줄 카드만 추출
   const cardSlice = categories.slice(index * cardsPerSlide, index * cardsPerSlide + cardsPerSlide);
@@ -80,6 +81,22 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
       });
     });
 
+    // 이전 페이지가 있다면 이전 페이지도 미리 로드
+    if (index > 0) {
+      const prevIndex = index - 1;
+      const prevCategories = categories.slice(
+        prevIndex * cardsPerSlide,
+        (prevIndex + 1) * cardsPerSlide,
+      );
+
+      prevCategories.forEach((category) => {
+        queryClient.prefetchQuery({
+          queryKey: ['bookmarks', category.id],
+          queryFn: () => getBookmarks(category.id),
+        });
+      });
+    }
+
     // 다음 페이지가 있다면 다음 페이지도 미리 로드
     if (index < maxIndex) {
       const nextIndex = index + 1;
@@ -124,14 +141,18 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
             style={{ willChange: 'transform' }} // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
           >
             {cardSlice.map((category) => (
-              <FolderCard key={category.id} {...category} />
+              <FolderCard
+                key={category.id}
+                category={category}
+                pages={[index, categories.length, cardsPerSlide, decreaseIndex]}
+              />
             ))}
           </motion.div>
         </AnimatePresence>
         {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
         <div className='invisible flex w-full'>
           {cardSlice.map((categories) => (
-            <FolderCard key={`ghost-${categories.id}`} {...categories} />
+            <FolderCard key={`ghost-${categories.id}`} category={categories} />
           ))}
         </div>
       </div>

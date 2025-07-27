@@ -16,12 +16,20 @@ import type { CategoryProps } from '@/types/api/category';
 import { getBookmarks } from '@/api/bookmark/bookmark';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, updateCategory } from '@/api/category/category';
+import Loading from '../loading/Loading';
+import toast from 'react-hot-toast';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
   'overflow-hidden font-sans font-semibold text-ellipsis whitespace-nowrap ml-1 md:text-xl text-base';
 
-const FolderCard = (category: CategoryProps) => {
+const FolderCard = ({
+  category,
+  pages,
+}: {
+  category: CategoryProps;
+  pages?: [number, number, number, () => void];
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
@@ -37,7 +45,7 @@ const FolderCard = (category: CategoryProps) => {
     },
   });
 
-  const { data: bookmarks, isLoading: isBookmarksLoading } = useQuery({
+  const { data: bookmarks, isPending: isBookmarksLoading } = useQuery({
     queryKey: ['bookmarks', category.id],
     queryFn: () => getBookmarks(category.id),
   });
@@ -66,24 +74,47 @@ const FolderCard = (category: CategoryProps) => {
         const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
         console.log('카테고리 수정 실패:', errorMessage);
         queryClient.setQueryData(['categories'], context?.previousCategories);
+        toast.error('카테고리 수정 실패');
       }
 
+      toast.success('카테고리 수정 완료');
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 
   const { mutate: deleteCategoryMutation } = useMutation({
     mutationFn: (categoryId: number) => deleteCategory(categoryId),
-    onSuccess: (res) => {
-      if (res.error) {
-        console.error('카테고리 삭제 실패:', res.message);
-        return;
+    onMutate: async (categoryId) => {
+      await queryClient.cancelQueries({ queryKey: ['categories'] });
+      const previousCategories = queryClient.getQueryData(['categories']);
+      queryClient.setQueryData(['categories'], (old: any) => ({
+        ...old,
+        data: old.data.filter((cat: CategoryProps) => cat.id !== categoryId),
+      }));
+
+      // 삭제 후 페이지 조정
+      if (!isMobile && pages) {
+        const [page, categoryLength, cardsPerSlide, decreaseIndex] = pages;
+        const newCategoryLength = categoryLength - 1; // 삭제될 카테고리 개수
+        const newMaxIndex = Math.floor((newCategoryLength - 1) / cardsPerSlide);
+
+        if (page > newMaxIndex && newMaxIndex >= 0) {
+          decreaseIndex();
+        }
       }
-      // 삭제 후 페이지 새로고침
-      window.location.reload();
+
+      return { previousCategories };
     },
-    onError: (error) => {
-      console.error('카테고리 삭제 실패:', error);
+    onSettled: (data, error, _, context) => {
+      if (data?.error || error) {
+        const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
+        console.log('카테고리 삭제 실패:', errorMessage);
+        queryClient.setQueryData(['categories'], context?.previousCategories);
+        toast.error('카테고리 삭제 실패');
+      }
+
+      toast.success('카테고리 삭제 완료');
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 
@@ -154,7 +185,7 @@ const FolderCard = (category: CategoryProps) => {
         className={clsx(
           isMobile
             ? 'min-w-40 pt-2'
-            : 'w-1/2 lg:w-1/3 xl:w-1/4 sm:mt-2 p-2 hover:shadow-[0_2px_7px_rgba(2,34,94,0.1)] hover:border-gray-300 rounded-2xl',
+            : 'w-1/2 lg:w-1/3 xl:w-1/4 sm:mt-2 p-2 mb-2 hover:shadow-[0_2px_7px_rgba(2,34,94,0.1)] hover:border-gray-300 rounded-2xl',
           isMenuOpen && !isMobile
             ? 'border border-gray-300 shadow-[0_2px_7px_rgba(2,34,94,0.1)]'
             : 'border border-transparent',
@@ -164,7 +195,7 @@ const FolderCard = (category: CategoryProps) => {
         <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex'>
           {isBookmarksLoading ? (
             <div className='w-full h-full flex items-center justify-center'>
-              <div className='w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin'></div>
+              <Loading className='w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
             </div>
           ) : (
             renderImages(images)
