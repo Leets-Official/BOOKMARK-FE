@@ -12,9 +12,11 @@ interface AlarmProps {
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
   editDate?: string;
   editTime?: string;
+  // eslint-disable-next-line no-unused-vars
+  onDropdownScroll: (isOpen: boolean) => void;
 }
 
-const Alarm = ({ editDate, editTime, setValue }: AlarmProps) => {
+const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
   const visible = atomVisible;
   const dateOptions = useAtomValue(dateOptionsAtom);
@@ -24,7 +26,12 @@ const Alarm = ({ editDate, editTime, setValue }: AlarmProps) => {
   const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
   const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
 
-  const alarmRef = useRef<HTMLDivElement>(null); // ✅ ref 추가
+  const alarmRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const isDropdownOpen = isDateDropDownOpen || isTimeDropDownOpen;
+    onDropdownScroll?.(isDropdownOpen);
+  }, [isDateDropDownOpen, isTimeDropDownOpen, onDropdownScroll]);
 
   // 드롭다운 열릴 때 스크롤 이동
   useEffect(() => {
