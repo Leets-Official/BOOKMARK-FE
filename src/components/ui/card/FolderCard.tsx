@@ -23,7 +23,13 @@ import toast from 'react-hot-toast';
 const TitleText =
   'overflow-hidden font-sans font-semibold text-ellipsis whitespace-nowrap ml-1 md:text-xl text-base';
 
-const FolderCard = (category: CategoryProps) => {
+const FolderCard = ({
+  category,
+  pages,
+}: {
+  category: CategoryProps;
+  pages?: [number, number, number, () => void];
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
@@ -78,19 +84,34 @@ const FolderCard = (category: CategoryProps) => {
 
   const { mutate: deleteCategoryMutation } = useMutation({
     mutationFn: (categoryId: number) => deleteCategory(categoryId),
-    onSuccess: (res) => {
-      if (res.error) {
-        console.error('카테고리 삭제 실패:', res.message);
-        toast.error('카테고리 삭제 실패');
-        return;
+    onMutate: async (categoryId) => {
+      await queryClient.cancelQueries({ queryKey: ['categories'] });
+      const previousCategories = queryClient.getQueryData(['categories']);
+      queryClient.setQueryData(['categories'], (old: any) => ({
+        ...old,
+        data: old.data.filter((cat: CategoryProps) => cat.id !== categoryId),
+      }));
+
+      // 삭제 후 페이지 조정
+      if (!isMobile && pages) {
+        const [page, categoryLength, cardsPerSlide, decreaseIndex] = pages;
+        const newCategoryLength = categoryLength - 1; // 삭제될 카테고리 개수
+        const newMaxIndex = Math.floor((newCategoryLength - 1) / cardsPerSlide);
+
+        if (page > newMaxIndex && newMaxIndex >= 0) {
+          decreaseIndex();
+        }
       }
-      // 삭제 후 페이지 새로고침
-      toast.success('카테고리 삭제 완료');
-      window.location.reload();
+
+      return { previousCategories };
     },
-    onError: (error) => {
-      console.error('카테고리 삭제 실패:', error);
-      toast.error('카테고리 삭제 실패');
+    onSettled: (data, error, _, context) => {
+      if (data?.error || error) {
+        const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
+        console.log('카테고리 삭제 실패:', errorMessage);
+        queryClient.setQueryData(['categories'], context?.previousCategories);
+        toast.error('카테고리 삭제 실패');
+      }
     },
   });
 
@@ -161,7 +182,7 @@ const FolderCard = (category: CategoryProps) => {
         className={clsx(
           isMobile
             ? 'min-w-40 pt-2'
-            : 'w-1/2 lg:w-1/3 xl:w-1/4 sm:mt-2 p-2 hover:shadow-[0_2px_7px_rgba(2,34,94,0.1)] hover:border-gray-300 rounded-2xl',
+            : 'w-1/2 lg:w-1/3 xl:w-1/4 sm:mt-2 p-2 mb-2 hover:shadow-[0_2px_7px_rgba(2,34,94,0.1)] hover:border-gray-300 rounded-2xl',
           isMenuOpen && !isMobile
             ? 'border border-gray-300 shadow-[0_2px_7px_rgba(2,34,94,0.1)]'
             : 'border border-transparent',
