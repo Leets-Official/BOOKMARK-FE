@@ -81,6 +81,22 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
       });
     });
 
+    // 이전 페이지가 있다면 이전 페이지도 미리 로드
+    if (index > 0) {
+      const prevIndex = index - 1;
+      const prevCategories = categories.slice(
+        prevIndex * cardsPerSlide,
+        (prevIndex + 1) * cardsPerSlide,
+      );
+
+      prevCategories.forEach((category) => {
+        queryClient.prefetchQuery({
+          queryKey: ['bookmarks', category.id],
+          queryFn: () => getBookmarks(category.id),
+        });
+      });
+    }
+
     // 다음 페이지가 있다면 다음 페이지도 미리 로드
     if (index < maxIndex) {
       const nextIndex = index + 1;

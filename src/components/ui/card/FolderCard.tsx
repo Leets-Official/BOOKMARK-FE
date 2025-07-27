@@ -112,6 +112,9 @@ const FolderCard = ({
         queryClient.setQueryData(['categories'], context?.previousCategories);
         toast.error('카테고리 삭제 실패');
       }
+
+      toast.success('카테고리 삭제 완료');
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 
