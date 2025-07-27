@@ -20,31 +20,12 @@ const Home = () => {
     console.log('🔄 Refresh Token:', refreshToken);
   }, []);
 
-  // 카테고리 조회
-  const { data: categories } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => {
-      return getCategories();
-    },
-  });
-
-  if (!categories || categories.error || !categories.data) {
-    if (categories?.error) {
-      console.error('카테고리 조회 실패:', categories.message);
-    }
-    return <div>카테고리 조회 실패</div>;
-  }
-
   return (
     <div className='relative min-h-screen'>
       <HomeHeader />
       <HomLogo />
       <ChangeSearchBar barMarginTop={260} />
-      {isMobile ? (
-        <MobileCardList categories={categories.data} />
-      ) : (
-        <CardList categories={categories.data} />
-      )}
+      {isMobile ? <MobileCardList categories={categories.data} /> : <CardList />}
       <SaveCardList />
       <HomeFooter />
       <Outlet />

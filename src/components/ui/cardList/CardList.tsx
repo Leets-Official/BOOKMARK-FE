@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import FolderCard from '../card/FolderCard';
 import CardListHeader from '@/components/layout/header/CardListHeader';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { getCardsPerSlide } from '@/utils/CardPerSlide';
-import type { CategoryProps } from '@/types/api/category';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getBookmarks } from '@/api/bookmark/bookmark';
+import { getCategories } from '@/api/category/category';
+import Loading from '../loading/Loading';
 
 // 슬라이드 애니메이션용 variants 정의
 const rowVariants = {
@@ -20,12 +21,23 @@ const rowVariants = {
   }),
 };
 
-const CardList = ({ categories }: { categories: CategoryProps[] }) => {
+const CardList = () => {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const [leaving, setLeaving] = useState(false);
   const [cardsPerSlide, setCardsPerSlide] = useState(getCardsPerSlide()); // 초기 계산
   const queryClient = useQueryClient();
+
+  // 카테고리 조회
+  const { data: categoriesResponse, isLoading } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => {
+      return getCategories();
+    },
+  });
+
+  // 카테고리 데이터 추출 (안전한 기본값 제공)
+  const categories = useMemo(() => categoriesResponse?.data || [], [categoriesResponse?.data]);
 
   // 현재 카드 수에 따라 최대 슬라이드 인덱스 계산
   const maxIndex = Math.floor((categories.length - 1) / cardsPerSlide);
@@ -67,6 +79,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
 
   // 다음 슬라이드 미리 로드
   useEffect(() => {
+    // 카테고리가 없으면 미리 로드하지 않음
     if (categories.length === 0) return;
 
     // 현재 페이지의 북마크도 미리 로드 (안전장치)
@@ -110,29 +123,39 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
         showPagination={true}
       />
       <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden'>
-        <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
-          <motion.div
-            key={index}
-            variants={rowVariants}
-            custom={direction}
-            initial='start'
-            animate='variant'
-            exit='end'
-            transition={{ type: 'tween', duration: 1, ease: 'easeInOut' }}
-            className='absolute flex w-full justify-start px-2 pt-1 gap-3'
-            style={{ willChange: 'transform' }} // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
-          >
-            {cardSlice.map((category) => (
-              <FolderCard key={category.id} {...category} />
-            ))}
-          </motion.div>
-        </AnimatePresence>
-        {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
-        <div className='invisible flex w-full'>
-          {cardSlice.map((categories) => (
-            <FolderCard key={`ghost-${categories.id}`} {...categories} />
-          ))}
-        </div>
+        {isLoading ? (
+          <Loading className=' bg-white w-full min-h-[200px] rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center' />
+        ) : categoriesResponse?.error ? (
+          <div className='text-center text-red-500'>
+            카테고리 조회에 실패했습니다: {categoriesResponse.message}
+          </div>
+        ) : (
+          <>
+            <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
+              <motion.div
+                key={index}
+                variants={rowVariants}
+                custom={direction}
+                initial='start'
+                animate='variant'
+                exit='end'
+                transition={{ type: 'tween', duration: 1, ease: 'easeInOut' }}
+                className='absolute flex w-full justify-start px-2 py-1 gap-3'
+                style={{ willChange: 'transform' }} // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
+              >
+                {cardSlice.map((category) => (
+                  <FolderCard key={category.id} {...category} />
+                ))}
+              </motion.div>
+            </AnimatePresence>
+            {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
+            <div className='invisible flex w-full'>
+              {cardSlice.map((categories) => (
+                <FolderCard key={`ghost-${categories.id}`} {...categories} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
