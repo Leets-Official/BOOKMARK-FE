@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { getCardsPerSlide } from '@/utils/CardPerSlide';
 import { useQueryClient } from '@tanstack/react-query';
 import { getBookmarks } from '@/api/bookmark/bookmark';
-import Loading from '../loading/Loading';
 import type { CategoryProps } from '@/types/api/category';
 
 // 슬라이드 애니메이션용 variants 정의
@@ -21,13 +20,7 @@ const rowVariants = {
   }),
 };
 
-const CardList = ({
-  categories,
-  isLoading,
-}: {
-  categories: CategoryProps[];
-  isLoading: boolean;
-}) => {
+const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const [leaving, setLeaving] = useState(false);
@@ -118,35 +111,29 @@ const CardList = ({
         showPagination={true}
       />
       <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden'>
-        {isLoading ? (
-          <Loading className=' bg-white w-full min-h-[200px] rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center' />
-        ) : (
-          <>
-            <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
-              <motion.div
-                key={index}
-                variants={rowVariants}
-                custom={direction}
-                initial='start'
-                animate='variant'
-                exit='end'
-                transition={{ type: 'tween', duration: 1, ease: 'easeInOut' }}
-                className='absolute flex w-full justify-start px-2 py-1 gap-3'
-                style={{ willChange: 'transform' }} // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
-              >
-                {cardSlice.map((category) => (
-                  <FolderCard key={category.id} {...category} />
-                ))}
-              </motion.div>
-            </AnimatePresence>
-            {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
-            <div className='invisible flex w-full'>
-              {cardSlice.map((categories) => (
-                <FolderCard key={`ghost-${categories.id}`} {...categories} />
-              ))}
-            </div>
-          </>
-        )}
+        <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
+          <motion.div
+            key={index}
+            variants={rowVariants}
+            custom={direction}
+            initial='start'
+            animate='variant'
+            exit='end'
+            transition={{ type: 'tween', duration: 1, ease: 'easeInOut' }}
+            className='absolute flex w-full justify-start px-2 py-1 gap-3'
+            style={{ willChange: 'transform' }} // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
+          >
+            {cardSlice.map((category) => (
+              <FolderCard key={category.id} {...category} />
+            ))}
+          </motion.div>
+        </AnimatePresence>
+        {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
+        <div className='invisible flex w-full'>
+          {cardSlice.map((categories) => (
+            <FolderCard key={`ghost-${categories.id}`} {...categories} />
+          ))}
+        </div>
       </div>
     </div>
   );

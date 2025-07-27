@@ -3,16 +3,9 @@ import { motion, useMotionValue } from 'framer-motion';
 import FolderCard from '../card/FolderCard';
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import type { CategoryProps } from '@/types/api/category';
-import Loading from '../loading/Loading';
 
 // 모바일 용 카드리스트
-const MobileCardList = ({
-  categories,
-  isLoading,
-}: {
-  categories: CategoryProps[];
-  isLoading: boolean;
-}) => {
+const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
   const x = useMotionValue(0); // 드래그 위치 상태
   const dragRef = useRef<HTMLDivElement>(null); // 드래그 가능한 카드 리스트 영역
   const containerRef = useRef<HTMLDivElement>(null); // 외부 컨테이너 영역 (실제 보이는 영역)
@@ -53,29 +46,25 @@ const MobileCardList = ({
         showCategory={true}
       />
       <div ref={containerRef} className='relative overflow-hidden w-4/5 max-sm:w-9/10 mx-auto'>
-        {isLoading ? (
-          <Loading className='bg-white w-full min-h-[200px] rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center' />
-        ) : (
-          <motion.div
-            ref={dragRef}
-            style={{
-              x,
-              willChange: 'transform', // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해
-            }}
-            drag='x'
-            dragConstraints={constraints}
-            dragElastic={0.05}
-            dragTransition={{
-              power: 0.01, // 드래그 이동 거리의 가중치와 속도를 낮춰 너무 빨리 넘어가는 것 방지
-              timeConstant: 200,
-            }}
-            className='flex justify-start items-center gap-3 cursor-grab active:cursor-grabbing'
-          >
-            {categories.map((category) => (
-              <FolderCard key={category.id} {...category} />
-            ))}
-          </motion.div>
-        )}
+        <motion.div
+          ref={dragRef}
+          style={{
+            x,
+            willChange: 'transform', // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해
+          }}
+          drag='x'
+          dragConstraints={constraints}
+          dragElastic={0.05}
+          dragTransition={{
+            power: 0.01, // 드래그 이동 거리의 가중치와 속도를 낮춰 너무 빨리 넘어가는 것 방지
+            timeConstant: 200,
+          }}
+          className='flex justify-start items-center gap-3 cursor-grab active:cursor-grabbing'
+        >
+          {categories.map((category) => (
+            <FolderCard key={category.id} {...category} />
+          ))}
+        </motion.div>
       </div>
     </div>
   );

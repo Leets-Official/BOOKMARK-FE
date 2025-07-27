@@ -10,6 +10,8 @@ import HomLogo from '@/components/ui/HomLogo';
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories } from '@/api/category/category';
+import Loading from '@/components/ui/loading/Loading';
+import CardListHeader from '@/components/layout/header/CardListHeader';
 
 const Home = () => {
   useEffect(() => {
@@ -21,7 +23,7 @@ const Home = () => {
   }, []);
 
   // 카테고리 조회
-  const { data: categories, isLoading } = useQuery({
+  const { data: categories, isPending } = useQuery({
     queryKey: ['categories'],
     queryFn: () => {
       return getCategories();
@@ -33,10 +35,19 @@ const Home = () => {
       <HomeHeader />
       <HomLogo />
       <ChangeSearchBar barMarginTop={260} />
-      {isMobile ? (
-        <MobileCardList categories={categories?.data || []} isLoading={isLoading} />
+      {isPending ? (
+        <div className='mt-70'>
+          <CardListHeader currentNum={'0'} title='카테고리' showCategory={true} />
+          <Loading className='bg-white w-full min-h-[200px] rounded-xl  p-3 py-6 flex justify-center items-center' />
+        </div>
       ) : (
-        <CardList categories={categories?.data || []} isLoading={isLoading} />
+        <>
+          {isMobile ? (
+            <MobileCardList categories={categories?.data || []} />
+          ) : (
+            <CardList categories={categories?.data || []} />
+          )}
+        </>
       )}
       <SaveCardList />
       <HomeFooter />
