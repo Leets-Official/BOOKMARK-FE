@@ -16,7 +16,10 @@ const DropDownItem = ({ children, onClick }: DropDownItemProps) => {
   };
 
   return (
-    <div className='cursor-pointer' onClick={handleClick}>
+    <div
+      className='cursor-pointer py-3 px-1 rounded bg-white hover:bg-gray-100'
+      onClick={handleClick}
+    >
       {children}
     </div>
   );
