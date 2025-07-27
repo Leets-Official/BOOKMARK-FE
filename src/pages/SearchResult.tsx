@@ -6,7 +6,7 @@ import {
   dummyCategoryList,
   dummyPlatformList,
   dummyTagList,
-} from '@/contants/DummyData';
+} from '@/constants/DummyData';
 import { useState, useRef, useEffect } from 'react';
 import type { ChipProps } from '@/types/components/components';
 import clsx from 'clsx';

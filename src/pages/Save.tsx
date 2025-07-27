@@ -20,6 +20,7 @@ import type z from 'zod';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import clsx from 'clsx';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -65,6 +66,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const resetVisibleCate = useSetAtom(visibleCategoryAtom);
   const resetVisibleTag = useSetAtom(visibleTagAtom);
   const resetMemo = useSetAtom(memoAtom);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
   const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
     url: '',
@@ -143,6 +145,11 @@ const Save = ({ type }: SaveInterfaceProps) => {
     }
   };
 
+  // 드롭다운 상태 변경 핸들러
+  const handleDropdownScroll = (isOpen: boolean) => {
+    setIsDropdownOpen(isOpen);
+  };
+
   return (
     // PC : 모달형식, 모바일 : 전체화면
     <form id='save-form' onSubmit={handleSubmit(handleSave)}>
@@ -151,8 +158,12 @@ const Save = ({ type }: SaveInterfaceProps) => {
           <div className='absolute top-0 left-0 right-0 z-10'>
             <CommonHeader title='링크 저장' />
           </div>
-          <div className='flex-1 overflow-y-auto hide-scrollbar w-full pt-13 pb-20'>
-            {/* 카드 모음 */}
+          <div
+            className={clsx(
+              'flex-1 w-full pt-13 pb-20',
+              isDropdownOpen ? 'overflow-hidden' : 'overflow-y-auto hide-scrollbar',
+            )}
+          >
             <div className='flex flex-col items-center gap-3 w-full p-4'>
               <LinkField control={control} setValue={setValue} />
               <CategoryTagSelector
@@ -166,6 +177,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
                 setValue={setValue}
                 editDate={defaultValues.date}
                 editTime={defaultValues.time}
+                onDropdownScroll={handleDropdownScroll}
               />
             </div>
           </div>

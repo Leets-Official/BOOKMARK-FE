@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import TextField from '../TextField';
 import React, { useState } from 'react';
-import { dummyCardData } from '@/contants/DummyData';
+import { dummyCardData } from '@/constants/DummyData';
 import { visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
 import { useSetAtom } from 'jotai';
 
