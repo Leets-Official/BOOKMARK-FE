@@ -17,6 +17,7 @@ import { getBookmarks } from '@/api/bookmark/bookmark';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, updateCategory } from '@/api/category/category';
 import Loading from '../loading/Loading';
+import toast from 'react-hot-toast';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
@@ -67,8 +68,10 @@ const FolderCard = (category: CategoryProps) => {
         const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
         console.log('카테고리 수정 실패:', errorMessage);
         queryClient.setQueryData(['categories'], context?.previousCategories);
+        toast.error('카테고리 수정 실패');
       }
 
+      toast.success('카테고리 수정 완료');
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
@@ -78,13 +81,16 @@ const FolderCard = (category: CategoryProps) => {
     onSuccess: (res) => {
       if (res.error) {
         console.error('카테고리 삭제 실패:', res.message);
+        toast.error('카테고리 삭제 실패');
         return;
       }
       // 삭제 후 페이지 새로고침
+      toast.success('카테고리 삭제 완료');
       window.location.reload();
     },
     onError: (error) => {
       console.error('카테고리 삭제 실패:', error);
+      toast.error('카테고리 삭제 실패');
     },
   });
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckIcon, ErrorIcon } from '@/assets';
+import { ErrorIcon } from '@/assets';
 import { Toaster } from 'react-hot-toast';
 
 const Toast: React.FC = () => {
@@ -9,7 +9,6 @@ const Toast: React.FC = () => {
       toastOptions={{
         duration: 3000,
         success: {
-          icon: <CheckIcon width={24} height={24} style={{ color: '#FFFFFF' }} />,
           style: {
             background: '#2E364D',
             color: '#FFFFFF',
