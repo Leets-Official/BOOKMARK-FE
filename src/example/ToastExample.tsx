@@ -1,48 +1,49 @@
-import Toast from '@/components/common/Toast';
-import { useState } from 'react';
+import { useToast } from '@/hooks/useToast';
+import ToastPortal from '@/utils/ToastPortal';
+import Button from '@/components/common/Button';
 
-// ToastItem 타입 정의
-interface ToastItem {
-  id: string;
-  type: 'success' | 'error';
-  message: string;
-}
+function ToastExample() {
+  const { toast, showToast, hideToast } = useToast();
 
-const ToastExample = () => {
-  const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const handleSuccessToast = () => {
+    showToast('성공적으로 저장되었습니다!', 'success', 3000);
+  };
 
-  const showToast = (type: 'success' | 'error', message: string) => {
-    // 고유한 ID를 생성하여 새로운 Toast 객체를 만듬
-    const newToast = {
-      id: Date.now().toString(),
-      type,
-      message,
-    };
-    setToasts((prev) => [...prev, newToast]); // 현재 toasts 배열에 새로운 Toast를 추가
+  const handleErrorToast = () => {
+    showToast('오류가 발생했습니다. 다시 시도해주세요.', 'error', 5000);
+  };
 
-    // 2초 뒤에 해당 Toast를 배열에서 제거하여 화면에서 사라지게 함
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((toast) => toast.id !== newToast.id)); // ID가 일치하지 않는 항목만 남김
-    }, 2000);
+  const handleCustomDurationToast = () => {
+    showToast('커스텀 지속 시간 토스트입니다.', 'success', 10000);
   };
 
   return (
-    <>
-      <button className='bg-green-100 p-4' onClick={() => showToast('success', '저장 완료!')}>
-        성공
-      </button>
-      <button className='bg-red-100 p-4' onClick={() => showToast('error', '저장 실패')}>
-        실패
-      </button>
+    <div className='p-8 space-y-4'>
+      <h1 className='text-2xl font-bold mb-6'>Toast Portal 예시</h1>
 
-      {/* Toast 리스트 출력 */}
-      <div className='p-4'>
-        {toasts.map((toast) => (
-          <Toast key={toast.id} show={true} message={toast.message} type={toast.type} />
-        ))}
+      <div className='space-y-2'>
+        <Button onClick={handleSuccessToast}>성공 토스트 표시</Button>
+
+        <Button onClick={handleErrorToast}>에러 토스트 표시</Button>
+
+        <Button onClick={handleCustomDurationToast}>긴 지속 시간 토스트</Button>
+
+        <Button onClick={hideToast}>토스트 숨기기</Button>
       </div>
-    </>
+
+      <div className='mt-8'>
+        <h2 className='text-lg font-semibold mb-2'>현재 토스트 상태</h2>
+        <div className='p-4 bg-gray-100 rounded'>
+          <p>표시 여부: {toast.show ? '보임' : '숨김'}</p>
+          <p>메시지: {toast.message || '없음'}</p>
+          <p>타입: {toast.type}</p>
+        </div>
+      </div>
+
+      {/* Toast Portal이 여기에 렌더링됩니다 */}
+      <ToastPortal show={toast.show} message={toast.message} type={toast.type} />
+    </div>
   );
-};
+}
 
 export default ToastExample;

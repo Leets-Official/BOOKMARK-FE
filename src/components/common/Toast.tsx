@@ -10,11 +10,11 @@ export interface ToastProps {
 
 const toast = tv({
   base: [
-    'fixed top-[60px] left-1/2 -translate-x-1',
+    'fixed top-[60px] left-1/2 -translate-x-1/2',
     'w-fit h-10 px-3 rounded-full',
     'flex items-center justify-center gap-1',
     'text-white text-[18px] font-semibold',
-    'shadow transition-opacity duration-500',
+    'shadow transition-all duration-300 ease-in-out',
     'z-50',
   ],
   variants: {
@@ -23,8 +23,8 @@ const toast = tv({
       error: 'bg-[#2F3443]',
     },
     show: {
-      true: 'opacity-100',
-      false: 'opacity-0',
+      true: 'opacity-100 translate-y-0',
+      false: 'opacity-0 -translate-y-2',
     },
   },
   defaultVariants: {
