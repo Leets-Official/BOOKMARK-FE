@@ -10,7 +10,7 @@ import {
   visibleTagAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { dummyCardData } from '@/contants/DummyData';
+import { dummyCardData } from '@/constants/DummyData';
 import clsx from 'clsx';
 import AddModal from '@/components/ui/modal/AddModal';
 import type { saveSchema } from '@/schema/save';

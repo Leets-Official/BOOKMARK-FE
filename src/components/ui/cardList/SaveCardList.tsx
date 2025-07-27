@@ -1,7 +1,7 @@
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import SaveCard from '../card/SaveCard';
 import Button from '@/components/common/Button';
-import { dummyCardData } from '@/contants/DummyData';
+import { dummyCardData } from '@/constants/DummyData';
 import { useState } from 'react';
 
 const SaveCardList = () => {

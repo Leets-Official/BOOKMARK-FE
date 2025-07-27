@@ -4,7 +4,7 @@ import {
   dummyDateOptions,
   dummyTagList,
   dummyTimeOptions,
-} from './contants/DummyData';
+} from './constants/DummyData';
 import type { ChipProps } from './types/components/components';
 
 // Save Page Atoms

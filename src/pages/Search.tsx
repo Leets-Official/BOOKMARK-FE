@@ -13,7 +13,7 @@ import {
   selectedPlatformsAtom,
   searchContentsAtom,
 } from '@/atoms';
-import { dummyCardData } from '@/contants/DummyData';
+import { dummyCardData } from '@/constants/DummyData';
 import { useScrollLock } from '@/hooks/ScrollLock';
 import { postSearchHistory } from '@/api/searchHistory/searchHistory';
 import { useMutation } from '@tanstack/react-query';
