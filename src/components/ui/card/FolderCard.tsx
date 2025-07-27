@@ -16,6 +16,7 @@ import type { CategoryProps } from '@/types/api/category';
 import { getBookmarks } from '@/api/bookmark/bookmark';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, updateCategory } from '@/api/category/category';
+import Loading from '../loading/Loading';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
@@ -37,7 +38,7 @@ const FolderCard = (category: CategoryProps) => {
     },
   });
 
-  const { data: bookmarks, isLoading: isBookmarksLoading } = useQuery({
+  const { data: bookmarks, isPending: isBookmarksLoading } = useQuery({
     queryKey: ['bookmarks', category.id],
     queryFn: () => getBookmarks(category.id),
   });
@@ -164,7 +165,7 @@ const FolderCard = (category: CategoryProps) => {
         <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex'>
           {isBookmarksLoading ? (
             <div className='w-full h-full flex items-center justify-center'>
-              <div className='w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin'></div>
+              <Loading className='w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
             </div>
           ) : (
             renderImages(images)
