@@ -1,5 +1,5 @@
 import { apiRequest } from '@/api/api';
-import type { TagProps } from '@/types/api/categoryAndTag';
+import type { TagProps } from '@/types/api/category';
 import type { ApiResponse } from '@/types/common/api-response';
 
 const createTag = async (categoryId: number, tagName: string): Promise<ApiResponse<TagProps[]>> => {

@@ -1,5 +1,5 @@
 import { apiRequest } from '@/api/api';
-import type { CategoryProps, CategoryWithTagProps } from '@/types/api/categoryAndTag';
+import type { CategoryProps, CategoryWithTagProps } from '@/types/api/category';
 import type { ApiResponse } from '@/types/common/api-response';
 
 export const createCategory = async (categoryName: string): Promise<ApiResponse<string>> => {
