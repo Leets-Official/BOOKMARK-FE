@@ -7,7 +7,7 @@ const HomeHeader = () => {
   const profileImage = localStorage.getItem('profileImage');
 
   return (
-    <div className='fixed flex sm:right-10 right-3 items-center mt-6 sm:mt-5 z-50'>
+    <div className='fixed flex sm:right-10 right-3 items-center mt-5 z-50'>
       {profileImage ? (
         <Button
           icon={
