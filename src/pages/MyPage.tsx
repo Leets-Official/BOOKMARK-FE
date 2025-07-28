@@ -9,11 +9,7 @@ import {
 import AccountSettingPage from './AccountSettingPage';
 import { useState } from 'react';
 
-interface MyPageProps {
-  onClose: () => void;
-}
-
-const MyPage = ({ onClose }: MyPageProps) => {
+const MyPage = () => {
   const [showAccountSetting, setShowAccountSetting] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [contactEmail, setContactEmail] = useState('insightboxxx@gmail.com');
@@ -37,7 +33,7 @@ const MyPage = ({ onClose }: MyPageProps) => {
         <div className='w-[369px] h-[773px] bg-white rounded-[20px] shadow-lg px-5 pt-6 pb-4 flex flex-col relative'>
           {/* 헤더 */}
           <div className='relative flex items-center justify-center mb-10'>
-            <button onClick={onClose} className='absolute left-0'>
+            <button onClick={() => { }} className='absolute left-0'>
               <BackArrow2Icon className='w-12 h-12 text-black' />
             </button>
             <h2 className='text-base font-semibold text-center'>마이페이지</h2>
