@@ -19,7 +19,7 @@ const saveSchema = z.object({
 });
 
 // 추가 Modal Schema
-const modalAddSchema = (type: 'category' | 'tag', existingValues: string[]) =>
+const modalAddSchema = (type: 'category' | 'tag', existingValues?: string[]) =>
   z.object({
     [type]: z
       .string()
@@ -27,7 +27,7 @@ const modalAddSchema = (type: 'category' | 'tag', existingValues: string[]) =>
         message: type === 'tag' ? '추가할 태그를 입력해주세요' : '추가할 카테고리를 입력해주세요',
       })
       .max(10, { message: '최대 10자까지 입력가능해요' })
-      .refine((value) => !existingValues.includes(value.trim()), {
+      .refine((value) => !existingValues?.includes(value.trim()), {
         message: `이미 존재하는 ${type === 'tag' ? '태그' : '카테고리'}입니다.`,
       }),
   });
