@@ -18,7 +18,7 @@ import type { FieldErrors, UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
 import { getCategoriesWithTag } from '@/api/category/category';
 import { useQuery } from '@tanstack/react-query';
-import type { CategoryWithTagProps } from '@/types/api/categoryAndTag';
+import type { CategoryWithTagProps } from '@/types/api/category';
 
 type ModalType = 'category' | 'tag';
 

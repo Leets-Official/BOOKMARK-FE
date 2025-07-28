@@ -61,10 +61,10 @@ const DateTimeDropDown = ({
         isOpen={isOpen}
         parentRef={parentRef}
         ref={menuRef}
-        className='absolute top-full left-0 mt-2 bg-white rounded-[8px] flex flex-col gap-5 border border-areaBorder z-100 shadow-[0_2px_7px_rgba(2,34,94,0.1)] max-h-60 overflow-y-auto thin-scrollbar p-3 font-medium'
+        className='absolute top-full left-0 mt-2 bg-white rounded-[8px] flex flex-col gap-2 border border-areaBorder z-100 shadow-[0_2px_7px_rgba(2,34,94,0.1)] max-h-60 overflow-y-auto thin-scrollbar p-2 font-medium'
       >
-        <p className='text-[13px] text-areaBorder'>{subTitle}</p>
-        <div className='flex flex-col gap-5 text-15 text-stone'>
+        <p className='text-[13px] text-areaBorder p-1'>{subTitle}</p>
+        <div className='flex flex-col text-15 text-stone'>
           {options.map((option) => (
             <DropDown.Item key={option.id} onClick={() => onItemClick(option.name)}>
               {option.name}

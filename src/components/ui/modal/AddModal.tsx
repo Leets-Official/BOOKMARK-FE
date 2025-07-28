@@ -7,7 +7,7 @@ import TextField from '../TextField';
 import React, { useMemo, useState } from 'react';
 import { suggestionListAtom, visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
 import { useAtomValue, useSetAtom } from 'jotai';
-import type { TagProps } from '@/types/api/categoryAndTag';
+import type { TagProps } from '@/types/api/category';
 
 interface AddModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;

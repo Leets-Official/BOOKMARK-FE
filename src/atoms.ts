@@ -1,11 +1,7 @@
 import { atom } from 'jotai';
-import {
-  dummyCategoryList,
-  dummyDateOptions,
-  dummyTagList,
-  dummyTimeOptions,
-} from './contants/DummyData';
+import { dummyCategoryList, dummyTagList } from './constants/DummyData';
 import type { ChipProps } from './types/components/components';
+import { dateOptions, timeOptions } from './constants/dateTimeData';
 
 // Save Page Atoms
 const linkAtom = atom('');
@@ -17,8 +13,8 @@ const visibleMemoAndAlarmAtom = atom(false);
 const categoryListAtom = atom<ChipProps[]>(dummyCategoryList);
 const tagListAtom = atom<ChipProps[]>(dummyTagList);
 const suggestionListAtom = atom<ChipProps[]>([]);
-const dateOptionsAtom = atom<{ id: number; name: string }[]>(dummyDateOptions);
-const timeOptionsAtom = atom<{ id: number; name: string }[]>(dummyTimeOptions);
+const dateOptionsAtom = atom<{ id: number; name: string }[]>(dateOptions);
+const timeOptionsAtom = atom<{ id: number; name: string }[]>(timeOptions);
 const selectedDateAtom = atom<string>('');
 const selectedTimeAtom = atom<string>('');
 const isSaveButtonDisabledAtom = atom<boolean>(true);

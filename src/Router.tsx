@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Home, Login, Search, Save, Example, SearchResult, KakaoCallBack } from '@/pages';
 import App from '@/App';
+import MyPage from './pages/MyPage';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
           {
             path: 'edit/:id',
             element: <Save type='edit' />,
+          },
+          {
+            path: 'my-page',
+            element: <MyPage />,
           },
         ],
       },

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { kakaoLoginApi } from '@/api/auth/auth_api';
+import toast from 'react-hot-toast';
 
 function KakaoCallBack() {
   const navigate = useNavigate();
@@ -16,14 +17,23 @@ function KakaoCallBack() {
   const kakaoLoginMutation = useMutation({
     mutationFn: kakaoLoginApi,
     onSuccess: (res) => {
-      console.log('kakao login 성공', res);
-      localStorage.setItem('accessToken', res.jwtAccessToken);
-      localStorage.setItem('refreshToken', res.jwtRefreshToken);
-      localStorage.setItem('profileImage', res.profileImage);
+      if (res.error) {
+        console.error('kakao login 실패, error', res.message);
+        toast.error('로그인 실패');
+        navigate('/login', { replace: true });
+        return;
+      }
+
+      const { jwtAccessToken, jwtRefreshToken, profileImage } = res.data;
+      localStorage.setItem('accessToken', jwtAccessToken);
+      localStorage.setItem('refreshToken', jwtRefreshToken);
+      localStorage.setItem('profileImage', profileImage);
+      toast.success('로그인 성공');
       navigate('/', { replace: true });
     },
-    onError: () => {
-      console.error('kakao login 실패');
+    onError: (error) => {
+      console.error('kakao login 실패, error', error);
+      toast.error('로그인 실패');
       navigate('/login', { replace: true });
     },
   });

@@ -3,7 +3,7 @@ import { dateOptionsAtom, timeOptionsAtom, visibleMemoAndAlarmAtom } from '@/ato
 import DateTimeDropDown from '@/components/layout/dropDown/DateTimeDropDown';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtomValue } from 'jotai';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { saveSchema } from '@/schema/save';
 import type { UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
@@ -12,11 +12,12 @@ interface AlarmProps {
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
   editDate?: string;
   editTime?: string;
+  // eslint-disable-next-line no-unused-vars
+  onDropdownScroll: (isOpen: boolean) => void;
 }
 
-const Alarm = ({ editDate, editTime, setValue }: AlarmProps) => {
-  const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
-  const visible = atomVisible;
+const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) => {
+  const DateTimeVisible = useAtomValue(visibleMemoAndAlarmAtom);
   const dateOptions = useAtomValue(dateOptionsAtom);
   const timeOptions = useAtomValue(timeOptionsAtom);
   const [selectedDate, setSelectedDate] = useState('');
@@ -24,14 +25,46 @@ const Alarm = ({ editDate, editTime, setValue }: AlarmProps) => {
   const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
   const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
 
+  const alarmRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const isDropdownOpen = isDateDropDownOpen || isTimeDropDownOpen;
+    onDropdownScroll(isDropdownOpen);
+  }, [isDateDropDownOpen, isTimeDropDownOpen, onDropdownScroll]);
+
+  const isDropDownCenter = () => {
+    if (!alarmRef.current) return false;
+
+    const rect = alarmRef.current.getBoundingClientRect();
+    const elementCenter = rect.top + rect.height / 2;
+    const viewportCenter = window.innerHeight / 2;
+
+    // 뷰포트 중앙에서 ±10px 범위 내에 있으면 중앙에 있다고 판단
+    return Math.abs(elementCenter - viewportCenter) <= 10;
+  };
+
+  const handleOpenDropDown = (type: 'date' | 'time', open: boolean) => {
+    const isDate = type === 'date';
+    const isCenter = isDropDownCenter();
+    const setDropDownOpen = isDate ? setIsDateDropDownOpen : setIsTimeDropDownOpen;
+
+    if (open) {
+      if (isCenter)
+        setDropDownOpen(true); // 이미 중앙에 있으면 바로 열기
+      else {
+        alarmRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }); // 중앙에 없으면 먼저 스크롤 후 열기
+
+        setTimeout(() => {
+          setDropDownOpen(true);
+        }, 150);
+      }
+    } else setDropDownOpen(false);
+  };
+
   // 수정 모드일 때 초기값 설정
   useEffect(() => {
-    if (editDate) {
-      setSelectedDate(editDate);
-    }
-    if (editTime) {
-      setSelectedTime(editTime);
-    }
+    if (editDate) setSelectedDate(editDate);
+    if (editTime) setSelectedTime(editTime);
   }, [editDate, editTime]);
 
   useEffect(() => {
@@ -40,12 +73,13 @@ const Alarm = ({ editDate, editTime, setValue }: AlarmProps) => {
   }, [selectedDate, selectedTime, setValue]);
 
   return (
-    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5 mb-60'>
-      <div className='flex flex-col gap-2 mt-2'>
-        <p className='text-sm font-semibold text-stone'>알림</p>
-      </div>
+    <div
+      className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5 mb-60'
+      ref={alarmRef}
+    >
+      <p className='text-sm font-semibold text-stone mt-2'>알림</p>
       <AnimatePresence>
-        {visible && (
+        {DateTimeVisible && (
           <motion.div
             key='alarmContainer'
             initial={{ height: 0 }}
@@ -63,9 +97,8 @@ const Alarm = ({ editDate, editTime, setValue }: AlarmProps) => {
                 selectedOption={selectedDate}
                 setSelectedOption={setSelectedDate}
                 isOpen={isDateDropDownOpen}
-                setIsOpen={setIsDateDropDownOpen}
+                setIsOpen={(open) => handleOpenDropDown('date', open)}
               />
-              {/* 시간 드롭다운 */}
               <DateTimeDropDown
                 icon={<ScheduleIcon width={22} height={22} />}
                 options={timeOptions}
@@ -74,7 +107,7 @@ const Alarm = ({ editDate, editTime, setValue }: AlarmProps) => {
                 selectedOption={selectedTime}
                 setSelectedOption={setSelectedTime}
                 isOpen={isTimeDropDownOpen}
-                setIsOpen={setIsTimeDropDownOpen}
+                setIsOpen={(open) => handleOpenDropDown('time', open)}
               />
             </div>
           </motion.div>
