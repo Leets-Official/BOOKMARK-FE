@@ -4,12 +4,29 @@ import { LogoutIcon } from '@/assets';
 import { useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 import { useScrollLock } from '@/hooks/ScrollLock';
+import toast from 'react-hot-toast';
 
 const MyPage = () => {
   // 외부 스크롤 방지
   useScrollLock(true);
   const navigate = useNavigate();
   const profileImage = localStorage.getItem('profileImage');
+
+  const handleCopyInquiry = () => {
+    const textArea = document.createElement('textarea');
+    textArea.value = 'insightboxxx@gmail.com';
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    try {
+      document.execCommand('copy');
+      toast.success('이메일이 복사되었습니다');
+    } catch (err) {
+      toast.error('이메일 복사에 실패했습니다');
+    }
+
+    document.body.removeChild(textArea);
+  };
 
   return (
     <>
@@ -60,9 +77,7 @@ const MyPage = () => {
           <hr className='w-full border-lightGrayBlue border-1' />
           <Button
             className='text-15 text-stone font-medium text-left px-4 py-2'
-            onClick={() => {
-              console.log('문의하기 클릭');
-            }}
+            onClick={handleCopyInquiry}
           >
             문의하기
           </Button>
