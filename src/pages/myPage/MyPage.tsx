@@ -4,6 +4,7 @@ import { LogoutIcon } from '@/assets';
 import { useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 import { useScrollLock } from '@/hooks/ScrollLock';
+import copy from 'copy-to-clipboard';
 import toast from 'react-hot-toast';
 
 const MyPage = () => {
@@ -13,19 +14,12 @@ const MyPage = () => {
   const profileImage = localStorage.getItem('profileImage');
 
   const handleCopyInquiry = () => {
-    const textArea = document.createElement('textarea');
-    textArea.value = 'insightboxxx@gmail.com';
-    document.body.appendChild(textArea);
-    textArea.select();
-
-    try {
-      document.execCommand('copy');
+    const success = copy('insightboxxx@gmail.com');
+    if (success) {
       toast.success('이메일이 복사되었습니다');
-    } catch (err) {
+    } else {
       toast.error('이메일 복사에 실패했습니다');
     }
-
-    document.body.removeChild(textArea);
   };
 
   return (
