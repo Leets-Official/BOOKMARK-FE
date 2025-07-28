@@ -22,7 +22,7 @@ const modalStyle = tv({
   variants: {
     isMobile: {
       true: 'w-full h-full',
-      false: 'w-[85%] h-[75%] max-w-[1200px] max-h-[900px]', // 더 작은 퍼센트
+      false: 'w-[85%] h-[75%] max-w-[1200px] max-h-[900px]',
     },
   },
 });
@@ -106,7 +106,7 @@ const MyPage = () => {
             </div>
 
             {/* 오른쪽 콘텐츠 영역 */}
-            <div className='flex-1 overflow-auto relative'>
+            <div className='flex-1 overflow-auto hide-scrollbar relative'>
               <Outlet />
             </div>
           </div>

@@ -26,19 +26,19 @@ const CategoryManagement = () => {
   }));
 
   return (
-    <>
+    <div>
       {/* 헤더 */}
       {isMobile && (
         <div className='absolute top-0 left-0 right-0 z-10'>
           <CommonHeader title='카테고리 / 태그 관리' />
         </div>
       )}
-      <div className='flex flex-col items-center justify-center mt-20 p-4 gap-5'>
+      <div className='flex flex-col items-center justify-center mt-20 p-4 gap-5 overflow-y-auto hide-scrollbar'>
         {categoryCards.map((card) => (
           <CategoryCard key={card.id} color={card.color} categoryName={card.name} />
         ))}
       </div>
-    </>
+    </div>
   );
 };
 
