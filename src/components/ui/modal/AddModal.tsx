@@ -19,9 +19,9 @@ interface AddModalProps {
     | { categoryId: number; categoryName: string; tags: TagProps[] }[]
     | undefined;
   setTempCategories: React.Dispatch<React.SetStateAction<{ id: string; content: string }[]>>;
-  setTempTags: React.Dispatch<React.SetStateAction<{ categoryName: string; tags: string[] }>>;
+  setTempTags: React.Dispatch<React.SetStateAction<Record<string, string[]>>>;
   tempCategories: { id: string; content: string }[];
-  tempTags: { categoryName: string; tags: string[] };
+  tempTags: Record<string, string[]>;
 }
 
 const AddModal = ({
@@ -59,8 +59,8 @@ const AddModal = ({
 
     // 임시 태그 목록에 추가
     setTempTags((prev) => ({
-      categoryName: selectedCategory,
-      tags: [...(prev.categoryName === selectedCategory ? prev.tags : []), tagName],
+      ...prev,
+      [selectedCategory]: [...(prev[selectedCategory] || []), tagName],
     }));
   };
 
@@ -88,7 +88,7 @@ const AddModal = ({
         categoriesWithTagsData
           ?.find((c) => c.categoryName === selectedCategory)
           ?.tags.map((t) => t.tagName) ?? [];
-      const tempTag = tempTags.categoryName === selectedCategory ? tempTags.tags : [];
+      const tempTag = tempTags[selectedCategory] || [];
       const suggestionTag = suggestionList.map((s) => s.content);
       return [...realTag, ...tempTag, ...suggestionTag];
     }

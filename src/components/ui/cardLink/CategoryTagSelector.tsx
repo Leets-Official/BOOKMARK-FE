@@ -44,12 +44,9 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTag, setSelectedTag] = useState<string[]>([]);
 
-  // 임시로 추가된 카테고리와 태그를 관리하는 상태
+  // 임시로 추가된 카테고리와 태그를 관리
   const [tempCategories, setTempCategories] = useState<{ id: string; content: string }[]>([]);
-  const [tempTags, setTempTags] = useState<{ categoryName: string; tags: string[] }>({
-    categoryName: '',
-    tags: [],
-  });
+  const [tempTags, setTempTags] = useState<Record<string, string[]>>({});
 
   // 수정 모드일 때 초기값 설정
   useEffect(() => {
@@ -72,7 +69,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     queryFn: async () => {
       const res = await getCategoriesWithTag();
       if (res.error) {
-        throw new Error(res.message); // react-query가 에러로 처리함
+        throw new Error(res.message);
       }
       return res.data;
     },
@@ -113,15 +110,13 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   // 선택된 카테고리의 태그 목록 생성 (서버 데이터 + 임시 데이터)
   const selectedCategoryTags = useMemo(() => {
     if (!categoriesWithTagsData || !selectedCategory) {
-      // 서버 데이터가 없거나 카테고리가 선택되지 않은 경우, 임시 태그만 반환
-      return tempTags.categoryName === selectedCategory ? tempTags.tags : [];
+      return tempTags[selectedCategory] || [];
     }
-
     const category = categoriesWithTagsData.find((c) => c.categoryName === selectedCategory);
     const realTags = category?.tags?.map((tag) => tag.tagName) ?? [];
 
     // 선택된 카테고리의 임시 태그도 추가
-    const categoryTempTags = tempTags.categoryName === selectedCategory ? tempTags.tags : [];
+    const categoryTempTags = tempTags[selectedCategory] || [];
 
     return [...realTags, ...categoryTempTags];
   }, [categoriesWithTagsData, selectedCategory, tempTags]);
@@ -129,9 +124,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const allTags = useMemo(() => {
     const suggestionTags = suggestionList.map((s) => s.content);
     const fetchedTags = selectedCategoryTags;
-
-    // suggestion 태그 먼저 배치
-    const combinedTags = [...suggestionTags, ...fetchedTags];
+    const combinedTags = [...suggestionTags, ...fetchedTags]; // suggestion 태그 먼저 배치
     const uniqueTags = Array.from(new Set(combinedTags));
 
     return uniqueTags.map((tag) => {
@@ -176,7 +169,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
       setSelectedCategory('');
       setSelectedTag([]);
       setTempCategories([]);
-      setTempTags({ categoryName: '', tags: [] });
+      setTempTags({});
 
       const hasSelected = suggestionList.some((s) => s.isSelected);
       if (hasSelected) {
@@ -304,8 +297,6 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/** 카테고리, 태그 추가 모달 */}
       {isModalOpen && (
         <AddModal
           setIsOpen={setIsModalOpen}
