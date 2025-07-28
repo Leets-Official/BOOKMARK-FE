@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BackArrow2Icon, ImageIcon, Delete2Icon, Warning2Icon } from '@/assets';
+import { BackArrowIcon, ProfileIcon, DeleteIcon, WarningIcon } from '@/assets';
 
 interface AccountSettingPageProps {
   onClose: () => void;
@@ -16,7 +16,7 @@ const AccountSettingPage = ({ onClose }: AccountSettingPageProps) => {
         {/* 헤더 */}
         <div className='relative flex items-center justify-center mb-10'>
           <button onClick={onClose} className='absolute left-0'>
-            <BackArrow2Icon className='w-12 h-12 text-black' />
+            <BackArrowIcon className='w-12 h-12 text-black' />
           </button>
           <h2 className='text-base font-semibold'>계정설정</h2>
         </div>
@@ -28,7 +28,7 @@ const AccountSettingPage = ({ onClose }: AccountSettingPageProps) => {
         {/* 사진 */}
         <div className='flex flex-col items-start mb-4'>
           <p className='text-sm text-black mb-4'>사진</p>
-          <ImageIcon className='w-[100px] h-[100px] rounded-[20px] object-cover self-start' />
+          <ProfileIcon className='w-[100px] h-[100px] rounded-[20px] object-cover self-start' />
         </div>
 
         {/* 이름 입력 */}
@@ -46,7 +46,7 @@ const AccountSettingPage = ({ onClose }: AccountSettingPageProps) => {
                 onClick={() => setName('')}
                 className='absolute right-3 top-1/2 -translate-y-1/2'
               >
-                <Delete2Icon className='w-4 h-4 text-gray-400' />
+                <DeleteIcon className='w-4 h-4 text-gray-400' />
               </button>
             )}
           </div>
@@ -67,7 +67,7 @@ const AccountSettingPage = ({ onClose }: AccountSettingPageProps) => {
                 onClick={() => setEmail('')}
                 className='absolute right-3 top-1/2 -translate-y-1/2'
               >
-                <Delete2Icon className='w-4 h-4 text-gray-400' />
+                <DeleteIcon className='w-4 h-4 text-gray-400' />
               </button>
             )}
           </div>
@@ -90,7 +90,7 @@ const AccountSettingPage = ({ onClose }: AccountSettingPageProps) => {
           <div className='bg-white rounded-xl w-[310px] py-6 px-5 shadow-xl text-center'>
             <div className='flex justify-center mb-4'>
               <div className='w-10 h-10 bg-red-100 rounded-full flex items-center justify-center'>
-                <Warning2Icon className='text-red-500 w-10 h-10' />
+                <WarningIcon className='text-red-500 w-10 h-10' />
               </div>
             </div>
             <p className='text-[15px] font-semibold text-black mb-2'>

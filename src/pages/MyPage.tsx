@@ -1,11 +1,4 @@
-import {
-  BackArrow2Icon,
-  LogoutIcon,
-  ImageIcon,
-  DeleteIcon,
-  Delete2Icon,
-  GroupIcon,
-} from '@/assets';
+import { BackArrowIcon, LogoutIcon, ProfileIcon, DeleteIcon } from '@/assets';
 import AccountSettingPage from './AccountSettingPage';
 import { useState } from 'react';
 
@@ -13,19 +6,12 @@ const MyPage = () => {
   const [showAccountSetting, setShowAccountSetting] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [contactEmail, setContactEmail] = useState('insightboxxx@gmail.com');
-  const [copied, setCopied] = useState(false);
 
   const handleOpenAccountSetting = () => setShowAccountSetting(true);
   const handleCloseAccountSetting = () => setShowAccountSetting(false);
 
   const handleOpenContactModal = () => setShowContactModal(true);
   const handleCloseContactModal = () => setShowContactModal(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(contactEmail);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <>
@@ -34,7 +20,7 @@ const MyPage = () => {
           {/* 헤더 */}
           <div className='relative flex items-center justify-center mb-10'>
             <button onClick={() => { }} className='absolute left-0'>
-              <BackArrow2Icon className='w-12 h-12 text-black' />
+              <BackArrowIcon className='w-12 h-12 text-black' />
             </button>
             <h2 className='text-base font-semibold text-center'>마이페이지</h2>
           </div>
@@ -45,7 +31,7 @@ const MyPage = () => {
             className='bg-white rounded-[20px] flex items-center py-6 px-5 mb-18 cursor-pointer'
             style={{ boxShadow: '0px 0px 12px rgba(0, 0, 0, 0.18)' }}
           >
-            <ImageIcon className='w-[105px] h-[105px] mr-4 rounded-[20px] object-cover' />
+            <ProfileIcon className='w-[105px] h-[105px] mr-4 rounded-[20px] object-cover' />
             <div>
               <p className='font-semibold text-[18px] leading-tight'>김민수</p>
               <div className='h-[8px]' />
@@ -116,7 +102,7 @@ const MyPage = () => {
                   className='absolute right-9 top-1/2 -translate-y-1/2'
                   aria-label='Clear input'
                 >
-                  <Delete2Icon className='w-4 h-4 text-gray-400' />
+                  <DeleteIcon className='w-4 h-4 text-gray-400' />
                 </button>
               )}
             </div>
@@ -128,18 +114,11 @@ const MyPage = () => {
             {/* 복사하기 버튼 */}
             <div className='relative px-6 pb-6'>
               <button
-                onClick={handleCopy}
+                onClick={() => { }}
                 className='w-full h-[44px] bg-[#2F70FF] text-white rounded-[20px] text-sm font-semibold'
               >
                 복사하기
               </button>
-
-              {copied && (
-                <div className='absolute left-1/2 -translate-x-1/2 top-[90px] flex items-center gap-2 px-3 py-2 rounded-full bg-gray-700 text-white text-xs font-medium shadow-md'>
-                  <GroupIcon className='w-4 h-4 text-white' />
-                  복사 완료!
-                </div>
-              )}
             </div>
           </div>
         </div>

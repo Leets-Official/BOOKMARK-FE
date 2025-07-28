@@ -1,8 +1,6 @@
 import KakaoLogoIcon from '@/assets/icons/KakaoLogo.svg?react';
 import BackArrowIcon from '@/assets/icons/BackArrow.svg?react';
-import BackArrow2Icon from '@/assets/icons/BackArrow2.svg?react';
 import DeleteIcon from '@/assets/icons/Delete.svg?react';
-import Delete2Icon from '@/assets/icons/Delete2.svg?react';
 import AddIcon from '@/assets/icons/Add.svg?react';
 import StarIcon from '@/assets/icons/Star.svg?react';
 import AddAlertIcon from '@/assets/icons/AddAlert.svg?react';
@@ -25,22 +23,17 @@ import FolderDetailIcon from '@/assets/icons/FolderDetail.svg?react';
 import AlertIcon from '@/assets/icons/Alert.svg?react';
 import HistoryIcon from '@/assets/icons/History.svg?react';
 import WarningIcon from '@/assets/icons/Warning.svg?react';
-import Warning2Icon from '@/assets/icons/Warning2.svg?react';
 import RoundDeleteIcon from '@/assets/icons/RoundDelete.svg?react';
 import ResetButtonIcon from '@/assets/icons/ResetButton.svg?react';
 import AlarmIcon from '@/assets/icons/Alarm.svg?react';
 import ListOrderIcon from '@/assets/icons/ListOrder.svg?react';
 import INSIGHTBOXLogo from '@/assets/icons/INSIGHTBOXXX.svg?react';
 import LogoutIcon from '@/assets/icons/Logout.svg?react';
-import ImageIcon from '@/assets/icons/image.svg?react';
-import GroupIcon from '@/assets/icons/Group.svg?react';
 
 export {
   KakaoLogoIcon,
   BackArrowIcon,
-  BackArrow2Icon,
   DeleteIcon,
-  Delete2Icon,
   AddIcon,
   StarIcon,
   AddAlertIcon,
@@ -63,13 +56,10 @@ export {
   AlertIcon,
   HistoryIcon,
   WarningIcon,
-  Warning2Icon,
   RoundDeleteIcon,
   ResetButtonIcon,
   AlarmIcon,
   ListOrderIcon,
   INSIGHTBOXLogo,
   LogoutIcon,
-  ImageIcon,
-  GroupIcon,
 };
