@@ -15,7 +15,12 @@ import { Controller } from 'react-hook-form';
 import TextField from '../TextField';
 import TagSettingChip from '../chip/TagSettingChip';
 
-const CategoryCard = () => {
+interface CategoryCardProps {
+  color: string;
+  categoryName: string;
+}
+
+const CategoryCard = ({ color, categoryName }: CategoryCardProps) => {
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -44,8 +49,8 @@ const CategoryCard = () => {
     >
       <div className='flex flex-row justify-between items-center'>
         <div className='flex flex-row items-center justify-center gap-2'>
-          <div className='w-3 h-3 bg-primary rounded-[4px]' />
-          <p className='text-base text-stone font-semibold'>카테고리 이름</p>
+          <div className='w-3 h-3 rounded-[4px]' style={{ backgroundColor: color }} />
+          <p className='text-base text-stone font-semibold'>{categoryName}</p>
           <p className='text-base text-primary font-semibold'>15</p>
           <div ref={iconRef} onClick={isOpen}>
             <FolderDetailIcon
@@ -130,7 +135,7 @@ const CategoryCard = () => {
           render={({ field, fieldState }) => (
             <TextField
               label='이름'
-              placeholder={'카테고리 이름'}
+              placeholder={categoryName}
               maxLength={10}
               value={field.value}
               onChange={field.onChange}
@@ -160,7 +165,7 @@ const CategoryCard = () => {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onCancel={() => setIsDeleteModalOpen(false)}
-        warningText={`... 카테고리를 정말 삭제할까요?`}
+        warningText={`${categoryName} 카테고리를 정말 삭제할까요?`}
         subText={
           '카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?'
         }
