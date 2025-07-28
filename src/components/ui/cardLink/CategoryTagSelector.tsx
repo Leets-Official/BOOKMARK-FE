@@ -76,7 +76,6 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
       }
       return res.data;
     },
-    gcTime: 5 * 60 * 1000, // 5분동안 캐시 유지
   });
 
   // 카테고리 목록 생성 (서버 데이터 + 임시 데이터)
@@ -107,6 +106,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
 
   const handleCategory = (categoryName: string) => {
     setSelectedCategory(categoryName);
+    setSelectedTag([]);
     setVisibleTag(true);
   };
 
@@ -126,7 +126,6 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     return [...serverTags, ...categoryTempTags];
   }, [categoriesWithTagsData, selectedCategory, tempTags]);
 
-  // 카테고리별 태그와 suggestionList를 통합하여 관리 (suggestion 태그를 앞에 배치)
   const allTags = useMemo(() => {
     const suggestionTags = suggestionList.map((s) => s.content);
     const fetchedTags = selectedCategoryTags;
@@ -190,8 +189,6 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   useEffect(() => {
     if (editCate || editTag) {
       setSuggestionList([]); // 수정 모드에서는 suggestion 초기화
-      setTempCategories([]); // 수정 모드에서는 임시 데이터 초기화
-      setTempTags({ categoryName: '', tags: [] });
     }
   }, [editCate, editTag, setSuggestionList]);
 
@@ -318,6 +315,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
           setSelectedTag={setSelectedTag}
           setTempCategories={setTempCategories}
           setTempTags={setTempTags}
+          tempCategories={tempCategories}
+          tempTags={tempTags}
           categoriesWithTagsData={categoriesWithTagsData}
         />
       )}

@@ -4,7 +4,7 @@ import type z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import TextField from '../TextField';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
 import { useSetAtom } from 'jotai';
 import type { ITag } from '@/types/api/categoryAndTag';
@@ -18,6 +18,8 @@ interface AddModalProps {
   categoriesWithTagsData: { categoryId: number; categoryName: string; tags: ITag[] }[] | undefined;
   setTempCategories: React.Dispatch<React.SetStateAction<{ id: string; content: string }[]>>;
   setTempTags: React.Dispatch<React.SetStateAction<{ categoryName: string; tags: string[] }>>;
+  tempCategories: { id: string; content: string }[];
+  tempTags: { categoryName: string; tags: string[] };
 }
 
 const AddModal = ({
@@ -29,6 +31,8 @@ const AddModal = ({
   categoriesWithTagsData,
   setTempCategories,
   setTempTags,
+  tempCategories,
+  tempTags,
 }: AddModalProps) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const setVisibleTag = useSetAtom(visibleTagAtom);
@@ -70,11 +74,21 @@ const AddModal = ({
     setIsDisabled(true);
   };
 
-  const existingValues = isCategoryType
-    ? (categoriesWithTagsData?.map((c) => c.categoryName) ?? [])
-    : (categoriesWithTagsData
-        ?.find((c) => c.categoryName === selectedCategory)
-        ?.tags.map((t) => t.tagName) ?? []);
+  // 서버에서 조회한 것과 임시로 만든 것 모두 검사
+  const existingValues = useMemo(() => {
+    if (isCategoryType) {
+      const realCategory = categoriesWithTagsData?.map((c) => c.categoryName) ?? [];
+      const tempCategory = tempCategories.map((c) => c.content);
+      return [...new Set([...realCategory, ...tempCategory])];
+    } else {
+      const realTag =
+        categoriesWithTagsData
+          ?.find((c) => c.categoryName === selectedCategory)
+          ?.tags.map((t) => t.tagName) ?? [];
+      const tempTag = tempTags.categoryName === selectedCategory ? tempTags.tags : [];
+      return [...new Set([...realTag, ...tempTag])];
+    }
+  }, [isCategoryType, categoriesWithTagsData, tempCategories, tempTags, selectedCategory]);
 
   const schema = modalAddSchema(isCategoryType ? 'category' : 'tag', existingValues);
 
