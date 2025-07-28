@@ -19,7 +19,7 @@ const modalStyle = tv({
   variants: {
     isMobile: {
       true: 'w-full h-full',
-      false: 'w-[80vw] aspect-[4/3] max-w-[1200px]',
+      false: 'w-[85%] h-[75%] max-w-[1200px] max-h-[900px]', // 더 작은 퍼센트
     },
   },
 });
