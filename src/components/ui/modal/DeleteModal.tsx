@@ -1,16 +1,17 @@
 import { WarningIcon } from '@/assets';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useScrollLock } from '@/components/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/ScrollLock';
 
 interface DeleteModalProps {
   isOpen: boolean;
   onCancel: () => void;
   onDelete: () => void;
   warningText: string;
+  subText?: string;
 }
 
-const DeleteModal = ({ isOpen, onCancel, onDelete, warningText }: DeleteModalProps) => {
+const DeleteModal = ({ isOpen, onCancel, onDelete, warningText, subText }: DeleteModalProps) => {
   useScrollLock(isOpen);
 
   // ESC 키로 모달 닫기
@@ -39,11 +40,16 @@ const DeleteModal = ({ isOpen, onCancel, onDelete, warningText }: DeleteModalPro
         onClick={(e) => e.stopPropagation()}
         className='bg-white rounded-xl w-[335px] min-h-[208px] shadow-lg'
       >
-        <div className='flex flex-col items-center text-center m-4 mx-10'>
+        <div className='flex flex-col items-center text-center mt-4'>
           <WarningIcon />
-          <p className='text-base font-semibold mt-4 mb-5 break-keep whitespace-pre-wrap'>
-            {warningText}
-          </p>
+          <div className='flex flex-col items-center mb-2 w-full px-8'>
+            <p className='text-base font-semibold mt-4 break-keep whitespace-pre-wrap'>
+              {warningText}
+            </p>
+            {subText && (
+              <p className='text-sm text-gray-500 mt-2 break-keep whitespace-pre-wrap'>{subText}</p>
+            )}
+          </div>
         </div>
         <hr className='border-1 border-lightGrayBlue mt-5' />
         <div className='flex gap-3 justify-end text-center p-4'>

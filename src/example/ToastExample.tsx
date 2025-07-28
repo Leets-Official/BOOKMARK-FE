@@ -1,48 +1,63 @@
-import Toast from '@/components/common/Toast';
-import { useState } from 'react';
+import toast from 'react-hot-toast';
 
-// ToastItem 타입 정의
-interface ToastItem {
-  id: string;
-  type: 'success' | 'error';
-  message: string;
-}
+function ToastExample() {
+  const showSuccessToast = () => {
+    toast.success('성공적으로 처리되었습니다!');
+  };
 
-const ToastExample = () => {
-  const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const showErrorToast = () => {
+    toast.error('오류가 발생했습니다. 다시 시도해주세요.');
+  };
 
-  const showToast = (type: 'success' | 'error', message: string) => {
-    // 고유한 ID를 생성하여 새로운 Toast 객체를 만듬
-    const newToast = {
-      id: Date.now().toString(),
-      type,
-      message,
-    };
-    setToasts((prev) => [...prev, newToast]); // 현재 toasts 배열에 새로운 Toast를 추가
+  const showCustomSuccessToast = () => {
+    toast.success('데이터가 성공적으로 저장되었습니다.', {
+      duration: 4000,
+    });
+  };
 
-    // 2초 뒤에 해당 Toast를 배열에서 제거하여 화면에서 사라지게 함
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((toast) => toast.id !== newToast.id)); // ID가 일치하지 않는 항목만 남김
-    }, 2000);
+  const showCustomErrorToast = () => {
+    toast.error('네트워크 연결에 실패했습니다.', {
+      duration: 5000,
+    });
   };
 
   return (
-    <>
-      <button className='bg-green-100 p-4' onClick={() => showToast('success', '저장 완료!')}>
-        성공
-      </button>
-      <button className='bg-red-100 p-4' onClick={() => showToast('error', '저장 실패')}>
-        실패
-      </button>
+    <div className='p-6 space-y-4'>
+      <h2 className='text-xl font-bold'>토스트 예제</h2>
 
-      {/* Toast 리스트 출력 */}
-      <div className='p-4'>
-        {toasts.map((toast) => (
-          <Toast key={toast.id} show={true} message={toast.message} type={toast.type} />
-        ))}
+      <div className='space-y-2'>
+        <button
+          onClick={showSuccessToast}
+          className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors'
+        >
+          성공 토스트 보기
+        </button>
+
+        <button
+          onClick={showErrorToast}
+          className='px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors ml-2'
+        >
+          오류 토스트 보기
+        </button>
       </div>
-    </>
+
+      <div className='space-y-2'>
+        <button
+          onClick={showCustomSuccessToast}
+          className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors'
+        >
+          커스텀 성공 토스트 (4초)
+        </button>
+
+        <button
+          onClick={showCustomErrorToast}
+          className='px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors ml-2'
+        >
+          커스텀 오류 토스트 (5초)
+        </button>
+      </div>
+    </div>
   );
-};
+}
 
 export default ToastExample;

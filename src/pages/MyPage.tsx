@@ -1,6 +1,6 @@
 import { tv } from 'tailwind-variants';
 import { isMobile } from 'react-device-detect';
-import { useScrollLock } from '@/components/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/ScrollLock';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import { Button } from '@/components/common';
 import { LogoutIcon, ProfileIcon } from '@/assets';

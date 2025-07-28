@@ -3,8 +3,16 @@ import { Input, Button, Chip } from '@/components/common';
 import React, { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
-import { selectedCategoriesAtom, selectedTagsAtom, selectedPlatformsAtom } from '@/atoms';
+import {
+  selectedCategoriesAtom,
+  selectedTagsAtom,
+  selectedPlatformsAtom,
+  searchContentsAtom,
+} from '@/atoms';
 import { useNavigate } from 'react-router-dom';
+import { deleteSearchHistory, getSearchHistory } from '@/api/searchHistory/searchHistory';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type { GetSearchHistoryProps } from '@/types/api/searchHistory';
 
 interface AnimatedHeightProps {
   show: boolean;
@@ -36,36 +44,54 @@ const AnimatedHeight: React.FC<AnimatedHeightProps> = ({ show, children }) => {
 };
 
 const FilterSearchBar: React.FC = () => {
-  const [searchContents, setSearchContents] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const [history, setHistory] = useState<string[]>([]);
   const historyRef = useRef<HTMLDivElement>(null);
 
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
-
+  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
+
+  // 검색 기록 조회
+  const { data: history, refetch } = useQuery({
+    queryKey: ['searchHistory'],
+    queryFn: getSearchHistory,
+  });
+
+  // 검색어 삭제
+  const { mutate: removeSearchHistory } = useMutation({
+    mutationFn: (searchHistoryId: number) => deleteSearchHistory(searchHistoryId),
+    onSuccess: (res) => {
+      if (res.error) {
+        console.error('검색 기록 삭제 실패:', res.message);
+        return;
+      }
+      refetch();
+    },
+    onError: (error) => {
+      console.error('검색 기록 삭제 실패:', error);
+    },
+  });
 
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     setSearchContents(e.currentTarget.value);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchContents.trim()) {
-      setHistory((prev) =>
-        [searchContents, ...prev.filter((v) => v !== searchContents)].slice(0, 3),
-      );
-      console.log('검색어:', searchContents);
-      setSearchContents('');
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsFocused(false);
+      e.currentTarget.blur();
     }
   };
 
   const clearInput = () => setSearchContents('');
 
-  const handleDeleteHistory = (target: string) => {
-    setHistory((prev) => prev.filter((item) => item !== target));
+  const handleDeleteHistory = (searchHistoryId: number) => {
+    removeSearchHistory(searchHistoryId);
   };
 
   const handleDeleteCategory = (category: string) =>
@@ -75,6 +101,8 @@ const FilterSearchBar: React.FC = () => {
 
   const handleDeletePlatform = (platform: string) =>
     setSelectedPlatforms((prev) => prev.filter((p) => p !== platform));
+
+  const hasHistory = history && !history.error && history.data?.length > 0;
 
   const renderChip = (
     items: string[],
@@ -161,28 +189,31 @@ const FilterSearchBar: React.FC = () => {
       </div>
 
       {/* 최근 검색 기록 */}
-      {isFocused && history.length > 0 && (
-        <div className='absolute top-full left-0 w-full  px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue'>
-          {history.map((record, i) => (
+      {isFocused && hasHistory && (
+        <div className='absolute top-full left-0 w-full px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue max-h-[128px] overflow-y-auto'>
+          {history.data.map(({ keyword, id }: GetSearchHistoryProps) => (
             <div
-              key={i}
+              key={id}
               className='flex items-center justify-between gap-2 my-4 text-15 text-black'
             >
               <div
                 className='flex items-center gap-2 cursor-pointer hover:underline'
-                onClick={() => setSearchContents(record)}
+                onClick={() => {
+                  setSearchContents(keyword);
+                  setIsFocused(false);
+                }}
               >
                 <HistoryIcon />
-                {record}
+                {keyword}
               </div>
               <Button
                 className='cursor-pointer'
-                icon={<DeleteIcon width={12} height={12} fill='#545966' />}
+                icon={<DeleteIcon width={12} height={12} stroke='#545966' />}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                 }}
-                onClick={() => handleDeleteHistory(record)}
+                onClick={() => handleDeleteHistory(id)}
               />
             </div>
           ))}

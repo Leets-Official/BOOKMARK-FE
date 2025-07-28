@@ -1,24 +1,54 @@
 import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
-import CardList from '@/components/ui/cardlist/CardList';
-import MobileCardList from '@/components/ui/cardlist/MobileCardList';
+import CardList from '@/components/ui/cardList/CardList';
+import MobileCardList from '@/components/ui/cardList/MobileCardList';
 import { isMobile } from 'react-device-detect';
 import HomeHeader from '@/components/layout/header/HomeHeader';
 import { Outlet } from 'react-router-dom';
 import HomeFooter from '@/components/layout/footer/HomeFooter';
-import SaveCardList from '@/components/ui/cardlist/SaveCardList';
-import { dummyCardData } from '@/contants/DummyData';
-import { getGroupedCardList } from '@/utils/GroupedCardList';
+import SaveCardList from '@/components/ui/cardList/SaveCardList';
 import HomLogo from '@/components/ui/HomLogo';
+import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getCategories } from '@/api/category/category';
+import Loading from '@/components/ui/loading/Loading';
+import CardListHeader from '@/components/layout/header/CardListHeader';
 
 const Home = () => {
-  const cardList = getGroupedCardList(dummyCardData);
+  useEffect(() => {
+    // 저장된 토큰 콘솔에 출력
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    console.log('🔑 Access Token:', accessToken);
+    console.log('🔄 Refresh Token:', refreshToken);
+  }, []);
+
+  // 카테고리 조회
+  const { data: categories, isPending } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => {
+      return getCategories();
+    },
+  });
 
   return (
     <div className='relative min-h-screen'>
       <HomeHeader />
       <HomLogo />
       <ChangeSearchBar barMarginTop={260} />
-      {isMobile ? <MobileCardList cardList={cardList} /> : <CardList cardList={cardList} />}
+      {isPending ? (
+        <div className='mt-70'>
+          <CardListHeader currentNum={'0'} title='카테고리' showCategory={true} />
+          <Loading className='bg-white w-full min-h-[200px] rounded-xl  p-3 py-6 flex justify-center items-center' />
+        </div>
+      ) : (
+        <>
+          {isMobile ? (
+            <MobileCardList categories={categories?.data || []} />
+          ) : (
+            <CardList categories={categories?.data || []} />
+          )}
+        </>
+      )}
       <SaveCardList />
       <HomeFooter />
       <Outlet />

@@ -25,7 +25,6 @@ import HistoryIcon from '@/assets/icons/History.svg?react';
 import WarningIcon from '@/assets/icons/Warning.svg?react';
 import RoundDeleteIcon from '@/assets/icons/RoundDelete.svg?react';
 import ResetButtonIcon from '@/assets/icons/ResetButton.svg?react';
-import AlarmIcon from '@/assets/icons/Alarm.svg?react';
 import ListOrderIcon from '@/assets/icons/ListOrder.svg?react';
 import INSIGHTBOXLogo from '@/assets/icons/INSIGHTBOXXX.svg?react';
 import LogoutIcon from '@/assets/icons/Logout.svg?react';
@@ -58,7 +57,6 @@ export {
   WarningIcon,
   RoundDeleteIcon,
   ResetButtonIcon,
-  AlarmIcon,
   ListOrderIcon,
   INSIGHTBOXLogo,
   LogoutIcon,

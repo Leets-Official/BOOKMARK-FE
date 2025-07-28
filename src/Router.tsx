@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Home, Login, Search, Save, Example, SearchResult, Edit } from '@/pages';
+import { Home, Login, Search, Save, Example, SearchResult, KakaoCallBack } from '@/pages';
 import App from '@/App';
 import MyPage from './pages/MyPage';
 
@@ -14,15 +14,15 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'save',
-            element: <Save />,
+            element: <Save type='create' />,
           },
           {
             path: 'search',
             element: <Search />,
           },
           {
-            path: 'edit',
-            element: <Edit />,
+            path: 'edit/:id',
+            element: <Save type='edit' />,
           },
           {
             path: 'my-page',
@@ -30,11 +30,6 @@ const router = createBrowserRouter([
           },
         ],
       },
-      {
-        path: 'login',
-        element: <Login />,
-      },
-
       {
         path: 'search-result',
         element: <SearchResult />,
@@ -44,8 +39,8 @@ const router = createBrowserRouter([
             element: <Search />,
           },
           {
-            path: 'edit',
-            element: <Edit />,
+            path: 'edit/:id',
+            element: <Save type='edit' />,
           },
         ],
       },
@@ -54,6 +49,14 @@ const router = createBrowserRouter([
         element: <Example />,
       },
     ],
+  },
+  {
+    path: '/login/',
+    element: <Login />,
+  },
+  {
+    path: '/auth/login/kakao',
+    element: <KakaoCallBack />,
   },
 ]);
 

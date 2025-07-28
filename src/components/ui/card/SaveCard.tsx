@@ -1,11 +1,11 @@
-import { AlarmIcon, FolderDetailIcon } from '@/assets';
+import { AlertIcon, FolderDetailIcon } from '@/assets';
 import { Image, Chip, Button } from '@/components/common';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
-import type { SaveCardProps } from '@/types';
+import type { SaveCardProps } from '@/types/components/components';
 import { motion } from 'framer-motion';
 import { MenuPortal } from '@/utils/';
-import { useMenuHandler } from '@/components/hooks/MenuPosition';
+import { useMenuHandler } from '@/hooks/MenuPosition';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../modal/DeleteModal';
 import { useState } from 'react';
@@ -58,7 +58,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
               <div className='absolute bottom-4 left-6 right-4 flex justify-between items-center'>
                 <div className='flex items-center gap-2'>
                   <p className='text-sm text-stone'>2025.07.17 18:28 저장</p>
-                  <AlarmIcon width={16} height={16} />
+                  <AlertIcon width={16} height={16} />
                 </div>
 
                 <div ref={iconRef} onClick={isOpen}>
@@ -83,7 +83,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
           <Button
             onClick={() => {
               isClose();
-              navigate('edit', { state: { editData: data } });
+              navigate(`edit/${data.id}`);
             }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15 cursor-pointer'
           >
