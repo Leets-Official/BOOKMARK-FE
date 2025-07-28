@@ -18,7 +18,7 @@ import type { FieldErrors, UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
 import { getCategoriesWithTag } from '@/api/category/category';
 import { useQuery } from '@tanstack/react-query';
-import type { ICategoryWithTags } from '@/types/api/categoryAndTag';
+import type { CategoryWithTagProps } from '@/types/api/categoryAndTag';
 
 type ModalType = 'category' | 'tag';
 
@@ -67,7 +67,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     data: categoriesWithTagsData,
     isLoading: isDataLoading,
     isError: isDataError,
-  } = useQuery<ICategoryWithTags[]>({
+  } = useQuery<CategoryWithTagProps[]>({
     queryKey: ['categoriesWithTags'],
     queryFn: async () => {
       const res = await getCategoriesWithTag();

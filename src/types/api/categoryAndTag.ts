@@ -5,14 +5,14 @@ export interface CategoryProps {
   updatedAt: string;
 }
 
-export interface ICategoryWithTags {
+export interface CategoryWithTagProps {
   categoryId: number;
   categoryName: string;
   createdAt: string;
-  tags: ITag[];
+  tags: tagProps[];
 }
 
-export interface ITag {
+export interface tagProps {
   tagId: number;
   categoryId: number;
   tagName: string;

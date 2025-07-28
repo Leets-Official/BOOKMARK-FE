@@ -7,7 +7,7 @@ import TextField from '../TextField';
 import React, { useMemo, useState } from 'react';
 import { visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
 import { useSetAtom } from 'jotai';
-import type { ITag } from '@/types/api/categoryAndTag';
+import type { TagProps } from '@/types/api/categoryAndTag';
 
 interface AddModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,7 +15,9 @@ interface AddModalProps {
   selectedCategory: string;
   setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
   setSelectedTag: React.Dispatch<React.SetStateAction<string[]>>;
-  categoriesWithTagsData: { categoryId: number; categoryName: string; tags: ITag[] }[] | undefined;
+  categoriesWithTagsData:
+    | { categoryId: number; categoryName: string; tags: TagProps[] }[]
+    | undefined;
   setTempCategories: React.Dispatch<React.SetStateAction<{ id: string; content: string }[]>>;
   setTempTags: React.Dispatch<React.SetStateAction<{ categoryName: string; tags: string[] }>>;
   tempCategories: { id: string; content: string }[];
