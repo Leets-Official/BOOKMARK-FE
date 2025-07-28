@@ -1,6 +1,19 @@
+@import url('https://unpkg.com/pretendard@1.3.9/dist/web/static/pretendard.css');
 @import 'tailwindcss';
 
 @layer base {
+  html {
+    font-family: 'Pretendard', Arial, sans-serif !important;
+  }
+
+  body {
+    font-family: 'Pretendard', Arial, sans-serif !important;
+  }
+
+  * {
+    font-family: 'Pretendard', Arial, sans-serif !important;
+  }
+
   html,
   body,
   div,
