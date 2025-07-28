@@ -6,6 +6,7 @@ import {
   visibleCategoryAtom,
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
+  isSuggestionLoadingAtom,
 } from '@/atoms';
 import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
@@ -27,6 +28,7 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
   const setVisibleCategory = useSetAtom(visibleCategoryAtom);
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setSuggestionList = useSetAtom(suggestionListAtom);
+  const setIsSuggestionLoading = useSetAtom(isSuggestionLoadingAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const resetMemo = useSetAtom(memoAtom);
 
@@ -53,16 +55,21 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
         setVisibleTag(true);
       }
       // 제목이 있으면 태그 제안 가져오기
-      getSuggestionTag(v).then((res) => {
-        setSuggestionList(
-          res.tags.map((t: string, index: number) => ({
-            id: index,
-            content: t,
-            isSelected: false,
-            type: 'suggestion',
-          })),
-        );
-      });
+      setIsSuggestionLoading(true);
+      getSuggestionTag(v)
+        .then((res) => {
+          setSuggestionList(
+            res.tags.map((t: string, index: number) => ({
+              id: index,
+              content: t,
+              isSelected: false,
+              type: 'suggestion',
+            })),
+          );
+        })
+        .finally(() => {
+          setIsSuggestionLoading(false);
+        });
     }
   };
 

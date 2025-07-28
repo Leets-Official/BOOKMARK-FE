@@ -1,7 +1,7 @@
 import { createPortal } from 'react-dom';
 import Modal from '@/components/common/Modal';
 import type React from 'react';
-import { useScrollLock } from '@/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/scrollLock';
 
 interface ModalPortalProps {
   isOpen: boolean;

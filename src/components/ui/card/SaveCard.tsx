@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect';
 import type { SaveCardProps } from '@/types/components/components';
 import { motion } from 'framer-motion';
 import { MenuPortal } from '@/utils/';
-import { useMenuHandler } from '@/hooks/MenuPosition';
+import { useMenuHandler } from '@/hooks/menuPosition';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../modal/DeleteModal';
 import { useState } from 'react';
@@ -60,13 +60,12 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
                   <p className='text-sm text-stone'>2025.07.17 18:28 저장</p>
                   <AlertIcon width={16} height={16} />
                 </div>
-
                 <div ref={iconRef} onClick={isOpen}>
                   <FolderDetailIcon
                     width={24}
                     height={24}
                     className={clsx(
-                      'text-white hover:text-grayBg transition-colors',
+                      'hover:text-grayBg transition-colors',
                       isMobile ? 'w-6 h-6' : 'sm:w-10 w-8 sm:h-10 h-8',
                       isMenuOpen ? 'text-grayBg' : 'text-white',
                     )}
