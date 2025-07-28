@@ -3,6 +3,9 @@ import { isMobile } from 'react-device-detect';
 import { useScrollLock } from '@/hooks/ScrollLock';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
+import copy from 'copy-to-clipboard';
+import toast from 'react-hot-toast';
+import { Button } from '@/components/common';
 
 const overlayStyle = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -31,6 +34,22 @@ const MyPage = () => {
   const isProfileEdit = useLocation().pathname === '/my-page/profile-edit';
   const isCategoryManagement = useLocation().pathname === '/my-page/category-management';
 
+  const handleCopyInquiry = () => {
+    const success = copy('insightboxxx@gmail.com');
+    if (success) {
+      toast.success('이메일이 복사되었습니다');
+    } else {
+      toast.error('이메일 복사에 실패했습니다');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    toast.success('로그아웃 되었습니다');
+    navigate('/login');
+  };
+
   return (
     <div className={overlayStyle({ isMobile })} onClick={() => navigate('/')}>
       <div className={modalStyle({ isMobile })} onClick={(e) => e.stopPropagation()}>
@@ -46,7 +65,7 @@ const MyPage = () => {
                 <h2 className='text-lg font-semibold text-gray-900'>마이페이지</h2>
 
                 {/* 메뉴 버튼들 */}
-                <button
+                <Button
                   className={clsx(
                     'text-left p-3 rounded-lg transition-colors',
                     isProfileEdit ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100 text-gray-700',
@@ -54,9 +73,9 @@ const MyPage = () => {
                   onClick={() => navigate('/my-page/profile-edit')}
                 >
                   프로필 수정
-                </button>
+                </Button>
 
-                <button
+                <Button
                   className={clsx(
                     'text-left p-3 rounded-lg transition-colors',
                     isCategoryManagement
@@ -66,15 +85,23 @@ const MyPage = () => {
                   onClick={() => navigate('/my-page/category-management')}
                 >
                   카테고리 / 태그 관리
-                </button>
+                </Button>
 
-                <button className='text-left p-3 rounded-lg hover:bg-gray-100 text-gray-700'>
+                <Button
+                  className='text-left p-3 rounded-lg hover:bg-gray-100 text-gray-700'
+                  onClick={handleCopyInquiry}
+                >
                   문의하기
-                </button>
+                </Button>
 
-                <button className='text-left p-3 rounded-lg hover:bg-gray-100 text-red-600 mt-auto'>
+                <Button
+                  className='text-left p-3 rounded-lg hover:bg-gray-100 text-red-600 mt-auto'
+                  onClick={() => {
+                    handleLogout();
+                  }}
+                >
                   로그아웃
-                </button>
+                </Button>
               </div>
             </div>
 

@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 import TextField from '../TextField';
+import TagSettingChip from '../chip/TagSettingChip';
 
 const CategoryCard = () => {
   const [isTagsOpen, setIsTagsOpen] = useState(false);
@@ -60,7 +61,7 @@ const CategoryCard = () => {
         </div>
         <motion.div
           animate={{
-            rotate: !isOpen ? 90 : -90,
+            rotate: !isTagsOpen ? 90 : -90,
           }}
           transition={{ duration: 0.2 }}
           onClick={() => setIsTagsOpen(!isTagsOpen)}
@@ -79,7 +80,17 @@ const CategoryCard = () => {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className='overflow-hidden'
           >
-            <div className='flex flex-wrap gap-2 p-0.5'>칩</div>
+            <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
+              <TagSettingChip />
+              <TagSettingChip />
+              <TagSettingChip />
+              <TagSettingChip />
+              <TagSettingChip />
+              <TagSettingChip />
+              <TagSettingChip />
+              <TagSettingChip />
+              <TagSettingChip />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -150,7 +161,9 @@ const CategoryCard = () => {
         isOpen={isDeleteModalOpen}
         onCancel={() => setIsDeleteModalOpen(false)}
         warningText={`... 카테고리를 정말 삭제할까요?`}
-        subText={`카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?`}
+        subText={
+          '카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?'
+        }
         onDelete={() => {
           setIsDeleteModalOpen(false);
         }}

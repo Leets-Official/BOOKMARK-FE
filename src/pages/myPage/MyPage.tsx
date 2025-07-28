@@ -30,6 +30,13 @@ const MyPage = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    toast.success('로그아웃 되었습니다');
+    navigate('/login');
+  };
+
   return (
     <>
       {/* 헤더 */}
@@ -91,9 +98,7 @@ const MyPage = () => {
       <div className={clsx(isMobile ? 'absolute bottom-0 left-0 right-0 z-10' : 'flex mt-10')}>
         <Button
           icon={<LogoutIcon width={20} height={20} />}
-          onClick={() => {
-            console.log('로그아웃 클릭');
-          }}
+          onClick={handleLogout}
           className='w-[124px] h-[48px] text-stone rounded-[10px] border-2 border-lightGrayBlue text-15 font-medium flex items-center justify-center gap-2 my-8 mx-4 cursor-pointer'
         >
           로그아웃

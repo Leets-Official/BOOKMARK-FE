@@ -281,7 +281,9 @@ const FolderCard = ({
         isOpen={isDeleteModalOpen}
         onCancel={() => setIsDeleteModalOpen(false)}
         warningText={`"${category.categoryName}"카테고리를 정말 삭제할까요?`}
-        subText={`카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?`}
+        subText={
+          '카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?'
+        }
         onDelete={() => {
           setIsDeleteModalOpen(false);
           deleteCategoryMutation(category.id);
