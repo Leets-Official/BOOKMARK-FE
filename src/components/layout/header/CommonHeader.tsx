@@ -17,7 +17,7 @@ const CommonHeader = ({ title }: { title: string }) => {
         onClick={onClick}
         className='absolute left-4 rounded-[100px] bg-[#EAEDF5]/90 p-2.5 hover:brightness-90 transition'
       />
-      <p className='text-base font-medium'>{title}</p>
+      <p className='text-base font-semibold'>{title}</p>
     </div>
   );
 };
