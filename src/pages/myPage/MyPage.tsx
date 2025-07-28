@@ -7,12 +7,19 @@ import { useScrollLock } from '@/hooks/ScrollLock';
 import copy from 'copy-to-clipboard';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
+import { useEffect } from 'react';
 
 const MyPage = () => {
   // 외부 스크롤 방지
   useScrollLock(true);
   const navigate = useNavigate();
   const profileImage = localStorage.getItem('profileImage');
+
+  useEffect(() => {
+    if (!isMobile) {
+      navigate('/my-page/profile-edit');
+    }
+  }, [navigate]);
 
   const handleCopyInquiry = () => {
     const success = copy('insightboxxx@gmail.com');
@@ -49,6 +56,7 @@ const MyPage = () => {
             onClick={() => {
               navigate('/my-page/profile-edit');
             }}
+            className='cursor-pointer'
           />
           <div className='flex flex-col justify-center gap-4'>
             <p className='text-2xl font-semibold'>김민수</p>
@@ -59,9 +67,9 @@ const MyPage = () => {
           <p className='text-xs font-medium px-4 text-gray-500'>관리</p>
           <hr className='w-full border-lightGrayBlue border-1' />
           <Button
-            className='text-15 text-stone font-medium text-left px-4 py-2'
+            className='text-15 text-stone font-medium text-left px-4 py-2 cursor-pointer'
             onClick={() => {
-              console.log('카테고리 / 태그 관리 클릭');
+              navigate('/my-page/category-management');
             }}
           >
             카테고리 / 태그 관리
@@ -71,7 +79,7 @@ const MyPage = () => {
           <p className='text-xs font-medium px-4 text-gray-500'>문의</p>
           <hr className='w-full border-lightGrayBlue border-1' />
           <Button
-            className='text-15 text-stone font-medium text-left px-4 py-2'
+            className='text-15 text-stone font-medium text-left px-4 py-2 cursor-pointer'
             onClick={handleCopyInquiry}
           >
             문의하기
@@ -86,7 +94,7 @@ const MyPage = () => {
           onClick={() => {
             console.log('로그아웃 클릭');
           }}
-          className='w-[124px] h-[48px] text-stone rounded-[10px] border-2 border-lightGrayBlue text-15 font-medium flex items-center justify-center gap-2 my-8 mx-4'
+          className='w-[124px] h-[48px] text-stone rounded-[10px] border-2 border-lightGrayBlue text-15 font-medium flex items-center justify-center gap-2 my-8 mx-4 cursor-pointer'
         >
           로그아웃
         </Button>

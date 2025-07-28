@@ -45,6 +45,7 @@ const ProfileEdit = () => {
               onClick={() => {
                 console.log('사진 클릭');
               }}
+              className='cursor-pointer'
             />
           </div>
           <div className='flex flex-col self-start w-full gap-4'>
@@ -69,10 +70,10 @@ const ProfileEdit = () => {
         </div>
       </div>
       {/* 푸터 */}
-      <div className={clsx(isMobile ? 'absolute bottom-0 left-0 right-0 z-10' : 'flex mt-5')}>
+      <div className={clsx(isMobile ? 'absolute bottom-0 left-0 right-0 z-10' : 'flex')}>
         <Button
           onClick={() => setIsDeleteModalOpen(true)}
-          className='w-[124px] h-[48px] text-stone text-15 font-medium flex items-center justify-center gap-2 my-8'
+          className='w-[124px] h-[48px] text-stone text-15 font-medium flex items-center justify-center gap-2 my-8 cursor-pointer'
         >
           계정삭제
         </Button>

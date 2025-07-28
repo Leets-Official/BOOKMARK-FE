@@ -28,7 +28,6 @@ const MyPage = () => {
   // 외부 스크롤 방지
   useScrollLock(true);
   const navigate = useNavigate();
-  const isMyPage = useLocation().pathname === '/my-page';
   const isProfileEdit = useLocation().pathname === '/my-page/profile-edit';
   const isCategoryManagement = useLocation().pathname === '/my-page/category-management';
 
@@ -47,16 +46,6 @@ const MyPage = () => {
                 <h2 className='text-lg font-semibold text-gray-900'>마이페이지</h2>
 
                 {/* 메뉴 버튼들 */}
-                <button
-                  className={clsx(
-                    'text-left p-3 rounded-lg transition-colors',
-                    isMyPage ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100 text-gray-700',
-                  )}
-                  onClick={() => navigate('/my-page')}
-                >
-                  프로필 정보
-                </button>
-
                 <button
                   className={clsx(
                     'text-left p-3 rounded-lg transition-colors',
