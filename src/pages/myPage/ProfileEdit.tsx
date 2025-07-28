@@ -5,6 +5,7 @@ import TextField from '@/components/ui/TextField';
 import { useState } from 'react';
 import { useScrollLock } from '@/hooks/ScrollLock';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
+import clsx from 'clsx';
 
 const ProfileEdit = () => {
   // 외부 스크롤 방지
@@ -27,7 +28,7 @@ const ProfileEdit = () => {
       )}
 
       {/* 본문 */}
-      <div className='flex flex-col items-center justify-center my-20 p-4 gap-15'>
+      <div className='flex flex-col items-center justify-center mt-20 p-4 gap-15'>
         <div className='flex flex-col self-start w-full gap-4'>
           <p className='text-xs font-medium px-4 text-gray-500'>프로필</p>
           <hr className='w-full border-lightGrayBlue border-1' />
@@ -68,7 +69,7 @@ const ProfileEdit = () => {
         </div>
       </div>
       {/* 푸터 */}
-      <div className='absolute bottom-0 left-0 right-0 z-10'>
+      <div className={clsx(isMobile ? 'absolute bottom-0 left-0 right-0 z-10' : 'flex mt-5')}>
         <Button
           onClick={() => setIsDeleteModalOpen(true)}
           className='w-[124px] h-[48px] text-stone text-15 font-medium flex items-center justify-center gap-2 my-8'

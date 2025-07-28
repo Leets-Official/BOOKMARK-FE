@@ -6,6 +6,7 @@ import { isMobile } from 'react-device-detect';
 import { useScrollLock } from '@/hooks/ScrollLock';
 import copy from 'copy-to-clipboard';
 import toast from 'react-hot-toast';
+import clsx from 'clsx';
 
 const MyPage = () => {
   // 외부 스크롤 방지
@@ -32,7 +33,7 @@ const MyPage = () => {
       )}
 
       {/* 본문 */}
-      <div className='flex flex-col justify-center my-20 p-4 gap-15'>
+      <div className='flex flex-col justify-center mt-20 p-4 gap-15'>
         <div
           className='w-[351px] flex flex-row items-center rounded-[40px] border-2 border-lightGrayBlue p-4 gap-6'
           style={{ boxShadow: '0 2px 7px 0 rgba(2, 34, 94, 0.1)' }}
@@ -79,7 +80,7 @@ const MyPage = () => {
       </div>
 
       {/* 푸터 */}
-      <div className='absolute bottom-0 left-0 right-0 z-10'>
+      <div className={clsx(isMobile ? 'absolute bottom-0 left-0 right-0 z-10' : 'flex mt-10')}>
         <Button
           icon={<LogoutIcon width={20} height={20} />}
           onClick={() => {
