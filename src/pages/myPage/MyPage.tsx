@@ -2,6 +2,7 @@ import { Button } from '@/components/common';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import { LogoutIcon } from '@/assets';
 import { useNavigate } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -10,12 +11,14 @@ const MyPage = () => {
   return (
     <>
       {/* 헤더 */}
-      <div className='absolute top-0 left-0 right-0 z-10'>
-        <CommonHeader title='마이페이지' />
-      </div>
+      {isMobile && (
+        <div className='absolute top-0 left-0 right-0 z-10'>
+          <CommonHeader title='마이페이지' />
+        </div>
+      )}
 
       {/* 본문 */}
-      <div className='flex flex-col items-center justify-center my-20 p-4 gap-15'>
+      <div className='flex flex-col justify-center my-20 p-4 gap-15'>
         <div
           className='w-[351px] flex flex-row items-center rounded-[40px] border-2 border-lightGrayBlue p-4 gap-6'
           style={{ boxShadow: '0 2px 7px 0 rgba(2, 34, 94, 0.1)' }}
