@@ -15,6 +15,7 @@ interface TextFieldProps {
   errorMessage?: string;
   value?: string;
   buttonVisible?: boolean;
+  className?: string;
 }
 
 const TextField = ({
@@ -27,6 +28,7 @@ const TextField = ({
   errorMessage,
   value,
   buttonVisible = true,
+  className,
 }: TextFieldProps) => {
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -64,6 +66,7 @@ const TextField = ({
           className={clsx(
             'w-full rounded-[12px] text-15 p-4 py-3 leading-5',
             buttonVisible && 'pr-8',
+            className,
           )}
           value={value ?? ''}
           placeholder={placeholder}
