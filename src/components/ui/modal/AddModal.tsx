@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import TextField from '../TextField';
 import React, { useMemo, useState } from 'react';
-import { visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
-import { useSetAtom } from 'jotai';
+import { suggestionListAtom, visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
+import { useAtomValue, useSetAtom } from 'jotai';
 import type { TagProps } from '@/types/api/categoryAndTag';
 
 interface AddModalProps {
@@ -39,6 +39,7 @@ const AddModal = ({
   const [isDisabled, setIsDisabled] = useState(true);
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
+  const suggestionList = useAtomValue(suggestionListAtom);
 
   const handleAddCategory = (content: string) => {
     // 임시 카테고리 목록에 추가
@@ -88,9 +89,17 @@ const AddModal = ({
           ?.find((c) => c.categoryName === selectedCategory)
           ?.tags.map((t) => t.tagName) ?? [];
       const tempTag = tempTags.categoryName === selectedCategory ? tempTags.tags : [];
-      return [...new Set([...realTag, ...tempTag])];
+      const suggestionTag = suggestionList.map((s) => s.content);
+      return [...realTag, ...tempTag, ...suggestionTag];
     }
-  }, [isCategoryType, categoriesWithTagsData, tempCategories, tempTags, selectedCategory]);
+  }, [
+    isCategoryType,
+    categoriesWithTagsData,
+    tempCategories,
+    tempTags,
+    selectedCategory,
+    suggestionList,
+  ]);
 
   const schema = modalAddSchema(isCategoryType ? 'category' : 'tag', existingValues);
 

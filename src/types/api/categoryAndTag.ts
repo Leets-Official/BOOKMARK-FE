@@ -9,10 +9,10 @@ export interface CategoryWithTagProps {
   categoryId: number;
   categoryName: string;
   createdAt: string;
-  tags: tagProps[];
+  tags: TagProps[];
 }
 
-export interface tagProps {
+export interface TagProps {
   tagId: number;
   categoryId: number;
   tagName: string;
