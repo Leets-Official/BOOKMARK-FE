@@ -10,6 +10,7 @@ import {
   MyPageContainer,
   MyPage,
   ProfileEdit,
+  CategoryManagement,
 } from '@/pages';
 import App from '@/App';
 
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
               {
                 path: 'profile-edit',
                 element: <ProfileEdit />,
+              },
+              {
+                path: 'category-management',
+                element: <CategoryManagement />,
               },
             ],
           },

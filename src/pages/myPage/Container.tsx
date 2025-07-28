@@ -28,7 +28,10 @@ const MyPage = () => {
   // 외부 스크롤 방지
   useScrollLock(true);
   const navigate = useNavigate();
+  const isMyPage = useLocation().pathname === '/my-page';
   const isProfileEdit = useLocation().pathname === '/my-page/profile-edit';
+  const isCategoryManagement = useLocation().pathname === '/my-page/category-management';
+
   return (
     <div className={overlayStyle({ isMobile })} onClick={() => navigate('/')}>
       <div className={modalStyle({ isMobile })} onClick={(e) => e.stopPropagation()}>
@@ -47,9 +50,7 @@ const MyPage = () => {
                 <button
                   className={clsx(
                     'text-left p-3 rounded-lg transition-colors',
-                    !isProfileEdit
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'hover:bg-gray-100 text-gray-700',
+                    isMyPage ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100 text-gray-700',
                   )}
                   onClick={() => navigate('/my-page')}
                 >
@@ -66,7 +67,15 @@ const MyPage = () => {
                   프로필 수정
                 </button>
 
-                <button className='text-left p-3 rounded-lg hover:bg-gray-100 text-gray-700'>
+                <button
+                  className={clsx(
+                    'text-left p-3 rounded-lg transition-colors',
+                    isCategoryManagement
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'hover:bg-gray-100 text-gray-700',
+                  )}
+                  onClick={() => navigate('/my-page/category-management')}
+                >
                   카테고리 / 태그 관리
                 </button>
 

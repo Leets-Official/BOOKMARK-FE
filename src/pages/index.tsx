@@ -8,6 +8,7 @@ import KakaoCallBack from './KakaoCallBack';
 import MyPageContainer from './myPage/Container';
 import MyPage from './myPage/MyPage';
 import ProfileEdit from './myPage/ProfileEdit';
+import CategoryManagement from './myPage/CategoryManagement';
 
 export {
   Home,
@@ -20,4 +21,5 @@ export {
   MyPageContainer,
   MyPage,
   ProfileEdit,
+  CategoryManagement,
 };
