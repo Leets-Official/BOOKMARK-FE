@@ -44,6 +44,13 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTag, setSelectedTag] = useState<string[]>([]);
 
+  // 임시로 추가된 카테고리와 태그를 관리하는 상태
+  const [tempCategories, setTempCategories] = useState<{ id: string; content: string }[]>([]);
+  const [tempTags, setTempTags] = useState<{ categoryName: string; tags: string[] }>({
+    categoryName: '',
+    tags: [],
+  });
+
   // 수정 모드일 때 초기값 설정
   useEffect(() => {
     if (editCate) {
@@ -72,34 +79,52 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     gcTime: 5 * 60 * 1000, // 5분동안 캐시 유지
   });
 
-  // 카테고리 목록 생성
+  // 카테고리 목록 생성 (서버 데이터 + 임시 데이터)
   const allCategories = useMemo(() => {
-    if (!categoriesWithTagsData || isDataError) return [];
+    if (!categoriesWithTagsData || isDataError)
+      return tempCategories.map((temp) => ({
+        ...temp,
+        isSelected: temp.content === selectedCategory,
+      }));
 
     const sortedCate = [...categoriesWithTagsData].sort(
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
 
-    return sortedCate.map((category) => ({
-      id: category.categoryId,
+    const serverCategories = sortedCate.map((category) => ({
+      id: category.categoryId.toString(),
       content: category.categoryName,
       isSelected: category.categoryName === selectedCategory,
     }));
-  }, [categoriesWithTagsData, isDataError, selectedCategory]);
+
+    const tempCategoriesWithSelected = tempCategories.map((temp) => ({
+      ...temp,
+      isSelected: temp.content === selectedCategory,
+    }));
+
+    return [...serverCategories, ...tempCategoriesWithSelected];
+  }, [categoriesWithTagsData, isDataError, selectedCategory, tempCategories]);
 
   const handleCategory = (categoryName: string) => {
     setSelectedCategory(categoryName);
     setVisibleTag(true);
   };
 
-  // 선택된 카테고리의 태그 목록 생성
+  // 선택된 카테고리의 태그 목록 생성 (서버 데이터 + 임시 데이터)
   const selectedCategoryTags = useMemo(() => {
-    if (!categoriesWithTagsData || !selectedCategory) return [];
+    if (!categoriesWithTagsData || !selectedCategory) {
+      // 서버 데이터가 없거나 카테고리가 선택되지 않은 경우, 임시 태그만 반환
+      return tempTags.categoryName === selectedCategory ? tempTags.tags : [];
+    }
 
     const category = categoriesWithTagsData.find((c) => c.categoryName === selectedCategory);
+    const serverTags = category?.tags?.map((tag) => tag.tagName) ?? [];
 
-    return category?.tags?.map((tag) => tag.tagName) ?? [];
-  }, [categoriesWithTagsData, selectedCategory]);
+    // 선택된 카테고리의 임시 태그도 추가
+    const categoryTempTags = tempTags.categoryName === selectedCategory ? tempTags.tags : [];
+
+    return [...serverTags, ...categoryTempTags];
+  }, [categoriesWithTagsData, selectedCategory, tempTags]);
 
   // 카테고리별 태그와 suggestionList를 통합하여 관리 (suggestion 태그를 앞에 배치)
   const allTags = useMemo(() => {
@@ -151,6 +176,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     if (!editCate && !editTag && !openCate && !openTag) {
       setSelectedCategory('');
       setSelectedTag([]);
+      setTempCategories([]);
+      setTempTags({ categoryName: '', tags: [] });
 
       const hasSelected = suggestionList.some((s) => s.isSelected);
       if (hasSelected) {
@@ -163,6 +190,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   useEffect(() => {
     if (editCate || editTag) {
       setSuggestionList([]); // 수정 모드에서는 suggestion 초기화
+      setTempCategories([]); // 수정 모드에서는 임시 데이터 초기화
+      setTempTags({ categoryName: '', tags: [] });
     }
   }, [editCate, editTag, setSuggestionList]);
 
@@ -287,6 +316,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           setSelectedTag={setSelectedTag}
+          setTempCategories={setTempCategories}
+          setTempTags={setTempTags}
           categoriesWithTagsData={categoriesWithTagsData}
         />
       )}

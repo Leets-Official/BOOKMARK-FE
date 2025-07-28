@@ -7,9 +7,6 @@ import TextField from '../TextField';
 import React, { useState } from 'react';
 import { visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
 import { useSetAtom } from 'jotai';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createCategory } from '@/api/category/category';
-import { createTag } from '@/api/tag/tag';
 import type { ITag } from '@/types/api/categoryAndTag';
 
 interface AddModalProps {
@@ -19,6 +16,8 @@ interface AddModalProps {
   setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
   setSelectedTag: React.Dispatch<React.SetStateAction<string[]>>;
   categoriesWithTagsData: { categoryId: number; categoryName: string; tags: ITag[] }[] | undefined;
+  setTempCategories: React.Dispatch<React.SetStateAction<{ id: string; content: string }[]>>;
+  setTempTags: React.Dispatch<React.SetStateAction<{ categoryName: string; tags: string[] }>>;
 }
 
 const AddModal = ({
@@ -28,64 +27,34 @@ const AddModal = ({
   setSelectedCategory,
   setSelectedTag,
   categoriesWithTagsData,
+  setTempCategories,
+  setTempTags,
 }: AddModalProps) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
 
-  const queryClient = useQueryClient();
-
-  const categoryMutation = useMutation({
-    mutationFn: async (categoryName: string) => {
-      const res = await createCategory(categoryName);
-      console.log('🧾 카테고리 생성 응답:', res);
-
-      const newCategoryName = categoryName;
-      setSelectedCategory(newCategoryName);
-      setVisibleTag(true);
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
-    },
-    onError: () => {
-      console.log('카테고리 생성 실패');
-    },
-  });
-
   const handleAddCategory = (content: string) => {
-    categoryMutation.mutate(content);
+    // 임시 카테고리 목록에 추가
+    const tempId = `temp_${Date.now()}`;
+    setTempCategories((prev) => [...prev, { id: tempId, content }]);
+
+    // 새로 추가한 카테고리를 바로 선택
+    setSelectedCategory(content);
+    setVisibleTag(true);
   };
 
-  const tagMutation = useMutation({
-    mutationFn: async ({ categoryId, tagName }: { categoryId: number; tagName: string }) => {
-      const res = await createTag(categoryId, tagName);
-      console.log('🧾 태그 생성 응답:', res);
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
-    },
-    onError: () => {
-      console.log('태그 생성 실패');
-    },
-  });
-
   const handleAddTag = (tagName: string) => {
-    if (!categoriesWithTagsData) return;
-
-    const selectedCategoryData = categoriesWithTagsData.find(
-      (c) => c.categoryName === selectedCategory,
-    );
-    if (!selectedCategoryData) return;
+    if (!selectedCategory) return;
 
     setSelectedTag((prev) => [...prev, tagName]);
     setVisibleMemoAndAlarm(true);
 
-    tagMutation.mutate({
-      categoryId: selectedCategoryData.categoryId,
-      tagName,
-    });
+    // 임시 태그 목록에 추가
+    setTempTags((prev) => ({
+      categoryName: selectedCategory,
+      tags: [...(prev.categoryName === selectedCategory ? prev.tags : []), tagName],
+    }));
   };
 
   const handleConfirmModal = (data: z.infer<typeof schema>) => {
@@ -101,7 +70,13 @@ const AddModal = ({
     setIsDisabled(true);
   };
 
-  const schema = modalAddSchema(isCategoryType ? 'category' : 'tag');
+  const existingValues = isCategoryType
+    ? (categoriesWithTagsData?.map((c) => c.categoryName) ?? [])
+    : (categoriesWithTagsData
+        ?.find((c) => c.categoryName === selectedCategory)
+        ?.tags.map((t) => t.tagName) ?? []);
+
+  const schema = modalAddSchema(isCategoryType ? 'category' : 'tag', existingValues);
 
   const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
