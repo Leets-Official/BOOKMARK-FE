@@ -3,8 +3,11 @@ import CommonHeader from '@/components/layout/header/CommonHeader';
 import { LogoutIcon } from '@/assets';
 import { useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
+import { useScrollLock } from '@/hooks/ScrollLock';
 
 const MyPage = () => {
+  // 외부 스크롤 방지
+  useScrollLock(true);
   const navigate = useNavigate();
   const profileImage = localStorage.getItem('profileImage');
 

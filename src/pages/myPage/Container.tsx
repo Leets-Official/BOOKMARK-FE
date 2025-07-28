@@ -30,7 +30,7 @@ const MyPage = () => {
   const navigate = useNavigate();
   const isProfileEdit = useLocation().pathname === '/my-page/profile-edit';
   return (
-    <div className={overlayStyle({ isMobile })}>
+    <div className={overlayStyle({ isMobile })} onClick={() => navigate('/')}>
       <div className={modalStyle({ isMobile })} onClick={(e) => e.stopPropagation()}>
         {isMobile ? (
           // 모바일: 전체 화면

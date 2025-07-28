@@ -3,9 +3,14 @@ import { Button } from '@/components/common';
 import { isMobile } from 'react-device-detect';
 import TextField from '@/components/ui/TextField';
 import { useState } from 'react';
+import { useScrollLock } from '@/hooks/ScrollLock';
+import DeleteModal from '@/components/ui/modal/DeleteModal';
 
 const ProfileEdit = () => {
+  // 외부 스크롤 방지
+  useScrollLock(true);
   const [nickname, setNickname] = useState('');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const profileImage = localStorage.getItem('profileImage');
 
   const handleBlur = () => {
@@ -65,14 +70,21 @@ const ProfileEdit = () => {
       {/* 푸터 */}
       <div className='absolute bottom-0 left-0 right-0 z-10'>
         <Button
-          onClick={() => {
-            console.log('로그아웃 클릭');
-          }}
+          onClick={() => setIsDeleteModalOpen(true)}
           className='w-[124px] h-[48px] text-stone text-15 font-medium flex items-center justify-center gap-2 my-8'
         >
           계정삭제
         </Button>
       </div>
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        onDelete={() => {
+          console.log('계정삭제');
+        }}
+        warningText='정말 계정을 삭제하시겠습니까?'
+        subText='이 계정에 관련한 모든 내용은 영구삭제되며, 복구하실 수 없습니다'
+      />
     </>
   );
 };

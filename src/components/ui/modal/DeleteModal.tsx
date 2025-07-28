@@ -33,7 +33,7 @@ const DeleteModal = ({ isOpen, onCancel, onDelete, warningText, subText }: Delet
 
   const modalContent = (
     <div
-      className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
+      className='fixed inset-0 z-200 flex items-center justify-center bg-black/50'
       onClick={() => onCancel()}
     >
       <div
