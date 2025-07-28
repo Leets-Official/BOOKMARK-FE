@@ -90,18 +90,18 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
 
-    const serverCategories = sortedCate.map((category) => ({
+    const realCategory = sortedCate.map((category) => ({
       id: category.categoryId.toString(),
       content: category.categoryName,
       isSelected: category.categoryName === selectedCategory,
     }));
 
-    const tempCategoriesWithSelected = tempCategories.map((temp) => ({
+    const tempCategory = tempCategories.map((temp) => ({
       ...temp,
       isSelected: temp.content === selectedCategory,
     }));
 
-    return [...serverCategories, ...tempCategoriesWithSelected];
+    return [...realCategory, ...tempCategory];
   }, [categoriesWithTagsData, isDataError, selectedCategory, tempCategories]);
 
   const handleCategory = (categoryName: string) => {
@@ -118,12 +118,12 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     }
 
     const category = categoriesWithTagsData.find((c) => c.categoryName === selectedCategory);
-    const serverTags = category?.tags?.map((tag) => tag.tagName) ?? [];
+    const realTags = category?.tags?.map((tag) => tag.tagName) ?? [];
 
     // 선택된 카테고리의 임시 태그도 추가
     const categoryTempTags = tempTags.categoryName === selectedCategory ? tempTags.tags : [];
 
-    return [...serverTags, ...categoryTempTags];
+    return [...realTags, ...categoryTempTags];
   }, [categoriesWithTagsData, selectedCategory, tempTags]);
 
   const allTags = useMemo(() => {
