@@ -7,6 +7,7 @@ import {
   visibleMemoAndAlarmAtom,
   selectedCategoryAtom,
   selectedTagAtom,
+  suggestionListAtom,
 } from '@/atoms';
 import { createCategory, getCategories } from '@/api/category/category';
 import { createTag } from '@/api/tag/tag';
@@ -16,6 +17,7 @@ const SaveButton = () => {
   const tempTags = useAtomValue(tempTagsAtom);
   const selectedCategory = useAtomValue(selectedCategoryAtom);
   const selectedTag = useAtomValue(selectedTagAtom);
+  const suggestionList = useAtomValue(suggestionListAtom);
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
@@ -56,8 +58,15 @@ const SaveButton = () => {
       if (!categoryId) throw new Error('카테고리 ID 찾기 실패'); // 카테고리 ID를 찾는데도 없으면 에러
     }
 
-    // tempTags에서 해당 카테고리 태그만 추출
-    const createTag = tempTags[selectedCategory] || [];
+    // 제안 태그 중 선택된 태그
+    const selectedSuggestionTags = suggestionList.filter((s) => s.isSelected).map((s) => s.content);
+
+    // 임시 태그 중 선택된 태그
+    const selectedTempTags = (tempTags[selectedCategory] || []).filter((tag) =>
+      selectedTag.includes(tag),
+    );
+
+    const createTag = [...selectedSuggestionTags, ...selectedTempTags];
 
     // 여러개의 태그 생성을 실행하는 동안 기다림 -> 하나라도 실패하면 reject
     await Promise.all(
