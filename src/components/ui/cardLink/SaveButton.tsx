@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { tv } from 'tailwind-variants';
 import {
   tempCategoriesAtom,
@@ -28,10 +28,10 @@ interface SaveInterfaceProps {
 }
 
 const SaveButton = ({ type }: SaveInterfaceProps) => {
-  const [tempCategories, setTempCategories] = useAtom(tempCategoriesAtom);
-  const [tempTags, setTempTags] = useAtom(tempTagsAtom);
-  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
-  const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
+  const tempCategories = useAtomValue(tempCategoriesAtom);
+  const tempTags = useAtomValue(tempTagsAtom);
+  const selectedCategory = useAtomValue(selectedCategoryAtom);
+  const selectedTag = useAtomValue(selectedTagAtom);
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
@@ -83,10 +83,6 @@ const SaveButton = ({ type }: SaveInterfaceProps) => {
 
     await queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
 
-    setSelectedCategory('');
-    setSelectedTag([]);
-    setTempCategories([]);
-    setTempTags({});
     setVisibleTag(false);
     setVisibleMemoAndAlarm(false);
   };
