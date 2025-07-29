@@ -40,11 +40,9 @@ const MyPage = () => {
   return (
     <>
       {/* 헤더 */}
-      {isMobile && (
-        <div className='absolute top-0 left-0 right-0 z-10'>
-          <CommonHeader title='마이페이지' />
-        </div>
-      )}
+      <div className='absolute top-0 left-0 right-0 z-10'>
+        <CommonHeader title='마이페이지' />
+      </div>
 
       {/* 본문 */}
       <div className='flex flex-col justify-center mt-20 p-4 gap-15'>
