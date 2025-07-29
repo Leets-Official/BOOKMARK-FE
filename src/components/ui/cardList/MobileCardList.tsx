@@ -11,6 +11,8 @@ const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
   const containerRef = useRef<HTMLDivElement>(null); // 외부 컨테이너 영역 (실제 보이는 영역)
   const [constraints, setConstraints] = useState({ left: 0, right: 0 }); // 드래그 제약 범위 상태값
 
+  const allCategoryNames = categories.map((cat) => cat.categoryName);
+
   // 카드 리스트 또는 브라우저 크기 변경 시 드래그 범위 재계산
   useEffect(() => {
     const updateConstraints = () => {
@@ -62,7 +64,7 @@ const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
           className='flex justify-start items-center gap-3 cursor-grab active:cursor-grabbing'
         >
           {categories.map((category) => (
-            <FolderCard key={category.id} category={category} />
+            <FolderCard key={category.id} category={category} allCategoryNames={allCategoryNames} />
           ))}
         </motion.div>
       </div>

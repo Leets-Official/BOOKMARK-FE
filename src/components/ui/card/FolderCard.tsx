@@ -25,9 +25,11 @@ const TitleText =
 
 const FolderCard = ({
   category,
+  allCategoryNames,
   pages,
 }: {
   category: CategoryProps;
+  allCategoryNames: string[];
   pages?: [number, number, number, () => void];
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,7 +41,7 @@ const FolderCard = ({
   // useScrollLock을 최상위로 이동
   useScrollLock(isScrollLocked);
 
-  const schema = modalAddSchema('category');
+  const schema = modalAddSchema('category', allCategoryNames);
   const queryClient = useQueryClient();
   const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
