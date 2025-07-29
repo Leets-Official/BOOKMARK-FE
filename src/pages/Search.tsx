@@ -94,7 +94,7 @@ const Search = () => {
   };
 
   return (
-    <div className='relative min-h-screen  w-full h-full'>
+    <div className='relative min-h-screen w-[50%] h-full'>
       <div className='flex flex-col overflow-hidden'>
         <FilterSearchBar />
 
