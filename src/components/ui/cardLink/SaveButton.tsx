@@ -1,10 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { tv } from 'tailwind-variants';
 import {
   tempCategoriesAtom,
   tempTagsAtom,
-  isSaveButtonDisabledAtom,
   visibleTagAtom,
   visibleMemoAndAlarmAtom,
   selectedCategoryAtom,
@@ -13,21 +11,7 @@ import {
 import { createCategory, getCategories } from '@/api/category/category';
 import { createTag } from '@/api/tag/tag';
 
-const SaveButtonClass = tv({
-  base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] rounded-[10px]',
-  variants: {
-    isDisabled: {
-      true: 'bg-lightBlueGray text-veryLightGray',
-      false: 'bg-blue text-white cursor-pointer hover:brightness-90 transition',
-    },
-  },
-});
-
-interface SaveInterfaceProps {
-  type: 'create' | 'edit';
-}
-
-const SaveButton = ({ type }: SaveInterfaceProps) => {
+const SaveButton = () => {
   const tempCategories = useAtomValue(tempCategoriesAtom);
   const tempTags = useAtomValue(tempTagsAtom);
   const selectedCategory = useAtomValue(selectedCategoryAtom);
@@ -35,7 +19,6 @@ const SaveButton = ({ type }: SaveInterfaceProps) => {
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
-  const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
 
   const queryClient = useQueryClient();
 
@@ -53,7 +36,7 @@ const SaveButton = ({ type }: SaveInterfaceProps) => {
     },
   });
 
-  const handleSave = async () => {
+  const saveLinkData = async () => {
     if (!selectedCategory || selectedTag.length === 0) return;
 
     let categoryId: number | null = null;
@@ -87,18 +70,7 @@ const SaveButton = ({ type }: SaveInterfaceProps) => {
     setVisibleMemoAndAlarm(false);
   };
 
-  return (
-    <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
-      <button
-        type='button'
-        className={SaveButtonClass({ isDisabled: isSaveButtonDisabled })}
-        onClick={handleSave}
-        disabled={isSaveButtonDisabled}
-      >
-        {type === 'create' ? '저장하기' : '수정하기'}
-      </button>
-    </div>
-  );
+  return { saveLinkData };
 };
 
 export default SaveButton;

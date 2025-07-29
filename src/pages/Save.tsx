@@ -4,14 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
 import {
+  isSaveButtonDisabledAtom,
   linkAtom,
   memoAtom,
   previewImageAtom,
+  selectedCategoryAtom,
+  selectedTagAtom,
+  tempCategoriesAtom,
+  tempTagsAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
 } from '@/atoms';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useScrollLock } from '@/hooks/scrollLock';
 import { saveSchema } from '@/schema/save';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,21 +46,39 @@ const Container = tv({
   },
 });
 
+const SaveButtonClass = tv({
+  base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] rounded-[10px]',
+  variants: {
+    isDisabled: {
+      true: 'bg-lightBlueGray text-veryLightGray',
+      false: 'bg-blue text-white cursor-pointer hover:brightness-90 transition',
+    },
+  },
+});
+
 interface SaveInterfaceProps {
   type: 'create' | 'edit';
 }
 
 const Save = ({ type }: SaveInterfaceProps) => {
   useScrollLock(true); // PC일 때는 스크롤 방지
+  const { saveLinkData } = SaveButton();
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
+  const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
 
   const resetLink = useSetAtom(linkAtom);
   const resetCard = useSetAtom(visibleCardAtom);
   const resetVisibleCate = useSetAtom(visibleCategoryAtom);
   const resetVisibleTag = useSetAtom(visibleTagAtom);
   const resetMemo = useSetAtom(memoAtom);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
+  const resetSelectedCategory = useSetAtom(selectedCategoryAtom);
+  const resetSelectedTag = useSetAtom(selectedTagAtom);
+  const resetTempCategories = useSetAtom(tempCategoriesAtom);
+  const resetTempTags = useSetAtom(tempTagsAtom);
   const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
     url: '',
     tags: [],
@@ -77,6 +100,10 @@ const Save = ({ type }: SaveInterfaceProps) => {
     resetVisibleCate(false);
     resetVisibleTag(false);
     resetMemo('');
+    resetSelectedCategory('');
+    resetSelectedTag([]);
+    resetTempCategories([]);
+    resetTempTags({});
     reset();
     navigate(-1);
   };
@@ -95,8 +122,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
     mode: 'onChange',
     defaultValues,
   });
-
-  const { id } = useParams();
 
   useEffect(() => {
     if (id) {
@@ -117,10 +142,8 @@ const Save = ({ type }: SaveInterfaceProps) => {
   }, [id, reset, getValues]);
 
   const onSubmit = (data: z.infer<typeof schema>) => {
-    console.log('저장 완료');
     console.log(data);
-
-    // 미리보기 이미지 초기화
+    saveLinkData();
     setPreviewImage(undefined);
     onPrev();
   };
@@ -128,17 +151,10 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const handleSave = () => {
     if (previewImage) {
       setValue('image', previewImage);
-      setTimeout(() => {
-        handleSubmit(onSubmit)();
-      }, 0);
+      setTimeout(() => handleSubmit(onSubmit)(), 0);
     } else {
       handleSubmit(onSubmit)();
     }
-  };
-
-  // 드롭다운 상태 변경 핸들러
-  const handleDropdownScroll = (isOpen: boolean) => {
-    setIsDropdownOpen(isOpen);
   };
 
   return (
@@ -168,11 +184,20 @@ const Save = ({ type }: SaveInterfaceProps) => {
                 setValue={setValue}
                 editDate={defaultValues.date}
                 editTime={defaultValues.time}
-                onDropdownScroll={handleDropdownScroll}
+                onDropdownScroll={setIsDropdownOpen}
               />
             </div>
           </div>
-          <SaveButton type={type} />
+          <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
+            <button
+              type='submit'
+              form='save-form'
+              className={SaveButtonClass({ isDisabled: isSaveButtonDisabled })}
+              disabled={isSaveButtonDisabled}
+            >
+              {type === 'create' ? '저장하기' : '수정하기'}
+            </button>
+          </div>
         </div>
       </div>
     </form>
