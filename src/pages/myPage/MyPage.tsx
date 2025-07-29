@@ -1,4 +1,4 @@
-import { Button } from '@/components/common';
+import { Button, Modal } from '@/components/common';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import { LogoutIcon } from '@/assets';
 import { useNavigate } from 'react-router-dom';
@@ -6,10 +6,11 @@ import { isMobile } from 'react-device-detect';
 import copy from 'copy-to-clipboard';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const MyPage = () => {
   const navigate = useNavigate();
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   const profileImage = localStorage.getItem('profileImage');
 
   useEffect(() => {
@@ -21,9 +22,13 @@ const MyPage = () => {
   const handleCopyInquiry = () => {
     const success = copy('insightboxxx@gmail.com');
     if (success) {
+      toast.dismiss();
       toast.success('이메일이 복사되었습니다');
+      setIsInquiryModalOpen(false);
     } else {
+      toast.dismiss();
       toast.error('이메일 복사에 실패했습니다');
+      setIsInquiryModalOpen(false);
     }
   };
 
@@ -82,7 +87,7 @@ const MyPage = () => {
           <hr className='w-full border-lightGrayBlue border-1' />
           <Button
             className='text-15 text-stone font-medium text-left px-4 py-2 cursor-pointer'
-            onClick={handleCopyInquiry}
+            onClick={() => setIsInquiryModalOpen(true)}
           >
             문의하기
           </Button>
@@ -99,6 +104,17 @@ const MyPage = () => {
           로그아웃
         </Button>
       </div>
+
+      {isInquiryModalOpen && (
+        <Modal
+          title='문의 이메일'
+          onConfirm={handleCopyInquiry}
+          onCancel={() => setIsInquiryModalOpen(false)}
+          confirmLabel='복사하기'
+        >
+          <p className='text-15 p-4'>insightboxxx@gmail.com</p>
+        </Modal>
+      )}
     </>
   );
 };
