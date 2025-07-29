@@ -64,16 +64,15 @@ const CategoryCard = ({ color, categoryName }: CategoryCardProps) => {
             />
           </div>
         </div>
-        <motion.div
-          animate={{
-            rotate: !isTagsOpen ? 90 : -90,
-          }}
-          transition={{ duration: 0.2 }}
+        <div
           onClick={() => setIsTagsOpen(!isTagsOpen)}
-          className='cursor-pointer'
+          className={clsx(
+            'cursor-pointer transition-transform duration-200',
+            isTagsOpen ? 'rotate-[-90deg]' : 'rotate-90',
+          )}
         >
           <BackArrowIcon width={16} height={16} />
-        </motion.div>
+        </div>
       </div>
       <AnimatePresence mode='wait'>
         {isTagsOpen && (
