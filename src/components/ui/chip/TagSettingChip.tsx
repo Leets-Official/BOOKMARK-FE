@@ -32,6 +32,10 @@ const TagSettingChip = () => {
       <Chip
         content='태그 이름'
         isSelected={isSelected}
+        onClick={() => {
+          setIsSelected(true);
+          setIsModalOpen(true);
+        }}
         onSetting={() => {
           setIsSelected(true);
           setIsModalOpen(true);
