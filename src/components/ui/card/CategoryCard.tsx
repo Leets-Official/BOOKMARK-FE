@@ -40,6 +40,8 @@ const CategoryCard = ({
   const [isDisabled, setIsDisabled] = useState(true);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
 
+  const allTagNames = tags.map((tag) => tag.tagName);
+
   const queryClient = useQueryClient();
 
   const schema = modalAddSchema('category', allCategoryNames);
@@ -172,7 +174,12 @@ const CategoryCard = ({
           >
             <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
               {tags.map((tag) => (
-                <TagSettingChip key={tag.tagId} tagId={tag.tagId} tagName={tag.tagName} />
+                <TagSettingChip
+                  key={tag.tagId}
+                  tagId={tag.tagId}
+                  tagName={tag.tagName}
+                  allTagNames={allTagNames}
+                />
               ))}
             </div>
           </motion.div>

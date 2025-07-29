@@ -11,15 +11,16 @@ import DeleteModal from '../modal/DeleteModal';
 interface TagSettingChipProps {
   tagId: number;
   tagName: string;
+  allTagNames: string[];
 }
 
-const TagSettingChip = ({ tagId, tagName }: TagSettingChipProps) => {
+const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) => {
   const [isSelected, setIsSelected] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
 
-  const schema = modalAddSchema('tag');
+  const schema = modalAddSchema('tag', allTagNames);
   const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'onChange',
