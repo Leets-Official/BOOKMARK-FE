@@ -3,23 +3,17 @@ import SaveCard from '../card/SaveCard';
 import Button from '@/components/common/Button';
 import { dummyCardData } from '@/constants/DummyData';
 import { useState } from 'react';
+import { isMobile } from 'react-device-detect';
 
 const SaveCardList = () => {
   const [sortOrder, setSortOrder] = useState(true);
 
   const sortLabel = sortOrder ? '최신순' : '오래된순';
-
-  const weeklySortedData = [...dummyCardData].sort((a, b) => a.id - b.id);
   const allSortedData = [...dummyCardData].sort((a, b) => (sortOrder ? a.id - b.id : b.id - a.id));
+  const displayCount = isMobile ? 6 : 9;
 
   return (
     <div className='mb-10'>
-      <CardListHeader title='이번 주 저장 List' />
-      <div className='w-4/5 max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-        {weeklySortedData.slice(0, 6).map((card) => (
-          <SaveCard key={card.id} data={card} />
-        ))}
-      </div>
       <CardListHeader
         title='전체 저장 List'
         showAllContent={true}
@@ -27,7 +21,7 @@ const SaveCardList = () => {
         onSortToggle={() => setSortOrder((prev) => !prev)}
       />
       <div className='w-4/5 max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-        {allSortedData.slice(0, 6).map((card) => (
+        {allSortedData.slice(0, displayCount).map((card) => (
           <SaveCard key={card.id} data={card} />
         ))}
       </div>

@@ -8,14 +8,17 @@ import {
   visibleCategoryAtom,
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
+  isSuggestionLoadingAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { dummyCardData } from '@/constants/DummyData';
 import clsx from 'clsx';
 import AddModal from '@/components/ui/modal/AddModal';
 import type { saveSchema } from '@/schema/save';
 import type { FieldErrors, UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
+import { getCategoriesWithTag } from '@/api/category/category';
+import { useQuery } from '@tanstack/react-query';
+import type { CategoryWithTagProps } from '@/types/api/category';
 
 type ModalType = 'category' | 'tag';
 
@@ -36,9 +39,14 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const setIsSaveButtonDisabled = useSetAtom(isSaveButtonDisabledAtom); // 저장하기 버튼
 
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
+  const isSuggestionLoading = useAtomValue(isSuggestionLoadingAtom); // 아직 제안 태그 못가져 왔으면 로딩상태
 
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTag, setSelectedTag] = useState<string[]>([]);
+
+  // 임시로 추가된 카테고리와 태그를 관리
+  const [tempCategories, setTempCategories] = useState<{ id: string; content: string }[]>([]);
+  const [tempTags, setTempTags] = useState<Record<string, string[]>>({});
 
   // 수정 모드일 때 초기값 설정
   useEffect(() => {
@@ -51,31 +59,73 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     }
   }, [editCate, editTag, setVisibleTag]);
 
-  const allCategories = useMemo(() => {
-    const categories = [...new Set(dummyCardData.map((item) => item.category))];
-    return categories.map((category) => ({
-      id: category,
-      content: category,
-      isSelected: category === selectedCategory,
-    }));
-  }, [selectedCategory]);
+  // 전체 카테고리와 태그를 한 번에 조회
+  const {
+    data: categoriesWithTagsData,
+    isLoading: isDataLoading,
+    isError: isDataError,
+  } = useQuery<CategoryWithTagProps[]>({
+    queryKey: ['categoriesWithTags'],
+    queryFn: async () => {
+      const res = await getCategoriesWithTag();
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+  });
 
-  const handleCategory = (categoryId: string) => {
-    setSelectedCategory(categoryId);
+  // 카테고리 목록 생성 (서버 데이터 + 임시 데이터)
+  const allCategories = useMemo(() => {
+    if (!categoriesWithTagsData || isDataError)
+      return tempCategories.map((temp) => ({
+        ...temp,
+        isSelected: temp.content === selectedCategory,
+      }));
+
+    const sortedCate = [...categoriesWithTagsData].sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+
+    const realCategory = sortedCate.map((category) => ({
+      id: category.categoryId.toString(),
+      content: category.categoryName,
+      isSelected: category.categoryName === selectedCategory,
+    }));
+
+    const tempCategory = tempCategories.map((temp) => ({
+      ...temp,
+      isSelected: temp.content === selectedCategory,
+    }));
+
+    return [...realCategory, ...tempCategory];
+  }, [categoriesWithTagsData, isDataError, selectedCategory, tempCategories]);
+
+  const handleCategory = (categoryName: string) => {
+    setSelectedCategory(categoryName);
+    setSelectedTag([]);
     setVisibleTag(true);
   };
 
-  // 카테고리별 태그와 suggestionList를 통합하여 관리 (suggestion 태그를 앞에 배치)
+  // 선택된 카테고리의 태그 목록 생성 (서버 데이터 + 임시 데이터)
+  const selectedCategoryTags = useMemo(() => {
+    if (!categoriesWithTagsData || !selectedCategory) {
+      return tempTags[selectedCategory] || [];
+    }
+    const category = categoriesWithTagsData.find((c) => c.categoryName === selectedCategory);
+    const realTags = category?.tags?.map((tag) => tag.tagName) ?? [];
+
+    // 선택된 카테고리의 임시 태그도 추가
+    const categoryTempTags = tempTags[selectedCategory] || [];
+
+    return [...realTags, ...categoryTempTags];
+  }, [categoriesWithTagsData, selectedCategory, tempTags]);
+
   const allTags = useMemo(() => {
-    const matchedItems = dummyCardData.filter((item) => item.category === selectedCategory);
-    const categoryTags = matchedItems.flatMap((item) => item.tags);
-
-    // suggestionList의 태그들을 먼저 추가
     const suggestionTags = suggestionList.map((s) => s.content);
-
-    // 중복 제거 (suggestion 태그가 우선)
-    const allTagsArray = [...suggestionTags, ...categoryTags];
-    const uniqueTags = Array.from(new Set(allTagsArray));
+    const fetchedTags = selectedCategoryTags;
+    const combinedTags = [...suggestionTags, ...fetchedTags]; // suggestion 태그 먼저 배치
+    const uniqueTags = Array.from(new Set(combinedTags));
 
     return uniqueTags.map((tag) => {
       const suggestionItem = suggestionList.find((s) => s.content === tag);
@@ -87,7 +137,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
         suggestionId: suggestionItem?.id,
       };
     });
-  }, [selectedCategory, selectedTag, suggestionList]);
+  }, [selectedCategoryTags, selectedTag, suggestionList]);
 
   const handleTags = (tagId: string, isSuggestion?: boolean, suggestionId?: number) => {
     // suggestionList에서 온 태그인 경우 해당 아이템의 선택 상태도 업데이트
@@ -101,6 +151,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     setSelectedTag((prev) => {
       const alreadySelected = prev.includes(tagId);
       const updatedTag = alreadySelected ? prev.filter((tag) => tag !== tagId) : [...prev, tagId];
+      setValue('tags', updatedTag, { shouldValidate: true });
       return updatedTag;
     });
   };
@@ -117,6 +168,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     if (!editCate && !editTag && !openCate && !openTag) {
       setSelectedCategory('');
       setSelectedTag([]);
+      setTempCategories([]);
+      setTempTags({});
 
       const hasSelected = suggestionList.some((s) => s.isSelected);
       if (hasSelected) {
@@ -146,6 +199,21 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     setValue('tags', selectedTag);
   }, [selectedCategory, selectedTag, setValue]);
 
+  const statusWrapperClass =
+    'bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-6 flex justify-center items-center';
+
+  if (isDataLoading) {
+    return (
+      <div className={statusWrapperClass}>
+        <div className='w-6 h-6 border-4 border-gray-400 border-t-gray-200 rounded-full animate-spin' />
+      </div>
+    );
+  }
+
+  if (isDataError) {
+    return <div className={statusWrapperClass + 'text-gray-500'}>정보를 불러오지 못했습니다.</div>;
+  }
+
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
       <div className='flex flex-col gap-1'>
@@ -172,7 +240,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
                   isSelected={category.isSelected}
                   className='border-lightGrayBlue'
                   selectedClassName='border border-lightGreen bg-lightGreen text-white'
-                  onClick={() => handleCategory(category.id)}
+                  onClick={() => handleCategory(category.content)}
                 />
               ))}
               <Chip
@@ -192,6 +260,9 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
           태그<span className='text-[#FF2C3D]'>*</span>
         </p>
         {error.tags && <p className='text-xs text-redText'>{error.tags?.message}</p>}
+        {isSuggestionLoading && suggestionList.length === 0 && (
+          <p className='text-base text-gray-400'>추천 태그 가져오는 중...</p>
+        )}
       </div>
       <AnimatePresence mode='wait'>
         {openTag && (
@@ -226,8 +297,6 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/** 카테고리, 태그 추가 모달 */}
       {isModalOpen && (
         <AddModal
           setIsOpen={setIsModalOpen}
@@ -235,6 +304,11 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           setSelectedTag={setSelectedTag}
+          setTempCategories={setTempCategories}
+          setTempTags={setTempTags}
+          tempCategories={tempCategories}
+          tempTags={tempTags}
+          categoriesWithTagsData={categoriesWithTagsData}
         />
       )}
     </div>

@@ -14,7 +14,7 @@ import {
   searchContentsAtom,
 } from '@/atoms';
 import { dummyCardData } from '@/constants/DummyData';
-import { useScrollLock } from '@/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/scrollLock';
 import { postSearchHistory } from '@/api/searchHistory/searchHistory';
 import { useMutation } from '@tanstack/react-query';
 

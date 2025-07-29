@@ -57,7 +57,7 @@ const CardListHeader = ({
                 width={16}
                 height={16}
                 strokeWidth={2.5}
-                className='w-4 h-4 sm:w-6 sm:h-6'
+                className='w-3.5 h-3.5 sm:w-4.5 sm:h-4.5'
               />
             </span>
           </div>

@@ -2,9 +2,8 @@ import { FolderDetailIcon } from '@/assets';
 import { Image, Button } from '@/components/common';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
-import { motion } from 'framer-motion';
 import { MenuPortal, ModalPortal } from '@/utils';
-import { useMenuHandler } from '@/hooks/MenuPosition';
+import { useMenuHandler } from '@/hooks/menuPosition';
 import { useState } from 'react';
 import DeleteModal from '../modal/DeleteModal';
 import TextField from '../TextField';
@@ -182,22 +181,9 @@ const FolderCard = ({
 
   return (
     <>
-      <motion.div
-        // 메뉴바 떠 있다면 hover상태 강제 적용 (모바일 제외)
-        animate={{ scale: isMenuOpen && !isMobile ? 1.03 : 1 }}
-        whileHover={{ scale: 1.03 }}
-        transition={{ duration: 0.4 }}
-        className={clsx(
-          isMobile
-            ? 'min-w-40 pt-2'
-            : 'w-1/2 lg:w-1/3 xl:w-1/4 sm:mt-2 p-2 mb-2 hover:shadow-[0_2px_7px_rgba(2,34,94,0.1)] hover:border-gray-300 rounded-2xl',
-          isMenuOpen && !isMobile
-            ? 'border border-gray-300 shadow-[0_2px_7px_rgba(2,34,94,0.1)]'
-            : 'border border-transparent',
-        )}
-      >
+      <div className={clsx(isMobile ? 'min-w-40 pt-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 sm:mt-4')}>
         {/**카테고리에 카드가 하나만 있으면 폴더에 하나만, 두개 있으면 1 : 1 비율... 3개까지 표시 */}
-        <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex'>
+        <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex hover:scale-103 duration-400'>
           {isBookmarksLoading ? (
             <div className='w-full h-full flex items-center justify-center'>
               <Loading className='w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
@@ -226,7 +212,7 @@ const FolderCard = ({
             />
           </div>
         </div>
-      </motion.div>
+      </div>
       {/* Portal로 렌더링되는 메뉴 */}
       <MenuPortal
         isOpen={isMenuOpen}
