@@ -17,7 +17,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, updateCategory } from '@/api/category/category';
 import Loading from '../loading/Loading';
 import toast from 'react-hot-toast';
-import { useScrollLock } from '@/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/scrollLock';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =

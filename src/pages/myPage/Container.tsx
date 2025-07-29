@@ -1,6 +1,6 @@
 import { tv } from 'tailwind-variants';
 import { isMobile } from 'react-device-detect';
-import { useScrollLock } from '@/hooks/ScrollLock';
+import { useScrollLock } from '@/hooks/scrollLock';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import toast from 'react-hot-toast';
