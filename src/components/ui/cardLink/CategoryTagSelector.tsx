@@ -9,6 +9,8 @@ import {
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
   isSuggestionLoadingAtom,
+  tempTagsAtom,
+  tempCategoriesAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import clsx from 'clsx';
@@ -45,8 +47,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const [selectedTag, setSelectedTag] = useState<string[]>([]);
 
   // 임시로 추가된 카테고리와 태그를 관리
-  const [tempCategories, setTempCategories] = useState<string[]>([]);
-  const [tempTags, setTempTags] = useState<Record<string, string[]>>({});
+  const [tempCategories, setTempCategories] = useAtom(tempCategoriesAtom);
+  const [tempTags, setTempTags] = useAtom(tempTagsAtom);
 
   // 수정 모드일 때 초기값 설정
   useEffect(() => {
@@ -177,7 +179,16 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
         setSuggestionList(suggestionList.map((s) => ({ ...s, isSelected: false })));
       }
     }
-  }, [openCate, openTag, editCate, editTag, setSuggestionList, suggestionList]);
+  }, [
+    openCate,
+    openTag,
+    editCate,
+    editTag,
+    setSuggestionList,
+    suggestionList,
+    setTempCategories,
+    setTempTags,
+  ]);
 
   useEffect(() => {
     if (editCate || editTag) {
@@ -304,10 +315,6 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           setSelectedTag={setSelectedTag}
-          setTempCategories={setTempCategories}
-          setTempTags={setTempTags}
-          tempCategories={tempCategories}
-          tempTags={tempTags}
           categoriesWithTagsData={categoriesWithTagsData}
         />
       )}

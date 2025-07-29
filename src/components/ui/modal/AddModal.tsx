@@ -5,8 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import TextField from '../TextField';
 import React, { useMemo } from 'react';
-import { suggestionListAtom, visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
-import { useAtomValue, useSetAtom } from 'jotai';
+import {
+  suggestionListAtom,
+  tempCategoriesAtom,
+  tempTagsAtom,
+  visibleMemoAndAlarmAtom,
+  visibleTagAtom,
+} from '@/atoms';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type { TagProps } from '@/types/api/category';
 
 interface AddModalProps {
@@ -18,10 +24,6 @@ interface AddModalProps {
   categoriesWithTagsData:
     | { categoryId: number; categoryName: string; tags: TagProps[] }[]
     | undefined;
-  setTempCategories: React.Dispatch<React.SetStateAction<string[]>>;
-  setTempTags: React.Dispatch<React.SetStateAction<Record<string, string[]>>>;
-  tempCategories: string[];
-  tempTags: Record<string, string[]>;
 }
 
 const AddModal = ({
@@ -31,14 +33,12 @@ const AddModal = ({
   setSelectedCategory,
   setSelectedTag,
   categoriesWithTagsData,
-  setTempCategories,
-  setTempTags,
-  tempCategories,
-  tempTags,
 }: AddModalProps) => {
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const suggestionList = useAtomValue(suggestionListAtom);
+  const [tempCategories, setTempCategories] = useAtom(tempCategoriesAtom);
+  const [tempTags, setTempTags] = useAtom(tempTagsAtom);
 
   const handleAddCategory = (content: string) => {
     // 임시 카테고리 목록에 추가
