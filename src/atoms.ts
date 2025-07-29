@@ -24,6 +24,7 @@ const selectedTagsAtom = atom<string[]>([]);
 const selectedPlatformsAtom = atom<string[]>([]);
 const previewImageAtom = atom<string | undefined>(undefined);
 const isSuggestionLoadingAtom = atom(false);
+const scrollBarWidthAtom = atom(0);
 
 export {
   linkAtom,
@@ -46,4 +47,5 @@ export {
   selectedPlatformsAtom,
   previewImageAtom,
   isSuggestionLoadingAtom,
+  scrollBarWidthAtom,
 };
