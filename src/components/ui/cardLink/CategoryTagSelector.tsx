@@ -45,7 +45,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const [selectedTag, setSelectedTag] = useState<string[]>([]);
 
   // 임시로 추가된 카테고리와 태그를 관리
-  const [tempCategories, setTempCategories] = useState<{ id: string; content: string }[]>([]);
+  const [tempCategories, setTempCategories] = useState<string[]>([]);
   const [tempTags, setTempTags] = useState<Record<string, string[]>>({});
 
   // 수정 모드일 때 초기값 설정
@@ -79,8 +79,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const allCategories = useMemo(() => {
     if (!categoriesWithTagsData || isDataError)
       return tempCategories.map((temp) => ({
-        ...temp,
-        isSelected: temp.content === selectedCategory,
+        content: temp,
+        isSelected: temp === selectedCategory,
       }));
 
     const sortedCate = [...categoriesWithTagsData].sort(
@@ -94,8 +94,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     }));
 
     const tempCategory = tempCategories.map((temp) => ({
-      ...temp,
-      isSelected: temp.content === selectedCategory,
+      content: temp,
+      isSelected: temp === selectedCategory,
     }));
 
     return [...realCategory, ...tempCategory];
@@ -235,7 +235,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
             <div className='flex flex-wrap gap-2 p-0.5'>
               {allCategories.map((category) => (
                 <Chip
-                  key={category.id}
+                  key={category.content}
                   content={category.content}
                   isSelected={category.isSelected}
                   className='border-lightGrayBlue'

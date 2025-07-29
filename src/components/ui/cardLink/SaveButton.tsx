@@ -1,4 +1,3 @@
-// components/ui/cardLink/SaveButtonSection.tsx
 import { tv } from 'tailwind-variants';
 import { isSaveButtonDisabledAtom } from '@/atoms';
 import { useAtomValue } from 'jotai';
