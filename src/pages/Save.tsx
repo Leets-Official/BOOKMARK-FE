@@ -1,5 +1,4 @@
 import { isMobile } from 'react-device-detect';
-import CommonHeader from '@/components/layout/header/CommonHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
@@ -25,6 +24,8 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import clsx from 'clsx';
+import DeleteModal from '@/components/ui/modal/DeleteModal';
+import { BackArrowIcon } from '@/assets';
 
 const Overlay = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -69,6 +70,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
   const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const resetLink = useSetAtom(linkAtom);
   const resetCard = useSetAtom(visibleCardAtom);
@@ -158,49 +160,73 @@ const Save = ({ type }: SaveInterfaceProps) => {
   };
 
   return (
-    // PC : 모달형식, 모바일 : 전체화면
-    <form id='save-form' onSubmit={handleSubmit(handleSave)}>
-      <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
-        <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
-          <div className='absolute top-0 left-0 right-0 z-10'>
-            <CommonHeader title='링크 저장' />
-          </div>
-          <div
-            className={clsx(
-              'flex-1 w-full pt-13 pb-20',
-              isDropdownOpen ? 'overflow-hidden' : 'overflow-y-auto hide-scrollbar',
-            )}
-          >
-            <div className='flex flex-col items-center gap-3 w-full p-4'>
-              <LinkField control={control} setValue={setValue} />
-              <CategoryTagSelector
-                setValue={setValue}
-                error={errors}
-                editCate={defaultValues.category}
-                editTag={defaultValues.tags}
-              />
-              <Memo control={control} />
-              <Alarm
-                setValue={setValue}
-                editDate={defaultValues.date}
-                editTime={defaultValues.time}
-                onDropdownScroll={setIsDropdownOpen}
-              />
+    <>
+      <form id='save-form' onSubmit={handleSubmit(handleSave)}>
+        <div
+          className={Overlay({ isMobile })}
+          onClick={!isMobile ? () => setIsDeleteModalOpen(true) : undefined}
+        >
+          <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
+            <div className='absolute top-0 left-0 right-0 z-10'>
+              <div className='flex flex-row items-center w-full justify-center relative mt-5'>
+                <div
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  className='absolute left-4 rounded-[100px] bg-[#EAEDF5]/90 p-2.5 hover:brightness-90 transition'
+                >
+                  <BackArrowIcon width={20} height={20} />
+                </div>
+                <p className='text-base font-semibold'>
+                  {type === 'create' ? '링크 저장' : '링크 수정'}
+                </p>
+              </div>
+            </div>
+            <div
+              className={clsx(
+                'flex-1 w-full pt-13 pb-20',
+                isDropdownOpen ? 'overflow-hidden' : 'overflow-y-auto hide-scrollbar',
+              )}
+            >
+              <div className='flex flex-col items-center gap-3 w-full p-4'>
+                <LinkField control={control} setValue={setValue} />
+                <CategoryTagSelector
+                  setValue={setValue}
+                  error={errors}
+                  editCate={defaultValues.category}
+                  editTag={defaultValues.tags}
+                />
+                <Memo control={control} />
+                <Alarm
+                  setValue={setValue}
+                  editDate={defaultValues.date}
+                  editTime={defaultValues.time}
+                  onDropdownScroll={setIsDropdownOpen}
+                />
+              </div>
+            </div>
+            <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
+              <button
+                type='submit'
+                form='save-form'
+                className={SaveButtonClass({ isDisabled: isSaveButtonDisabled })}
+                disabled={isSaveButtonDisabled}
+              >
+                {type === 'create' ? '저장하기' : '수정하기'}
+              </button>
             </div>
           </div>
-          <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
-            <button
-              type='submit'
-              form='save-form'
-              className={SaveButtonClass({ isDisabled: isSaveButtonDisabled })}
-              disabled={isSaveButtonDisabled}
-            >
-              {type === 'create' ? '저장하기' : '수정하기'}
-            </button>
-          </div>
         </div>
-      </div>
-    </form>
+      </form>
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        warningText='저장하지 않고 나가시겠습니까?'
+        subText='지금까지 입력한 내용이 모두 사라집니다.'
+        onDelete={() => {
+          setIsDeleteModalOpen(false);
+          onPrev();
+        }}
+      />
+    </>
   );
 };
 
