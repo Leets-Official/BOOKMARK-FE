@@ -29,12 +29,18 @@ const SaveButton = () => {
       const res = await createCategory(categoryName);
       return res;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
   });
 
   const tagMutation = useMutation({
     mutationFn: async ({ categoryId, tagName }: { categoryId: number; tagName: string }) => {
       const res = await createTag(categoryId, tagName);
       return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tags'] });
     },
   });
 
