@@ -30,7 +30,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
         )}
       >
         <div className='p-3.5 pb-10'>
-          <div className='flex flex-wrap gap-2 mb-4'>
+          <div className='flex flex-wrap gap-2 mb-4 w-9/10'>
             <Chip
               content={data.category}
               isSelected={false}
