@@ -1,6 +1,7 @@
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import CategoryCard from '@/components/ui/card/CategoryCard';
 import { useScrollLock } from '@/hooks/ScrollLock';
+import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 
 const categoryColors = [
@@ -33,7 +34,17 @@ const CategoryManagement = () => {
           <CommonHeader title='카테고리 / 태그 관리' />
         </div>
       )}
-      <div className='flex flex-col items-center justify-center mt-20 p-3 gap-5 overflow-y-auto hide-scrollbar'>
+      <div
+        className={clsx(
+          'flex flex-col itms-center justify-center p-3 gap-5',
+          isMobile ? 'mt-20' : 'mt-10',
+        )}
+      >
+        {!isMobile && (
+          <p className='text-2xl font-semibold text-stone self-start px-2 mb-5'>
+            카테고리 / 태그 관리
+          </p>
+        )}
         {categoryCards.map((card) => (
           <CategoryCard key={card.id} color={card.color} categoryName={card.name} />
         ))}
