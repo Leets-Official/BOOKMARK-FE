@@ -4,7 +4,7 @@ import type z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import TextField from '../TextField';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { suggestionListAtom, visibleMemoAndAlarmAtom, visibleTagAtom } from '@/atoms';
 import { useAtomValue, useSetAtom } from 'jotai';
 import type { TagProps } from '@/types/api/category';
@@ -36,7 +36,6 @@ const AddModal = ({
   tempCategories,
   tempTags,
 }: AddModalProps) => {
-  const [isDisabled, setIsDisabled] = useState(true);
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const suggestionList = useAtomValue(suggestionListAtom);
@@ -73,7 +72,6 @@ const AddModal = ({
     }
     setIsOpen(false);
     reset();
-    setIsDisabled(true);
   };
 
   // 서버에서 조회한 것과 임시로 만든 것 모두 검사
@@ -102,7 +100,12 @@ const AddModal = ({
 
   const schema = modalAddSchema(isCategoryType ? 'category' : 'tag', existingValues);
 
-  const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isValid, isSubmitting },
+  } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: {
@@ -111,6 +114,8 @@ const AddModal = ({
     },
   });
 
+  const isDisabled = !isValid || isSubmitting;
+
   return (
     <Modal
       title={isCategoryType ? '카테고리 추가' : '태그 추가'}
@@ -118,7 +123,6 @@ const AddModal = ({
       onCancel={() => {
         setIsOpen(false);
         reset();
-        setIsDisabled(true);
       }}
       onConfirm={() => {
         handleSubmit(handleConfirmModal)();
@@ -139,7 +143,6 @@ const AddModal = ({
             onChange={field.onChange}
             onBlur={field.onBlur}
             errorMessage={fieldState.error?.message}
-            setDisabled={(disabled) => setIsDisabled(disabled)}
           />
         )}
       />
