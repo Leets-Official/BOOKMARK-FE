@@ -5,11 +5,24 @@ import TextField from '@/components/ui/TextField';
 import { useState } from 'react';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import clsx from 'clsx';
+import { useQuery } from '@tanstack/react-query';
+import { getUserInfo } from '@/api/users/user';
 
 const ProfileEdit = () => {
   const [nickname, setNickname] = useState('');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const profileImage = localStorage.getItem('profileImage');
+
+  // 유저 정보 조회 API
+  const { data: userInfo, isPending } = useQuery({
+    queryKey: ['userInfo'],
+    queryFn: async () => {
+      const res = await getUserInfo();
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+  });
 
   const handleBlur = () => {
     console.log('blur');
@@ -39,24 +52,29 @@ const ProfileEdit = () => {
           </div>
           <div className='flex flex-col self-start w-full gap-4'>
             <p className='text-xs font-medium'>사진</p>
-            <Button
-              icon={
-                <img
-                  src={profileImage || ''}
-                  alt='profile'
-                  className='w-[96px] h-[96px] rounded-[20px]'
-                />
-              }
-              onClick={() => {
-                console.log('사진 클릭');
-              }}
-              className='cursor-pointer'
-            />
+
+            {isPending ? (
+              <div className='w-[96px] h-[96px] rounded-[20px] bg-gray-200' />
+            ) : (
+              <Button
+                icon={
+                  <img
+                    src={userInfo?.profileImage}
+                    alt='profile'
+                    className='w-[96px] h-[96px] rounded-[20px]'
+                  />
+                }
+                onClick={() => {
+                  console.log('사진 클릭');
+                }}
+                className='cursor-pointer'
+              />
+            )}
           </div>
           <div className='flex flex-col self-start w-full gap-4'>
             <TextField
               label='이름'
-              placeholder='김연수'
+              placeholder={userInfo?.nickname || ''}
               onChange={setNickname}
               onBlur={handleBlur}
               value={nickname}
@@ -65,7 +83,7 @@ const ProfileEdit = () => {
             <div className='flex flex-col gap-2'>
               <p className='text-xs'>메일</p>
               <p className='text-15 p-4 w-full rounded-[12px] py-3 border border-gray-200 bg-gray-50 text-gray'>
-                qug1t7@gmail.com
+                {userInfo?.email || '이메일'}
               </p>
             </div>
           </div>
