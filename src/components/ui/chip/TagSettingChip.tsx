@@ -40,15 +40,18 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
     mutationFn: (tagName: string) => updateTag(tagId, tagName),
     onMutate: async (newTagName) => {
       // 진행 중인 쿼리 취소
-      await queryClient.cancelQueries({ queryKey: ['categoriesWithTag'] });
+      await queryClient.cancelQueries({ queryKey: ['categoriesWithTags'] });
 
       // 이전 데이터 백업
-      const previousCategories = queryClient.getQueryData(['categoriesWithTag']);
+      const previousCategories = queryClient.getQueryData(['categoriesWithTags']);
 
       // 즉시 UI 업데이트 (낙관적 업데이트)
-      queryClient.setQueryData(['categoriesWithTag'], (old: any) => {
+      queryClient.setQueryData(['categoriesWithTags'], (old: any) => {
         if (!old?.data) return old;
-        return {
+
+        console.log('낙관적 업데이트 전:', old.data);
+
+        const updatedData = {
           ...old,
           data: old.data.map((category: CategoryWithTagProps) => ({
             ...category,
@@ -57,6 +60,9 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
             ),
           })),
         };
+
+        console.log('낙관적 업데이트 후:', updatedData.data);
+        return updatedData;
       });
 
       return { previousCategories };
@@ -67,22 +73,22 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
         console.log(error);
         const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
         console.log('태그 수정 실패:', errorMessage);
-        queryClient.setQueryData(['categoriesWithTag'], context?.previousCategories);
+        queryClient.setQueryData(['categoriesWithTags'], context?.previousCategories);
         toast.error('태그 수정 실패');
         return;
       }
 
       toast.success('태그 수정 완료');
-      queryClient.invalidateQueries({ queryKey: ['categoriesWithTag'] });
+      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
     },
   });
 
   const { mutate: deleteTagMutation } = useMutation({
     mutationFn: (tagId: number) => deleteTag(tagId),
     onMutate: async (tagId) => {
-      await queryClient.cancelQueries({ queryKey: ['categoriesWithTag'] });
-      const previousCategories = queryClient.getQueryData(['categoriesWithTag']);
-      queryClient.setQueryData(['categoriesWithTag'], (old: any) => {
+      await queryClient.cancelQueries({ queryKey: ['categoriesWithTags'] });
+      const previousCategories = queryClient.getQueryData(['categoriesWithTags']);
+      queryClient.setQueryData(['categoriesWithTags'], (old: any) => {
         if (!old?.data) return old;
         return {
           ...old,
@@ -99,19 +105,28 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
       if (data?.error || error) {
         const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
         console.log('태그 삭제 실패:', errorMessage);
-        queryClient.setQueryData(['categoriesWithTag'], context?.previousCategories);
+        queryClient.setQueryData(['categoriesWithTags'], context?.previousCategories);
         toast.error('태그 삭제 실패');
         return;
       }
 
       toast.success('태그 삭제 완료');
-      queryClient.invalidateQueries({ queryKey: ['categoriesWithTag'] });
+      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
     },
   });
 
   const handleConfirmModal = (data: z.infer<typeof schema>) => {
     if (!data.tag.trim()) return;
+
+    console.log('태그 수정 시작:', data.tag);
     updateTagMutation(data.tag);
+
+    // 임시로 즉시 UI 업데이트 확인
+    setTimeout(() => {
+      const currentData = queryClient.getQueryData(['categoriesWithTags']);
+      console.log('수정 후 캐시 데이터:', currentData);
+    }, 100);
+
     setIsModalOpen(false);
     setIsSelected(false);
     reset();

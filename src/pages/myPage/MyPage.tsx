@@ -1,4 +1,4 @@
-import { Button, Modal } from '@/components/common';
+import { Button, Image, Modal } from '@/components/common';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import { LogoutIcon } from '@/assets';
 import { useNavigate } from 'react-router-dom';
@@ -69,18 +69,13 @@ const MyPage = () => {
             <div className='w-[128px] h-[128px] rounded-[40px] bg-gray-200' />
           ) : (
             <>
-              <Button
-                icon={
-                  <img
-                    src={userInfo?.profileImage}
-                    alt='profile'
-                    className='w-[128px] h-[128px] rounded-[40px]'
-                  />
-                }
+              <Image
+                src={userInfo?.profileImage || ''}
+                alt='profile'
+                className='w-[128px] h-[128px] rounded-[40px]'
                 onClick={() => {
                   navigate('/my-page/profile-edit');
                 }}
-                className='cursor-pointer'
               />
               <div className='flex flex-col justify-center gap-4'>
                 <p className='text-2xl font-semibold'>{userInfo?.nickname}</p>

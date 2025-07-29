@@ -19,7 +19,7 @@ const categoryColors = [
 
 const CategoryManagement = () => {
   const { data: categoriesWithTag, isPending } = useQuery({
-    queryKey: ['categoriesWithTag'],
+    queryKey: ['categoriesWithTags'],
     queryFn: async () => {
       const res = await getCategoriesWithTag();
       if (res.error) {

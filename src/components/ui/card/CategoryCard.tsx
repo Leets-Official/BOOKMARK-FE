@@ -59,13 +59,13 @@ const CategoryCard = ({
     mutationFn: (categoryName: string) => updateCategory(categoryId, categoryName),
     onMutate: async (newCategoryName) => {
       // 진행 중인 쿼리 취소
-      await queryClient.cancelQueries({ queryKey: ['categoriesWithTag'] });
+      await queryClient.cancelQueries({ queryKey: ['categoriesWithTags'] });
 
       // 이전 데이터 백업
-      const previousCategories = queryClient.getQueryData(['categoriesWithTag']);
+      const previousCategories = queryClient.getQueryData(['categoriesWithTags']);
 
       // 즉시 UI 업데이트 (낙관적 업데이트)
-      queryClient.setQueryData(['categoriesWithTag'], (old: any) => {
+      queryClient.setQueryData(['categoriesWithTags'], (old: any) => {
         if (!old?.data) return old;
         return {
           ...old,
@@ -83,22 +83,22 @@ const CategoryCard = ({
         console.log(error);
         const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
         console.log('카테고리 수정 실패:', errorMessage);
-        queryClient.setQueryData(['categoriesWithTag'], context?.previousCategories);
+        queryClient.setQueryData(['categoriesWithTags'], context?.previousCategories);
         toast.error('카테고리 수정 실패');
         return;
       }
 
       toast.success('카테고리 수정 완료');
-      queryClient.invalidateQueries({ queryKey: ['categoriesWithTag'] });
+      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
     },
   });
 
   const { mutate: deleteCategoryMutation } = useMutation({
     mutationFn: (categoryId: number) => deleteCategory(categoryId),
     onMutate: async (categoryId) => {
-      await queryClient.cancelQueries({ queryKey: ['categoriesWithTag'] });
-      const previousCategories = queryClient.getQueryData(['categoriesWithTag']);
-      queryClient.setQueryData(['categoriesWithTag'], (old: any) => {
+      await queryClient.cancelQueries({ queryKey: ['categoriesWithTags'] });
+      const previousCategories = queryClient.getQueryData(['categoriesWithTags']);
+      queryClient.setQueryData(['categoriesWithTags'], (old: any) => {
         if (!old?.data) return old;
         return {
           ...old,
@@ -112,13 +112,13 @@ const CategoryCard = ({
       if (data?.error || error) {
         const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
         console.log('카테고리 삭제 실패:', errorMessage);
-        queryClient.setQueryData(['categoriesWithTag'], context?.previousCategories);
+        queryClient.setQueryData(['categoriesWithTags'], context?.previousCategories);
         toast.error('카테고리 삭제 실패');
         return;
       }
 
       toast.success('카테고리 삭제 완료');
-      queryClient.invalidateQueries({ queryKey: ['categoriesWithTag'] });
+      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
     },
   });
 

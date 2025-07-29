@@ -88,7 +88,7 @@ const MyPage = () => {
                 </Button>
 
                 <button
-                  className='absolute bottom-8 left-5 p-3 text-stone rounded-[10px] border-2 border-lightGrayBlue text-15 font-medium flex items-center justify-center gap-2 cursor-pointer'
+                  className='absolute bottom-8 left-5 p-3 text-stone rounded-[10px] border-2 border-lightGrayBlue text-15 font-medium flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-100'
                   onClick={() => {
                     handleLogout();
                   }}
