@@ -18,9 +18,9 @@ interface AddModalProps {
   categoriesWithTagsData:
     | { categoryId: number; categoryName: string; tags: TagProps[] }[]
     | undefined;
-  setTempCategories: React.Dispatch<React.SetStateAction<{ id: string; content: string }[]>>;
+  setTempCategories: React.Dispatch<React.SetStateAction<string[]>>;
   setTempTags: React.Dispatch<React.SetStateAction<Record<string, string[]>>>;
-  tempCategories: { id: string; content: string }[];
+  tempCategories: string[];
   tempTags: Record<string, string[]>;
 }
 
@@ -43,8 +43,7 @@ const AddModal = ({
 
   const handleAddCategory = (content: string) => {
     // 임시 카테고리 목록에 추가
-    const tempId = `temp_${Date.now()}`;
-    setTempCategories((prev) => [...prev, { id: tempId, content }]);
+    setTempCategories((prev) => [...prev, content]);
 
     // 새로 추가한 카테고리를 바로 선택
     setSelectedCategory(content);
@@ -81,7 +80,7 @@ const AddModal = ({
   const existingValues = useMemo(() => {
     if (isCategoryType) {
       const realCategory = categoriesWithTagsData?.map((c) => c.categoryName) ?? [];
-      const tempCategory = tempCategories.map((c) => c.content);
+      const tempCategory = tempCategories;
       return [...new Set([...realCategory, ...tempCategory])];
     } else {
       const realTag =
