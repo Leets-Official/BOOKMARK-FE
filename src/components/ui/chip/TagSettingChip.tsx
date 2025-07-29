@@ -7,6 +7,11 @@ import { Controller, useForm } from 'react-hook-form';
 import type z from 'zod';
 import TextField from '../TextField';
 import DeleteModal from '../modal/DeleteModal';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateTag } from '@/api/tag/tag';
+import { deleteTag } from '@/api/tag/tag';
+import toast from 'react-hot-toast';
+import type { CategoryWithTagProps, TagProps } from '@/types/api/category';
 
 interface TagSettingChipProps {
   tagId: number;
@@ -27,11 +32,89 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
     },
   });
 
+  const queryClient = useQueryClient();
   // Zod 스키마 유효성 검사 결과에 따라 disabled 상태 관리
   const isDisabled = !formState.isValid || formState.isSubmitting;
 
+  const { mutate: updateTagMutation } = useMutation({
+    mutationFn: (tagName: string) => updateTag(tagId, tagName),
+    onMutate: async (newTagName) => {
+      // 진행 중인 쿼리 취소
+      await queryClient.cancelQueries({ queryKey: ['categoriesWithTag'] });
+
+      // 이전 데이터 백업
+      const previousCategories = queryClient.getQueryData(['categoriesWithTag']);
+
+      // 즉시 UI 업데이트 (낙관적 업데이트)
+      queryClient.setQueryData(['categoriesWithTag'], (old: any) => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.map((category: CategoryWithTagProps) => ({
+            ...category,
+            tags: category.tags.map((tag: TagProps) =>
+              tag.tagId === tagId ? { ...tag, tagName: newTagName } : tag,
+            ),
+          })),
+        };
+      });
+
+      return { previousCategories };
+    },
+    onSettled: (data, error, _, context) => {
+      if (data?.error || error) {
+        console.log(data);
+        console.log(error);
+        const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
+        console.log('태그 수정 실패:', errorMessage);
+        queryClient.setQueryData(['categoriesWithTag'], context?.previousCategories);
+        toast.error('태그 수정 실패');
+        return;
+      }
+
+      toast.success('태그 수정 완료');
+      queryClient.invalidateQueries({ queryKey: ['categoriesWithTag'] });
+    },
+  });
+
+  const { mutate: deleteTagMutation } = useMutation({
+    mutationFn: (tagId: number) => deleteTag(tagId),
+    onMutate: async (tagId) => {
+      await queryClient.cancelQueries({ queryKey: ['categoriesWithTag'] });
+      const previousCategories = queryClient.getQueryData(['categoriesWithTag']);
+      queryClient.setQueryData(['categoriesWithTag'], (old: any) => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.map((category: CategoryWithTagProps) => ({
+            ...category,
+            tags: category.tags.filter((tag: TagProps) => tag.tagId !== tagId),
+          })),
+        };
+      });
+
+      return { previousCategories };
+    },
+    onSettled: (data, error, _, context) => {
+      if (data?.error || error) {
+        const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
+        console.log('태그 삭제 실패:', errorMessage);
+        queryClient.setQueryData(['categoriesWithTag'], context?.previousCategories);
+        toast.error('태그 삭제 실패');
+        return;
+      }
+
+      toast.success('태그 삭제 완료');
+      queryClient.invalidateQueries({ queryKey: ['categoriesWithTag'] });
+    },
+  });
+
   const handleConfirmModal = (data: z.infer<typeof schema>) => {
-    console.log(data);
+    if (!data.tag.trim()) return;
+    updateTagMutation(data.tag);
+    setIsModalOpen(false);
+    setIsSelected(false);
+    reset();
   };
 
   return (
@@ -99,6 +182,7 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
         subText={'삭제시 태그만 삭제되며, 링크는 남아있습니다'}
         onDelete={() => {
           setIsDeleteModalOpen(false);
+          deleteTagMutation(tagId);
         }}
       />
     </div>
