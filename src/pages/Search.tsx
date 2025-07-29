@@ -23,6 +23,7 @@ const Search = () => {
   const [categories, setCategories] = useState<{ id: number; content: string }[]>([]);
   const [platforms, setPlatforms] = useState<{ id: number; content: string }[]>([]);
   const [tags, setTags] = useState<{ id: number; content: string }[]>([]);
+  const [showTags, setShowTags] = useState(false);
 
   useEffect(() => {
     const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(
@@ -47,6 +48,7 @@ const Search = () => {
     } else {
       setTags([]);
     }
+    setShowTags(selectedCategories.length === 1);
   }, [selectedCategories]);
 
   const toggleSelection = (
@@ -127,16 +129,17 @@ const Search = () => {
             </div>
             <hr className='border-1 border-lightGrayBlue mb-3' />
             <p className='text-sm font-semibold text-stone'>태그</p>
-            <AnimatePresence>
-              {selectedCategories.length === 1 && (
+            <AnimatePresence mode='wait'>
+              {showTags && (
                 <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.5, ease: 'easeInOut' }}
-                  className='overflow-y-auto thin-scrollbar'
+                  key='tagContainer'
+                  initial={{ height: 0 }}
+                  animate={{ height: 'auto' }}
+                  exit={{ height: 0 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className='overflow-hidden'
                 >
-                  <div className='flex flex-wrap gap-2 mt-2 p-0.5 pb-3'>
+                  <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
                     {tags.map((tag) => (
                       <Chip
                         key={tag.id}
