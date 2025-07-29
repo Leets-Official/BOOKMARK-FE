@@ -29,6 +29,9 @@ const CategoryManagement = () => {
     },
   });
 
+  // 카테고리 이름만 리스트로 추출
+  const allCategoryNames = categoriesWithTag?.map((category) => category.categoryName) || [];
+
   return (
     <div>
       {/* 헤더 */}
@@ -55,7 +58,10 @@ const CategoryManagement = () => {
             <CategoryCard
               key={card.categoryId}
               color={categoryColors[index % categoryColors.length]}
+              categoryId={card.categoryId}
               categoryName={card.categoryName}
+              allCategoryNames={allCategoryNames}
+              tags={card.tags}
             />
           ))
         )}

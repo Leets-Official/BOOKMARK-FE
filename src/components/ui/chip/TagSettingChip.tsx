@@ -8,7 +8,12 @@ import type z from 'zod';
 import TextField from '../TextField';
 import DeleteModal from '../modal/DeleteModal';
 
-const TagSettingChip = () => {
+interface TagSettingChipProps {
+  tagId: number;
+  tagName: string;
+}
+
+const TagSettingChip = ({ tagId, tagName }: TagSettingChipProps) => {
   const [isSelected, setIsSelected] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -30,7 +35,7 @@ const TagSettingChip = () => {
   return (
     <div>
       <Chip
-        content='태그 이름'
+        content={tagName}
         isSelected={isSelected}
         onClick={() => {
           setIsSelected(true);
@@ -63,7 +68,7 @@ const TagSettingChip = () => {
           render={({ field, fieldState }) => (
             <TextField
               label='이름'
-              placeholder={'태그 이름'}
+              placeholder={tagName}
               maxLength={10}
               value={field.value}
               onChange={field.onChange}
@@ -90,7 +95,7 @@ const TagSettingChip = () => {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onCancel={() => setIsDeleteModalOpen(false)}
-        warningText={`... 태그를 삭제할까요?`}
+        warningText={`${tagName} 태그를 삭제할까요?`}
         subText={'삭제시 태그만 삭제되며, 링크는 남아있습니다'}
         onDelete={() => {
           setIsDeleteModalOpen(false);
