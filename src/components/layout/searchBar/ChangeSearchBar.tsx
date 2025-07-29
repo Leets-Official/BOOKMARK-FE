@@ -50,7 +50,10 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -80, opacity: 0 }}
               transition={{ duration: 0.2, ease: 'easeInOut' }}
-              className={clsx('fixed w-full top-0 z-10', isBackButton ? 'py-4 px-2' : 'p-4')}
+              className={clsx(
+                'fixed top-0 z-10 left-1/2 transform -translate-x-1/2 max-w-[1440px] w-full ml-5',
+                isBackButton ? 'py-4 px-2' : 'p-4',
+              )}
             >
               <div className='flex flex-row items-center w-full'>
                 {isBackButton && (
@@ -70,22 +73,24 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: 'easeInOut' }}
-              className='fixed w-full bottom-4 left-4 z-10'
+              className='fixed bottom-4 left-1/2 transform -translate-x-1/2 max-w-[1440px] w-full z-10 ml-10'
             >
               {/* 업스크롤 버튼 */}
-              <Button
-                icon={
-                  <LeftIcon
-                    width={24}
-                    height={24}
-                    stroke='black'
-                    strokeWidth={2}
-                    className='rotate-90 w-6 h-6 sm:w-[30px] sm:h-[30px]'
-                  />
-                }
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className='border-1 bg-lightGray rounded-full shadow-md sm:p-3 p-2 border-lightGray hover:brightness-90 cursor-pointer'
-              />
+              <div className='flex justify-start'>
+                <Button
+                  icon={
+                    <LeftIcon
+                      width={24}
+                      height={24}
+                      stroke='black'
+                      strokeWidth={2}
+                      className='rotate-90 w-6 h-6 sm:w-[30px] sm:h-[30px]'
+                    />
+                  }
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className='border-1 bg-lightGray rounded-full shadow-md sm:p-3 p-2 border-lightGray hover:brightness-90 cursor-pointer'
+                />
+              </div>
             </motion.div>
           </>
         )}
