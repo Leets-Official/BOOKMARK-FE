@@ -54,7 +54,6 @@ const TextField = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter') {
       e.currentTarget.blur();
-      onBlur();
     }
   };
 

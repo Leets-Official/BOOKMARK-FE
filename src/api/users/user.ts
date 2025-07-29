@@ -9,4 +9,14 @@ const getUserInfo = async (): Promise<ApiResponse<UserInfoResponse>> => {
   });
 };
 
-export { getUserInfo };
+const updateUserNickname = async (nickname: string): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'PATCH',
+    url: '/users/me/nickname',
+    data: {
+      nickname,
+    },
+  });
+};
+
+export { getUserInfo, updateUserNickname };

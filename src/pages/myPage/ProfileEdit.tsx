@@ -1,16 +1,20 @@
 import CommonHeader from '@/components/layout/header/CommonHeader';
-import { Button } from '@/components/common';
+import { Button, Image } from '@/components/common';
 import { isMobile } from 'react-device-detect';
 import TextField from '@/components/ui/TextField';
 import { useState } from 'react';
+
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import clsx from 'clsx';
-import { useQuery } from '@tanstack/react-query';
-import { getUserInfo } from '@/api/users/user';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getUserInfo, updateUserNickname } from '@/api/users/user';
+import toast from 'react-hot-toast';
 
 const ProfileEdit = () => {
   const [nickname, setNickname] = useState('');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const queryClient = useQueryClient();
 
   // 유저 정보 조회 API
   const { data: userInfo, isPending } = useQuery({
@@ -24,8 +28,35 @@ const ProfileEdit = () => {
     },
   });
 
+  // 유저 정보 수정 API
+  const { mutate: updateUserNicknameMutation } = useMutation({
+    mutationFn: updateUserNickname,
+    onSuccess: (res) => {
+      if (res.error) {
+        toast.dismiss();
+        console.log(res.message);
+        toast.error('이름 변경에 실패했습니다');
+        return;
+      }
+      toast.dismiss();
+      toast.success('이름이 변경되었습니다');
+      queryClient.invalidateQueries({ queryKey: ['userInfo'] });
+    },
+    onError: () => {
+      toast.dismiss();
+      toast.error('이름 변경에 실패했습니다');
+    },
+  });
+
   const handleBlur = () => {
-    console.log('blur');
+    if (nickname === '') return;
+    if (nickname === userInfo?.nickname) {
+      toast.dismiss();
+      toast.error('이름이 변경되지 않았습니다');
+      return;
+    }
+    updateUserNicknameMutation(nickname);
+    setNickname('');
   };
 
   return (
@@ -56,18 +87,10 @@ const ProfileEdit = () => {
             {isPending ? (
               <div className='w-[96px] h-[96px] rounded-[20px] bg-gray-200' />
             ) : (
-              <Button
-                icon={
-                  <img
-                    src={userInfo?.profileImage}
-                    alt='profile'
-                    className='w-[96px] h-[96px] rounded-[20px]'
-                  />
-                }
-                onClick={() => {
-                  console.log('사진 클릭');
-                }}
-                className='cursor-pointer'
+              <Image
+                src={userInfo?.profileImage || ''}
+                alt='profile'
+                className='w-[96px] h-[96px] rounded-[20px]'
               />
             )}
           </div>
