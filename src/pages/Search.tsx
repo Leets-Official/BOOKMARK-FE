@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
-import { tv } from 'tailwind-variants';
 import FilterSearchBar from '@/components/layout/searchBar/FilterSearchBar';
-import { FilterIcon, ResetButtonIcon, SearchIcon } from '@/assets';
+import { FilterIcon, SearchIcon } from '@/assets';
 import { Chip, Button } from '@/components/common';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
-import { useNavigate } from 'react-router-dom';
 import {
   selectedCategoriesAtom,
   selectedTagsAtom,
@@ -14,29 +12,8 @@ import {
   searchContentsAtom,
 } from '@/atoms';
 import { dummyCardData } from '@/constants/DummyData';
-import { useScrollLock } from '@/hooks/scrollLock';
 import { postSearchHistory } from '@/api/searchHistory/searchHistory';
 import { useMutation } from '@tanstack/react-query';
-
-const overlayStyle = tv({
-  base: 'fixed inset-0 z-100 flex items-center justify-center',
-  variants: {
-    isMobile: {
-      true: '',
-      false: 'bg-black/50',
-    },
-  },
-});
-
-const modalStyle = tv({
-  base: 'bg-gray-100 rounded-[30px] flex flex-col overflow-hidden',
-  variants: {
-    isMobile: {
-      true: 'w-full h-full',
-      false: 'w-[369px] h-[773px]',
-    },
-  },
-});
 
 const Search = () => {
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
@@ -46,9 +23,7 @@ const Search = () => {
   const [categories, setCategories] = useState<{ id: number; content: string }[]>([]);
   const [platforms, setPlatforms] = useState<{ id: number; content: string }[]>([]);
   const [tags, setTags] = useState<{ id: number; content: string }[]>([]);
-  const navigate = useNavigate();
-  const onPrev = () => navigate(-1);
-  useScrollLock(!isMobile);
+  const [showTags, setShowTags] = useState(false);
 
   useEffect(() => {
     const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(
@@ -73,6 +48,7 @@ const Search = () => {
     } else {
       setTags([]);
     }
+    setShowTags(selectedCategories.length === 1);
   }, [selectedCategories]);
 
   const toggleSelection = (
@@ -118,15 +94,22 @@ const Search = () => {
   };
 
   return (
-    <div className={overlayStyle({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
-      <div className={modalStyle({ isMobile })} onClick={(e) => e.stopPropagation()}>
+    <div className='relative min-h-screen w-[50%] h-full'>
+      <div className='flex flex-col overflow-hidden'>
         <FilterSearchBar />
 
         {/* 스크롤 가능한 컨텐츠 영역 */}
-        <div className='flex-1 overflow-y-auto p-3 pb-4 hide-scrollbar'>
-          <div className='flex items-center font-semibold text-xl mb-2 gap-1 pt-30'>
-            <FilterIcon width={24} height={24} />
-            필터
+        <div className='flex-1 overflow-y-auto p-3 pb-4 hide-scrollbar max-w-[1040px]'>
+          <div className='flex items-center justify-between font-semibold text-xl mb-2 gap-1 pt-30'>
+            <div className='flex items-center gap-1'>
+              <FilterIcon width={24} height={24} />
+              필터
+            </div>
+            {!isMobile && (
+              <Button onClick={resetAll} className='cursor-pointer font-medium text-15 border-b-3'>
+                초기화
+              </Button>
+            )}
           </div>
           <div className='bg-white p-4 rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
             <p className='mb-2 text-sm font-semibold text-stone'>카테고리</p>
@@ -146,16 +129,17 @@ const Search = () => {
             </div>
             <hr className='border-1 border-lightGrayBlue mb-3' />
             <p className='text-sm font-semibold text-stone'>태그</p>
-            <AnimatePresence>
-              {selectedCategories.length === 1 && (
+            <AnimatePresence mode='wait'>
+              {showTags && (
                 <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 100, opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.5, ease: 'easeInOut' }}
-                  className='overflow-y-auto thin-scrollbar'
+                  key='tagContainer'
+                  initial={{ height: 0 }}
+                  animate={{ height: 'auto' }}
+                  exit={{ height: 0 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className='overflow-hidden'
                 >
-                  <div className='flex flex-wrap gap-2 mt-2 p-0.5 pb-3'>
+                  <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
                     {tags.map((tag) => (
                       <Chip
                         key={tag.id}
@@ -190,19 +174,23 @@ const Search = () => {
           </div>
         </div>
 
-        {/* 고정된 하단 버튼 영역 */}
-        <div className='bg-white px-6 flex justify-between items-center border-t border-gray-200 flex-shrink-0'>
-          <div onClick={resetAll} className='cursor-pointer'>
-            <ResetButtonIcon width={87} height={60} />
-          </div>
-          <Button
-            onClick={() => handleSearch()}
-            icon={<SearchIcon className='w-4 h-4' stroke='white' />}
-            className='cursor-pointer flex items-center gap-2 px-6 py-3 bg-blue text-white rounded-[10px] text-15 hover:brightness-90 transition'
-          >
-            검색
-          </Button>
-        </div>
+        {isMobile && (
+          <>
+            {/* 고정된 하단 버튼 영역 */}
+            <div className='fixed bottom-0 left-0 right-0 bg-white px-6 flex justify-between items-center border-t border-gray-200 flex-shrink-0 p-4'>
+              <Button onClick={resetAll} className='cursor-pointer font-medium text-15 border-b-3'>
+                초기화
+              </Button>
+              <Button
+                onClick={() => handleSearch()}
+                icon={<SearchIcon className='w-4 h-4' stroke='white' />}
+                className='cursor-pointer flex items-center gap-2 px-6 py-3 bg-blue text-white rounded-[10px] text-15 hover:brightness-90 transition'
+              >
+                검색
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
