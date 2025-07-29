@@ -1,6 +1,5 @@
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import CategoryCard from '@/components/ui/card/CategoryCard';
-import { useScrollLock } from '@/hooks/ScrollLock';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 
@@ -16,9 +15,6 @@ const categoryColors = [
 ];
 
 const CategoryManagement = () => {
-  // 외부 스크롤 방지
-  useScrollLock(true);
-
   // 10개의 카테고리 카드 더미 데이터
   const categoryCards = Array.from({ length: 10 }, (_, index) => ({
     id: index,

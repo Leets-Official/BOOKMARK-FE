@@ -3,15 +3,12 @@ import CommonHeader from '@/components/layout/header/CommonHeader';
 import { LogoutIcon } from '@/assets';
 import { useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
-import { useScrollLock } from '@/hooks/ScrollLock';
 import copy from 'copy-to-clipboard';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import { useEffect } from 'react';
 
 const MyPage = () => {
-  // 외부 스크롤 방지
-  useScrollLock(true);
   const navigate = useNavigate();
   const profileImage = localStorage.getItem('profileImage');
 

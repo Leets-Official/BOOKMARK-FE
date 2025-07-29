@@ -11,6 +11,7 @@ import {
   MyPage,
   ProfileEdit,
   CategoryManagement,
+  Inquiry,
 } from '@/pages';
 import App from '@/App';
 
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
               {
                 path: 'category-management',
                 element: <CategoryManagement />,
+              },
+              {
+                path: 'inquiry',
+                element: <Inquiry />,
               },
             ],
           },

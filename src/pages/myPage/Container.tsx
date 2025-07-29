@@ -3,7 +3,6 @@ import { isMobile } from 'react-device-detect';
 import { useScrollLock } from '@/hooks/ScrollLock';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-import copy from 'copy-to-clipboard';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/common';
 import { DeleteIcon, LogoutIcon } from '@/assets';
@@ -34,15 +33,7 @@ const MyPage = () => {
   const navigate = useNavigate();
   const isProfileEdit = useLocation().pathname === '/my-page/profile-edit';
   const isCategoryManagement = useLocation().pathname === '/my-page/category-management';
-
-  const handleCopyInquiry = () => {
-    const success = copy('insightboxxx@gmail.com');
-    if (success) {
-      toast.success('이메일이 복사되었습니다');
-    } else {
-      toast.error('이메일 복사에 실패했습니다');
-    }
-  };
+  const isInquiry = useLocation().pathname === '/my-page/inquiry';
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
@@ -89,9 +80,9 @@ const MyPage = () => {
                 <Button
                   className={clsx(
                     'text-left p-3 rounded-lg transition-colors text-stone',
-                    isProfileEdit ? 'bg-grayBg' : 'hover:bg-gray-100',
+                    isInquiry ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
-                  onClick={handleCopyInquiry}
+                  onClick={() => navigate('/my-page/inquiry')}
                 >
                   문의하기
                 </Button>

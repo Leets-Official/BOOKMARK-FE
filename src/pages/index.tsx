@@ -9,6 +9,7 @@ import MyPageContainer from './myPage/Container';
 import MyPage from './myPage/MyPage';
 import ProfileEdit from './myPage/ProfileEdit';
 import CategoryManagement from './myPage/CategoryManagement';
+import Inquiry from './myPage/Inquiry';
 
 export {
   Home,
@@ -22,4 +23,5 @@ export {
   MyPage,
   ProfileEdit,
   CategoryManagement,
+  Inquiry,
 };

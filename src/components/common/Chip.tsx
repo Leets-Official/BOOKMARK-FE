@@ -58,6 +58,7 @@ const Chip = ({
             onDelete?.();
           }}
           icon={<DeleteIcon height={10} width={10} stroke={deleteIconColor} />}
+          className='cursor-pointer'
         />
       )}
       {/* 설정 함수가 있을시 활성화 */}
@@ -67,6 +68,7 @@ const Chip = ({
             onSetting?.();
           }}
           icon={<SettingIcon height={24} width={24} stroke={isSelected ? '#397FFF' : '#545966'} />}
+          className='cursor-pointer'
         />
       )}
       {/* Chip 드롭다운 옵션*/}

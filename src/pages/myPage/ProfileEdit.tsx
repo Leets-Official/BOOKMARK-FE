@@ -3,13 +3,10 @@ import { Button } from '@/components/common';
 import { isMobile } from 'react-device-detect';
 import TextField from '@/components/ui/TextField';
 import { useState } from 'react';
-import { useScrollLock } from '@/hooks/ScrollLock';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import clsx from 'clsx';
 
 const ProfileEdit = () => {
-  // 외부 스크롤 방지
-  useScrollLock(true);
   const [nickname, setNickname] = useState('');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const profileImage = localStorage.getItem('profileImage');
