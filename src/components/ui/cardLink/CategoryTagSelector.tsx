@@ -11,6 +11,8 @@ import {
   isSuggestionLoadingAtom,
   tempTagsAtom,
   tempCategoriesAtom,
+  selectedTagAtom,
+  selectedCategoryAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import clsx from 'clsx';
@@ -43,8 +45,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
   const isSuggestionLoading = useAtomValue(isSuggestionLoadingAtom); // 아직 제안 태그 못가져 왔으면 로딩상태
 
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedTag, setSelectedTag] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
+  const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
 
   // 임시로 추가된 카테고리와 태그를 관리
   const [tempCategories, setTempCategories] = useAtom(tempCategoriesAtom);
@@ -59,7 +61,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     if (editTag) {
       setSelectedTag(editTag);
     }
-  }, [editCate, editTag, setVisibleTag]);
+  }, [editCate, editTag, setSelectedCategory, setSelectedTag, setVisibleTag]);
 
   // 전체 카테고리와 태그를 한 번에 조회
   const {
@@ -188,6 +190,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     suggestionList,
     setTempCategories,
     setTempTags,
+    setSelectedCategory,
+    setSelectedTag,
   ]);
 
   useEffect(() => {
@@ -312,9 +316,6 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
         <AddModal
           setIsOpen={setIsModalOpen}
           isCategoryType={isCategoryType}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          setSelectedTag={setSelectedTag}
           categoriesWithTagsData={categoriesWithTagsData}
         />
       )}

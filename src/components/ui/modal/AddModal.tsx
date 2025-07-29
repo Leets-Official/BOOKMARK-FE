@@ -11,6 +11,8 @@ import {
   tempTagsAtom,
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
+  selectedCategoryAtom,
+  selectedTagAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type { TagProps } from '@/types/api/category';
@@ -18,27 +20,19 @@ import type { TagProps } from '@/types/api/category';
 interface AddModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isCategoryType: boolean;
-  selectedCategory: string;
-  setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
-  setSelectedTag: React.Dispatch<React.SetStateAction<string[]>>;
   categoriesWithTagsData:
     | { categoryId: number; categoryName: string; tags: TagProps[] }[]
     | undefined;
 }
 
-const AddModal = ({
-  setIsOpen,
-  isCategoryType,
-  selectedCategory,
-  setSelectedCategory,
-  setSelectedTag,
-  categoriesWithTagsData,
-}: AddModalProps) => {
+const AddModal = ({ setIsOpen, isCategoryType, categoriesWithTagsData }: AddModalProps) => {
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const suggestionList = useAtomValue(suggestionListAtom);
   const [tempCategories, setTempCategories] = useAtom(tempCategoriesAtom);
   const [tempTags, setTempTags] = useAtom(tempTagsAtom);
+  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
+  const setSelectedTag = useSetAtom(selectedTagAtom);
 
   const handleAddCategory = (content: string) => {
     // 임시 카테고리 목록에 추가
@@ -52,14 +46,14 @@ const AddModal = ({
   const handleAddTag = (tagName: string) => {
     if (!selectedCategory) return;
 
-    setSelectedTag((prev) => [...prev, tagName]);
-    setVisibleMemoAndAlarm(true);
-
     // 임시 태그 목록에 추가
     setTempTags((prev) => ({
       ...prev,
       [selectedCategory]: [...(prev[selectedCategory] || []), tagName],
     }));
+
+    setSelectedTag((prev) => [...prev, tagName]);
+    setVisibleMemoAndAlarm(true);
   };
 
   const handleConfirmModal = (data: z.infer<typeof schema>) => {

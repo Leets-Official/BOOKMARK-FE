@@ -26,6 +26,8 @@ const previewImageAtom = atom<string | undefined>(undefined);
 const isSuggestionLoadingAtom = atom(false);
 const tempCategoriesAtom = atom<string[]>([]);
 const tempTagsAtom = atom<Record<string, string[]>>({});
+const selectedCategoryAtom = atom<string>('');
+const selectedTagAtom = atom<string[]>([]);
 
 export {
   linkAtom,
@@ -50,4 +52,6 @@ export {
   isSuggestionLoadingAtom,
   tempCategoriesAtom,
   tempTagsAtom,
+  selectedCategoryAtom,
+  selectedTagAtom,
 };
