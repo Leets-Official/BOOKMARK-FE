@@ -18,16 +18,17 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
   const [isSelected, setIsSelected] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(true);
-
   const schema = modalAddSchema('tag', allTagNames);
-  const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
+  const { handleSubmit, control, reset, formState } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: {
       tag: '',
     },
   });
+
+  // Zod 스키마 유효성 검사 결과에 따라 disabled 상태 관리
+  const isDisabled = !formState.isValid || formState.isSubmitting;
 
   const handleConfirmModal = (data: z.infer<typeof schema>) => {
     console.log(data);
@@ -58,7 +59,6 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
           setIsSelected(false);
           setIsModalOpen(false);
           reset();
-          setIsDisabled(true);
         }}
         onConfirm={handleSubmit(handleConfirmModal)}
         disabled={isDisabled}
@@ -75,7 +75,6 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
               onChange={field.onChange}
               onBlur={field.onBlur}
               errorMessage={fieldState.error?.message}
-              setDisabled={(disabled: boolean) => setIsDisabled(disabled)}
             />
           )}
         />
