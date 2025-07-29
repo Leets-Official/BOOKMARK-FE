@@ -1,7 +1,6 @@
 import { createPortal } from 'react-dom';
 import Modal from '@/components/common/Modal';
 import type React from 'react';
-import { useScrollLock } from '@/hooks/scrollLock';
 
 interface ModalPortalProps {
   isOpen: boolean;
@@ -22,8 +21,6 @@ const ModalPortal = ({
   children,
   confirmLabel,
 }: ModalPortalProps) => {
-  useScrollLock(isOpen);
-
   if (!isOpen) return null;
 
   return createPortal(

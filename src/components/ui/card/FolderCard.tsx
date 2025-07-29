@@ -17,6 +17,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, updateCategory } from '@/api/category/category';
 import Loading from '../loading/Loading';
 import toast from 'react-hot-toast';
+import { useScrollLock } from '@/hooks/scrollLock';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
@@ -33,6 +34,10 @@ const FolderCard = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isScrollLocked, setIsScrollLocked] = useState(false); // 상태 추가
+
+  // useScrollLock을 최상위로 이동
+  useScrollLock(isScrollLocked);
 
   const schema = modalAddSchema('category');
   const queryClient = useQueryClient();
@@ -189,7 +194,13 @@ const FolderCard = ({
         </div>
         <div className='flex items-center justify-between pt-2'>
           <p className={TitleText}>{category.categoryName}</p>
-          <div ref={iconRef} onClick={isOpen}>
+          <div
+            ref={iconRef}
+            onClick={() => {
+              isOpen();
+              setIsScrollLocked(true);
+            }}
+          >
             <FolderDetailIcon
               width={24}
               height={24}
@@ -203,7 +214,14 @@ const FolderCard = ({
         </div>
       </div>
       {/* Portal로 렌더링되는 메뉴 */}
-      <MenuPortal isOpen={isMenuOpen} onClose={isClose} position={menuPosition}>
+      <MenuPortal
+        isOpen={isMenuOpen}
+        onClose={() => {
+          isClose();
+          setIsScrollLocked(false);
+        }}
+        position={menuPosition}
+      >
         <div className='flex flex-col w-32'>
           <p className='text-left px-1 mb-2 text-[#A4A8B2] rounded text-xs'>카테고리 설정</p>
           <Button
@@ -226,6 +244,7 @@ const FolderCard = ({
           setIsModalOpen(false);
           reset();
           setIsDisabled(true);
+          setIsScrollLocked(false);
         }}
         onConfirm={handleSubmit(handleConfirmModal)}
         disabled={isDisabled}
@@ -265,12 +284,18 @@ const FolderCard = ({
       {/**삭제 모달 */}
       <DeleteModal
         isOpen={isDeleteModalOpen}
-        onCancel={() => setIsDeleteModalOpen(false)}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setIsScrollLocked(false);
+        }}
         warningText={`"${category.categoryName}"카테고리를 정말 삭제할까요?`}
-        subText={`카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?`}
+        subText={
+          '카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?'
+        }
         onDelete={() => {
           setIsDeleteModalOpen(false);
           deleteCategoryMutation(category.id);
+          setIsScrollLocked(false);
         }}
       />
     </>

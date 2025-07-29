@@ -1,6 +1,7 @@
 import { ProfileIcon } from '@/assets';
 import { Button } from '@/components/common';
 import { useNavigate } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 
 const HomeHeader = () => {
   const navigate = useNavigate();
@@ -17,7 +18,14 @@ const HomeHeader = () => {
               className='w-[30px] h-[30px] sm:w-[40px] sm:h-[40px] rounded-[25%]'
             />
           }
-          onClick={() => navigate('/my-page')}
+          onClick={() => {
+            if (isMobile) {
+              navigate('/my-page');
+            } else {
+              navigate('/my-page/profile-edit');
+            }
+          }}
+          className='cursor-pointer'
         />
       ) : (
         <ProfileIcon

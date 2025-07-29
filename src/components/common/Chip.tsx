@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import Button from './Button';
-import { BackArrowIcon, DeleteIcon, StarIcon } from '@/assets';
+import { BackArrowIcon, DeleteIcon, SettingIcon, StarIcon } from '@/assets';
 import clsx from 'clsx';
 import type React from 'react';
 
@@ -10,6 +10,7 @@ interface ChipProps {
   isSelected: boolean;
   onClick?: () => void;
   onDelete?: () => void;
+  onSetting?: () => void;
   disabled?: boolean;
   dropdownEnabled?: boolean;
   selectedClassName?: string;
@@ -22,6 +23,7 @@ const Chip = ({
   isSelected,
   onClick,
   onDelete,
+  onSetting,
   disabled = false,
   dropdownEnabled = false,
   className,
@@ -56,6 +58,17 @@ const Chip = ({
             onDelete?.();
           }}
           icon={<DeleteIcon height={10} width={10} stroke={deleteIconColor} />}
+          className='cursor-pointer'
+        />
+      )}
+      {/* 설정 함수가 있을시 활성화 */}
+      {onSetting && (
+        <Button
+          onClick={() => {
+            onSetting?.();
+          }}
+          icon={<SettingIcon height={24} width={24} stroke={isSelected ? '#397FFF' : '#545966'} />}
+          className='cursor-pointer'
         />
       )}
       {/* Chip 드롭다운 옵션*/}

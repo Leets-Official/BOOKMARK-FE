@@ -49,7 +49,7 @@ const Modal = ({
           <div className='text-base font-semibold'>{title}</div>
           <Button
             onClick={onCancel}
-            className='absolute right-4 top-1/2 -translate-y-1/2'
+            className='absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer'
             icon={<DeleteIcon height={14} width={14} stroke='#000000' />}
           ></Button>
         </div>

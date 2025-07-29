@@ -1,7 +1,6 @@
 import { WarningIcon } from '@/assets';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useScrollLock } from '@/hooks/scrollLock';
 
 interface DeleteModalProps {
   isOpen: boolean;
@@ -12,8 +11,6 @@ interface DeleteModalProps {
 }
 
 const DeleteModal = ({ isOpen, onCancel, onDelete, warningText, subText }: DeleteModalProps) => {
-  useScrollLock(isOpen);
-
   // ESC 키로 모달 닫기
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
@@ -33,7 +30,7 @@ const DeleteModal = ({ isOpen, onCancel, onDelete, warningText, subText }: Delet
 
   const modalContent = (
     <div
-      className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
+      className='fixed inset-0 z-200 flex items-center justify-center bg-black/50'
       onClick={() => onCancel()}
     >
       <div

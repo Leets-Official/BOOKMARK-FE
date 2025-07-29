@@ -16,6 +16,8 @@ const Toast: React.FC = () => {
             padding: '12px 16px',
             fontSize: '15px',
             fontWeight: '500',
+            whiteSpace: 'nowrap',
+            wordBreak: 'keep-all', // 단어 단위로 줄바꿈 방지
           },
         },
         error: {
@@ -27,6 +29,8 @@ const Toast: React.FC = () => {
             padding: '12px 16px',
             fontSize: '15px',
             fontWeight: '500',
+            whiteSpace: 'nowrap',
+            wordBreak: 'keep-all', // 단어 단위로 줄바꿈 방지
           },
         },
       }}
