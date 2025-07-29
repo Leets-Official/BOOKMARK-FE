@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import copy from 'copy-to-clipboard';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/common';
+import { DeleteIcon, LogoutIcon } from '@/assets';
 
 const overlayStyle = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -22,7 +23,7 @@ const modalStyle = tv({
   variants: {
     isMobile: {
       true: 'w-full h-full',
-      false: 'w-[85%] h-[75%] max-w-[1200px] max-h-[900px]',
+      false: 'w-[65%] h-[55%] max-h-[496px] max-w-[830px]',
     },
   },
 });
@@ -58,17 +59,17 @@ const MyPage = () => {
           <Outlet />
         ) : (
           // PC: 사이드바 + 콘텐츠 레이아웃
-          <div className='flex h-full'>
+          <div className='flex h-full relative'>
             {/* 왼쪽 사이드바 */}
             <div className='w-1/4 bg-gray-50 border-r border-gray-200 p-4'>
-              <div className='flex flex-col gap-4'>
-                <h2 className='text-lg font-semibold text-gray-900'>마이페이지</h2>
+              <div className='flex flex-col'>
+                <h2 className='text-xs font-medium text-gray-500 p-3 mt-3'>마이페이지</h2>
 
                 {/* 메뉴 버튼들 */}
                 <Button
                   className={clsx(
-                    'text-left p-3 rounded-lg transition-colors',
-                    isProfileEdit ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100 text-gray-700',
+                    'text-left p-3 rounded-lg transition-colors text-stone',
+                    isProfileEdit ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
                   onClick={() => navigate('/my-page/profile-edit')}
                 >
@@ -77,10 +78,8 @@ const MyPage = () => {
 
                 <Button
                   className={clsx(
-                    'text-left p-3 rounded-lg transition-colors',
-                    isCategoryManagement
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'hover:bg-gray-100 text-gray-700',
+                    'text-left p-3 rounded-lg transition-colors text-stone',
+                    isCategoryManagement ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
                   onClick={() => navigate('/my-page/category-management')}
                 >
@@ -88,14 +87,18 @@ const MyPage = () => {
                 </Button>
 
                 <Button
-                  className='text-left p-3 rounded-lg hover:bg-gray-100 text-gray-700'
+                  className={clsx(
+                    'text-left p-3 rounded-lg transition-colors text-stone',
+                    isProfileEdit ? 'bg-grayBg' : 'hover:bg-gray-100',
+                  )}
                   onClick={handleCopyInquiry}
                 >
                   문의하기
                 </Button>
 
                 <Button
-                  className='text-left p-3 rounded-lg hover:bg-gray-100 text-red-600 mt-auto'
+                  className='absolute bottom-8 left-5 w-[124px] h-[48px] text-stone rounded-[10px] border-2 border-lightGrayBlue text-15 font-medium flex items-center justify-center gap-2 cursor-pointer'
+                  icon={<LogoutIcon width={20} height={20} />}
                   onClick={() => {
                     handleLogout();
                   }}
@@ -106,8 +109,15 @@ const MyPage = () => {
             </div>
 
             {/* 오른쪽 콘텐츠 영역 */}
-            <div className='flex-1 overflow-auto hide-scrollbar relative'>
+            <div className='flex-1 overflow-auto hide-scrollbar relative max-w-[375px]'>
               <Outlet />
+            </div>
+            <div className='absolute top-10 right-10'>
+              <Button
+                icon={<DeleteIcon width={12} height={12} stroke='#000000' />}
+                onClick={() => navigate('/')}
+                className='cursor-pointer'
+              />
             </div>
           </div>
         )}

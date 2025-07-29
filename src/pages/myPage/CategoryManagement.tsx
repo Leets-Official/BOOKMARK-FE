@@ -33,7 +33,7 @@ const CategoryManagement = () => {
           <CommonHeader title='카테고리 / 태그 관리' />
         </div>
       )}
-      <div className='flex flex-col items-center justify-center mt-20 p-4 gap-5 overflow-y-auto hide-scrollbar'>
+      <div className='flex flex-col items-center justify-center mt-20 p-3 gap-5 overflow-y-auto hide-scrollbar'>
         {categoryCards.map((card) => (
           <CategoryCard key={card.id} color={card.color} categoryName={card.name} />
         ))}
