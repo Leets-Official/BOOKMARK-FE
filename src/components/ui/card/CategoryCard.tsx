@@ -1,6 +1,6 @@
 import { BackArrowIcon, FolderDetailIcon } from '@/assets';
 import { Button } from '@/components/common';
-import { useMenuHandler } from '@/hooks/MenuPosition';
+import { useMenuHandler } from '@/hooks/menuPosition';
 import { MenuPortal, ModalPortal } from '@/utils';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';

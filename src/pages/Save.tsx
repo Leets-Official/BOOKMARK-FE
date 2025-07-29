@@ -2,9 +2,8 @@ import { isMobile } from 'react-device-detect';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardLink';
+import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
 import {
-  isSaveButtonDisabledAtom,
   linkAtom,
   memoAtom,
   previewImageAtom,
@@ -12,7 +11,7 @@ import {
   visibleCategoryAtom,
   visibleTagAtom,
 } from '@/atoms';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useScrollLock } from '@/hooks/scrollLock';
 import { saveSchema } from '@/schema/save';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -42,23 +41,12 @@ const Container = tv({
   },
 });
 
-const SaveButton = tv({
-  base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] rounded-[10px]',
-  variants: {
-    isDisabled: {
-      true: 'bg-lightBlueGray text-veryLightGray',
-      false: 'bg-blue text-white cursor-pointer hover:brightness-90 transition',
-    },
-  },
-});
-
 interface SaveInterfaceProps {
   type: 'create' | 'edit';
 }
 
 const Save = ({ type }: SaveInterfaceProps) => {
   useScrollLock(true); // PC일 때는 스크롤 방지
-  const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
   const navigate = useNavigate();
 
   const resetLink = useSetAtom(linkAtom);
@@ -184,16 +172,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
               />
             </div>
           </div>
-          <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
-            <button
-              type='submit'
-              form='save-form'
-              className={SaveButton({ isDisabled: isSaveButtonDisabled })}
-              disabled={isSaveButtonDisabled}
-            >
-              {type === 'create' ? '저장하기' : '수정하기'}
-            </button>
-          </div>
+          <SaveButton type={type} />
         </div>
       </div>
     </form>
