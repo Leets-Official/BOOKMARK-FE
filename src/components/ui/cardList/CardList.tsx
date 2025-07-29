@@ -27,6 +27,8 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   const [cardsPerSlide, setCardsPerSlide] = useState(getCardsPerSlide()); // 초기 계산
   const queryClient = useQueryClient();
 
+  const allCategoryNames = categories.map((cat) => cat.categoryName);
+
   // 현재 카드 수에 따라 최대 슬라이드 인덱스 계산
   const maxIndex =
     categories.length === 0 ? 0 : Math.floor((categories.length - 1) / cardsPerSlide);
@@ -144,6 +146,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
               <FolderCard
                 key={category.id}
                 category={category}
+                allCategoryNames={allCategoryNames}
                 pages={[index, categories.length, cardsPerSlide, decreaseIndex]}
               />
             ))}
@@ -152,7 +155,11 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
         {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
         <div className='invisible flex w-full'>
           {cardSlice.map((categories) => (
-            <FolderCard key={`ghost-${categories.id}`} category={categories} />
+            <FolderCard
+              key={`ghost-${categories.id}`}
+              category={categories}
+              allCategoryNames={allCategoryNames}
+            />
           ))}
         </div>
       </div>

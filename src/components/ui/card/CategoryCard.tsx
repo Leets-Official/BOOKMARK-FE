@@ -1,6 +1,6 @@
 import { BackArrowIcon, FolderDetailIcon } from '@/assets';
 import { Button } from '@/components/common';
-import { useMenuHandler } from '@/hooks/MenuPosition';
+import { useMenuHandler } from '@/hooks/menuPosition';
 import { MenuPortal, ModalPortal } from '@/utils';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -14,21 +14,37 @@ import { useForm } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 import TextField from '../TextField';
 import TagSettingChip from '../chip/TagSettingChip';
+import type { CategoryWithTagProps, TagProps } from '@/types/api/category';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteCategory, updateCategory } from '@/api/category/category';
+import toast from 'react-hot-toast';
 
 interface CategoryCardProps {
   color: string;
+  categoryId: number;
   categoryName: string;
+  tags: TagProps[];
+  allCategoryNames: string[];
 }
 
-const CategoryCard = ({ color, categoryName }: CategoryCardProps) => {
+const CategoryCard = ({
+  color,
+  categoryId,
+  categoryName,
+  tags,
+  allCategoryNames,
+}: CategoryCardProps) => {
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(true);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
 
-  const schema = modalAddSchema('category');
-  const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
+  const allTagNames = tags.map((tag) => tag.tagName);
+
+  const queryClient = useQueryClient();
+
+  const schema = modalAddSchema('category', allCategoryNames);
+  const { handleSubmit, control, reset, formState } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: {
@@ -36,8 +52,81 @@ const CategoryCard = ({ color, categoryName }: CategoryCardProps) => {
     },
   });
 
+  // Zod 스키마 유효성 검사 결과에 따라 disabled 상태 관리
+  const isDisabled = !formState.isValid || formState.isSubmitting;
+
+  const { mutate: updateCategoryMutation } = useMutation({
+    mutationFn: (categoryName: string) => updateCategory(categoryId, categoryName),
+    onMutate: async (newCategoryName) => {
+      // 진행 중인 쿼리 취소
+      await queryClient.cancelQueries({ queryKey: ['categoriesWithTags'] });
+
+      // 이전 데이터 백업
+      const previousCategories = queryClient.getQueryData(['categoriesWithTags']);
+
+      // 즉시 UI 업데이트 (낙관적 업데이트)
+      queryClient.setQueryData(['categoriesWithTags'], (old: any) => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.map((cat: CategoryWithTagProps) =>
+            cat.categoryId === categoryId ? { ...cat, categoryName: newCategoryName } : cat,
+          ),
+        };
+      });
+
+      return { previousCategories };
+    },
+    onSettled: (data, error, _, context) => {
+      if (data?.error || error) {
+        console.log(data);
+        console.log(error);
+        const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
+        console.log('카테고리 수정 실패:', errorMessage);
+        queryClient.setQueryData(['categoriesWithTags'], context?.previousCategories);
+        toast.error('카테고리 수정 실패');
+        return;
+      }
+
+      toast.success('카테고리 수정 완료');
+      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+    },
+  });
+
+  const { mutate: deleteCategoryMutation } = useMutation({
+    mutationFn: (categoryId: number) => deleteCategory(categoryId),
+    onMutate: async (categoryId) => {
+      await queryClient.cancelQueries({ queryKey: ['categoriesWithTags'] });
+      const previousCategories = queryClient.getQueryData(['categoriesWithTags']);
+      queryClient.setQueryData(['categoriesWithTags'], (old: any) => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.filter((cat: CategoryWithTagProps) => cat.categoryId !== categoryId),
+        };
+      });
+
+      return { previousCategories };
+    },
+    onSettled: (data, error, _, context) => {
+      if (data?.error || error) {
+        const errorMessage = data?.error ? data.message : error?.message || '알 수 없는 오류';
+        console.log('카테고리 삭제 실패:', errorMessage);
+        queryClient.setQueryData(['categoriesWithTags'], context?.previousCategories);
+        toast.error('카테고리 삭제 실패');
+        return;
+      }
+
+      toast.success('카테고리 삭제 완료');
+      queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+    },
+  });
+
   const handleConfirmModal = (data: z.infer<typeof schema>) => {
-    console.log(data);
+    if (!data.category.trim()) return;
+    updateCategoryMutation(data.category);
+    setIsModalOpen(false);
+    reset();
   };
 
   return (
@@ -51,7 +140,7 @@ const CategoryCard = ({ color, categoryName }: CategoryCardProps) => {
         <div className='flex flex-row items-center justify-center gap-2'>
           <div className='w-3 h-3 rounded-[4px]' style={{ backgroundColor: color }} />
           <p className='text-base text-stone font-semibold'>{categoryName}</p>
-          <p className='text-base text-primary font-semibold'>15</p>
+          <p className='text-base text-primary font-semibold'>{tags.length}</p>
           <div ref={iconRef} onClick={isOpen}>
             <FolderDetailIcon
               width={24}
@@ -85,15 +174,14 @@ const CategoryCard = ({ color, categoryName }: CategoryCardProps) => {
             className='overflow-hidden'
           >
             <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
-              <TagSettingChip />
-              <TagSettingChip />
-              <TagSettingChip />
-              <TagSettingChip />
-              <TagSettingChip />
-              <TagSettingChip />
-              <TagSettingChip />
-              <TagSettingChip />
-              <TagSettingChip />
+              {tags.map((tag) => (
+                <TagSettingChip
+                  key={tag.tagId}
+                  tagId={tag.tagId}
+                  tagName={tag.tagName}
+                  allTagNames={allTagNames}
+                />
+              ))}
             </div>
           </motion.div>
         )}
@@ -123,7 +211,6 @@ const CategoryCard = ({ color, categoryName }: CategoryCardProps) => {
         onCancel={() => {
           setIsModalOpen(false);
           reset();
-          setIsDisabled(true);
         }}
         onConfirm={handleSubmit(handleConfirmModal)}
         disabled={isDisabled}
@@ -140,7 +227,6 @@ const CategoryCard = ({ color, categoryName }: CategoryCardProps) => {
               onChange={field.onChange}
               onBlur={field.onBlur}
               errorMessage={fieldState.error?.message}
-              setDisabled={(disabled: boolean) => setIsDisabled(disabled)}
             />
           )}
         />
@@ -170,6 +256,7 @@ const CategoryCard = ({ color, categoryName }: CategoryCardProps) => {
         }
         onDelete={() => {
           setIsDeleteModalOpen(false);
+          deleteCategoryMutation(categoryId);
         }}
       />
     </div>

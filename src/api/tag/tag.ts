@@ -18,4 +18,19 @@ const getTags = async (categoryId: number): Promise<ApiResponse<TagProps[]>> => 
   });
 };
 
-export { createTag, getTags };
+const updateTag = async (tagId: number, tagName: string): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'PATCH',
+    url: `/tags/${tagId}`,
+    data: { tagName },
+  });
+};
+
+const deleteTag = async (tagId: number): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'DELETE',
+    url: `/tags/${tagId}`,
+  });
+};
+
+export { createTag, getTags, updateTag, deleteTag };

@@ -25,8 +25,12 @@ const Home = () => {
   // 카테고리 조회
   const { data: categories, isPending } = useQuery({
     queryKey: ['categories'],
-    queryFn: () => {
-      return getCategories();
+    queryFn: async () => {
+      const res = await getCategories();
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
     },
   });
 
@@ -43,9 +47,9 @@ const Home = () => {
       ) : (
         <>
           {isMobile ? (
-            <MobileCardList categories={categories?.data || []} />
+            <MobileCardList categories={categories || []} />
           ) : (
-            <CardList categories={categories?.data || []} />
+            <CardList categories={categories || []} />
           )}
         </>
       )}

@@ -1,4 +1,4 @@
-import { Button, Modal } from '@/components/common';
+import { Button, Image, Modal } from '@/components/common';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import { LogoutIcon } from '@/assets';
 import { useNavigate } from 'react-router-dom';
@@ -7,11 +7,12 @@ import copy from 'copy-to-clipboard';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getUserInfo } from '@/api/users/user';
 
 const MyPage = () => {
   const navigate = useNavigate();
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
-  const profileImage = localStorage.getItem('profileImage');
 
   useEffect(() => {
     if (!isMobile) {
@@ -39,6 +40,18 @@ const MyPage = () => {
     navigate('/login');
   };
 
+  // 유저 정보 조회 API
+  const { data: userInfo, isPending } = useQuery({
+    queryKey: ['userInfo'],
+    queryFn: async () => {
+      const res = await getUserInfo();
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+  });
+
   return (
     <>
       {/* 헤더 */}
@@ -52,23 +65,24 @@ const MyPage = () => {
           className='w-[351px] flex flex-row items-center rounded-[40px] border-2 border-lightGrayBlue p-4 gap-6'
           style={{ boxShadow: '0 2px 7px 0 rgba(2, 34, 94, 0.1)' }}
         >
-          <Button
-            icon={
-              <img
-                src={profileImage || ''}
+          {isPending ? (
+            <div className='w-[128px] h-[128px] rounded-[40px] bg-gray-200' />
+          ) : (
+            <>
+              <Image
+                src={userInfo?.profileImage || ''}
                 alt='profile'
                 className='w-[128px] h-[128px] rounded-[40px]'
+                onClick={() => {
+                  navigate('/my-page/profile-edit');
+                }}
               />
-            }
-            onClick={() => {
-              navigate('/my-page/profile-edit');
-            }}
-            className='cursor-pointer'
-          />
-          <div className='flex flex-col justify-center gap-4'>
-            <p className='text-2xl font-semibold'>김민수</p>
-            <p className='text-15 font-normal'>qug1t7@gmail.com</p>
-          </div>
+              <div className='flex flex-col justify-center gap-4'>
+                <p className='text-2xl font-semibold'>{userInfo?.nickname}</p>
+                <p className='text-15 font-normal'>{userInfo?.email}</p>
+              </div>
+            </>
+          )}
         </div>
         <div className='flex flex-col self-start w-full gap-4'>
           <p className='text-xs font-medium px-4 text-gray-500'>관리</p>

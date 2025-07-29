@@ -87,15 +87,17 @@ const MyPage = () => {
                   문의하기
                 </Button>
 
-                <Button
-                  className='absolute bottom-8 left-5 w-[124px] h-[48px] text-stone rounded-[10px] border-2 border-lightGrayBlue text-15 font-medium flex items-center justify-center gap-2 cursor-pointer'
-                  icon={<LogoutIcon width={20} height={20} />}
+                <button
+                  className='absolute bottom-8 left-5 p-3 text-stone rounded-[10px] border-2 border-lightGrayBlue text-15 font-medium flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-100'
                   onClick={() => {
                     handleLogout();
                   }}
                 >
-                  로그아웃
-                </Button>
+                  <div className='flex items-center justify-center gap-2'>
+                    <LogoutIcon width={20} height={20} />
+                    <p className='hidden md:block text-15 font-medium'>로그아웃</p>
+                  </div>
+                </button>
               </div>
             </div>
 

@@ -25,9 +25,11 @@ const TitleText =
 
 const FolderCard = ({
   category,
+  allCategoryNames,
   pages,
 }: {
   category: CategoryProps;
+  allCategoryNames: string[];
   pages?: [number, number, number, () => void];
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,7 +41,7 @@ const FolderCard = ({
   // useScrollLock을 최상위로 이동
   useScrollLock(isScrollLocked);
 
-  const schema = modalAddSchema('category');
+  const schema = modalAddSchema('category', allCategoryNames);
   const queryClient = useQueryClient();
   const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -64,12 +66,15 @@ const FolderCard = ({
       const previousCategories = queryClient.getQueryData(['categories']);
 
       // 즉시 UI 업데이트 (낙관적 업데이트)
-      queryClient.setQueryData(['categories'], (old: any) => ({
-        ...old,
-        data: old.data.map((cat: CategoryProps) =>
-          cat.id === category.id ? { ...cat, categoryName: newCategoryName } : cat,
-        ),
-      }));
+      queryClient.setQueryData(['categories'], (old: any) => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.map((cat: CategoryProps) =>
+            cat.id === category.id ? { ...cat, categoryName: newCategoryName } : cat,
+          ),
+        };
+      });
 
       return { previousCategories };
     },
@@ -79,6 +84,7 @@ const FolderCard = ({
         console.log('카테고리 수정 실패:', errorMessage);
         queryClient.setQueryData(['categories'], context?.previousCategories);
         toast.error('카테고리 수정 실패');
+        return;
       }
 
       toast.success('카테고리 수정 완료');
@@ -91,10 +97,13 @@ const FolderCard = ({
     onMutate: async (categoryId) => {
       await queryClient.cancelQueries({ queryKey: ['categories'] });
       const previousCategories = queryClient.getQueryData(['categories']);
-      queryClient.setQueryData(['categories'], (old: any) => ({
-        ...old,
-        data: old.data.filter((cat: CategoryProps) => cat.id !== categoryId),
-      }));
+      queryClient.setQueryData(['categories'], (old: any) => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.filter((cat: CategoryProps) => cat.id !== categoryId),
+        };
+      });
 
       // 삭제 후 페이지 조정
       if (!isMobile && pages) {
@@ -115,6 +124,7 @@ const FolderCard = ({
         console.log('카테고리 삭제 실패:', errorMessage);
         queryClient.setQueryData(['categories'], context?.previousCategories);
         toast.error('카테고리 삭제 실패');
+        return;
       }
 
       toast.success('카테고리 삭제 완료');

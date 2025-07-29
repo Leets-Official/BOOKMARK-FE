@@ -1,5 +1,8 @@
+import { getCategoriesWithTag } from '@/api/category/category';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import CategoryCard from '@/components/ui/card/CategoryCard';
+import Loading from '@/components/ui/loading/Loading';
+import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 
@@ -15,12 +18,19 @@ const categoryColors = [
 ];
 
 const CategoryManagement = () => {
-  // 10개의 카테고리 카드 더미 데이터
-  const categoryCards = Array.from({ length: 10 }, (_, index) => ({
-    id: index,
-    color: categoryColors[index % categoryColors.length],
-    name: `카테고리 ${index + 1}`,
-  }));
+  const { data: categoriesWithTag, isPending } = useQuery({
+    queryKey: ['categoriesWithTags'],
+    queryFn: async () => {
+      const res = await getCategoriesWithTag();
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+  });
+
+  // 카테고리 이름만 리스트로 추출
+  const allCategoryNames = categoriesWithTag?.map((category) => category.categoryName) || [];
 
   return (
     <div>
@@ -41,9 +51,20 @@ const CategoryManagement = () => {
             카테고리 / 태그 관리
           </p>
         )}
-        {categoryCards.map((card) => (
-          <CategoryCard key={card.id} color={card.color} categoryName={card.name} />
-        ))}
+        {isPending ? (
+          <Loading className='w-[96px] h-[96px] mx-5' />
+        ) : (
+          categoriesWithTag?.map((card, index) => (
+            <CategoryCard
+              key={card.categoryId}
+              color={categoryColors[index % categoryColors.length]}
+              categoryId={card.categoryId}
+              categoryName={card.categoryName}
+              allCategoryNames={allCategoryNames}
+              tags={card.tags}
+            />
+          ))
+        )}
       </div>
     </div>
   );
