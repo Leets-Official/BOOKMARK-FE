@@ -4,16 +4,23 @@ interface DropDownTriggerProps {
   children: React.ReactNode;
   // 드랍다운 트레거 클릭 시 실행할 함수 (Open, Close)
   onClick: () => void;
+  className?: string;
 }
 
 const DropDownTrigger = forwardRef<HTMLButtonElement, DropDownTriggerProps>(
-  function DropDownTrigger({ children, onClick }, ref) {
+  function DropDownTrigger({ children, onClick, className }, ref) {
     // ref는 부모가 전달한 ref
     const onClickHandler = (e: React.KeyboardEvent<HTMLButtonElement>) => {
       if (e.key === 'Escape') onClick();
     };
     return (
-      <button ref={ref} onClick={onClick} onKeyDown={onClickHandler} type='button'>
+      <button
+        ref={ref}
+        onClick={onClick}
+        onKeyDown={onClickHandler}
+        type='button'
+        className={className}
+      >
         {children}
       </button>
     );

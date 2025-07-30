@@ -4,6 +4,7 @@ import DropDownItem from './Item';
 import DropDownMenu from './Menu';
 import DropDownTrigger from './Trigger';
 import { useScrollLock } from '@/hooks/scrollLock';
+import clsx from 'clsx';
 
 interface DropDownProps {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ interface DropDownProps {
   handleClose: () => void;
   menuRef: React.RefObject<HTMLDivElement | null>;
   isOpen?: boolean;
+  className?: string;
 }
 
 interface DropDownStatic extends FC<DropDownProps> {
@@ -19,7 +21,13 @@ interface DropDownStatic extends FC<DropDownProps> {
   Item: typeof DropDownItem;
 }
 
-const DropDown = (({ children, handleClose, menuRef, isOpen = false }: DropDownProps) => {
+const DropDown = (({
+  children,
+  handleClose,
+  menuRef,
+  isOpen = false,
+  className,
+}: DropDownProps) => {
   useScrollLock(isOpen);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -44,7 +52,7 @@ const DropDown = (({ children, handleClose, menuRef, isOpen = false }: DropDownP
   }, [handleClose, menuRef]);
 
   return (
-    <div ref={dropdownRef} className='relative'>
+    <div ref={dropdownRef} className={clsx('relative', className)}>
       {children}
     </div>
   );

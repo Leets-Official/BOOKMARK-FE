@@ -17,7 +17,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
 
   const menuOpenStyles =
     isMenuOpen && !isMobile
-      ? 'shadow-[0_2px_7px_rgba(2,34,94,0.1)] border border-gray-300 hover:border hover:border-gray-300'
+       'shadow-[0_2px_7px_rgba(2,34,94,0.1)] ring ring-gray-200 hover:ring hover:ring-gray-200'
       : '';
 
   return (
@@ -28,7 +28,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
         transition={{ duration: 0.4 }}
         className={clsx(
           'mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] cursor-pointer bg-white',
-          !isMobile && 'hover:border hover:border-gray-300',
+          !isMobile && 'hover:ring hover:ring-gray-200',
           menuOpenStyles,
         )}
       >

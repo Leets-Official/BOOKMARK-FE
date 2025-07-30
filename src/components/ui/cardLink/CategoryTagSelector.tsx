@@ -9,6 +9,10 @@ import {
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
   isSuggestionLoadingAtom,
+  tempTagsAtom,
+  tempCategoriesAtom,
+  selectedTagAtom,
+  selectedCategoryAtom,
 } from '@/atoms';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import clsx from 'clsx';
@@ -41,12 +45,12 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
   const isSuggestionLoading = useAtomValue(isSuggestionLoadingAtom); // 아직 제안 태그 못가져 왔으면 로딩상태
 
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedTag, setSelectedTag] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
+  const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
 
   // 임시로 추가된 카테고리와 태그를 관리
-  const [tempCategories, setTempCategories] = useState<{ id: string; content: string }[]>([]);
-  const [tempTags, setTempTags] = useState<Record<string, string[]>>({});
+  const [tempCategories, setTempCategories] = useAtom(tempCategoriesAtom);
+  const [tempTags, setTempTags] = useAtom(tempTagsAtom);
 
   // 수정 모드일 때 초기값 설정
   useEffect(() => {
@@ -57,7 +61,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     if (editTag) {
       setSelectedTag(editTag);
     }
-  }, [editCate, editTag, setVisibleTag]);
+  }, [editCate, editTag, setSelectedCategory, setSelectedTag, setVisibleTag]);
 
   // 전체 카테고리와 태그를 한 번에 조회
   const {
@@ -79,8 +83,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const allCategories = useMemo(() => {
     if (!categoriesWithTagsData || isDataError)
       return tempCategories.map((temp) => ({
-        ...temp,
-        isSelected: temp.content === selectedCategory,
+        content: temp,
+        isSelected: temp === selectedCategory,
       }));
 
     const sortedCate = [...categoriesWithTagsData].sort(
@@ -94,8 +98,8 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
     }));
 
     const tempCategory = tempCategories.map((temp) => ({
-      ...temp,
-      isSelected: temp.content === selectedCategory,
+      content: temp,
+      isSelected: temp === selectedCategory,
     }));
 
     return [...realCategory, ...tempCategory];
@@ -177,7 +181,18 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
         setSuggestionList(suggestionList.map((s) => ({ ...s, isSelected: false })));
       }
     }
-  }, [openCate, openTag, editCate, editTag, setSuggestionList, suggestionList]);
+  }, [
+    openCate,
+    openTag,
+    editCate,
+    editTag,
+    setSuggestionList,
+    suggestionList,
+    setTempCategories,
+    setTempTags,
+    setSelectedCategory,
+    setSelectedTag,
+  ]);
 
   useEffect(() => {
     if (editCate || editTag) {
@@ -215,7 +230,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   }
 
   return (
-    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
+    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 sm:px-6 py-4 flex flex-col gap-3'>
       <div className='flex flex-col gap-1'>
         <p className='text-sm text-stone font-semibold'>
           카테고리<span className='text-[#FF2C3D]'>*</span>
@@ -235,7 +250,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
             <div className='flex flex-wrap gap-2 p-0.5'>
               {allCategories.map((category) => (
                 <Chip
-                  key={category.id}
+                  key={category.content}
                   content={category.content}
                   isSelected={category.isSelected}
                   className='border-lightGrayBlue'
@@ -259,7 +274,11 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
         <p className='text-sm text-stone font-semibold'>
           태그<span className='text-[#FF2C3D]'>*</span>
         </p>
-        {error.tags && <p className='text-xs text-redText'>{error.tags?.message}</p>}
+        {error.tags ? (
+          <p className='text-xs text-redText'>{error.tags?.message}</p>
+        ) : (
+          openTag && <p className='text-xs text-grayText'>최대 3개</p>
+        )}
         {isSuggestionLoading && suggestionList.length === 0 && (
           <p className='text-base text-gray-400'>추천 태그 가져오는 중...</p>
         )}
@@ -301,13 +320,6 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
         <AddModal
           setIsOpen={setIsModalOpen}
           isCategoryType={isCategoryType}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          setSelectedTag={setSelectedTag}
-          setTempCategories={setTempCategories}
-          setTempTags={setTempTags}
-          tempCategories={tempCategories}
-          tempTags={tempTags}
           categoriesWithTagsData={categoriesWithTagsData}
         />
       )}

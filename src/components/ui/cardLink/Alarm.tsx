@@ -74,7 +74,7 @@ const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) =
 
   return (
     <div
-      className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5 mb-60'
+      className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 sm:px-6 pt-2 pb-5 mb-60'
       ref={alarmRef}
     >
       <p className='text-sm font-semibold text-stone mt-2'>알림</p>

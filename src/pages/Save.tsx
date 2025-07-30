@@ -1,13 +1,15 @@
-import { isMobile } from 'react-device-detect';
-import CommonHeader from '@/components/layout/header/CommonHeader';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardLink';
+import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
 import {
   isSaveButtonDisabledAtom,
   linkAtom,
   memoAtom,
   previewImageAtom,
+  selectedCategoryAtom,
+  selectedTagAtom,
+  tempCategoriesAtom,
+  tempTagsAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
@@ -21,29 +23,12 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import clsx from 'clsx';
+import DeleteModal from '@/components/ui/modal/DeleteModal';
+import { BackArrowIcon } from '@/assets';
+import toast from 'react-hot-toast';
 
-const Overlay = tv({
-  base: 'fixed inset-0 z-100 flex items-center justify-center',
-  variants: {
-    isMobile: {
-      true: '',
-      false: 'bg-black/50',
-    },
-  },
-});
-
-const Container = tv({
-  base: 'flex flex-col items-center bg-grayBg/60 backdrop-blur-md overflow-y-auto hide-scrollbar border-none',
-  variants: {
-    isMobile: {
-      true: 'h-full w-full',
-      false: 'w-[369px] h-[773px] rounded-[30px] border fixed',
-    },
-  },
-});
-
-const SaveButton = tv({
-  base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] rounded-[10px]',
+const SaveButtonClass = tv({
+  base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] sm:w-[400px] rounded-[10px]',
   variants: {
     isDisabled: {
       true: 'bg-lightBlueGray text-veryLightGray',
@@ -58,16 +43,25 @@ interface SaveInterfaceProps {
 
 const Save = ({ type }: SaveInterfaceProps) => {
   useScrollLock(true); // PC일 때는 스크롤 방지
-  const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
+  const { saveLinkData } = SaveButton();
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
+  const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const resetLink = useSetAtom(linkAtom);
   const resetCard = useSetAtom(visibleCardAtom);
   const resetVisibleCate = useSetAtom(visibleCategoryAtom);
   const resetVisibleTag = useSetAtom(visibleTagAtom);
   const resetMemo = useSetAtom(memoAtom);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
+  const resetSelectedCategory = useSetAtom(selectedCategoryAtom);
+  const resetSelectedTag = useSetAtom(selectedTagAtom);
+  const resetTempCategories = useSetAtom(tempCategoriesAtom);
+  const resetTempTags = useSetAtom(tempTagsAtom);
+
   const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
     url: '',
     tags: [],
@@ -80,6 +74,9 @@ const Save = ({ type }: SaveInterfaceProps) => {
     time: '',
   });
 
+  // 변경사항 추적을 위한 상태
+  const [hasChanges, setHasChanges] = useState(false);
+
   useEffect(() => {
     resetLink('');
     resetCard(false);
@@ -89,6 +86,10 @@ const Save = ({ type }: SaveInterfaceProps) => {
     resetVisibleCate(false);
     resetVisibleTag(false);
     resetMemo('');
+    resetSelectedCategory('');
+    resetSelectedTag([]);
+    resetTempCategories([]);
+    resetTempTags({});
     reset();
     navigate(-1);
   };
@@ -102,13 +103,12 @@ const Save = ({ type }: SaveInterfaceProps) => {
     reset,
     formState: { errors },
     getValues,
+    watch,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues,
   });
-
-  const { id } = useParams();
 
   useEffect(() => {
     if (id) {
@@ -128,46 +128,73 @@ const Save = ({ type }: SaveInterfaceProps) => {
     }
   }, [id, reset, getValues]);
 
-  const onSubmit = (data: z.infer<typeof schema>) => {
-    console.log('저장 완료');
-    console.log(data);
+  const watchedValues = watch();
 
-    // 미리보기 이미지 초기화
+  useEffect(() => {
+    if (type === 'create') {
+      // create 모드에서는 URL이 입력되면 변경사항 있음으로 간주
+      setHasChanges(!!watchedValues.url?.trim());
+    } else {
+      // edit 모드에서는 초기값과 현재값 비교
+      const isChanged =
+        watchedValues.url !== defaultValues.url ||
+        watchedValues.category !== defaultValues.category ||
+        JSON.stringify(watchedValues.tags?.sort()) !== JSON.stringify(defaultValues.tags?.sort()) ||
+        watchedValues.memo !== defaultValues.memo ||
+        watchedValues.date !== defaultValues.date ||
+        watchedValues.time !== defaultValues.time ||
+        watchedValues.image !== defaultValues.image;
+
+      setHasChanges(isChanged);
+    }
+  }, [watchedValues, defaultValues, type]);
+
+  const onSubmit = (data: z.infer<typeof schema>) => {
+    console.log(data);
+    saveLinkData();
     setPreviewImage(undefined);
     onPrev();
+    toast.success('저장되었습니다');
   };
 
   const handleSave = () => {
     if (previewImage) {
       setValue('image', previewImage);
-      setTimeout(() => {
-        handleSubmit(onSubmit)();
-      }, 0);
+      setTimeout(() => handleSubmit(onSubmit)(), 0);
     } else {
       handleSubmit(onSubmit)();
     }
   };
 
-  // 드롭다운 상태 변경 핸들러
-  const handleDropdownScroll = (isOpen: boolean) => {
-    setIsDropdownOpen(isOpen);
+  const handleBackClick = () => {
+    if (hasChanges) setIsDeleteModalOpen(true);
+    else onPrev();
   };
 
   return (
-    // PC : 모달형식, 모바일 : 전체화면
-    <form id='save-form' onSubmit={handleSubmit(handleSave)}>
-      <div className={Overlay({ isMobile })} onClick={!isMobile ? onPrev : undefined}>
-        <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
-          <div className='absolute top-0 left-0 right-0 z-10'>
-            <CommonHeader title='링크 저장' />
+    <>
+      <form id='save-form' onSubmit={handleSubmit(handleSave)}>
+        <div className='fixed inset-0 z-100 justify-center flex flex-col items-center bg-[#adadb1]/60 backdrop-blur-[25px] w-full h-full'>
+          <div className='absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-white/80 via-white/60 to-transparent'>
+            <div className='relative w-[90%] sm:w-[600px] mx-auto flex flex-row items-center justify-center mt-5'>
+              <div
+                onClick={handleBackClick}
+                className='absolute left-0 rounded-[100px] bg-[#EAEDF5]/90 p-2.5 hover:brightness-90 transition border border-gray cursor-pointer'
+              >
+                <BackArrowIcon width={20} height={20} />
+              </div>
+              <p className='text-base font-semibold'>
+                {type === 'create' ? '링크 저장' : '링크 수정'}
+              </p>
+            </div>
           </div>
           <div
             className={clsx(
-              'flex-1 w-full pt-13 pb-20',
+              'flex-1 w-[90%] sm:w-[600px] pt-13 pb-20',
               isDropdownOpen ? 'overflow-hidden' : 'overflow-y-auto hide-scrollbar',
             )}
           >
-            <div className='flex flex-col items-center gap-3 w-full p-4'>
+            <div className='flex flex-col items-center gap-3 w-full py-5'>
               <LinkField control={control} setValue={setValue} />
               <CategoryTagSelector
                 setValue={setValue}
@@ -180,7 +207,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
                 setValue={setValue}
                 editDate={defaultValues.date}
                 editTime={defaultValues.time}
-                onDropdownScroll={handleDropdownScroll}
+                onDropdownScroll={setIsDropdownOpen}
               />
             </div>
           </div>
@@ -188,15 +215,27 @@ const Save = ({ type }: SaveInterfaceProps) => {
             <button
               type='submit'
               form='save-form'
-              className={SaveButton({ isDisabled: isSaveButtonDisabled })}
+              className={SaveButtonClass({ isDisabled: isSaveButtonDisabled })}
               disabled={isSaveButtonDisabled}
             >
               {type === 'create' ? '저장하기' : '수정하기'}
             </button>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+      {hasChanges && (
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          warningText='저장하지 않고 나가시겠습니까?'
+          subText='지금까지 입력한 내용이 모두 사라집니다.'
+          onDelete={() => {
+            setIsDeleteModalOpen(false);
+            onPrev();
+          }}
+        />
+      )}
+    </>
   );
 };
 

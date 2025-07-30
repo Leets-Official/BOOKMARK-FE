@@ -24,7 +24,12 @@ const selectedTagsAtom = atom<string[]>([]);
 const selectedPlatformsAtom = atom<string[]>([]);
 const previewImageAtom = atom<string | undefined>(undefined);
 const isSuggestionLoadingAtom = atom(false);
+const tempCategoriesAtom = atom<string[]>([]);
+const tempTagsAtom = atom<Record<string, string[]>>({});
+const selectedCategoryAtom = atom<string>('');
+const selectedTagAtom = atom<string[]>([]);
 const scrollBarWidthAtom = atom(0);
+
 
 export {
   linkAtom,
@@ -47,5 +52,9 @@ export {
   selectedPlatformsAtom,
   previewImageAtom,
   isSuggestionLoadingAtom,
+  tempCategoriesAtom,
+  tempTagsAtom,
+  selectedCategoryAtom,
+  selectedTagAtom,
   scrollBarWidthAtom,
 };

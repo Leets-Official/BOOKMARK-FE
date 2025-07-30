@@ -91,7 +91,7 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
   };
 
   return (
-    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pb-4'>
+    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 sm:px-6 pb-4'>
       <p className='text-sm text-stone font-semibold mt-4'>
         링크 입력<span className='text-[#FF2C3D]'>*</span>
       </p>
