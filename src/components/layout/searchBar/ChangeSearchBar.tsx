@@ -80,7 +80,7 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: 'easeInOut' }}
               className={clsx(
-                'fixed bottom-4 max-w-[1440px] w-full z-10 ml-10',
+                'fixed bottom-4 max-w-[1440px] w-full z-10 pl-10 sm:pl-18 md:pl-23 lg:pl-29 xl:pl-38',
                 scrollBarWidth > 0
                   ? `left-[calc(50%-${scrollBarWidth}px)]` // 스크롤바 너비만큼 왼쪽으로 조정
                   : 'left-1/2 transform -translate-x-1/2',

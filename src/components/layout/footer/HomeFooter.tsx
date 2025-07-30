@@ -10,13 +10,13 @@ const HomeFooter = () => {
   return (
     <div
       className={clsx(
-        'fixed bottom-4 max-w-[1440px] w-full z-20 lg:pr-35',
+        'fixed bottom-4 max-w-[1440px] w-full z-20 pr-10 sm:pr-18 md:pr-23 lg:pr-29 xl:pr-38',
         scrollBarWidth > 0
           ? `left-[calc(50%-${scrollBarWidth}px)]` // 스크롤바 너비만큼 왼쪽으로 조정
           : 'left-1/2 transform -translate-x-1/2',
       )}
     >
-      <div className='flex justify-end px-4'>
+      <div className='flex justify-end'>
         <div
           onClick={() => navigate('save')}
           className={clsx(
