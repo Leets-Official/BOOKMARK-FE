@@ -2,15 +2,15 @@ import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
 import CardList from '@/components/ui/cardList/CardList';
 import MobileCardList from '@/components/ui/cardList/MobileCardList';
 import { isMobile } from 'react-device-detect';
-import ProfileHeader from '@/components/layout/header/ProfileHeader';
 import { Outlet } from 'react-router-dom';
 import SaveCardList from '@/components/ui/cardList/SaveCardList';
-import HomLogo from '@/components/ui/HomLogo';
+import HomLogo from '@/components/ui/HomeLogo';
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories } from '@/api/category/category';
 import Loading from '@/components/ui/loading/Loading';
 import CardListHeader from '@/components/layout/header/CardListHeader';
+import ProfileHeader from '@/components/layout/header/ProfileHeader';
 
 const Home = () => {
   useEffect(() => {
@@ -35,9 +35,9 @@ const Home = () => {
 
   return (
     <div className='relative min-h-screen'>
-      <ProfileHeader />
       <HomLogo />
       <ChangeSearchBar barMarginTop={260} />
+      <ProfileHeader />
       {isPending ? (
         <div className='mt-70'>
           <CardListHeader currentNum={'0'} title='카테고리' showCategory={true} />

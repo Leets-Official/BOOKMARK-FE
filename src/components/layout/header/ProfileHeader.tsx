@@ -4,47 +4,70 @@ import { useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 import { useAtomValue } from 'jotai';
 import { scrollBarWidthAtom } from '@/atoms';
-import clsx from 'clsx';
+import { useState, useEffect } from 'react';
 
 const ProfileHeader = () => {
   const navigate = useNavigate();
   const profileImage = localStorage.getItem('profileImage');
   const scrollBarWidth = useAtomValue(scrollBarWidthAtom);
+
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsLargeScreen(window.innerWidth >= 1200);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  const getRightPosition = () => {
+    if (isLargeScreen) {
+      // 1200px 이상: 1440px 중앙 기준 고정
+      return scrollBarWidth > 0
+        ? `calc(50% - 720px + 140px + ${scrollBarWidth / 2}px)`
+        : `calc(50% - 720px + 140px)`;
+    } else {
+      // 1200px 미만: 화면 끝에서 고정
+      return scrollBarWidth > 0
+        ? `calc(12px + ${scrollBarWidth / 2}px)` // right-3 = 12px
+        : '12px';
+    }
+  };
+
   return (
     <div
-      className={clsx(
-        'fixed top-4 max-w-[1440px] w-full z-20 sm:ml-0 sm:mt-0 ml-3 mt-1 xl:pr-35',
-        scrollBarWidth > 0
-          ? `left-[calc(50%-${scrollBarWidth}px)]` // 스크롤바 너비만큼 왼쪽으로 조정
-          : 'left-1/2 transform -translate-x-1/2',
-      )}
+      className='fixed top-4 z-30 mt-1.5 sm:mt-0'
+      style={{
+        right: getRightPosition(),
+      }}
     >
-      <div className='flex justify-end px-4'>
-        {profileImage ? (
-          <Button
-            icon={
-              <img
-                src={profileImage}
-                alt='profile'
-                className='w-[25px] h-[25px] sm:w-[40px] sm:h-[40px] rounded-[25%]'
-              />
+      {profileImage ? (
+        <Button
+          icon={
+            <img
+              src={profileImage}
+              alt='profile'
+              className='w-[25px] h-[25px] sm:w-[40px] sm:h-[40px] rounded-[25%]'
+            />
+          }
+          onClick={() => {
+            if (isMobile) {
+              navigate('./my-page');
+            } else {
+              navigate('./my-page/profile-edit');
             }
-            onClick={() => {
-              if (isMobile) {
-                navigate('./my-page');
-              } else {
-                navigate('./my-page/profile-edit');
-              }
-            }}
-            className='cursor-pointer'
-          />
-        ) : (
-          <ProfileIcon
-            className='sm:w-[30px] sm:h-[30px] text-stone active:text-black'
-            fill={'white'}
-          />
-        )}
-      </div>
+          }}
+          className='cursor-pointer'
+        />
+      ) : (
+        <ProfileIcon
+          className='sm:w-[30px] sm:h-[30px] text-stone active:text-black'
+          fill={'white'}
+        />
+      )}
     </div>
   );
 };
