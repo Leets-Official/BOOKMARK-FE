@@ -28,6 +28,8 @@ const tempCategoriesAtom = atom<string[]>([]);
 const tempTagsAtom = atom<Record<string, string[]>>({});
 const selectedCategoryAtom = atom<string>('');
 const selectedTagAtom = atom<string[]>([]);
+const scrollBarWidthAtom = atom(0);
+
 
 export {
   linkAtom,
@@ -54,4 +56,5 @@ export {
   tempTagsAtom,
   selectedCategoryAtom,
   selectedTagAtom,
+  scrollBarWidthAtom,
 };

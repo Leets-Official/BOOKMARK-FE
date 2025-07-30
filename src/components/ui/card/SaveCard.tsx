@@ -15,6 +15,11 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const navigate = useNavigate();
 
+  const menuOpenStyles =
+    isMenuOpen && !isMobile
+       'shadow-[0_2px_7px_rgba(2,34,94,0.1)] ring ring-gray-200 hover:ring hover:ring-gray-200'
+      : '';
+
   return (
     <>
       <motion.div
@@ -22,11 +27,9 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
         whileHover={{ scale: 1.03 }}
         transition={{ duration: 0.4 }}
         className={clsx(
-          'mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] cursor-pointer',
+          'mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] cursor-pointer bg-white',
           !isMobile && 'hover:ring hover:ring-gray-200',
-          isMenuOpen &&
-            !isMobile &&
-            'shadow-[0_2px_7px_rgba(2,34,94,0.1)] ring ring-gray-200 hover:ring hover:ring-gray-200',
+          menuOpenStyles,
         )}
       >
         <div className='p-3.5 pb-10'>
