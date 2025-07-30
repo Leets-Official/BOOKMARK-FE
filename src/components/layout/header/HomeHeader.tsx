@@ -13,7 +13,7 @@ const HomeHeader = () => {
   return (
     <div
       className={clsx(
-        'fixed top-4 max-w-[1440px] w-full z-10 sm:ml-0 ml-2',
+        'fixed top-4 max-w-[1440px] w-full z-10 sm:ml-0 sm:mt-0 ml-3 mt-1',
         scrollBarWidth > 0
           ? `left-[calc(50%-${scrollBarWidth}px)]` // 스크롤바 너비만큼 왼쪽으로 조정
           : 'left-1/2 transform -translate-x-1/2',
@@ -26,7 +26,7 @@ const HomeHeader = () => {
               <img
                 src={profileImage}
                 alt='profile'
-                className='w-[30px] h-[30px] sm:w-[40px] sm:h-[40px] rounded-[25%]'
+                className='w-[25px] h-[25px] sm:w-[40px] sm:h-[40px] rounded-[25%]'
               />
             }
             onClick={() => {
