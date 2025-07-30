@@ -23,14 +23,14 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
         transition={{ duration: 0.4 }}
         className={clsx(
           'mt-3 w-full relative rounded-[16px] shadow-[0_2px_7px_rgba(2,34,94,0.1)] cursor-pointer',
-          !isMobile && 'hover:border hover:border-gray-300',
+          !isMobile && 'hover:ring hover:ring-gray-200',
           isMenuOpen &&
             !isMobile &&
-            'shadow-[0_2px_7px_rgba(2,34,94,0.1)] border border-gray-300 hover:border hover:border-gray-300',
+            'shadow-[0_2px_7px_rgba(2,34,94,0.1)] ring ring-gray-200 hover:ring hover:ring-gray-200',
         )}
       >
         <div className='p-3.5 pb-10'>
-          <div className='grid grid-cols-[repeat(auto-fit,100px)] gap-2 mb-4'>
+          <div className='flex flex-wrap gap-2 mb-4 w-9/10'>
             <Chip
               content={data.category}
               isSelected={false}
