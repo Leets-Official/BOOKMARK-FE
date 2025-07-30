@@ -46,38 +46,37 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
       </div>
 
       {/* 스크롤 후 고정되는 검색바 */}
-      <AnimatePresence mode='wait'>
+      <AnimatePresence>
         {isFixedBar && (
-          <>
-            <motion.div
-              initial={{ y: -80, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -80, opacity: 0 }}
-              transition={{ duration: 0.2, ease: 'easeInOut' }}
-              className={clsx(
-                'fixed top-0 z-10 max-w-[1440px] w-full ml-5',
-                scrollBarWidth > 0
-                  ? `left-[calc(50%-${scrollBarWidth}px)]`
-                  : 'left-1/2 transform -translate-x-1/2',
-                isBackButton ? 'py-4 px-2' : 'p-4',
+          <motion.div
+            key='fixed-search-bar'
+            initial={{ y: -80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -80, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className={clsx(
+              'fixed top-0 z-10 max-w-[1440px] w-full ml-5',
+              scrollBarWidth > 0
+                ? `left-[calc(50%-${scrollBarWidth}px)]`
+                : 'left-1/2 transform -translate-x-1/2',
+              isBackButton ? 'py-4 px-2' : 'p-4',
+            )}
+          >
+            <div className='flex flex-row items-center w-full'>
+              {isBackButton && (
+                <Button
+                  icon={<LeftIcon width={24} height={24} stroke='black' strokeWidth={2} />}
+                  onClick={() => navigate('/')}
+                  className='cursor-pointer mr-2 p-2 rounded-full border-[rgba(234,237,245,1)] shadow-[0_2px_7px_rgba(28,37,53,0.1)] bg-[#FCFCFCCC]/80'
+                />
               )}
-            >
-              <div className='flex flex-row items-center w-full'>
-                {isBackButton && (
-                  <Button
-                    icon={<LeftIcon width={24} height={24} stroke='black' strokeWidth={2} />}
-                    onClick={() => navigate('/')}
-                    className='cursor-pointer mr-2 p-2 rounded-full border-[rgba(234,237,245,1)] shadow-[0_2px_7px_rgba(28,37,53,0.1)] bg-[#FCFCFCCC]/80'
-                  />
-                )}
-                <div className='flex-1 min-w-0'>
-                  <SearchBar isFixed={true} type='isHome' />
-                </div>
+              <div className='flex-1 min-w-0'>
+                <SearchBar isFixed={true} type='isHome' />
               </div>
-            </motion.div>
-          </>
+            </div>
+          </motion.div>
         )}
-        <HomeFooter isFixedBar={isFixedBar} />
+        <HomeFooter key='home-footer' isFixedBar={isFixedBar} />
       </AnimatePresence>
     </>
   );

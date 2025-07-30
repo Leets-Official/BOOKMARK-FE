@@ -33,7 +33,7 @@ const ProfileHeader = () => {
       // 1200px 미만: 화면 끝에서 고정
       return scrollBarWidth > 0
         ? `calc(12px + ${scrollBarWidth / 2}px)` // right-3 = 12px
-        : '12px';
+        : '4px';
     }
   };
 
