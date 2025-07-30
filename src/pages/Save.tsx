@@ -1,4 +1,3 @@
-import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
@@ -27,28 +26,8 @@ import clsx from 'clsx';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import { BackArrowIcon } from '@/assets';
 
-const Overlay = tv({
-  base: 'fixed inset-0 z-100 flex items-center justify-center',
-  variants: {
-    isMobile: {
-      true: '',
-      false: 'bg-black/50',
-    },
-  },
-});
-
-const Container = tv({
-  base: 'flex flex-col items-center bg-grayBg/60 backdrop-blur-md overflow-y-auto hide-scrollbar border-none',
-  variants: {
-    isMobile: {
-      true: 'h-full w-full',
-      false: 'w-[369px] h-[773px] rounded-[30px] border fixed',
-    },
-  },
-});
-
 const SaveButtonClass = tv({
-  base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] rounded-[10px]',
+  base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] sm:w-[400px] rounded-[10px]',
   variants: {
     isDisabled: {
       true: 'bg-lightBlueGray text-veryLightGray',
@@ -162,57 +141,52 @@ const Save = ({ type }: SaveInterfaceProps) => {
   return (
     <>
       <form id='save-form' onSubmit={handleSubmit(handleSave)}>
-        <div
-          className={Overlay({ isMobile })}
-          onClick={!isMobile ? () => setIsDeleteModalOpen(true) : undefined}
-        >
-          <div className={Container({ isMobile })} onClick={(e) => e.stopPropagation()}>
-            <div className='absolute top-0 left-0 right-0 z-10'>
-              <div className='flex flex-row items-center w-full justify-center relative mt-5'>
-                <div
-                  onClick={() => setIsDeleteModalOpen(true)}
-                  className='absolute left-4 rounded-[100px] bg-[#EAEDF5]/90 p-2.5 hover:brightness-90 transition'
-                >
-                  <BackArrowIcon width={20} height={20} />
-                </div>
-                <p className='text-base font-semibold'>
-                  {type === 'create' ? '링크 저장' : '링크 수정'}
-                </p>
-              </div>
-            </div>
-            <div
-              className={clsx(
-                'flex-1 w-full pt-13 pb-20',
-                isDropdownOpen ? 'overflow-hidden' : 'overflow-y-auto hide-scrollbar',
-              )}
-            >
-              <div className='flex flex-col items-center gap-3 w-full p-4'>
-                <LinkField control={control} setValue={setValue} />
-                <CategoryTagSelector
-                  setValue={setValue}
-                  error={errors}
-                  editCate={defaultValues.category}
-                  editTag={defaultValues.tags}
-                />
-                <Memo control={control} />
-                <Alarm
-                  setValue={setValue}
-                  editDate={defaultValues.date}
-                  editTime={defaultValues.time}
-                  onDropdownScroll={setIsDropdownOpen}
-                />
-              </div>
-            </div>
-            <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
-              <button
-                type='submit'
-                form='save-form'
-                className={SaveButtonClass({ isDisabled: isSaveButtonDisabled })}
-                disabled={isSaveButtonDisabled}
+        <div className='fixed inset-0 z-100 justify-center flex flex-col items-center bg-[#adadb1]/60 backdrop-blur-[25px] w-full h-full'>
+          <div className='absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-white/80 via-white/60 to-transparent'>
+            <div className='relative w-[90%] sm:w-[600px] mx-auto flex flex-row items-center justify-center mt-5'>
+              <div
+                onClick={() => setIsDeleteModalOpen(true)}
+                className='absolute left-0 rounded-[100px] bg-[#EAEDF5]/90 p-2.5 hover:brightness-90 transition border border-gray'
               >
-                {type === 'create' ? '저장하기' : '수정하기'}
-              </button>
+                <BackArrowIcon width={20} height={20} />
+              </div>
+              <p className='text-base font-semibold'>
+                {type === 'create' ? '링크 저장' : '링크 수정'}
+              </p>
             </div>
+          </div>
+          <div
+            className={clsx(
+              'flex-1 w-[90%] sm:w-[600px] pt-13 pb-20',
+              isDropdownOpen ? 'overflow-hidden' : 'overflow-y-auto hide-scrollbar',
+            )}
+          >
+            <div className='flex flex-col items-center gap-3 w-full py-5'>
+              <LinkField control={control} setValue={setValue} />
+              <CategoryTagSelector
+                setValue={setValue}
+                error={errors}
+                editCate={defaultValues.category}
+                editTag={defaultValues.tags}
+              />
+              <Memo control={control} />
+              <Alarm
+                setValue={setValue}
+                editDate={defaultValues.date}
+                editTime={defaultValues.time}
+                onDropdownScroll={setIsDropdownOpen}
+              />
+            </div>
+          </div>
+          <div className='absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-8'>
+            <button
+              type='submit'
+              form='save-form'
+              className={SaveButtonClass({ isDisabled: isSaveButtonDisabled })}
+              disabled={isSaveButtonDisabled}
+            >
+              {type === 'create' ? '저장하기' : '수정하기'}
+            </button>
           </div>
         </div>
       </form>

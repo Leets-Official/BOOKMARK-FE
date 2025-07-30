@@ -15,7 +15,7 @@ const Memo = ({ control }: IMemoProps) => {
   const visible = atomVisible;
 
   return (
-    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 pt-2 pb-5'>
+    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 sm:px-6 pt-2 pb-5'>
       <p className='text-sm text-stone font-semibold mt-2'>메모</p>
       <AnimatePresence>
         {visible && (

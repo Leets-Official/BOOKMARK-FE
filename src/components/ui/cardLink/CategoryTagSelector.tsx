@@ -230,7 +230,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   }
 
   return (
-    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] p-3 py-4 flex flex-col gap-3'>
+    <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 sm:px-6 py-4 flex flex-col gap-3'>
       <div className='flex flex-col gap-1'>
         <p className='text-sm text-stone font-semibold'>
           카테고리<span className='text-[#FF2C3D]'>*</span>
@@ -274,7 +274,11 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
         <p className='text-sm text-stone font-semibold'>
           태그<span className='text-[#FF2C3D]'>*</span>
         </p>
-        {error.tags && <p className='text-xs text-redText'>{error.tags?.message}</p>}
+        {error.category ? (
+          <span className='text-xs text-redText'>{error.category.message}</span>
+        ) : (
+          <span className='text-xs text-grayText'>최대 3개</span>
+        )}
         {isSuggestionLoading && suggestionList.length === 0 && (
           <p className='text-base text-gray-400'>추천 태그 가져오는 중...</p>
         )}
