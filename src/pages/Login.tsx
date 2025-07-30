@@ -1,5 +1,5 @@
 import { kakaoLogin } from '@/api/auth/auth_api';
-import { KakaoLogoIcon } from '@/assets';
+import { KakaoLogoIcon, SymbolIcon } from '@/assets';
 import Button from '@/components/common/Button';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
@@ -19,18 +19,37 @@ const Login = () => {
   }, [navigate]);
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-white px-4'>
-      <div className='flex flex-col items-center space-y-6 w-full max-w-xs'>
-        {/* 로고 텍스트 (나중에 이미지) */}
-        <h1 className='text-2xl font-bold'>Logo</h1>
-
-        <Button
-          onClick={handleKakaoLogin}
-          icon={<KakaoLogoIcon width={18} height={18} className='mr-2' />}
-          className='bg-[#FEE500] text-black hover:brightness-90 disabled:brightness-80 flex items-center justify-center rounded-lg shadow w-full h-[45px]'
-        >
-          카카오 로그인
-        </Button>
+    <div className='flex items-center justify-center min-h-screen p-20'>
+      <div className='flex flex-row h-[52vh] rounded-[20px] overflow-hidden shadow-[0_2px_37px_rgba(2,34,94,0.1)]'>
+        <div className='flex flex-col bg-white px-13 pt-30'>
+          <SymbolIcon />
+          <p className='text-blue font-pretendard font-extrabold text-[33px] mt-5'>
+            INSIGHT
+            <br />
+            BOX
+          </p>
+          <p className='font-medium text-[#6D7280] text-sm mt-5'>
+            나의 인사이트, 잊어도 쉽게 찾아낼 수 있어야 하니까
+          </p>
+        </div>
+        <div className='flex flex-col bg-loginBlue pt-30 pl-13 pr-30'>
+          <p className='text-white font-pretendard font-extrabold text-[40px] leading-[52px]'>
+            로그인하고
+            <br />
+            나만의 인사이트 박스를
+            <br />
+            만들어가요
+          </p>
+          <div className='flex flex-col mt-16'>
+            <Button
+              onClick={handleKakaoLogin}
+              icon={<KakaoLogoIcon width={18} height={18} className='flex mr-2' />}
+              className='bg-[#FEE500] font-semibold py-[16px] text-black hover:brightness-90 transition flex items-center justify-center rounded-[6px] shadow w-9/10'
+            >
+              카카오로 로그인
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );

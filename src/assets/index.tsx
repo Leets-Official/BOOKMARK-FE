@@ -28,6 +28,7 @@ import ListOrderIcon from '@/assets/icons/ListOrder.svg?react';
 import INSIGHTBOXLogo from '@/assets/icons/INSIGHTBOXXX.svg?react';
 import LogoutIcon from '@/assets/icons/Logout.svg?react';
 import SettingIcon from '@/assets/icons/Setting.svg?react';
+import SymbolIcon from '@/assets/icons/Symbol.svg?react';
 
 export {
   KakaoLogoIcon,
@@ -60,4 +61,5 @@ export {
   INSIGHTBOXLogo,
   LogoutIcon,
   SettingIcon,
+  SymbolIcon,
 };
