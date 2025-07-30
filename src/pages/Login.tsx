@@ -34,7 +34,7 @@ const Login = () => {
             <br />
             BOX
           </p>
-          <p className='font-medium text-[#6D7280] text-[13px] mt-5'>
+          <p className='font-medium text-[#6D7280] text-[13px] mt-4'>
             나의 인사이트, 잊어도 쉽게 찾아낼 수 있어야 하니까
           </p>
         </div>
@@ -46,7 +46,7 @@ const Login = () => {
             <br />
             만들어가요
           </p>
-          <div className='flex flex-col mt-16'>
+          <div className='flex flex-col mt-14'>
             <Button
               onClick={handleKakaoLogin}
               icon={<KakaoLogoIcon width={18} height={18} className='flex mr-2' />}
