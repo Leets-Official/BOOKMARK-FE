@@ -226,9 +226,10 @@ const Save = ({ type }: SaveInterfaceProps) => {
       {hasChanges && (
         <DeleteModal
           isOpen={isDeleteModalOpen}
+          isAlert={true}
           onCancel={() => setIsDeleteModalOpen(false)}
-          warningText='저장하지 않고 나가시겠습니까?'
-          subText='지금까지 입력한 내용이 모두 사라집니다.'
+          warningText='링크 저장을 중단하고 나가시겠습니까?'
+          subText='입력한 내용이 모두 삭제되며, 저장되지 않습니다.'
           onDelete={() => {
             setIsDeleteModalOpen(false);
             onPrev();
