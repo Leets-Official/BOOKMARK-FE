@@ -6,7 +6,7 @@ import { useAtomValue } from 'jotai';
 import { scrollBarWidthAtom } from '@/atoms';
 import clsx from 'clsx';
 
-const HomeHeader = () => {
+const ProfileHeader = () => {
   const navigate = useNavigate();
   const profileImage = localStorage.getItem('profileImage');
   const scrollBarWidth = useAtomValue(scrollBarWidthAtom);
@@ -31,9 +31,9 @@ const HomeHeader = () => {
             }
             onClick={() => {
               if (isMobile) {
-                navigate('/my-page');
+                navigate('./my-page');
               } else {
-                navigate('/my-page/profile-edit');
+                navigate('./my-page/profile-edit');
               }
             }}
             className='cursor-pointer'
@@ -49,4 +49,4 @@ const HomeHeader = () => {
   );
 };
 
-export default HomeHeader;
+export default ProfileHeader;

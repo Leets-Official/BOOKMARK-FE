@@ -2,7 +2,7 @@ import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
 import CardList from '@/components/ui/cardList/CardList';
 import MobileCardList from '@/components/ui/cardList/MobileCardList';
 import { isMobile } from 'react-device-detect';
-import HomeHeader from '@/components/layout/header/HomeHeader';
+import ProfileHeader from '@/components/layout/header/ProfileHeader';
 import { Outlet } from 'react-router-dom';
 import HomeFooter from '@/components/layout/footer/HomeFooter';
 import SaveCardList from '@/components/ui/cardList/SaveCardList';
@@ -36,7 +36,7 @@ const Home = () => {
 
   return (
     <div className='relative min-h-screen'>
-      <HomeHeader />
+      <ProfileHeader />
       <HomLogo />
       <ChangeSearchBar barMarginTop={260} />
       {isPending ? (
