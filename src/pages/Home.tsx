@@ -4,7 +4,6 @@ import MobileCardList from '@/components/ui/cardList/MobileCardList';
 import { isMobile } from 'react-device-detect';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
 import { Outlet } from 'react-router-dom';
-import HomeFooter from '@/components/layout/footer/HomeFooter';
 import SaveCardList from '@/components/ui/cardList/SaveCardList';
 import HomLogo from '@/components/ui/HomLogo';
 import { useEffect } from 'react';
@@ -54,7 +53,6 @@ const Home = () => {
         </>
       )}
       <SaveCardList />
-      <HomeFooter />
       <Outlet />
     </div>
   );
