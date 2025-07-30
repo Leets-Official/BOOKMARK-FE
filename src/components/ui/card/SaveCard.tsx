@@ -17,7 +17,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
 
   const menuOpenStyles =
     isMenuOpen && !isMobile
-       'shadow-[0_2px_7px_rgba(2,34,94,0.1)] ring ring-gray-200 hover:ring hover:ring-gray-200'
+      ? 'shadow-[0_2px_7px_rgba(2,34,94,0.1)] ring ring-gray-200 hover:ring hover:ring-gray-200'
       : '';
 
   return (
