@@ -62,7 +62,7 @@ const SearchResult = () => {
         <ChipDropDown title='플랫폼' options={platformList} onChange={setPlatformList} />
       </div>
       {/* 카드 더미 리스트 */}
-      <div className='flex flex-col gap-5 mb-10'>
+      <div className={clsx('flex flex-col gap-5 mb-10', isMobile ? 'px-4' : '')}>
         {isMobile ? (
           dummyCardData.map((card) => (
             <CompactCard
