@@ -24,7 +24,7 @@ const SaveButton = () => {
 
   const queryClient = useQueryClient();
 
-  const categoryMutation = useMutation({
+  const createCategoryMutation = useMutation({
     mutationFn: async (categoryName: string) => {
       const res = await createCategory(categoryName);
       return res;
@@ -34,7 +34,7 @@ const SaveButton = () => {
     },
   });
 
-  const tagMutation = useMutation({
+  const createTagMutation = useMutation({
     mutationFn: async ({ categoryId, tagName }: { categoryId: number; tagName: string }) => {
       const res = await createTag(categoryId, tagName);
       return res;
@@ -51,7 +51,7 @@ const SaveButton = () => {
 
     // 임시 생성한 카테고리를 선택한 상태이면 카테고리 생성
     if (tempCategories.includes(selectedCategory)) {
-      await categoryMutation.mutateAsync(selectedCategory);
+      await createCategoryMutation.mutateAsync(selectedCategory);
       const res = await getCategories(); // 다시 카테고리를 조회해서 카테고리 ID 찾음
       const matchedCate = res.data?.find((c) => c.categoryName === selectedCategory);
       categoryId = matchedCate?.id ?? null;
@@ -76,7 +76,7 @@ const SaveButton = () => {
 
     // 여러개의 태그 생성을 실행하는 동안 기다림 -> 하나라도 실패하면 reject
     await Promise.all(
-      createTag.map((tag) => tagMutation.mutateAsync({ categoryId, tagName: tag })),
+      createTag.map((tag) => createTagMutation.mutateAsync({ categoryId, tagName: tag })),
     );
 
     await queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });

@@ -61,6 +61,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const resetSelectedTag = useSetAtom(selectedTagAtom);
   const resetTempCategories = useSetAtom(tempCategoriesAtom);
   const resetTempTags = useSetAtom(tempTagsAtom);
+
   const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
     url: '',
     tags: [],
@@ -72,6 +73,9 @@ const Save = ({ type }: SaveInterfaceProps) => {
     date: '',
     time: '',
   });
+
+  // 변경사항 추적을 위한 상태
+  const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
     resetLink('');
@@ -99,6 +103,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     reset,
     formState: { errors },
     getValues,
+    watch,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'onChange',
@@ -123,6 +128,27 @@ const Save = ({ type }: SaveInterfaceProps) => {
     }
   }, [id, reset, getValues]);
 
+  const watchedValues = watch();
+
+  useEffect(() => {
+    if (type === 'create') {
+      // create 모드에서는 URL이 입력되면 변경사항 있음으로 간주
+      setHasChanges(!!watchedValues.url?.trim());
+    } else {
+      // edit 모드에서는 초기값과 현재값 비교
+      const isChanged =
+        watchedValues.url !== defaultValues.url ||
+        watchedValues.category !== defaultValues.category ||
+        JSON.stringify(watchedValues.tags?.sort()) !== JSON.stringify(defaultValues.tags?.sort()) ||
+        watchedValues.memo !== defaultValues.memo ||
+        watchedValues.date !== defaultValues.date ||
+        watchedValues.time !== defaultValues.time ||
+        watchedValues.image !== defaultValues.image;
+
+      setHasChanges(isChanged);
+    }
+  }, [watchedValues, defaultValues, type]);
+
   const onSubmit = (data: z.infer<typeof schema>) => {
     console.log(data);
     saveLinkData();
@@ -140,6 +166,11 @@ const Save = ({ type }: SaveInterfaceProps) => {
     }
   };
 
+  const handleBackClick = () => {
+    if (hasChanges) setIsDeleteModalOpen(true);
+    else onPrev();
+  };
+
   return (
     <>
       <form id='save-form' onSubmit={handleSubmit(handleSave)}>
@@ -147,8 +178,8 @@ const Save = ({ type }: SaveInterfaceProps) => {
           <div className='absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-white/80 via-white/60 to-transparent'>
             <div className='relative w-[90%] sm:w-[600px] mx-auto flex flex-row items-center justify-center mt-5'>
               <div
-                onClick={() => setIsDeleteModalOpen(true)}
-                className='absolute left-0 rounded-[100px] bg-[#EAEDF5]/90 p-2.5 hover:brightness-90 transition border border-gray'
+                onClick={handleBackClick}
+                className='absolute left-0 rounded-[100px] bg-[#EAEDF5]/90 p-2.5 hover:brightness-90 transition border border-gray cursor-pointer'
               >
                 <BackArrowIcon width={20} height={20} />
               </div>
@@ -192,16 +223,18 @@ const Save = ({ type }: SaveInterfaceProps) => {
           </div>
         </div>
       </form>
-      <DeleteModal
-        isOpen={isDeleteModalOpen}
-        onCancel={() => setIsDeleteModalOpen(false)}
-        warningText='저장하지 않고 나가시겠습니까?'
-        subText='지금까지 입력한 내용이 모두 사라집니다.'
-        onDelete={() => {
-          setIsDeleteModalOpen(false);
-          onPrev();
-        }}
-      />
+      {hasChanges && (
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          warningText='저장하지 않고 나가시겠습니까?'
+          subText='지금까지 입력한 내용이 모두 사라집니다.'
+          onDelete={() => {
+            setIsDeleteModalOpen(false);
+            onPrev();
+          }}
+        />
+      )}
     </>
   );
 };
