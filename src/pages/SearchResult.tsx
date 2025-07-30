@@ -46,7 +46,7 @@ const SearchResult = () => {
   }, [categoryList, tagList, platformList]);
 
   return (
-    <div className='relative min-h-screen flex flex-col gap-4'>
+    <div className='relative min-h-screen flex flex-col gap-4 mb-30'>
       {isMobile ? <CommonHeader title='링크 검색' /> : <ProfileHeader />}
       <ChangeSearchBar barMarginTop={100} isBackButton={true} />
       <div
