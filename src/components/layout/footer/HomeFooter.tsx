@@ -10,7 +10,7 @@ const HomeFooter = () => {
   return (
     <div
       className={clsx(
-        'fixed bottom-4 max-w-[1440px] w-full z-20 2xl:ml-10',
+        'fixed bottom-4 max-w-[1440px] w-full z-20 lg:pr-35',
         scrollBarWidth > 0
           ? `left-[calc(50%-${scrollBarWidth}px)]` // 스크롤바 너비만큼 왼쪽으로 조정
           : 'left-1/2 transform -translate-x-1/2',

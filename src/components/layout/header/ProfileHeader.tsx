@@ -13,7 +13,7 @@ const ProfileHeader = () => {
   return (
     <div
       className={clsx(
-        'fixed top-4 max-w-[1440px] w-full z-20 sm:ml-0 sm:mt-0 ml-3 mt-1',
+        'fixed top-4 max-w-[1440px] w-full z-20 sm:ml-0 sm:mt-0 ml-3 mt-1 xl:pr-35',
         scrollBarWidth > 0
           ? `left-[calc(50%-${scrollBarWidth}px)]` // 스크롤바 너비만큼 왼쪽으로 조정
           : 'left-1/2 transform -translate-x-1/2',
