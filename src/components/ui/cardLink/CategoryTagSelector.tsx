@@ -274,10 +274,10 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
         <p className='text-sm text-stone font-semibold'>
           태그<span className='text-[#FF2C3D]'>*</span>
         </p>
-        {error.category ? (
-          <span className='text-xs text-redText'>{error.category.message}</span>
+        {error.tags ? (
+          <p className='text-xs text-redText'>{error.tags?.message}</p>
         ) : (
-          <span className='text-xs text-grayText'>최대 3개</span>
+          openTag && <p className='text-xs text-grayText'>최대 3개</p>
         )}
         {isSuggestionLoading && suggestionList.length === 0 && (
           <p className='text-base text-gray-400'>추천 태그 가져오는 중...</p>
