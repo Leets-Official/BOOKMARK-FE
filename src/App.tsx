@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import Toast from '@/components/common/Toast';
+import { isMobile } from 'react-device-detect';
 
 const App = () => {
   const accessToken = localStorage.getItem('accessToken');
@@ -10,7 +11,7 @@ const App = () => {
   }
 
   return (
-    <div className='max-w-[1440px] flex flex-col items-center mx-auto'>
+    <div className={!isMobile ? 'flex flex-col items-center max-w-[1440px] mx-auto' : ''}>
       <Outlet />
       <Toast />
     </div>

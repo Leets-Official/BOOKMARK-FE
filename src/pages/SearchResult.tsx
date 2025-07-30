@@ -14,6 +14,7 @@ import { isMobile } from 'react-device-detect';
 import SaveCard from '@/components/ui/card/SaveCard';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import { Outlet } from 'react-router-dom';
+import ProfileHeader from '@/components/layout/header/ProfileHeader';
 
 const SearchResult = () => {
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
@@ -45,8 +46,8 @@ const SearchResult = () => {
   }, [categoryList, tagList, platformList]);
 
   return (
-    <div className='relative min-h-screen flex flex-col gap-4'>
-      {isMobile && <CommonHeader title='링크 검색' />}
+    <div className='relative min-h-screen flex flex-col gap-4 mb-30'>
+      {isMobile ? <CommonHeader title='링크 검색' /> : <ProfileHeader />}
       <ChangeSearchBar barMarginTop={100} isBackButton={true} />
       <div
         ref={scrollContainerRef}
@@ -61,7 +62,7 @@ const SearchResult = () => {
         <ChipDropDown title='플랫폼' options={platformList} onChange={setPlatformList} />
       </div>
       {/* 카드 더미 리스트 */}
-      <div className='flex flex-col gap-5 px-4 mb-10'>
+      <div className={clsx('flex flex-col gap-5 mb-10', isMobile ? 'px-4' : '')}>
         {isMobile ? (
           dummyCardData.map((card) => (
             <CompactCard

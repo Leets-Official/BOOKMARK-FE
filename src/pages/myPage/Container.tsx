@@ -31,9 +31,11 @@ const MyPage = () => {
   // 외부 스크롤 방지
   useScrollLock(true);
   const navigate = useNavigate();
-  const isProfileEdit = useLocation().pathname === '/my-page/profile-edit';
-  const isCategoryManagement = useLocation().pathname === '/my-page/category-management';
-  const isInquiry = useLocation().pathname === '/my-page/inquiry';
+  const isProfileEdit = useLocation().pathname.endsWith('/profile-edit');
+  const isCategoryManagement = useLocation().pathname.endsWith('/category-management');
+  const isInquiry = useLocation().pathname.endsWith('/inquiry');
+
+  const isSearchResult = useLocation().pathname.startsWith('/search-result');
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
@@ -43,7 +45,10 @@ const MyPage = () => {
   };
 
   return (
-    <div className={overlayStyle({ isMobile })} onClick={() => navigate('/')}>
+    <div
+      className={overlayStyle({ isMobile })}
+      onClick={() => navigate(isSearchResult ? '/search-result' : '/')}
+    >
       <div className={modalStyle({ isMobile })} onClick={(e) => e.stopPropagation()}>
         {isMobile ? (
           // 모바일: 전체 화면
@@ -62,7 +67,7 @@ const MyPage = () => {
                     'text-left p-3 rounded-lg transition-colors text-stone',
                     isProfileEdit ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
-                  onClick={() => navigate('/my-page/profile-edit')}
+                  onClick={() => navigate('./profile-edit')}
                 >
                   프로필 수정
                 </Button>
@@ -72,7 +77,7 @@ const MyPage = () => {
                     'text-left p-3 rounded-lg transition-colors text-stone',
                     isCategoryManagement ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
-                  onClick={() => navigate('/my-page/category-management')}
+                  onClick={() => navigate('./category-management')}
                 >
                   카테고리 / 태그 관리
                 </Button>
@@ -82,7 +87,7 @@ const MyPage = () => {
                     'text-left p-3 rounded-lg transition-colors text-stone',
                     isInquiry ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
-                  onClick={() => navigate('/my-page/inquiry')}
+                  onClick={() => navigate('./inquiry')}
                 >
                   문의하기
                 </Button>

@@ -68,6 +68,28 @@ const router = createBrowserRouter([
             path: 'edit/:id',
             element: <Save type='edit' />,
           },
+          {
+            path: 'my-page',
+            element: <MyPageContainer />,
+            children: [
+              {
+                path: '',
+                element: <MyPage />,
+              },
+              {
+                path: 'profile-edit',
+                element: <ProfileEdit />,
+              },
+              {
+                path: 'category-management',
+                element: <CategoryManagement />,
+              },
+              {
+                path: 'inquiry',
+                element: <Inquiry />,
+              },
+            ],
+          },
         ],
       },
       {
