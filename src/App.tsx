@@ -11,7 +11,7 @@ const App = () => {
   }
 
   return (
-    <div className={!isMobile ? 'flex flex-col items-center max-w-[1440px] mx-auto' : ''}>
+    <div className={!isMobile ? 'max-w-[1440px] mx-auto ' : ''}>
       <Outlet />
       <Toast />
     </div>

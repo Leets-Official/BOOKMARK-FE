@@ -5,7 +5,6 @@ import { isMobile } from 'react-device-detect';
 import { Outlet } from 'react-router-dom';
 import SaveCardList from '@/components/ui/cardList/SaveCardList';
 import HomLogo from '@/components/ui/HomeLogo';
-import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories } from '@/api/category/category';
 import Loading from '@/components/ui/loading/Loading';
@@ -13,14 +12,6 @@ import CardListHeader from '@/components/layout/header/CardListHeader';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
 
 const Home = () => {
-  useEffect(() => {
-    // 저장된 토큰 콘솔에 출력
-    const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
-    console.log('🔑 Access Token:', accessToken);
-    console.log('🔄 Refresh Token:', refreshToken);
-  }, []);
-
   // 카테고리 조회
   const { data: categories, isPending } = useQuery({
     queryKey: ['categories'],
