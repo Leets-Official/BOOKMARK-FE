@@ -13,7 +13,6 @@ import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import SaveCard from '@/components/ui/card/SaveCard';
 import CommonHeader from '@/components/layout/header/CommonHeader';
-import { Outlet } from 'react-router-dom';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
 
 const SearchResult = () => {
@@ -48,7 +47,7 @@ const SearchResult = () => {
   return (
     <div className='max-w-[1200px] mx-auto relative min-h-screen flex flex-col gap-4 pb-25 bg-white'>
       {isMobile ? <CommonHeader title='링크 검색' /> : <ProfileHeader />}
-      <ChangeSearchBar barMarginTop={20} isBackButton={true} />
+      <ChangeSearchBar barMarginTop={isMobile ? 20 : 85} isBackButton={true} />
       <div
         ref={scrollContainerRef}
         className={clsx(
@@ -83,7 +82,6 @@ const SearchResult = () => {
           </div>
         )}
       </div>
-      <Outlet />
     </div>
   );
 };

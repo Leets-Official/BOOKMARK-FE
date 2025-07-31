@@ -14,14 +14,15 @@ interface IHomeSearchBarProps {
   isBlur?: boolean;
   style?: React.CSSProperties;
   type?: 'isHome' | string;
+  isBackButton?: boolean;
 }
 
 const inputStyle = tv({
   base: `w-full rounded-[100px] text-md px-[3rem] font-medium focus:outline-none placeholder-stone
-  border-2 border-[rgba(234,237,245,1)] shadow-[0_2px_7px_rgba(28,37,53,0.1)] transition duration-300`,
+  border border-lightGrayBlue shadow-[0_2px_7px_rgba(28,37,53,0.1)] transition duration-300`,
   variants: {
     isFixed: {
-      true: 'py-[0.6rem] mx-auto rounded-[100px] bg-[#FCFCFCCC]/80',
+      true: 'py-[0.6rem] mx-auto bg-[#FCFCFCCC]/90',
       false: 'py-[1rem]',
     },
     isBlur: {
@@ -71,7 +72,13 @@ const filterIconStyle = tv({
   },
 });
 
-const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearchBarProps) => {
+const SearchBar = ({
+  type,
+  isBackButton,
+  style,
+  isFixed = false,
+  isBlur = false,
+}: IHomeSearchBarProps) => {
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
 
@@ -99,8 +106,9 @@ const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearch
     <div className='flex justify-center'>
       <div
         className={clsx(
-          'relative w-4/5 max-w-[43rem] max-sm:w-9/10',
-          type === 'isHome' && '-translate-x-10 sm:-translate-x-5',
+          'relative w-4/5 max-sm:w-[85%] max-w-[43rem]',
+          type === 'isHome' && '-translate-x-7 sm:-translate-x-2',
+          isBackButton && 'translate-x-0 sm:-translate-x-6',
         )}
         style={style}
       >
@@ -118,7 +126,7 @@ const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearch
         </div>
         <div
           className={filterIconStyle({ isFixed, isBlur })}
-          onClick={() => navigate('search', { relative: 'path' })} // 아이콘 누르면 /search로 이동
+          onClick={() => navigate('/search')} // 아이콘 누르면 /search로 이동
         >
           {isFixed ? <FixedFilteringIcon /> : <FilteringIcon />}
         </div>

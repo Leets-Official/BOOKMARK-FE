@@ -1,4 +1,5 @@
 import { WarningIcon } from '@/assets';
+import { useScrollLock } from '@/hooks/scrollLock';
 import clsx from 'clsx';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
@@ -20,6 +21,8 @@ const DeleteModal = ({
   warningText,
   subText,
 }: DeleteModalProps) => {
+  useScrollLock(isOpen);
+
   // ESC 키로 모달 닫기
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
