@@ -86,7 +86,7 @@ const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearch
     <div className='flex justify-center'>
       <div
         className={clsx(
-          'relative w-4/5 max-w-[50rem] max-sm:w-9/10',
+          'relative w-4/5 max-w-[43rem] max-sm:w-9/10',
           type === 'isHome' && '-translate-x-5 md:-translate-x/2',
         )}
         style={style}

@@ -22,7 +22,7 @@ const SaveCardList = () => {
         sortLabel={sortLabel}
         onSortToggle={() => setSortOrder((prev) => !prev)}
       />
-      <div className='w-4/5 max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+      <div className='w-[95%] max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
         {allSortedData.slice(0, displayCount).map((card) => (
           <SaveCard key={card.id} data={card} />
         ))}
@@ -32,7 +32,7 @@ const SaveCardList = () => {
           onClick={() => {
             navigate('/search-result');
           }}
-          className='sm:w-4/5 w-9/10 py-5 bg-white text-[15px] sm:text-base border-1 border-[#BCC0CC] rounded-[10px] active:brightness-95'
+          className='sm:w-7/10 w-9/10 py-4 bg-white text-[15px] sm:text-base border-1 border-[#BCC0CC] rounded-[10px] active:brightness-95'
         >
           전체보기
         </Button>

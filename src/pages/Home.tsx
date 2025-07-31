@@ -32,7 +32,7 @@ const Home = () => {
       {isPending ? (
         <div className='mt-50'>
           <CardListHeader currentNum={'0'} title='카테고리' showCategory={true} />
-          <Loading className='bg-white w-full min-h-[200px] rounded-xl  p-3 py-6 flex justify-center items-center' />
+          <Loading className='bg-white w-full h-[258px] rounded-xl  p-3 py-6 flex justify-center items-center' />
         </div>
       ) : (
         <>
