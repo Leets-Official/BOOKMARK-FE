@@ -48,7 +48,7 @@ const SearchResult = () => {
   return (
     <div className='max-w-[1200px] mx-auto relative min-h-screen flex flex-col gap-4 pb-25 bg-white'>
       {isMobile ? <CommonHeader title='링크 검색' /> : <ProfileHeader />}
-      <ChangeSearchBar barMarginTop={100} isBackButton={true} />
+      <ChangeSearchBar barMarginTop={20} isBackButton={true} />
       <div
         ref={scrollContainerRef}
         className={clsx(
@@ -62,7 +62,7 @@ const SearchResult = () => {
         <ChipDropDown title='플랫폼' options={platformList} onChange={setPlatformList} />
       </div>
       {/* 카드 더미 리스트 */}
-      <div className={clsx('flex flex-col gap-5 mb-10', isMobile ? 'px-4' : '')}>
+      <div className={clsx('flex flex-col gap-3 mb-10', isMobile ? 'px-4' : '')}>
         {isMobile ? (
           dummyCardData.map((card) => (
             <CompactCard

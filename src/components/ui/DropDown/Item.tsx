@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 interface DropDownItemProps {
@@ -5,9 +6,10 @@ interface DropDownItemProps {
   children: React.ReactNode;
   /** 드롭다운 메뉴 안 각 요소의 클릭 함수입니다. */
   onClick?: () => void;
+  className?: string;
 }
 
-const DropDownItem = ({ children, onClick }: DropDownItemProps) => {
+const DropDownItem = ({ children, onClick, className }: DropDownItemProps) => {
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (onClick) {
       e.stopPropagation();
@@ -16,10 +18,7 @@ const DropDownItem = ({ children, onClick }: DropDownItemProps) => {
   };
 
   return (
-    <div
-      className='cursor-pointer py-3 px-1 rounded bg-white hover:bg-gray-100'
-      onClick={handleClick}
-    >
+    <div className={clsx('cursor-pointer rounded bg-white', className)} onClick={handleClick}>
       {children}
     </div>
   );

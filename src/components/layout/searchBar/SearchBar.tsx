@@ -56,7 +56,7 @@ const filterIconStyle = tv({
   variants: {
     isFixed: {
       true: 'right-3',
-      false: 'right-1.5',
+      false: 'right-1',
     },
     isBlur: {
       true: 'opacity-20',

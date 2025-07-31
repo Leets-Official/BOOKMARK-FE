@@ -66,7 +66,11 @@ const DateTimeDropDown = ({
         <p className='text-[13px] text-areaBorder p-1'>{subTitle}</p>
         <div className='flex flex-col text-15 text-stone'>
           {options.map((option) => (
-            <DropDown.Item key={option.id} onClick={() => onItemClick(option.name)}>
+            <DropDown.Item
+              key={option.id}
+              onClick={() => onItemClick(option.name)}
+              className='hover:bg-gray-100 py-3 px-1'
+            >
               {option.name}
             </DropDown.Item>
           ))}
