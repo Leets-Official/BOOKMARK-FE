@@ -15,7 +15,7 @@ const SaveCardList = () => {
   const displayCount = isMobile ? 6 : 9;
 
   return (
-    <div className='mb-10'>
+    <div className='pb-25'>
       <CardListHeader
         title='전체 저장 List'
         showAllContent={true}
@@ -27,7 +27,7 @@ const SaveCardList = () => {
           <SaveCard key={card.id} data={card} />
         ))}
       </div>
-      <div className='flex justify-center mt-10 mb-20'>
+      <div className='flex justify-center mt-10'>
         <Button
           onClick={() => {
             navigate('/search-result');

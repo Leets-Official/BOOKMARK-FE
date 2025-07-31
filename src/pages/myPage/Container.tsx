@@ -1,6 +1,5 @@
 import { tv } from 'tailwind-variants';
 import { isMobile } from 'react-device-detect';
-import { useScrollLock } from '@/hooks/scrollLock';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import toast from 'react-hot-toast';
@@ -29,7 +28,6 @@ const modalStyle = tv({
 
 const MyPage = () => {
   // 외부 스크롤 방지
-  useScrollLock(true);
   const navigate = useNavigate();
   const isProfileEdit = useLocation().pathname.endsWith('/profile-edit');
   const isCategoryManagement = useLocation().pathname.endsWith('/category-management');

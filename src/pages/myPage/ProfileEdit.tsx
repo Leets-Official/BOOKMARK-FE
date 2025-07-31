@@ -3,7 +3,6 @@ import { Button, Image } from '@/components/common';
 import { isMobile } from 'react-device-detect';
 import TextField from '@/components/ui/TextField';
 import { useState } from 'react';
-
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import clsx from 'clsx';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';

@@ -30,7 +30,6 @@ const selectedCategoryAtom = atom<string>('');
 const selectedTagAtom = atom<string[]>([]);
 const scrollBarWidthAtom = atom(0);
 
-
 export {
   linkAtom,
   memoAtom,

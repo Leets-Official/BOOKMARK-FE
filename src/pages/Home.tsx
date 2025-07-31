@@ -10,6 +10,7 @@ import { getCategories } from '@/api/category/category';
 import Loading from '@/components/ui/loading/Loading';
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
+import HomeFooter from '@/components/layout/footer/HomeFooter';
 
 const Home = () => {
   // 카테고리 조회
@@ -26,13 +27,13 @@ const Home = () => {
 
   return (
     <div className='max-w-[1200px] mx-auto relative min-h-screen bg-white'>
-      <HomLogo />
-      <ChangeSearchBar barMarginTop={290} />
       <ProfileHeader />
+      <HomLogo />
+      <ChangeSearchBar barMarginTop={285} />
       {isPending ? (
         <div className='mt-50'>
           <CardListHeader currentNum={'0'} title='카테고리' showCategory={true} />
-          <Loading className='bg-white w-full h-[258px] rounded-xl  p-3 py-6 flex justify-center items-center' />
+          <Loading className='bg-white w-full h-[252px] rounded-xl  p-3 py-6 flex justify-center items-center' />
         </div>
       ) : (
         <>
@@ -44,6 +45,7 @@ const Home = () => {
         </>
       )}
       <SaveCardList />
+      <HomeFooter />
       <Outlet />
     </div>
   );
