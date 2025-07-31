@@ -25,12 +25,12 @@ const Home = () => {
   });
 
   return (
-    <div className='relative min-h-screen'>
+    <div className='max-w-[1200px] mx-auto relative min-h-screen bg-white'>
       <HomLogo />
-      <ChangeSearchBar barMarginTop={260} />
+      <ChangeSearchBar barMarginTop={290} />
       <ProfileHeader />
       {isPending ? (
-        <div className='mt-70'>
+        <div className='mt-50'>
           <CardListHeader currentNum={'0'} title='카테고리' showCategory={true} />
           <Loading className='bg-white w-full min-h-[200px] rounded-xl  p-3 py-6 flex justify-center items-center' />
         </div>

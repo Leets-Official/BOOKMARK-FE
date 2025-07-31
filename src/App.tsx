@@ -1,6 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import Toast from '@/components/common/Toast';
-import { isMobile } from 'react-device-detect';
 
 const App = () => {
   const accessToken = localStorage.getItem('accessToken');
@@ -11,7 +10,7 @@ const App = () => {
   }
 
   return (
-    <div className={!isMobile ? 'max-w-[1440px] mx-auto ' : ''}>
+    <div className='bg-[#535151]'>
       <Outlet />
       <Toast />
     </div>

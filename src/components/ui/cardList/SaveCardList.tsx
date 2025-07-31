@@ -4,8 +4,10 @@ import Button from '@/components/common/Button';
 import { dummyCardData } from '@/constants/DummyData';
 import { useState } from 'react';
 import { isMobile } from 'react-device-detect';
+import { useNavigate } from 'react-router-dom';
 
 const SaveCardList = () => {
+  const navigate = useNavigate();
   const [sortOrder, setSortOrder] = useState(true);
 
   const sortLabel = sortOrder ? '최신순' : '오래된순';
@@ -28,7 +30,7 @@ const SaveCardList = () => {
       <div className='flex justify-center mt-10 mb-20'>
         <Button
           onClick={() => {
-            console.log('전체보기');
+            navigate('/search-result');
           }}
           className='sm:w-4/5 w-9/10 py-5 bg-white text-[15px] sm:text-base border-1 border-[#BCC0CC] rounded-[10px] active:brightness-95'
         >

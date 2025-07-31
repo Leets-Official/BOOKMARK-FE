@@ -121,7 +121,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   };
 
   return (
-    <div className='mt-70'>
+    <div className='mt-50'>
       <CardListHeader
         onNext={increaseIndex}
         onPrev={decreaseIndex}
@@ -129,7 +129,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
         title='카테고리'
         showPagination={true}
       />
-      <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden'>
+      <div className='relative w-[95%] max-sm:w-9/10 mx-auto overflow-hidden'>
         <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
           <motion.div
             key={index}
@@ -153,15 +153,19 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
           </motion.div>
         </AnimatePresence>
         {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
-        <div className='invisible flex w-full'>
-          {cardSlice.map((categories) => (
-            <FolderCard
-              key={`ghost-${categories.id}`}
-              category={categories}
-              allCategoryNames={allCategoryNames}
-            />
-          ))}
-        </div>
+        {cardSlice.length > 0 ? (
+          <div className='invisible flex w-full'>
+            {cardSlice.map((category) => (
+              <FolderCard
+                key={`ghost-${category.id}`}
+                category={category}
+                allCategoryNames={allCategoryNames}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className='h-[200px] w-full' />
+        )}
       </div>
     </div>
   );

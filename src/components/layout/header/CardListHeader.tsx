@@ -24,7 +24,7 @@ const CardListHeader = ({
   onSortToggle,
 }: CardListHeaderProps) => {
   return (
-    <div className='w-4/5 mx-auto max-sm:w-9/10 mt-20'>
+    <div className='w-[95%] mx-auto max-sm:w-9/10 mt-20'>
       <div className='flex justify-between items-center'>
         <div className='flex items-center gap-1'>
           <p className='font-bold sm:mr-7 mr-3 overflow-hidden max-sm:text-base text-xl text-stone'>

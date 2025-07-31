@@ -32,7 +32,7 @@ const Login = () => {
           className='hidden lg:flex flex-row min-h-[52vh] rounded-[20px] overflow-hidden shadow-[0_2px_37px_rgba(2,34,94,0.1)] z-10'
         >
           <div className='flex flex-col bg-white px-13 py-25'>
-            <SymbolIcon />
+            <SymbolIcon className='text-blue' />
             <p className='text-blue font-pretendard font-extrabold text-[33px] mt-5'>
               INSIGHT
               <br />
@@ -63,9 +63,9 @@ const Login = () => {
         </motion.div>
 
         {/**너비 lg 이하 */}
-        <div className='flex lg:hidden flex-col items-center justify-center text-left w-full bg-red-300'>
+        <div className='flex lg:hidden flex-col items-center justify-center text-left w-full'>
           <div>
-            <SymbolIcon />
+            <SymbolIcon className='text-blue' />
             <p className='text-blue font-pretendard font-extrabold text-[33px] mt-5'>
               INSIGHT
               <br />
