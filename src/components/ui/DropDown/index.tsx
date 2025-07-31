@@ -3,7 +3,6 @@ import { useRef } from 'react';
 import DropDownItem from './Item';
 import DropDownMenu from './Menu';
 import DropDownTrigger from './Trigger';
-import { useScrollLock } from '@/hooks/scrollLock';
 import clsx from 'clsx';
 
 interface DropDownProps {
@@ -28,7 +27,6 @@ const DropDown = (({
   isOpen = false,
   className,
 }: DropDownProps) => {
-  useScrollLock(isOpen);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

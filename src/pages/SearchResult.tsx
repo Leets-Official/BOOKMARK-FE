@@ -46,7 +46,7 @@ const SearchResult = () => {
   }, [categoryList, tagList, platformList]);
 
   return (
-    <div className='relative min-h-screen flex flex-col gap-4 mb-30'>
+    <div className='max-w-[1200px] mx-auto relative min-h-screen flex flex-col gap-4 pb-25 bg-white'>
       {isMobile ? <CommonHeader title='링크 검색' /> : <ProfileHeader />}
       <ChangeSearchBar barMarginTop={100} isBackButton={true} />
       <div
@@ -76,7 +76,7 @@ const SearchResult = () => {
             />
           ))
         ) : (
-          <div className='w-4/5 max-sm:w-full mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+          <div className='w-[95%] max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
             {dummyCardData.map((card) => (
               <SaveCard key={card.id} data={card} />
             ))}

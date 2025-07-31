@@ -15,7 +15,7 @@ const CommonHeader = ({ title }: { title: string }) => {
       <Button
         icon={<BackArrowIcon width={20} height={20} />}
         onClick={onClick}
-        className='absolute left-4 rounded-[100px] bg-[#EAEDF5]/90 p-2.5 hover:brightness-90 transition'
+        className='absolute left-4 rounded-[100px] bg-[#F2F3F799]/60 border border-[#EAEDF5] p-2.5 hover:brightness-90 transition'
       />
       <p className='text-base font-semibold'>{title}</p>
     </div>
