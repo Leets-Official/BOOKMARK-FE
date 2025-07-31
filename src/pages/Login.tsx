@@ -50,7 +50,7 @@ const Login = () => {
             <Button
               onClick={handleKakaoLogin}
               icon={<KakaoLogoIcon width={18} height={18} className='flex mr-2' />}
-              className='bg-[#FEE500] font-semibold text-15 py-[14px] text-black hover:brightness-90 transition flex items-center justify-center rounded-[6px] w-[87%]'
+              className='bg-[#FEE500] font-semibold text-15 py-[14px] text-black hover:brightness-90 transition flex items-center justify-center rounded-[6px] w-[87%] cursor-pointer'
             >
               카카오로 로그인
             </Button>
@@ -79,7 +79,7 @@ const Login = () => {
             <Button
               onClick={handleKakaoLogin}
               icon={<KakaoLogoIcon width={18} height={18} className='flex mr-2' />}
-              className='bg-[#FEE500] font-semibold py-[14px] text-black hover:brightness-90 transition flex items-center justify-center rounded-[6px] shadow w-[90%] max-w-[320px]'
+              className='bg-[#FEE500] font-semibold py-[14px] text-black hover:brightness-90 transition flex items-center justify-center rounded-[6px] shadow w-[90%] max-w-[320px] cursor-pointer'
             >
               카카오로 로그인
             </Button>
