@@ -6,6 +6,8 @@ import { FilteringIcon, FixedFilteringIcon, SearchIcon } from '@/assets';
 import Input from '@/components/common/Input';
 import { searchContentsAtom } from '@/atoms';
 import { useAtom } from 'jotai';
+import { useMutation } from '@tanstack/react-query';
+import { postSearchHistory } from '@/api/searchHistory/searchHistory';
 
 interface IHomeSearchBarProps {
   isFixed?: boolean;
@@ -73,13 +75,24 @@ const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearch
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
 
+  const postHistoryMutattion = useMutation({
+    mutationFn: postSearchHistory,
+    onSuccess: () => {
+      navigate(`/search-result?keyword=${encodeURIComponent(searchContents)}`);
+    },
+    onError: (error) => {
+      console.error('검색 기록 전송 실패', error);
+    },
+  });
+
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     setSearchContents(e.currentTarget.value);
   };
 
   // 엔터 누르면 발생하는 함수
   const EnterFn = () => {
-    console.log(searchContents); // 실제 검색 기능 연결 예정
+    if (!searchContents.trim()) return;
+    postHistoryMutattion.mutate(searchContents);
   };
 
   return (
