@@ -19,7 +19,7 @@ const inputStyle = tv({
   border-2 border-[rgba(234,237,245,1)] shadow-[0_2px_7px_rgba(28,37,53,0.1)] transition duration-300`,
   variants: {
     isFixed: {
-      true: 'py-[0.5rem] mx-auto rounded-[100px] bg-[#FCFCFCCC]/80',
+      true: 'py-[0.6rem] mx-auto rounded-[100px] bg-[#FCFCFCCC]/80',
       false: 'py-[1rem]',
     },
     isBlur: {
@@ -87,7 +87,7 @@ const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearch
       <div
         className={clsx(
           'relative w-4/5 max-w-[43rem] max-sm:w-9/10',
-          type === 'isHome' && '-translate-x-5 md:-translate-x/2',
+          type === 'isHome' && '-translate-x-10 sm:-translate-x-5',
         )}
         style={style}
       >

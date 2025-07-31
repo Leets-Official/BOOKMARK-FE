@@ -10,7 +10,7 @@ const ProfileHeader = () => {
   return (
     <div className='fixed top-0 left-0 w-full z-50 pointer-events-none'>
       <div className='max-w-[1200px] mx-auto relative pointer-events-auto'>
-        <div className='absolute top-4 right-5'>
+        <div className='absolute top-5 right-3 sm:top-4 sm:right-5'>
           {profileImage ? (
             <Button
               icon={
