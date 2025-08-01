@@ -214,6 +214,7 @@ const CategoryCard = ({
         }}
         onConfirm={handleSubmit(handleConfirmModal)}
         disabled={isDisabled}
+        onScrollLock={false}
       >
         <Controller
           name='category'
@@ -258,6 +259,7 @@ const CategoryCard = ({
           setIsDeleteModalOpen(false);
           deleteCategoryMutation(categoryId);
         }}
+        onScrollLock={false}
       />
     </div>
   );

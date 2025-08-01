@@ -4,6 +4,7 @@ import DropDownItem from './Item';
 import DropDownMenu from './Menu';
 import DropDownTrigger from './Trigger';
 import clsx from 'clsx';
+import { useScrollLock } from '@/hooks/scrollLock';
 
 interface DropDownProps {
   children: React.ReactNode;
@@ -28,6 +29,7 @@ const DropDown = (({
   className,
 }: DropDownProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
+  useScrollLock(isOpen);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

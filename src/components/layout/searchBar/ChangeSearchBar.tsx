@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import clsx from 'clsx';
 import SearchBar from './SearchBar';
 import Button from '@/components/common/Button';
 import { BackArrowIcon, LeftIcon } from '@/assets';

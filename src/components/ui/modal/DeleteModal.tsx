@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom';
 interface DeleteModalProps {
   isOpen: boolean;
   isAlert?: boolean;
+  onScrollLock?: boolean;
   onCancel: () => void;
   onDelete: () => void;
   warningText: string;
@@ -20,8 +21,10 @@ const DeleteModal = ({
   onDelete,
   warningText,
   subText,
+  onScrollLock,
 }: DeleteModalProps) => {
-  useScrollLock(isOpen);
+  const shouldLockScroll = onScrollLock ?? isOpen;
+  useScrollLock(shouldLockScroll);
 
   // ESC 키로 모달 닫기
   useEffect(() => {

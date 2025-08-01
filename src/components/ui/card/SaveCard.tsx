@@ -111,6 +111,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
           setIsDeleteModalOpen(false);
           console.log('삭제:', data.category);
         }}
+        onScrollLock={isDeleteModalOpen}
       />
     </>
   );
