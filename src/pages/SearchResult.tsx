@@ -14,6 +14,7 @@ import { isMobile } from 'react-device-detect';
 import SaveCard from '@/components/ui/card/SaveCard';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
+import { Outlet } from 'react-router-dom';
 
 const SearchResult = () => {
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
@@ -87,6 +88,7 @@ const SearchResult = () => {
           </div>
         )}
       </div>
+      <Outlet />
     </div>
   );
 };

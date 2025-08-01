@@ -45,7 +45,7 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
       </div>
 
       {/* 스크롤 후 고정되는 검색바 */}
-      <AnimatePresence mode='wait'>
+      <AnimatePresence>
         {isFixedBar && (
           <>
             <motion.div
@@ -53,12 +53,14 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -80, opacity: 0 }}
               transition={{ duration: 0.2, ease: 'easeInOut' }}
-              className={clsx(
-                'fixed top-0 z-10 max-w-[1200px] w-full pl-4 py-4',
-                scrollBarWidth > 0
-                  ? `left-[calc(50%-${scrollBarWidth}px)]`
-                  : 'left-1/2 transform -translate-x-1/2',
-              )}
+              className='fixed top-0 z-10 max-w-[1200px] mx-auto w-full pl-4 py-4'
+              style={{
+                right: 0,
+                left: 0,
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                paddingRight: scrollBarWidth > 0 ? `${scrollBarWidth}px` : undefined,
+              }}
             >
               <div className='flex flex-row items-center'>
                 {isBackButton && (
@@ -78,12 +80,7 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: 'easeInOut' }}
-              className={clsx(
-                'fixed bottom-4 max-w-[1200px] w-full z-10 ml-4',
-                scrollBarWidth > 0
-                  ? `left-[calc(50%-${scrollBarWidth}px)]` // 스크롤바 너비만큼 왼쪽으로 조정
-                  : 'left-1/2 transform -translate-x-1/2',
-              )}
+              className='fixed bottom-4 max-w-[1200px] w-full z-10 ml-4'
             >
               {/* 업스크롤 버튼 */}
               <div className='flex justify-start'>
