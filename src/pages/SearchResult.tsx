@@ -53,7 +53,7 @@ const SearchResult = () => {
   return (
     <div className='max-w-[1200px] mx-auto relative min-h-screen flex flex-col gap-4 pb-25 bg-white'>
       <CommonHeader title={isMobile ? '링크 검색' : ''} />
-      <ProfileHeader />
+      {!isMobile && <ProfileHeader />}
       <ChangeSearchBar barMarginTop={isMobile ? 20 : 50} isBackButton={true} />
       <div
         ref={scrollContainerRef}
