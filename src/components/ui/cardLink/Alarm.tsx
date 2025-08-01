@@ -39,8 +39,8 @@ const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) =
     const elementCenter = rect.top + rect.height / 2;
     const viewportCenter = window.innerHeight / 2;
 
-    // 뷰포트 중앙에서 ±10px 범위 내에 있으면 중앙에 있다고 판단
-    return Math.abs(elementCenter - viewportCenter) <= 10;
+    // 뷰포트 중앙에서 ±80px 범위 내에 있으면 중앙에 있다고 판단
+    return Math.abs(elementCenter - viewportCenter) <= 80;
   };
 
   const handleOpenDropDown = (type: 'date' | 'time', open: boolean) => {

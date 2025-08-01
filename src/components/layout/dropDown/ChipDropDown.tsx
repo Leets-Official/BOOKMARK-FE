@@ -66,13 +66,14 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
         isOpen={isOpen}
         parentRef={parentRef}
         alignLeft={true}
-        className='fixed left-0 top-0 px-2 w-full'
+        onClose={() => setIsOpen(false)}
+        className='fixed inset-x-0 top-0 px-3 mx-auto w-full max-w-[700px]'
         ref={menuRef}
       >
-        <div className='bg-white rounded-[8px] flex flex-col border border-lightBlueGray z-[9999] shadow-lg p-4 mt-1'>
-          <div className='flex flex-col gap-5 h-[114px] overflow-y-auto'>
-            <p className='text-15 text-stone font-semibold'>{title}</p>
-            <div className='flex flex-row gap-2 flex-wrap px-1 pb-1'>
+        <div className='bg-white rounded-xl shadow-[0px_2px_7px_rgba(2,34,94,0.1)] flex flex-col border border-gray-200 z-[9999] p-2 mt-1'>
+          <div className='flex flex-col gap-3 overflow-y-auto px-2'>
+            <p className='text-15 text-stone font-semibold mt-3'>{title}</p>
+            <div className='flex flex-row gap-3 flex-wrap pb-2'>
               {options.map((option) => (
                 <DropDown.Item key={option.id} onClick={() => console.log('clicked')}>
                   <Chip
@@ -90,9 +91,9 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
           </div>
           <div className='flex flex-col gap-3'>
             <hr className='border-lightGrayBlue border-0.5' />
-            <div className='mb-3 items-start pl-3'>
+            <div className='mb-3 items-start pl-5 py-1'>
               <Button
-                className='border-b-2 pb-1 font-medium cursor-pointer'
+                className='border-b-2 border-black pb-0.5 font-medium cursor-pointer text-15'
                 onClick={handleResetClick}
               >
                 초기화

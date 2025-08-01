@@ -5,22 +5,14 @@ import { isMobile } from 'react-device-detect';
 import { Outlet } from 'react-router-dom';
 import SaveCardList from '@/components/ui/cardList/SaveCardList';
 import HomLogo from '@/components/ui/HomeLogo';
-import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories } from '@/api/category/category';
 import Loading from '@/components/ui/loading/Loading';
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
+import HomeFooter from '@/components/layout/footer/HomeFooter';
 
 const Home = () => {
-  useEffect(() => {
-    // 저장된 토큰 콘솔에 출력
-    const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
-    console.log('🔑 Access Token:', accessToken);
-    console.log('🔄 Refresh Token:', refreshToken);
-  }, []);
-
   // 카테고리 조회
   const { data: categories, isPending } = useQuery({
     queryKey: ['categories'],
@@ -34,14 +26,14 @@ const Home = () => {
   });
 
   return (
-    <div className='relative min-h-screen'>
-      <HomLogo />
-      <ChangeSearchBar barMarginTop={260} />
+    <div className='max-w-[1200px] mx-auto relative min-h-screen bg-white'>
       <ProfileHeader />
+      <HomLogo />
+      <ChangeSearchBar barMarginTop={isMobile ? 225 : 285} />
       {isPending ? (
-        <div className='mt-70'>
+        <div className={isMobile ? 'mt-20' : 'mt50'}>
           <CardListHeader currentNum={'0'} title='카테고리' showCategory={true} />
-          <Loading className='bg-white w-full min-h-[200px] rounded-xl  p-3 py-6 flex justify-center items-center' />
+          <Loading className='bg-white w-full h-[252px] rounded-xl  p-3 py-6 flex justify-center items-center' />
         </div>
       ) : (
         <>
@@ -53,6 +45,7 @@ const Home = () => {
         </>
       )}
       <SaveCardList />
+      <HomeFooter />
       <Outlet />
     </div>
   );

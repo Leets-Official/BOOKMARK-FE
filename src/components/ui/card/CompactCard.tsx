@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) => {
   return (
-    <div className='w-full border border-gray-200 shadow-md rounded-lg p-2 flex items-center flex-row gap-4'>
+    <div className='w-full border border-gray-200 shadow-[0px_2px_7px_rgba(2,34,94,0.1)] rounded-2xl p-2 flex items-center flex-row gap-4'>
       <div className='relative aspect-square w-[104px] md:w-[160px]'>
         <Image
           src={image}

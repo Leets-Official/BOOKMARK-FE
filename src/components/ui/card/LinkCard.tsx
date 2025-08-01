@@ -83,8 +83,8 @@ const LinkCard = ({ title, platform, image, isLoading, editable }: CardProps) =>
         <Button
           onClick={handleImageUpload}
           className={clsx(
-            'h-25 w-25 mr-2 flex items-center justify-center bg-gray-200 rounded-2xl',
-            'cursor-pointer hover:brightness-90 text-gray-600 text-3xl font-bold',
+            'h-25 w-25 sm:h-30 sm:w-30 mr-2 flex items-center justify-center bg-gray-200 rounded-2xl',
+            'cursor-pointer hover:brightness-90 text-gray-600 text-[50px]',
           )}
         >
           ＋

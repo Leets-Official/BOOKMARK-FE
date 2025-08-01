@@ -1,25 +1,28 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { tv } from 'tailwind-variants';
 import { FilteringIcon, FixedFilteringIcon, SearchIcon } from '@/assets';
 import Input from '@/components/common/Input';
 import { searchContentsAtom } from '@/atoms';
 import { useAtom } from 'jotai';
+import { useMutation } from '@tanstack/react-query';
+import { postSearchHistory } from '@/api/searchHistory/searchHistory';
 
 interface IHomeSearchBarProps {
   isFixed?: boolean;
   isBlur?: boolean;
   style?: React.CSSProperties;
   type?: 'isHome' | string;
+  isBackButton?: boolean;
 }
 
 const inputStyle = tv({
   base: `w-full rounded-[100px] text-md px-[3rem] font-medium focus:outline-none placeholder-stone
-  border-2 border-[rgba(234,237,245,1)] shadow-[0_2px_7px_rgba(28,37,53,0.1)] transition duration-300`,
+  border border-lightGrayBlue shadow-[0_2px_7px_rgba(28,37,53,0.1)] transition duration-300`,
   variants: {
     isFixed: {
-      true: 'py-[0.5rem] mx-auto rounded-[100px] bg-[#FCFCFCCC]/80',
+      true: 'py-[0.6rem] mx-auto bg-[#FCFCFCCC]/90',
       false: 'py-[1rem]',
     },
     isBlur: {
@@ -56,7 +59,7 @@ const filterIconStyle = tv({
   variants: {
     isFixed: {
       true: 'right-3',
-      false: 'right-1.5',
+      false: 'right-1',
     },
     isBlur: {
       true: 'opacity-20',
@@ -69,9 +72,33 @@ const filterIconStyle = tv({
   },
 });
 
-const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearchBarProps) => {
+const SearchBar = ({
+  type,
+  isBackButton,
+  style,
+  isFixed = false,
+  isBlur = false,
+}: IHomeSearchBarProps) => {
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 홈으로 돌아갈 땐 무조건 검색어 초기화
+  useEffect(() => {
+    if (location.pathname === '/') {
+      setSearchContents('');
+    }
+  }, [location.pathname, setSearchContents]);
+
+  const postHistoryMutattion = useMutation({
+    mutationFn: postSearchHistory,
+    onSuccess: () => {
+      navigate(`/search-result?keyword=${encodeURIComponent(searchContents)}`);
+    },
+    onError: (error) => {
+      console.error('검색 기록 전송 실패', error);
+    },
+  });
 
   const onChange = (e: React.FormEvent<HTMLInputElement>) => {
     setSearchContents(e.currentTarget.value);
@@ -79,15 +106,17 @@ const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearch
 
   // 엔터 누르면 발생하는 함수
   const EnterFn = () => {
-    console.log(searchContents); // 실제 검색 기능 연결 예정
+    if (!searchContents.trim()) return;
+    postHistoryMutattion.mutate(searchContents);
   };
 
   return (
     <div className='flex justify-center'>
       <div
         className={clsx(
-          'relative w-4/5 max-w-[50rem] max-sm:w-9/10',
-          type === 'isHome' && '-translate-x-5 md:-translate-x/2',
+          'relative w-4/5 max-w-[43rem]',
+          type === 'isHome' ? '-translate-x-7 sm:-translate-x-2 max-sm:w-[85%]' : 'max-sm:w-9/10',
+          isBackButton && 'translate-x-0 sm:-translate-x-6',
         )}
         style={style}
       >
@@ -105,7 +134,7 @@ const SearchBar = ({ type, style, isFixed = false, isBlur = false }: IHomeSearch
         </div>
         <div
           className={filterIconStyle({ isFixed, isBlur })}
-          onClick={() => navigate('search', { relative: 'path' })} // 아이콘 누르면 /search로 이동
+          onClick={() => navigate('/search')} // 아이콘 누르면 /search로 이동
         >
           {isFixed ? <FixedFilteringIcon /> : <FilteringIcon />}
         </div>

@@ -3,8 +3,8 @@ import { useRef } from 'react';
 import DropDownItem from './Item';
 import DropDownMenu from './Menu';
 import DropDownTrigger from './Trigger';
-import { useScrollLock } from '@/hooks/scrollLock';
 import clsx from 'clsx';
+import { useScrollLock } from '@/hooks/scrollLock';
 
 interface DropDownProps {
   children: React.ReactNode;
@@ -13,6 +13,7 @@ interface DropDownProps {
   menuRef: React.RefObject<HTMLDivElement | null>;
   isOpen?: boolean;
   className?: string;
+  isScroll?: boolean;
 }
 
 interface DropDownStatic extends FC<DropDownProps> {
@@ -26,11 +27,13 @@ const DropDown = (({
   handleClose,
   menuRef,
   isOpen = false,
+  isScroll = false,
   className,
 }: DropDownProps) => {
-  useScrollLock(isOpen);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  if (isScroll) {
+    useScrollLock(isOpen);
+  }
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const dropdownEl = dropdownRef.current;

@@ -8,10 +8,11 @@ interface DropDownMenuProps {
   children: React.ReactNode;
   className?: string;
   alignLeft?: boolean;
+  onClose?: () => void;
 }
 
 const DropDownMenu = forwardRef<HTMLDivElement, DropDownMenuProps>(
-  ({ isOpen, parentRef, children, className, alignLeft = false }, ref) => {
+  ({ isOpen, parentRef, children, className, alignLeft = false, onClose }, ref) => {
     const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
     const rafId = useRef<number | null>(null);
 
@@ -37,14 +38,22 @@ const DropDownMenu = forwardRef<HTMLDivElement, DropDownMenuProps>(
       if (isOpen) {
         updatePosition();
         window.addEventListener('resize', scheduleUpdate);
-        window.addEventListener('scroll', scheduleUpdate, true); // true: 버블링 단계에서 모든 스크롤 감지
+        window.addEventListener('scroll', scheduleUpdate, true);
+
+        // 스크롤 시 닫히는 기능
+        const handleScrollClose = () => {
+          if (onClose) onClose();
+        };
+        window.addEventListener('scroll', handleScrollClose, true);
+
+        return () => {
+          window.removeEventListener('resize', scheduleUpdate);
+          window.removeEventListener('scroll', scheduleUpdate, true);
+          window.removeEventListener('scroll', handleScrollClose, true);
+          if (rafId.current !== null) cancelAnimationFrame(rafId.current);
+        };
       }
-      return () => {
-        window.removeEventListener('resize', scheduleUpdate);
-        window.removeEventListener('scroll', scheduleUpdate, true);
-        if (rafId.current !== null) cancelAnimationFrame(rafId.current);
-      };
-    }, [isOpen, scheduleUpdate, updatePosition]);
+    }, [isOpen, scheduleUpdate, updatePosition, onClose]);
 
     if (typeof window === 'undefined') return null;
 

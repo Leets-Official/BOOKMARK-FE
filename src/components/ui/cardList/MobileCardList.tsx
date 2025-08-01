@@ -41,7 +41,7 @@ const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
   }, [categories, x]);
 
   return (
-    <div className='mt-70'>
+    <div className='mt-20'>
       <CardListHeader
         currentNum={categories.length.toString()}
         title='카테고리'

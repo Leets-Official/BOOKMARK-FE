@@ -28,7 +28,7 @@ const Login = () => {
         className='hidden lg:flex flex-row min-h-[52vh] rounded-[20px] overflow-hidden shadow-[0_2px_37px_rgba(2,34,94,0.1)] z-10'
       >
         <div className='flex flex-col bg-white px-13 py-25'>
-          <SymbolIcon />
+          <SymbolIcon className='text-blue' />
           <p className='text-blue font-pretendard font-extrabold text-[33px] mt-5'>
             INSIGHT
             <br />
@@ -59,9 +59,9 @@ const Login = () => {
       </motion.div>
 
       {/**너비 lg 이하 */}
-      <div className='flex lg:hidden flex-col items-center justify-center text-left w-full'>
+      <div className='flex lg:hidden flex-col items-center justify-center text-left w-full mt-[-100px]'>
         <div>
-          <SymbolIcon />
+          <SymbolIcon className='text-blue' />
           <p className='text-blue font-pretendard font-extrabold text-[33px] mt-5'>
             INSIGHT
             <br />
@@ -79,7 +79,7 @@ const Login = () => {
             <Button
               onClick={handleKakaoLogin}
               icon={<KakaoLogoIcon width={18} height={18} className='flex mr-2' />}
-              className='bg-[#FEE500] font-semibold py-[14px] text-black hover:brightness-90 transition flex items-center justify-center rounded-[6px] shadow w-[90%] max-w-[320px] cursor-pointer'
+              className='bg-[#FEE500] font-semibold py-[14px] text-black hover:brightness-90 transition flex items-center justify-center rounded-[6px] shadow w-full max-w-[330px] cursor-pointer'
             >
               카카오로 로그인
             </Button>

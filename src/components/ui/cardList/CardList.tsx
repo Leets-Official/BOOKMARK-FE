@@ -74,45 +74,19 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
     if (categories.length === 0) return;
 
     // 현재 페이지의 북마크도 미리 로드 (안전장치)
-    const currentCategories = categories.slice(index * cardsPerSlide, (index + 1) * cardsPerSlide);
-
-    currentCategories.forEach((category) => {
+    const preload = () => {
       queryClient.prefetchQuery({
-        queryKey: ['bookmarks', category.id],
-        queryFn: () => getBookmarks(category.id),
+        queryKey: ['bookmarks'],
+        queryFn: getBookmarks,
       });
-    });
+    };
+    preload(); // 현재, 이전, 다음 카드슬라이스에 대해 각각 한 번만 미리 로드
 
-    // 이전 페이지가 있다면 이전 페이지도 미리 로드
     if (index > 0) {
-      const prevIndex = index - 1;
-      const prevCategories = categories.slice(
-        prevIndex * cardsPerSlide,
-        (prevIndex + 1) * cardsPerSlide,
-      );
-
-      prevCategories.forEach((category) => {
-        queryClient.prefetchQuery({
-          queryKey: ['bookmarks', category.id],
-          queryFn: () => getBookmarks(category.id),
-        });
-      });
+      preload();
     }
-
-    // 다음 페이지가 있다면 다음 페이지도 미리 로드
     if (index < maxIndex) {
-      const nextIndex = index + 1;
-      const nextCategories = categories.slice(
-        nextIndex * cardsPerSlide,
-        (nextIndex + 1) * cardsPerSlide,
-      );
-
-      nextCategories.forEach((category) => {
-        queryClient.prefetchQuery({
-          queryKey: ['bookmarks', category.id],
-          queryFn: () => getBookmarks(category.id),
-        });
-      });
+      preload();
     }
   }, [index, categories, cardsPerSlide, maxIndex, queryClient]);
 
@@ -121,7 +95,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   };
 
   return (
-    <div className='mt-70'>
+    <div className='mt-50'>
       <CardListHeader
         onNext={increaseIndex}
         onPrev={decreaseIndex}
@@ -129,7 +103,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
         title='카테고리'
         showPagination={true}
       />
-      <div className='relative w-4/5 max-sm:w-9/10 mx-auto overflow-hidden'>
+      <div className='relative w-[95%] max-sm:w-9/10 mx-auto overflow-hidden'>
         <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
           <motion.div
             key={index}
@@ -139,7 +113,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
             animate='variant'
             exit='end'
             transition={{ type: 'tween', duration: 1, ease: 'easeInOut' }}
-            className='absolute flex w-full justify-start px-2 py-1 gap-5'
+            className='absolute flex w-full justify-start px-2 py-1 gap-4'
             style={{ willChange: 'transform' }} // 애니메이션 최적화 -> 브라우저가 렌더링 최적화를 미리 준비할 수 있게 해줌
           >
             {cardSlice.map((category) => (
@@ -153,15 +127,19 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
           </motion.div>
         </AnimatePresence>
         {/** 보이지 않는 카드 리스트를 렌더링 해서 부모 div의 높이가 유지되도록 레이아웃을 보정함 */}
-        <div className='invisible flex w-full'>
-          {cardSlice.map((categories) => (
-            <FolderCard
-              key={`ghost-${categories.id}`}
-              category={categories}
-              allCategoryNames={allCategoryNames}
-            />
-          ))}
-        </div>
+        {cardSlice.length > 0 ? (
+          <div className='invisible flex w-full'>
+            {cardSlice.map((category) => (
+              <FolderCard
+                key={`ghost-${category.id}`}
+                category={category}
+                allCategoryNames={allCategoryNames}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className='h-[252px] w-full' />
+        )}
       </div>
     </div>
   );

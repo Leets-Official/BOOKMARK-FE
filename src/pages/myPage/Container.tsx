@@ -1,11 +1,12 @@
 import { tv } from 'tailwind-variants';
 import { isMobile } from 'react-device-detect';
-import { useScrollLock } from '@/hooks/scrollLock';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/common';
 import { DeleteIcon, LogoutIcon } from '@/assets';
+import { useScrollLock } from '@/hooks/scrollLock';
+import { useEffect, useRef } from 'react';
 
 const overlayStyle = tv({
   base: 'fixed inset-0 z-100 flex items-center justify-center',
@@ -28,14 +29,28 @@ const modalStyle = tv({
 });
 
 const MyPage = () => {
-  // 외부 스크롤 방지
-  useScrollLock(true);
+  const location = useLocation();
   const navigate = useNavigate();
-  const isProfileEdit = useLocation().pathname.endsWith('/profile-edit');
-  const isCategoryManagement = useLocation().pathname.endsWith('/category-management');
-  const isInquiry = useLocation().pathname.endsWith('/inquiry');
+  const isInitialMount = useRef(true);
 
-  const isSearchResult = useLocation().pathname.startsWith('/search-result');
+  useScrollLock(true);
+
+  const isProfileEdit = location.pathname.endsWith('/profile-edit');
+  const isCategoryManagement = location.pathname.endsWith('/category-management');
+  const isInquiry = location.pathname.endsWith('/inquiry');
+  const isSearchResult = location.pathname.startsWith('/search-result');
+
+  useEffect(() => {
+    if (!isInitialMount.current) {
+      // 경로 변경 시에도 스크롤 락 상태 유지
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+      if (scrollBarWidth > 0 && document.body.style.overflow === 'hidden') {
+        document.body.style.paddingRight = `${scrollBarWidth}px`;
+      }
+    } else {
+      isInitialMount.current = false;
+    }
+  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
@@ -113,7 +128,7 @@ const MyPage = () => {
             <div className='absolute top-10 right-10'>
               <Button
                 icon={<DeleteIcon width={12} height={12} stroke='#000000' />}
-                onClick={() => navigate('/')}
+                onClick={() => navigate(isSearchResult ? '/search-result' : '/')}
                 className='cursor-pointer'
               />
             </div>

@@ -1,13 +1,11 @@
 import { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import clsx from 'clsx';
 import SearchBar from './SearchBar';
 import Button from '@/components/common/Button';
-import { LeftIcon } from '@/assets';
+import { BackArrowIcon, LeftIcon } from '@/assets';
 import { useNavigate } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
 import { scrollBarWidthAtom } from '@/atoms';
-import HomeFooter from '../footer/HomeFooter';
 
 // props로 검색창의 top마진 값 전달 받음
 interface ChangeSearchBarProps {
@@ -48,35 +46,60 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
       {/* 스크롤 후 고정되는 검색바 */}
       <AnimatePresence>
         {isFixedBar && (
-          <motion.div
-            key='fixed-search-bar'
-            initial={{ y: -80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -80, opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className={clsx(
-              'fixed top-0 z-10 max-w-[1440px] w-full ml-5',
-              scrollBarWidth > 0
-                ? `left-[calc(50%-${scrollBarWidth}px)]`
-                : 'left-1/2 transform -translate-x-1/2',
-              isBackButton ? 'py-4 px-2' : 'p-4',
-            )}
-          >
-            <div className='flex flex-row items-center w-full'>
-              {isBackButton && (
-                <Button
-                  icon={<LeftIcon width={24} height={24} stroke='black' strokeWidth={2} />}
-                  onClick={() => navigate('/')}
-                  className='cursor-pointer mr-2 p-2 rounded-full border-[rgba(234,237,245,1)] shadow-[0_2px_7px_rgba(28,37,53,0.1)] bg-[#FCFCFCCC]/80'
-                />
-              )}
-              <div className='flex-1 min-w-0'>
-                <SearchBar isFixed={true} type='isHome' />
+          <>
+            <motion.div
+              initial={{ y: -80, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -80, opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              className='fixed top-0 z-10 max-w-[1200px] mx-auto w-full pl-4 py-4'
+              style={{
+                right: 0,
+                left: 0,
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                paddingRight: scrollBarWidth > 0 ? `${scrollBarWidth}px` : undefined,
+              }}
+            >
+              <div className='flex flex-row items-center'>
+                {isBackButton && (
+                  <Button
+                    icon={<BackArrowIcon width={20} height={20} stroke='black' strokeWidth={2} />}
+                    onClick={() => navigate('/')}
+                    className='cursor-pointer p-2.5 rounded-full border border-lightGrayBlue bg-snowGray/70 hover:brightness-90 transition'
+                  />
+                )}
+                <div className='flex-1'>
+                  <SearchBar isFixed={true} type='isHome' isBackButton={isBackButton} />
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+            <motion.div
+              initial={{ rotate: 0, opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              className='fixed bottom-4 max-w-[1200px] w-full z-10 ml-4'
+            >
+              {/* 업스크롤 버튼 */}
+              <div className='flex justify-start'>
+                <Button
+                  icon={
+                    <LeftIcon
+                      width={24}
+                      height={24}
+                      stroke='black'
+                      strokeWidth={2}
+                      className='rotate-90 w-6 h-6 sm:w-[30px] sm:h-[30px]'
+                    />
+                  }
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className='border-1 bg-lightGray rounded-full shadow-md sm:p-3 p-2 border-lightGray hover:brightness-90 cursor-pointer'
+                />
+              </div>
+            </motion.div>
+          </>
         )}
-        <HomeFooter key='home-footer' isFixedBar={isFixedBar} />
       </AnimatePresence>
     </>
   );

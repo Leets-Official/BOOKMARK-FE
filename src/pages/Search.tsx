@@ -94,104 +94,100 @@ const Search = () => {
   };
 
   return (
-    <div className='relative min-h-screen w-[50%] h-full'>
-      <div className='flex flex-col overflow-hidden'>
-        <FilterSearchBar />
+    <div className='max-w-[1200px] mx-auto min-h-screen w-full md:w-[768px] flex flex-col'>
+      <FilterSearchBar />
 
-        {/* 스크롤 가능한 컨텐츠 영역 */}
-        <div className='flex-1 overflow-y-auto p-3 pb-4 hide-scrollbar max-w-[1040px]'>
-          <div className='flex items-center justify-between font-semibold text-xl mb-2 gap-1 pt-30'>
-            <div className='flex items-center gap-1'>
-              <FilterIcon width={24} height={24} />
-              필터
-            </div>
-            {!isMobile && (
-              <Button onClick={resetAll} className='cursor-pointer font-medium text-15 border-b-3'>
-                초기화
-              </Button>
+      {/* 스크롤 가능한 컨텐츠 영역 */}
+      <div className='flex-1 overflow-y-auto p-3 pb-40 hide-scrollbar'>
+        <div className='flex items-center justify-between font-semibold text-xl mb-2 sm:my-5 mt-30'>
+          <div className='flex items-center gap-1 text-2xl'>
+            <FilterIcon width={24} height={24} />
+            필터
+          </div>
+          {!isMobile && (
+            <Button onClick={resetAll} className='cursor-pointer font-medium text-15 border-b-3'>
+              초기화
+            </Button>
+          )}
+        </div>
+        <div className='bg-white p-4 rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
+          <p className='mb-2 text-sm font-semibold text-stone'>카테고리</p>
+          <div className='flex flex-wrap gap-2 mb-6 p-0.5'>
+            {categories.map((category) => (
+              <Chip
+                key={category.id}
+                content={category.content}
+                isSelected={selectedCategories.includes(category.content)}
+                onClick={() => toggleSelection(category.content, setSelectedCategories, 'category')}
+                className='border-lightGrayBlue'
+                selectedClassName='border-1 border-lightGreen bg-lightGreen text-white'
+              />
+            ))}
+          </div>
+          <hr className='border-1 border-lightGrayBlue mb-3' />
+          <p className='text-sm font-semibold text-stone'>태그</p>
+          <AnimatePresence mode='wait'>
+            {showTags && (
+              <motion.div
+                key='tagContainer'
+                initial={{ height: 0 }}
+                animate={{ height: 'auto' }}
+                exit={{ height: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className='overflow-hidden'
+              >
+                <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
+                  {tags.map((tag) => (
+                    <Chip
+                      key={tag.id}
+                      content={tag.content}
+                      isSelected={selectedTags.includes(tag.content)}
+                      onClick={() => toggleSelection(tag.content, setSelectedTags)}
+                      className='border-lightGrayBlue'
+                      selectedClassName='border-1 border-blue bg-blue/10 text-blue'
+                    />
+                  ))}
+                </div>
+              </motion.div>
             )}
-          </div>
-          <div className='bg-white p-4 rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
-            <p className='mb-2 text-sm font-semibold text-stone'>카테고리</p>
-            <div className='flex flex-wrap gap-2 mb-6 p-0.5'>
-              {categories.map((category) => (
-                <Chip
-                  key={category.id}
-                  content={category.content}
-                  isSelected={selectedCategories.includes(category.content)}
-                  onClick={() =>
-                    toggleSelection(category.content, setSelectedCategories, 'category')
-                  }
-                  className='border-lightGrayBlue'
-                  selectedClassName='border-1 border-lightGreen bg-lightGreen text-white'
-                />
-              ))}
-            </div>
-            <hr className='border-1 border-lightGrayBlue mb-3' />
-            <p className='text-sm font-semibold text-stone'>태그</p>
-            <AnimatePresence mode='wait'>
-              {showTags && (
-                <motion.div
-                  key='tagContainer'
-                  initial={{ height: 0 }}
-                  animate={{ height: 'auto' }}
-                  exit={{ height: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className='overflow-hidden'
-                >
-                  <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
-                    {tags.map((tag) => (
-                      <Chip
-                        key={tag.id}
-                        content={tag.content}
-                        isSelected={selectedTags.includes(tag.content)}
-                        onClick={() => toggleSelection(tag.content, setSelectedTags)}
-                        className='border-lightGrayBlue'
-                        selectedClassName='border-1 border-blue bg-blue/10 text-blue'
-                      />
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* 플랫폼 영역 */}
-          <div className='mt-4 bg-white rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-4 py-4'>
-            <p className='mb-2 text-sm font-semibold text-stone'>플랫폼</p>
-            <div className='flex flex-wrap gap-2'>
-              {platforms.map((platform) => (
-                <Chip
-                  key={platform.id}
-                  content={platform.content}
-                  isSelected={selectedPlatforms.includes(platform.content)}
-                  onClick={() => toggleSelection(platform.content, setSelectedPlatforms)}
-                  className='border-lightGrayBlue'
-                  selectedClassName='border-1 border-blue bg-blue/10'
-                />
-              ))}
-            </div>
-          </div>
+          </AnimatePresence>
         </div>
 
-        {isMobile && (
-          <>
-            {/* 고정된 하단 버튼 영역 */}
-            <div className='fixed bottom-0 left-0 right-0 bg-white px-6 flex justify-between items-center border-t border-gray-200 flex-shrink-0 p-4'>
-              <Button onClick={resetAll} className='cursor-pointer font-medium text-15 border-b-3'>
-                초기화
-              </Button>
-              <Button
-                onClick={() => handleSearch()}
-                icon={<SearchIcon className='w-4 h-4' stroke='white' />}
-                className='cursor-pointer flex items-center gap-2 px-6 py-3 bg-blue text-white rounded-[10px] text-15 hover:brightness-90 transition'
-              >
-                검색
-              </Button>
-            </div>
-          </>
-        )}
+        {/* 플랫폼 영역 */}
+        <div className='mt-4 bg-white rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-4 py-4'>
+          <p className='mb-2 text-sm font-semibold text-stone'>플랫폼</p>
+          <div className='flex flex-wrap gap-2'>
+            {platforms.map((platform) => (
+              <Chip
+                key={platform.id}
+                content={platform.content}
+                isSelected={selectedPlatforms.includes(platform.content)}
+                onClick={() => toggleSelection(platform.content, setSelectedPlatforms)}
+                className='border-lightGrayBlue'
+                selectedClassName='border-1 border-blue bg-blue/10'
+              />
+            ))}
+          </div>
+        </div>
       </div>
+
+      {isMobile && (
+        <>
+          {/* 고정된 하단 버튼 영역 */}
+          <div className='fixed bottom-0 left-0 right-0 bg-white px-6 flex justify-between items-center border-t border-gray-200 flex-shrink-0 p-4'>
+            <Button onClick={resetAll} className='cursor-pointer font-medium text-15 border-b-3'>
+              초기화
+            </Button>
+            <Button
+              onClick={() => handleSearch()}
+              icon={<SearchIcon className='w-4 h-4' stroke='white' />}
+              className='cursor-pointer flex items-center gap-2 px-6 py-3 bg-blue text-white rounded-[10px] text-15 hover:brightness-90 transition'
+            >
+              검색
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

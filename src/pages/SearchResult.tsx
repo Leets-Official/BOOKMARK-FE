@@ -13,8 +13,8 @@ import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 import SaveCard from '@/components/ui/card/SaveCard';
 import CommonHeader from '@/components/layout/header/CommonHeader';
-import { Outlet } from 'react-router-dom';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
+import { Outlet } from 'react-router-dom';
 
 const SearchResult = () => {
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
@@ -25,6 +25,11 @@ const SearchResult = () => {
   // 스크롤 감지를 위한 상태와 ref
   const [hasScroll, setHasScroll] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // 마운트될 때 항상 위에서 시작
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
 
   // 스크롤 감지 useEffect
   useEffect(() => {
@@ -46,9 +51,10 @@ const SearchResult = () => {
   }, [categoryList, tagList, platformList]);
 
   return (
-    <div className='relative min-h-screen flex flex-col gap-4 mb-30'>
-      {isMobile ? <CommonHeader title='링크 검색' /> : <ProfileHeader />}
-      <ChangeSearchBar barMarginTop={100} isBackButton={true} />
+    <div className='max-w-[1200px] mx-auto relative min-h-screen flex flex-col gap-4 pb-25 bg-white'>
+      <CommonHeader title={isMobile ? '링크 검색' : ''} />
+      <ProfileHeader />
+      <ChangeSearchBar barMarginTop={isMobile ? 20 : 50} isBackButton={true} />
       <div
         ref={scrollContainerRef}
         className={clsx(
@@ -62,7 +68,7 @@ const SearchResult = () => {
         <ChipDropDown title='플랫폼' options={platformList} onChange={setPlatformList} />
       </div>
       {/* 카드 더미 리스트 */}
-      <div className={clsx('flex flex-col gap-5 mb-10', isMobile ? 'px-4' : '')}>
+      <div className={clsx('flex flex-col gap-3 mb-10', isMobile ? 'px-4' : '')}>
         {isMobile ? (
           dummyCardData.map((card) => (
             <CompactCard
@@ -76,7 +82,7 @@ const SearchResult = () => {
             />
           ))
         ) : (
-          <div className='w-4/5 max-sm:w-full mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+          <div className='w-[95%] max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
             {dummyCardData.map((card) => (
               <SaveCard key={card.id} data={card} />
             ))}

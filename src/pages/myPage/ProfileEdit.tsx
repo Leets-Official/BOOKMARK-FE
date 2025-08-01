@@ -3,7 +3,6 @@ import { Button, Image } from '@/components/common';
 import { isMobile } from 'react-device-detect';
 import TextField from '@/components/ui/TextField';
 import { useState } from 'react';
-
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import clsx from 'clsx';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -136,6 +135,7 @@ const ProfileEdit = () => {
         }}
         warningText='정말 계정을 삭제하시겠습니까?'
         subText='이 계정에 관련한 모든 내용은 영구삭제되며, 복구하실 수 없습니다'
+        onScrollLock={false}
       />
     </>
   );

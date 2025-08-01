@@ -2,6 +2,9 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { kakaoLoginApi } from '@/api/auth/auth_api';
+import { isMobile } from 'react-device-detect';
+import Lottie from 'lottie-react';
+import logoAnimation from '@/assets/logoAnimation.json';
 import toast from 'react-hot-toast';
 
 function KakaoCallBack() {
@@ -51,7 +54,20 @@ function KakaoCallBack() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <div>카카오 로그인 처리 중...</div>;
+  return (
+    <div className='flex flex-col items-center justify-center min-h-screen'>
+      <Lottie
+        animationData={logoAnimation}
+        loop
+        autoplay
+        style={{
+          width: isMobile ? '170px' : '250px',
+          height: isMobile ? '180px' : '260px',
+        }}
+      />
+      <p className='text-[#6D7280] font-medium'>Loading...</p>
+    </div>
+  );
 }
 
 export default KakaoCallBack;
