@@ -1,19 +1,26 @@
 import { BackArrowIcon } from '@/assets';
 import { Button } from '@/components/common';
 import { useNavigate } from 'react-router-dom';
+import clsx from 'clsx';
+import { isMobile } from 'react-device-detect';
 
 const CommonHeader = ({ title }: { title: string }) => {
   const navigate = useNavigate();
 
   const onClick = () => {
     document.body.style.overflow = '';
-    navigate(-1);
+    navigate('/');
   };
 
   return (
-    <div className='flex flex-row items-center w-full justify-center relative mt-5'>
+    <div
+      className={clsx(
+        'flex flex-row items-center w-full justify-center relative',
+        isMobile ? 'mt-5' : 'mt-10',
+      )}
+    >
       <Button
-        icon={<BackArrowIcon width={20} height={20} />}
+        icon={<BackArrowIcon width={isMobile ? '20' : '24'} height={isMobile ? '20' : '24'} />}
         onClick={onClick}
         className='absolute left-4 rounded-[100px] bg-[#F2F3F799]/60 border border-[#EAEDF5] p-2.5 hover:brightness-90 transition'
       />

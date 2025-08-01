@@ -66,7 +66,8 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
         isOpen={isOpen}
         parentRef={parentRef}
         alignLeft={true}
-        className='fixed inset-x-0 top-0 px-3 mx-auto w-full max-w-[1200px]'
+        onClose={() => setIsOpen(false)}
+        className='fixed inset-x-0 top-0 px-3 mx-auto w-full max-w-[700px]'
         ref={menuRef}
       >
         <div className='bg-white rounded-xl shadow-[0px_2px_7px_rgba(2,34,94,0.1)] flex flex-col border border-gray-200 z-[9999] p-2 mt-1'>

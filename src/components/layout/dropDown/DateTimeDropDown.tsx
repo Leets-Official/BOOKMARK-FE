@@ -35,7 +35,12 @@ const DateTimeDropDown = ({
   const menuRef = useRef<HTMLDivElement>(null);
 
   return (
-    <DropDown handleClose={() => setIsOpen(false)} menuRef={menuRef} className='flex-1'>
+    <DropDown
+      handleClose={() => setIsOpen(false)}
+      menuRef={menuRef}
+      isScroll={true}
+      className='flex-1'
+    >
       <DropDown.Trigger onClick={() => setIsOpen(!isOpen)} ref={parentRef} className='w-full'>
         <div
           className={clsx(

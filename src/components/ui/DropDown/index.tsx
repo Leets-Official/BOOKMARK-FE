@@ -13,6 +13,7 @@ interface DropDownProps {
   menuRef: React.RefObject<HTMLDivElement | null>;
   isOpen?: boolean;
   className?: string;
+  isScroll?: boolean;
 }
 
 interface DropDownStatic extends FC<DropDownProps> {
@@ -26,11 +27,13 @@ const DropDown = (({
   handleClose,
   menuRef,
   isOpen = false,
+  isScroll = false,
   className,
 }: DropDownProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
-  useScrollLock(isOpen);
-
+  if (isScroll) {
+    useScrollLock(isOpen);
+  }
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const dropdownEl = dropdownRef.current;
