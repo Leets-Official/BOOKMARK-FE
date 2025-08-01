@@ -25,6 +25,11 @@ const SearchResult = () => {
   const [hasScroll, setHasScroll] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  // 마운트될 때 항상 위에서 시작
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
+
   // 스크롤 감지 useEffect
   useEffect(() => {
     const checkScroll = () => {
