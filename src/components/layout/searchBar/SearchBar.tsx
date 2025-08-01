@@ -114,8 +114,8 @@ const SearchBar = ({
     <div className='flex justify-center'>
       <div
         className={clsx(
-          'relative w-4/5 max-sm:w-[85%] max-w-[43rem]',
-          type === 'isHome' && '-translate-x-7 sm:-translate-x-2',
+          'relative w-4/5 max-w-[43rem]',
+          type === 'isHome' ? '-translate-x-7 sm:-translate-x-2 max-sm:w-[85%]' : 'max-sm:w-9/10',
           isBackButton && 'translate-x-0 sm:-translate-x-6',
         )}
         style={style}

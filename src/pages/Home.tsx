@@ -29,9 +29,9 @@ const Home = () => {
     <div className='max-w-[1200px] mx-auto relative min-h-screen bg-white'>
       <ProfileHeader />
       <HomLogo />
-      <ChangeSearchBar barMarginTop={285} />
+      <ChangeSearchBar barMarginTop={isMobile ? 225 : 285} />
       {isPending ? (
-        <div className='mt-50'>
+        <div className={isMobile ? 'mt-20' : 'mt50'}>
           <CardListHeader currentNum={'0'} title='카테고리' showCategory={true} />
           <Loading className='bg-white w-full h-[252px] rounded-xl  p-3 py-6 flex justify-center items-center' />
         </div>

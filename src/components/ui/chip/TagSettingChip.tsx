@@ -160,6 +160,7 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
         }}
         onConfirm={handleSubmit(handleConfirmModal)}
         disabled={isDisabled}
+        onScrollLock={false}
       >
         <Controller
           name='tag'
@@ -199,6 +200,7 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
           setIsDeleteModalOpen(false);
           deleteTagMutation(tagId);
         }}
+        onScrollLock={false}
       />
     </div>
   );
