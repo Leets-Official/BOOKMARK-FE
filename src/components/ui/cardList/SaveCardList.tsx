@@ -15,7 +15,7 @@ const SaveCardList = () => {
   const displayCount = isMobile ? 6 : 9;
 
   return (
-    <div className='pb-25'>
+    <div className='pb-25 mt-20'>
       <CardListHeader
         title='전체 저장 List'
         showAllContent={true}

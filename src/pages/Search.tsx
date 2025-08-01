@@ -98,7 +98,7 @@ const Search = () => {
       <FilterSearchBar />
 
       {/* 스크롤 가능한 컨텐츠 영역 */}
-      <div className='flex-1 overflow-y-auto p-3 pb-25 sm:pb-20 hide-scrollbar'>
+      <div className='flex-1 overflow-y-auto p-3 pb-40 hide-scrollbar'>
         <div className='flex items-center justify-between font-semibold text-xl mb-2 sm:my-5 mt-30'>
           <div className='flex items-center gap-1 text-2xl'>
             <FilterIcon width={24} height={24} />
