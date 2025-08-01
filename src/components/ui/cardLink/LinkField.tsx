@@ -1,4 +1,5 @@
 import { getSuggestionTag } from '@/agent/TagAgent';
+import { getBookmarksURL } from '@/api/bookmark/bookmark';
 import {
   memoAtom,
   suggestionListAtom,
@@ -11,6 +12,8 @@ import {
 import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
 import type { saveSchema } from '@/schema/save';
+import type { BookMarkURLProps } from '@/types/api/bookmark';
+import { useQuery } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 import { Controller, type Control, type UseFormSetValue } from 'react-hook-form';
@@ -23,7 +26,7 @@ interface ILinkField {
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
 }
 
-const LinkField = ({ editable = true, isLoading = false, control, setValue }: ILinkField) => {
+const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
   const [visibleCard, setVisibleCard] = useAtom(visibleCardAtom);
   const setVisibleCategory = useSetAtom(visibleCategoryAtom);
   const setVisibleTag = useSetAtom(visibleTagAtom);
@@ -31,6 +34,22 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
   const setIsSuggestionLoading = useSetAtom(isSuggestionLoadingAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const resetMemo = useSetAtom(memoAtom);
+
+  const {
+    data: bookmarkUrlData,
+    refetch,
+    isFetching,
+  } = useQuery<BookMarkURLProps[]>({
+    queryKey: ['bookmarkPreview'],
+    queryFn: async () => {
+      const res = await getBookmarksURL(control._formValues.url);
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+    enabled: false,
+  });
 
   // 링크가 있으면 카테고리 보여주기
   useEffect(() => {
@@ -40,16 +59,22 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
     }
   }, [control._formValues.url, setVisibleCard, setVisibleCategory]);
 
-  const handleLink = (v: string) => {
-    // 임시로 링크가 있으면 카테고리 보여주기 -> 추후에는 링크가 올바른지 및 추출 구현 필요
-    // 임시 제목, 플랫폼, 이미지 설정
-    setValue('title', '제목');
-    setValue('platform', '플랫폼');
-    setValue('image', 'https://www.google.com/image.png');
+  useEffect(() => {
+    if (bookmarkUrlData && bookmarkUrlData.length > 0) {
+      const { title, thumbnailUrl, platform } = bookmarkUrlData[0];
+      setValue('title', title);
+      setValue('image', thumbnailUrl);
+      setValue('platform', platform);
+      console.log(bookmarkUrlData);
+    }
+  }, [bookmarkUrlData, setValue]);
 
+  const handleLink = (v: string) => {
     if (v.length > 0) {
+      refetch();
       setVisibleCard(true);
       setVisibleCategory(true);
+
       // 카테고리가 이미 선택되어 있는 경우(edit) 태그 보여주기
       if (control._formValues.category) {
         setVisibleTag(true);
@@ -93,7 +118,7 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 sm:px-6 pb-4'>
       <p className='text-sm text-stone font-semibold mt-4'>
-        링크 입력<span className='text-[#FF2C3D]'>*</span>
+        링크 입력<span className='text-redText'>*</span>
       </p>
       <Controller
         name='url'
@@ -122,8 +147,7 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
             title={control._formValues.title}
             platform={control._formValues.platform}
             image={control._formValues.image}
-            isLoading={isLoading}
-            editable={editable}
+            isLoading={isLoading || isFetching}
           />
         </>
       )}

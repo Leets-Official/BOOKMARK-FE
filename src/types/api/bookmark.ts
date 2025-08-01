@@ -15,3 +15,10 @@ export interface BookmarkProps {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface BookMarkURLProps {
+  title: string;
+  thumbnailUrl: string;
+  faviconUrl: string;
+  platform: string;
+}

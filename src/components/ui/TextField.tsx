@@ -64,7 +64,7 @@ const TextField = ({
         <Textarea
           className={clsx(
             'w-full rounded-[12px] text-15 p-4 py-3 leading-5',
-            buttonVisible && 'pr-8',
+            buttonVisible && 'pr-12',
             className,
           )}
           value={value ?? ''}

@@ -9,10 +9,9 @@ interface CardProps {
   platform: string;
   image?: string;
   isLoading?: boolean;
-  editable?: boolean;
 }
 
-const LinkCard = ({ title, platform, image, isLoading, editable }: CardProps) => {
+const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
@@ -62,16 +61,16 @@ const LinkCard = ({ title, platform, image, isLoading, editable }: CardProps) =>
     <div className='flex flex-row items-center w-full'>
       {/* 로딩 상태 */}
       {isLoading ? (
-        <div className='bg-gray-200 h-25 w-25 mr-2 flex items-center rounded-2xl justify-center'>
+        <div className='bg-gray-200 h-25 w-25 sm:h-28 sm:w-28 mr-2 flex items-center rounded-2xl justify-center'>
           <div className='spinner border-4 border-gray-400 border-t-gray-200 rounded-full w-10 h-10 animate-spin' />
         </div>
       ) : isValidImage ? (
         <div
           className={clsx(
-            'rounded-2xl object-cover h-25 w-25 mr-2 overflow-hidden',
-            editable && 'cursor-pointer hover:brightness-90',
+            'rounded-2xl object-cover h-25 w-25 sm:h-28 sm:w-28 mr-2 overflow-hidden',
+            'cursor-pointer hover:brightness-90 transition border border-gray-200',
           )}
-          onClick={editable ? handleImageUpload : undefined}
+          onClick={handleImageUpload || undefined}
         >
           <Image
             src={finalImage}
@@ -83,7 +82,7 @@ const LinkCard = ({ title, platform, image, isLoading, editable }: CardProps) =>
         <Button
           onClick={handleImageUpload}
           className={clsx(
-            'h-25 w-25 sm:h-30 sm:w-30 mr-2 flex items-center justify-center bg-gray-200 rounded-2xl',
+            'h-25 w-25 sm:h-28 sm:w-28 mr-2 flex items-center justify-center bg-gray-200 rounded-2xl',
             'cursor-pointer hover:brightness-90 text-gray-600 text-[50px]',
           )}
         >
@@ -97,9 +96,11 @@ const LinkCard = ({ title, platform, image, isLoading, editable }: CardProps) =>
         className='hidden'
         onChange={handleFileChange}
       />
-      <div className='flex flex-col'>
-        <p className='text-sm text-black font-semibold'>{title}</p>
-        <p className='text-xs text-[#545966]'>{platform}</p>
+      <div className='flex flex-col flex-1 leading-6'>
+        <p className='text-sm sm:text-base text-black font-semibold break-words line-clamp-2 pr-3'>
+          {title}
+        </p>
+        <p className='text-xs text-stone font-medium leading-6'>{platform}</p>
       </div>
     </div>
   );
