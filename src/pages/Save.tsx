@@ -234,6 +234,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
             setIsDeleteModalOpen(false);
             onPrev();
           }}
+          onScrollLock={false}
         />
       )}
     </>
