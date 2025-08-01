@@ -10,7 +10,7 @@ const App = () => {
   }
 
   return (
-    <div className='bg-[#535151]'>
+    <div className='bg-mainBg'>
       <Outlet />
       <Toast />
     </div>

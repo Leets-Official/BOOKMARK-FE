@@ -159,7 +159,7 @@ const FilterSearchBar: React.FC = () => {
 
   return (
     <div className='w-full bg-white shadow-md relative' ref={historyRef}>
-      <div className='absolute top-3 left-2 z-20 cursor-pointer' onClick={onPrev}>
+      <div className='absolute top-2 left-2 z-20 cursor-pointer' onClick={onPrev}>
         <LeftIcon width={30} height={30} stroke='#000000' />
       </div>
       <AnimatePresence>
@@ -183,19 +183,16 @@ const FilterSearchBar: React.FC = () => {
           className='flex-1 border-none focus:outline-none text-15 placeholder-gray-400 bg-transparent'
           placeholder='제목, 메모, 태그'
         />
-        <div className='mr-1 cursor-pointer' onClick={clearInput}>
+        <div className='mr-1 cursor-pointer hover:brightness-90' onClick={clearInput}>
           <RoundDeleteIcon width={22} height={22} />
         </div>
       </div>
 
       {/* 최근 검색 기록 */}
       {isFocused && hasHistory && (
-        <div className='absolute top-full left-0 w-full px-4 shadow-md z-0 bg-white border-t-2 border-lightGrayBlue max-h-[128px] overflow-y-auto'>
+        <div className='absolute top-full left-0 w-full px-4 shadow-md z-20 bg-white border-t-2 border-lightGrayBlue max-h-[128px] overflow-y-auto'>
           {history.data.map(({ keyword, id }: GetSearchHistoryProps) => (
-            <div
-              key={id}
-              className='flex items-center justify-between gap-2 my-4 text-15 text-black'
-            >
+            <div key={id} className='flex items-center justify-between my-4.5 text-15 text-black'>
               <div
                 className='flex items-center gap-2 cursor-pointer hover:underline'
                 onClick={() => {

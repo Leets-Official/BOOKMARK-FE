@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { tv } from 'tailwind-variants';
 import { FilteringIcon, FixedFilteringIcon, SearchIcon } from '@/assets';
@@ -81,6 +81,14 @@ const SearchBar = ({
 }: IHomeSearchBarProps) => {
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 홈으로 돌아갈 땐 무조건 검색어 초기화
+  useEffect(() => {
+    if (location.pathname === '/') {
+      setSearchContents('');
+    }
+  }, [location.pathname, setSearchContents]);
 
   const postHistoryMutattion = useMutation({
     mutationFn: postSearchHistory,
