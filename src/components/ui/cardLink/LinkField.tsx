@@ -8,6 +8,7 @@ import {
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
   isSuggestionLoadingAtom,
+  previewImageAtom,
 } from '@/atoms';
 import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
@@ -33,6 +34,7 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
   const setSuggestionList = useSetAtom(suggestionListAtom);
   const setIsSuggestionLoading = useSetAtom(isSuggestionLoadingAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
+  const resetPreURL = useSetAtom(previewImageAtom);
   const resetMemo = useSetAtom(memoAtom);
 
   const {
@@ -110,6 +112,7 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
       setVisibleTag(false);
       setVisibleMemoAndAlarm(false);
       setSuggestionList([]); // 제안 리스트 빈 배열로 초기화
+      resetPreURL(null);
       resetMemo('');
     }
   };

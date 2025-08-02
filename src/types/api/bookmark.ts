@@ -22,3 +22,20 @@ export interface BookMarkURLProps {
   faviconUrl: string;
   platform: string;
 }
+
+export interface BookmarkSaveProps {
+  title: string;
+  url: string;
+  memo: string;
+  file: {
+    fileName: string;
+    fileUrl: string;
+  };
+  notification: {
+    notifyAt: string;
+  };
+  platform: 'NAVER' | 'NAVER_BLOG' | 'TISTORY' | 'YOUTUBE' | 'INSTAGRAM' | 'VELOG' | 'ETC';
+  categoryId: number;
+  faviconUrl: string;
+  tagIds: number[];
+}

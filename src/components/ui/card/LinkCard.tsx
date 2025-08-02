@@ -1,4 +1,4 @@
-import { getPresignedUrl, uploadImage } from '@/api/file/presigned_url_api';
+import { getPresignedUrl } from '@/api/file/presigned_url_api';
 import { previewImageAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
@@ -51,8 +51,9 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
       setImageError(true);
       return;
     }
-    console.log(presigned.data);
 
+    const previewURL = URL.createObjectURL(file); // 파일을 브라우저에서 볼 수 있는 임시 URL 생성
+    setPreviewImage(previewURL);
     setImageError(false);
   };
 
@@ -61,7 +62,7 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
     setImageError(true); // 이미지 로딩 실패 시 에러 상태로 설정
   };
 
-  const finalImage = previewImage || image;
+  const finalImage = previewImage === null ? undefined : previewImage || image;
   const isValidImage = finalImage && !imageError; // finalImage가 유효한지 판단
 
   return (
@@ -74,14 +75,14 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
       ) : isValidImage ? (
         <div
           className={clsx(
-            'rounded-2xl object-cover h-25 w-25 sm:h-28 sm:w-28 mr-2 overflow-hidden',
+            'rounded-2xl h-25 w-25 sm:h-28 sm:w-28 mr-2 overflow-hidden',
             'cursor-pointer hover:brightness-90 transition border border-gray-200',
           )}
           onClick={handleImageUpload || undefined}
         >
           <Image
             src={finalImage}
-            className='h-full w-full object-cover'
+            className='h-full w-full object-center object-cover'
             onError={handleImageError}
           />
         </div>

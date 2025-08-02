@@ -11,6 +11,7 @@ import {
 } from '@/atoms';
 import { createCategory, getCategories } from '@/api/category/category';
 import { createTag } from '@/api/tag/tag';
+import { saveBookmarks } from '@/api/bookmark/bookmark';
 
 const SaveButton = () => {
   const tempCategories = useAtomValue(tempCategoriesAtom);
@@ -41,6 +42,16 @@ const SaveButton = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tags'] });
+    },
+  });
+
+  const saveBookMarkMutation = useMutation({
+    mutationFn: async () => {
+      const res = await saveBookmarks;
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 
@@ -84,7 +95,6 @@ const SaveButton = () => {
     setVisibleTag(false);
     setVisibleMemoAndAlarm(false);
   };
-
   return { saveLinkData };
 };
 
