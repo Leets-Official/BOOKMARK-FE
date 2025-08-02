@@ -5,6 +5,10 @@ import { dateOptions, timeOptions } from './constants/dateTimeData';
 
 // Save Page Atoms
 const linkAtom = atom('');
+const linkTitleAtom = atom<string>('');
+const linkPlatformAtom = atom<string>('');
+const linkThumbnailAtom = atom<string | undefined>(undefined);
+const linkFaviconAtom = atom<string | undefined>(undefined);
 const memoAtom = atom('');
 const visibleCardAtom = atom(false);
 const visibleCategoryAtom = atom(false);
@@ -22,7 +26,7 @@ const searchContentsAtom = atom<string>('');
 const selectedCategoriesAtom = atom<string[]>([]);
 const selectedTagsAtom = atom<string[]>([]);
 const selectedPlatformsAtom = atom<string[]>([]);
-const previewImageAtom = atom<string | null | undefined>(undefined);
+const previewImageAtom = atom<string | undefined>(undefined);
 const isSuggestionLoadingAtom = atom(false);
 const tempCategoriesAtom = atom<string[]>([]);
 const tempTagsAtom = atom<Record<string, string[]>>({});
@@ -32,6 +36,10 @@ const scrollBarWidthAtom = atom(0);
 
 export {
   linkAtom,
+  linkTitleAtom,
+  linkPlatformAtom,
+  linkThumbnailAtom,
+  linkFaviconAtom,
   memoAtom,
   visibleCardAtom,
   visibleCategoryAtom,

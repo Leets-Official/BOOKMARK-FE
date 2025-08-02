@@ -3,8 +3,7 @@ import FolderCard from '../card/FolderCard';
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import { useEffect, useState } from 'react';
 import { getCardsPerSlide } from '@/utils/CardPerSlide';
-import { useQueryClient } from '@tanstack/react-query';
-import { getBookmarks } from '@/api/bookmark/bookmark';
+// import { useQueryClient } from '@tanstack/react-query';
 import type { CategoryProps } from '@/types/api/category';
 
 // 슬라이드 애니메이션용 variants 정의
@@ -25,7 +24,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const [leaving, setLeaving] = useState(false);
   const [cardsPerSlide, setCardsPerSlide] = useState(getCardsPerSlide()); // 초기 계산
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const allCategoryNames = categories.map((cat) => cat.categoryName);
 
@@ -69,33 +68,33 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   }, [categories.length]); // 카드 수가 변할 때만 다시 바인딩
 
   // 다음 슬라이드 미리 로드
-  useEffect(() => {
-    // 카테고리가 없으면 미리 로드하지 않음
-    if (categories.length === 0) return;
+  // useEffect(() => {
+  //   // 카테고리가 없으면 미리 로드하지 않음
+  //   if (categories.length === 0) return;
 
-    // 현재 페이지의 북마크도 미리 로드 (안전장치)
-    const preload = () => {
-      queryClient.prefetchQuery({
-        queryKey: ['bookmarks'],
-        queryFn: getBookmarks,
-      });
-    };
-    preload(); // 현재, 이전, 다음 카드슬라이스에 대해 각각 한 번만 미리 로드
+  //   // 현재 페이지의 북마크도 미리 로드 (안전장치)
+  //   const preload = () => {
+  //     queryClient.prefetchQuery({
+  //       queryKey: ['bookmarks'],
+  //       queryFn: getBookmarks,
+  //     });
+  //   };
+  //   preload(); // 현재, 이전, 다음 카드슬라이스에 대해 각각 한 번만 미리 로드
 
-    if (index > 0) {
-      preload();
-    }
-    if (index < maxIndex) {
-      preload();
-    }
-  }, [index, categories, cardsPerSlide, maxIndex, queryClient]);
+  //   if (index > 0) {
+  //     preload();
+  //   }
+  //   if (index < maxIndex) {
+  //     preload();
+  //   }
+  // }, [index, categories, cardsPerSlide, maxIndex, queryClient]);
 
   const toggleLeaving = () => {
     setLeaving(false);
   };
 
   return (
-    <div className='mt-50'>
+    <div className='mt-50 max-w-[1200px]'>
       <CardListHeader
         onNext={increaseIndex}
         onPrev={decreaseIndex}

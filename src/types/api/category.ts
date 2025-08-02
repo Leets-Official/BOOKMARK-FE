@@ -3,6 +3,7 @@ export interface CategoryProps {
   categoryName: string;
   createdAt: string;
   updatedAt: string;
+  thumbnailUrls: [];
 }
 
 export interface CategoryWithTagProps {

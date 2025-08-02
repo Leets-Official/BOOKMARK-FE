@@ -45,16 +45,6 @@ const SaveButton = () => {
     },
   });
 
-  const saveBookMarkMutation = useMutation({
-    mutationFn: async () => {
-      const res = await saveBookmarks;
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-    },
-  });
-
   const saveLinkData = async () => {
     if (!selectedCategory || selectedTag.length === 0) return;
 

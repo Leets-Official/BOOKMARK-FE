@@ -12,10 +12,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import type { CategoryProps } from '@/types/api/category';
-import { getBookmarks } from '@/api/bookmark/bookmark';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, updateCategory } from '@/api/category/category';
-import Loading from '../loading/Loading';
 import toast from 'react-hot-toast';
 
 // 제목 텍스트 스타일 (반응형)
@@ -44,11 +42,6 @@ const FolderCard = ({
     defaultValues: {
       category: '',
     },
-  });
-
-  const { data: bookmarks, isPending: isBookmarksLoading } = useQuery({
-    queryKey: ['bookmarks'],
-    queryFn: () => getBookmarks(),
   });
 
   const { mutate: updateCategoryMutation } = useMutation({
@@ -127,12 +120,12 @@ const FolderCard = ({
     },
   });
 
-  if (!bookmarks || bookmarks.error || !bookmarks.data) {
-    if (bookmarks?.error) {
-      console.error('북마크 조회 실패:', bookmarks.message);
-    }
-    return;
-  }
+  // if (!bookmarks || bookmarks.error || !bookmarks.data) {
+  //   if (bookmarks?.error) {
+  //     console.error('북마크 조회 실패:', bookmarks.message);
+  //   }
+  //   return;
+  // }
 
   const handleConfirmModal = (data: z.infer<typeof schema>) => {
     if (!data.category.trim()) return;
@@ -142,7 +135,11 @@ const FolderCard = ({
     setIsDisabled(true);
   };
 
-  const images = bookmarks.data.slice(0, 3).map((bookmark) => bookmark.thumbnailUrl);
+  const images = [
+    'https://cdn.pixabay.com/photo/2018/04/26/16/31/marine-3352341_1280.jpg',
+    'https://cdn.pixabay.com/photo/2016/03/08/20/03/flag-1244648_1280.jpg',
+    'https://cdn.pixabay.com/photo/2018/04/26/12/14/travel-3351825_1280.jpg',
+  ];
 
   // 이미지 렌더링
   const renderImages = (images: string[]) => {
@@ -181,6 +178,10 @@ const FolderCard = ({
       );
     }
 
+    // <div className='w-full h-full flex items-center justify-center'>
+    //   <Loading className='w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
+    // </div>;
+
     return null;
   };
 
@@ -189,13 +190,7 @@ const FolderCard = ({
       <div className={clsx(isMobile ? 'min-w-40 pt-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 mt-2')}>
         {/**카테고리에 카드가 하나만 있으면 폴더에 하나만, 두개 있으면 1 : 1 비율... 3개까지 표시 */}
         <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex hover:scale-103 duration-400 cursor-pointer'>
-          {isBookmarksLoading ? (
-            <div className='w-full h-full flex items-center justify-center'>
-              <Loading className='w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
-            </div>
-          ) : (
-            renderImages(images)
-          )}
+          {renderImages(images)}
         </div>
         <div className='flex items-center justify-between pt-2'>
           <p className={TitleText}>{category.categoryName}</p>

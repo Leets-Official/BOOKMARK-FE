@@ -27,11 +27,11 @@ export interface BookmarkSaveProps {
   title: string;
   url: string;
   memo: string;
-  file: {
+  file?: {
     fileName: string;
     fileUrl: string;
   };
-  notification: {
+  notification?: {
     notifyAt: string;
   };
   platform: 'NAVER' | 'NAVER_BLOG' | 'TISTORY' | 'YOUTUBE' | 'INSTAGRAM' | 'VELOG' | 'ETC';

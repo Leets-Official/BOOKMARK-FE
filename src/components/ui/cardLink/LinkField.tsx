@@ -8,7 +8,8 @@ import {
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
   isSuggestionLoadingAtom,
-  previewImageAtom,
+  linkAtom,
+  linkFaviconAtom,
 } from '@/atoms';
 import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
@@ -34,8 +35,9 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
   const setSuggestionList = useSetAtom(suggestionListAtom);
   const setIsSuggestionLoading = useSetAtom(isSuggestionLoadingAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
-  const resetPreURL = useSetAtom(previewImageAtom);
+  const setLink = useSetAtom(linkAtom);
   const resetMemo = useSetAtom(memoAtom);
+  const setFavicon = useSetAtom(linkFaviconAtom);
 
   const {
     data: bookmarkUrlData,
@@ -63,16 +65,18 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
 
   useEffect(() => {
     if (bookmarkUrlData && bookmarkUrlData.length > 0) {
-      const { title, thumbnailUrl, platform } = bookmarkUrlData[0];
+      const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
       setValue('title', title);
       setValue('image', thumbnailUrl);
       setValue('platform', platform);
+      setFavicon(faviconUrl);
     }
-  }, [bookmarkUrlData, setValue]);
+  }, [bookmarkUrlData, setFavicon, setValue]);
 
   const handleLink = (v: string) => {
     if (v.length > 0) {
       refetch();
+      setLink(v);
       setVisibleCard(true);
       setVisibleCategory(true);
 
@@ -112,7 +116,6 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
       setVisibleTag(false);
       setVisibleMemoAndAlarm(false);
       setSuggestionList([]); // 제안 리스트 빈 배열로 초기화
-      resetPreURL(null);
       resetMemo('');
     }
   };

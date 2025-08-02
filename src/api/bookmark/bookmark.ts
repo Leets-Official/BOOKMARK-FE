@@ -17,9 +17,12 @@ export const getBookmarksURL = async (url: string): Promise<ApiResponse<BookMark
   });
 };
 
-export const saveBookmarks = async (): Promise<ApiResponse<BookmarkSaveProps[]>> => {
-  return apiRequest<BookmarkSaveProps[]>({
-    method: 'GET',
+export const saveBookmarks = async (
+  bookmarkData: BookmarkSaveProps,
+): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'POST',
     url: '/bookmarks',
+    data: bookmarkData,
   });
 };
