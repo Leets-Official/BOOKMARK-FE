@@ -5,10 +5,10 @@ import { dateOptions, timeOptions } from './constants/dateTimeData';
 
 // Save Page Atoms
 const linkAtom = atom('');
-const linkTitleAtom = atom<string>('');
-const linkPlatformAtom = atom<string>('');
-const linkThumbnailAtom = atom<string | undefined>(undefined);
-const linkFaviconAtom = atom<string | undefined>(undefined);
+const titleAtom = atom<string>('');
+const platformAtom = atom<string>('');
+const thumbnailAtom = atom<string | undefined>(undefined);
+const faviconAtom = atom<string | undefined>(undefined);
 const memoAtom = atom('');
 const visibleCardAtom = atom(false);
 const visibleCategoryAtom = atom(false);
@@ -36,10 +36,10 @@ const scrollBarWidthAtom = atom(0);
 
 export {
   linkAtom,
-  linkTitleAtom,
-  linkPlatformAtom,
-  linkThumbnailAtom,
-  linkFaviconAtom,
+  titleAtom,
+  platformAtom,
+  thumbnailAtom,
+  faviconAtom,
   memoAtom,
   visibleCardAtom,
   visibleCategoryAtom,

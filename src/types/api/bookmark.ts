@@ -27,7 +27,7 @@ export interface BookmarkSaveProps {
   title: string;
   url: string;
   memo: string;
-  file?: {
+  file: {
     fileName: string;
     fileUrl: string;
   };

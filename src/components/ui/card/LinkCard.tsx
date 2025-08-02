@@ -1,9 +1,9 @@
 import { getPresignedUrl } from '@/api/file/presigned_url_api';
-import { previewImageAtom } from '@/atoms';
+import { platformAtom, previewImageAtom, titleAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
-import { useAtom } from 'jotai';
-import React, { useRef, useState } from 'react';
+import { useAtom, useSetAtom } from 'jotai';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface CardProps {
   title: string;
@@ -16,6 +16,13 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
+  const setTitle = useSetAtom(titleAtom);
+  const setPlatform = useSetAtom(platformAtom);
+
+  useEffect(() => {
+    setTitle(title);
+    setPlatform(platform);
+  }, [title, platform, setTitle, setPlatform]);
 
   // 버튼 클릭 시 숨겨진 파일 입력창 엶
   const handleImageUpload = () => {

@@ -9,7 +9,7 @@ import {
   visibleTagAtom,
   isSuggestionLoadingAtom,
   linkAtom,
-  linkFaviconAtom,
+  faviconAtom,
 } from '@/atoms';
 import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
@@ -37,7 +37,7 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const setLink = useSetAtom(linkAtom);
   const resetMemo = useSetAtom(memoAtom);
-  const setFavicon = useSetAtom(linkFaviconAtom);
+  const setFavicon = useSetAtom(faviconAtom);
 
   const {
     data: bookmarkUrlData,
