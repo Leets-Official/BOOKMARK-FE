@@ -65,7 +65,6 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
       setValue('title', title);
       setValue('image', thumbnailUrl);
       setValue('platform', platform);
-      console.log(bookmarkUrlData);
     }
   }, [bookmarkUrlData, setValue]);
 

@@ -1,3 +1,4 @@
+import { getPresignedUrl, uploadImage } from '@/api/file/presigned_url_api';
 import { previewImageAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
@@ -25,7 +26,7 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
   };
 
   // 파일 선택 시 실행
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]; // 선택된 첫 번째 파일 가져오기
     if (!file) return; // 파일이 없으면 함수 종료
 
@@ -44,9 +45,15 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
       return;
     }
 
-    const previewURL = URL.createObjectURL(file); // 파일을 브라우저에서 볼 수 있는 임시 URL 생성
-    setPreviewImage(previewURL);
-    setImageError(false); // 새 이미지가 선택되면 에러 상태 초기화
+    const presigned = await getPresignedUrl(file.name);
+    if (!presigned || !presigned.data) {
+      console.error('Presigned URL을 가져오지 못했습니다.');
+      setImageError(true);
+      return;
+    }
+    console.log(presigned.data);
+
+    setImageError(false);
   };
 
   // 이미지 로딩 실패 시
