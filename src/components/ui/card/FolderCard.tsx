@@ -15,6 +15,7 @@ import type { CategoryProps } from '@/types/api/category';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, updateCategory } from '@/api/category/category';
 import toast from 'react-hot-toast';
+import { useScrollLock } from '@/hooks/scrollLock';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
@@ -33,6 +34,9 @@ const FolderCard = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isScrollLock, setIsScollLock] = useState(false);
+
+  useScrollLock(isScrollLock);
 
   const schema = modalAddSchema('category', allCategoryNames);
   const queryClient = useQueryClient();
@@ -133,6 +137,7 @@ const FolderCard = ({
     setIsModalOpen(false);
     reset();
     setIsDisabled(true);
+    setIsScollLock(false);
   };
 
   const images = [
@@ -220,6 +225,7 @@ const FolderCard = ({
             onClick={() => {
               isClose();
               setIsModalOpen(true);
+              setIsScollLock(true);
             }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15'
           >
@@ -236,9 +242,11 @@ const FolderCard = ({
           setIsModalOpen(false);
           reset();
           setIsDisabled(true);
+          setIsScollLock(false);
         }}
         onConfirm={handleSubmit(handleConfirmModal)}
         disabled={isDisabled}
+        onScrollLock={false}
       >
         <Controller
           name='category'
@@ -275,7 +283,10 @@ const FolderCard = ({
       {/**삭제 모달 */}
       <DeleteModal
         isOpen={isDeleteModalOpen}
-        onCancel={() => setIsDeleteModalOpen(false)}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setIsScollLock(false);
+        }}
         warningText={`"${category.categoryName}"카테고리를 정말 삭제할까요?`}
         subText={
           '카테고리를 삭제하면 해당 카테고리를 적용한 링크도 모두 삭제됩니다. 그래도 삭제할까요?'
@@ -283,7 +294,9 @@ const FolderCard = ({
         onDelete={() => {
           setIsDeleteModalOpen(false);
           deleteCategoryMutation(category.id);
+          setIsScollLock(false);
         }}
+        onScrollLock={false}
       />
     </>
   );
