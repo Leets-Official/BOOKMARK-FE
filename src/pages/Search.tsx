@@ -22,9 +22,12 @@ const Search = () => {
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
-  const [categories, setCategories] = useState<{ id: number; content: string }[]>([]);
+  const [categories, setCategories] = useState<{ categoryId: number; categoryName: string }[]>([]);
+  // 중복된 태그를 제외한 태그 목록
+  const [tags, setTags] = useState<{ tagName: string; tagIds: number[]; categoryIds: number[] }[]>(
+    [],
+  );
   const [platforms, setPlatforms] = useState<{ id: number; content: string }[]>([]);
-  const [tags, setTags] = useState<{ id: number; content: string }[]>([]);
   const [showTags, setShowTags] = useState(false);
 
   const { data: categoriesWithTag, isPending } = useQuery({
@@ -38,7 +41,51 @@ const Search = () => {
     },
   });
 
-  console.log(categoriesWithTag);
+  // 중복 태그 처리 함수
+  const processDuplicateTags = (tags: { tagId: number; tagName: string; categoryId: number }[]) => {
+    const tagMap = new Map<string, { tagName: string; tagIds: number[]; categoryIds: number[] }>();
+
+    tags.forEach((tag) => {
+      if (tagMap.has(tag.tagName)) {
+        // 기존 태그가 있으면 tagId와 categoryId 추가
+        const existing = tagMap.get(tag.tagName)!;
+        existing.tagIds.push(tag.tagId);
+        existing.categoryIds.push(tag.categoryId);
+      } else {
+        // 새로운 태그면 새로 생성
+        tagMap.set(tag.tagName, {
+          tagName: tag.tagName,
+          tagIds: [tag.tagId],
+          categoryIds: [tag.categoryId],
+        });
+      }
+    });
+
+    // Map을 배열로 변환
+    return Array.from(tagMap.values());
+  };
+
+  if (!isPending) {
+    const categories = categoriesWithTag?.map((category) => ({
+      categoryId: category.categoryId,
+      categoryName: category.categoryName,
+    }));
+
+    const allTags = categoriesWithTag?.flatMap((category) =>
+      category.tags.map((tag) => ({
+        tagId: tag.tagId,
+        tagName: tag.tagName,
+        categoryId: tag.categoryId,
+      })),
+    );
+
+    // 중복 태그 처리
+    const processedTags = processDuplicateTags(allTags || []);
+
+    setCategories(categories || []);
+    setTags(processedTags || []);
+    console.log(processedTags);
+  }
 
   useEffect(() => {
     const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(
