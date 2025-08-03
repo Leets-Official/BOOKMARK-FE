@@ -13,6 +13,7 @@ import {
   titleAtom,
   memoAtom,
   platformAtom,
+  thumbnailAtom,
 } from '@/atoms';
 import { createCategory, getCategories } from '@/api/category/category';
 import { createTag, getTags } from '@/api/tag/tag';
@@ -29,6 +30,7 @@ const SaveButton = () => {
   const url = useAtomValue(linkAtom);
   const title = useAtomValue(titleAtom);
   const platfrom = useAtomValue(platformAtom);
+  const thumbnail = useAtomValue(thumbnailAtom);
   const faviconUrl = useAtomValue(faviconAtom);
   const memo = useAtomValue(memoAtom);
 
@@ -129,10 +131,10 @@ const SaveButton = () => {
       memo: memo ?? '',
       file: {
         fileName: 'marine-3352341_1280.jpg',
-        fileUrl: 'https://cdn.pixabay.com/photo/2018/04/26/16/31/marine-3352341_1280.jpg',
+        fileUrl: thumbnail ?? '',
       },
       notification: {
-        notifyAt: '2025-08-01T09:00:00',
+        notifyAt: '2025-08-04T00:00:00',
       },
       platform: platformUpper as BookmarkSaveProps['platform'],
       categoryId,

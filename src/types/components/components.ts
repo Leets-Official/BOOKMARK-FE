@@ -26,9 +26,8 @@ export interface SaveCardProps {
   id: number;
   title: string;
   memo: string;
-  platform: string;
-  image: string;
   category: string;
   tags: string[];
-  createdAt: string;
+  image: string;
+  platform: string;
 }

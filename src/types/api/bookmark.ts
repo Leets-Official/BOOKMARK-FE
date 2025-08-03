@@ -100,3 +100,15 @@ export interface BookmarkSearchDataProps {
   last: boolean;
   empty: boolean;
 }
+
+export interface SaveBookMarkProps {
+  id: number;
+  title: string;
+  memo: string;
+  platform: string;
+  image: string;
+  faviconUrl: string;
+  category: string;
+  tags: string[];
+  createdAt: string;
+}

@@ -35,6 +35,7 @@ const SaveCardList = () => {
           image: data.file?.fileUrl ?? '', // 없을 경우 대비
           category,
           tags,
+          faviconUrl: data.faviconUrl,
           createdAt: data.createdAt,
         };
       });

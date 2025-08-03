@@ -2,7 +2,6 @@ import { AlertIcon, FolderDetailIcon } from '@/assets';
 import { Image, Chip, Button } from '@/components/common';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
-import type { SaveCardProps } from '@/types/components/components';
 import { motion } from 'framer-motion';
 import { MenuPortal } from '@/utils/';
 import { useMenuHandler } from '@/hooks/menuPosition';
@@ -10,8 +9,9 @@ import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../modal/DeleteModal';
 import { useState } from 'react';
 import dayjs from 'dayjs';
+import type { SaveBookMarkProps } from '@/types/api/bookmark';
 
-const SaveCard = ({ data }: { data: SaveCardProps }) => {
+const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const navigate = useNavigate();
@@ -34,11 +34,11 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
         )}
       >
         <div className='p-3.5 pb-10'>
-          <div className='flex flex-wrap gap-2 mb-4 w-9/10'>
+          <div className='flex flex-wrap gap-2 mb-4 w-full h-20'>
             <Chip
               content={data.category}
               isSelected={false}
-              className='bg-[#80CA14] text-white border-[#EAEDF5] text-[15px] px-3 h-[40px]'
+              className='bg-[#80CA14] text-white border-[#EAEDF5] text-[15px] px-3 h-[36px]'
             />
             {data.tags?.map((tag, i) => (
               <Chip
@@ -49,7 +49,12 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
               />
             ))}
             <Chip
-              content={data.platform}
+              content={
+                <span className='flex items-center gap-1'>
+                  <img src={data.faviconUrl} alt='favicon' className='w-4 h-4' />
+                  <span>{data.platform}</span>
+                </span>
+              }
               isSelected={false}
               className='border-blue text-[15px] px-3 h-[36px]'
             />
@@ -57,8 +62,12 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
           <Image src={data.image} className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4' />
           <div className='flex justify-between items-start pl-2 pb-2'>
             <div className='flex-1'>
-              <h3 className='font-semibold text-[20px] text-gray-900 mb-2'>{data.title}</h3>
-              <p className='text-[15px] text-gray-600 leading-relaxed mb-2'>{data.memo}</p>
+              <h3 className='font-semibold text-[20px] text-gray-900 mb-2 line-clamp-1'>
+                {data.title}
+              </h3>
+              <p className='text-[15px] text-gray-600 leading-relaxed mb-2 line-clamp-2'>
+                {data.memo}
+              </p>
               <div className='absolute bottom-4 left-6 right-4 flex justify-between items-center'>
                 <div className='flex items-center gap-2'>
                   <p className='text-sm text-stone'>

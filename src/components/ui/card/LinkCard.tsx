@@ -1,5 +1,5 @@
 import { getPresignedUrl } from '@/api/file/presigned_url_api';
-import { platformAtom, previewImageAtom, titleAtom } from '@/atoms';
+import { platformAtom, previewImageAtom, thumbnailAtom, titleAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
@@ -18,11 +18,13 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
   const [imageError, setImageError] = useState(false);
   const setTitle = useSetAtom(titleAtom);
   const setPlatform = useSetAtom(platformAtom);
+  const setThumbnail = useSetAtom(thumbnailAtom);
 
   useEffect(() => {
     setTitle(title);
     setPlatform(platform);
-  }, [title, platform, setTitle, setPlatform]);
+    setThumbnail(image);
+  }, [title, platform, setTitle, setPlatform, setThumbnail, image]);
 
   // 버튼 클릭 시 숨겨진 파일 입력창 엶
   const handleImageUpload = () => {
