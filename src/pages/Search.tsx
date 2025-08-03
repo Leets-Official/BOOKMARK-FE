@@ -13,7 +13,9 @@ import {
 } from '@/atoms';
 import { dummyCardData } from '@/constants/DummyData';
 import { postSearchHistory } from '@/api/searchHistory/searchHistory';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getCategoriesWithTag } from '@/api/category/category';
+import Loading from '@/components/ui/loading/Loading';
 
 const Search = () => {
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
@@ -24,6 +26,19 @@ const Search = () => {
   const [platforms, setPlatforms] = useState<{ id: number; content: string }[]>([]);
   const [tags, setTags] = useState<{ id: number; content: string }[]>([]);
   const [showTags, setShowTags] = useState(false);
+
+  const { data: categoriesWithTag, isPending } = useQuery({
+    queryKey: ['categoriesWithTags'],
+    queryFn: async () => {
+      const res = await getCategoriesWithTag();
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+  });
+
+  console.log(categoriesWithTag);
 
   useEffect(() => {
     const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(
@@ -110,48 +125,54 @@ const Search = () => {
             </Button>
           )}
         </div>
-        <div className='bg-white p-4 rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
-          <p className='mb-2 text-sm font-semibold text-stone'>카테고리</p>
-          <div className='flex flex-wrap gap-2 mb-6 p-0.5'>
-            {categories.map((category) => (
-              <Chip
-                key={category.id}
-                content={category.content}
-                isSelected={selectedCategories.includes(category.content)}
-                onClick={() => toggleSelection(category.content, setSelectedCategories, 'category')}
-                className='border-lightGrayBlue'
-                selectedClassName='border-1 border-lightGreen bg-lightGreen text-white'
-              />
-            ))}
+        {isPending ? (
+          <Loading className='w-[96px] h-[96px] m-5' />
+        ) : (
+          <div className='bg-white p-4 rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
+            <p className='mb-2 text-sm font-semibold text-stone'>카테고리</p>
+            <div className='flex flex-wrap gap-2 mb-6 p-0.5'>
+              {categories.map((category) => (
+                <Chip
+                  key={category.id}
+                  content={category.content}
+                  isSelected={selectedCategories.includes(category.content)}
+                  onClick={() =>
+                    toggleSelection(category.content, setSelectedCategories, 'category')
+                  }
+                  className='border-lightGrayBlue'
+                  selectedClassName='border-1 border-lightGreen bg-lightGreen text-white'
+                />
+              ))}
+            </div>
+            <hr className='border-1 border-lightGrayBlue mb-3' />
+            <p className='text-sm font-semibold text-stone'>태그</p>
+            <AnimatePresence mode='wait'>
+              {showTags && (
+                <motion.div
+                  key='tagContainer'
+                  initial={{ height: 0 }}
+                  animate={{ height: 'auto' }}
+                  exit={{ height: 0 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className='overflow-hidden'
+                >
+                  <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
+                    {tags.map((tag) => (
+                      <Chip
+                        key={tag.id}
+                        content={tag.content}
+                        isSelected={selectedTags.includes(tag.content)}
+                        onClick={() => toggleSelection(tag.content, setSelectedTags)}
+                        className='border-lightGrayBlue'
+                        selectedClassName='border-1 border-blue bg-blue/10 text-blue'
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <hr className='border-1 border-lightGrayBlue mb-3' />
-          <p className='text-sm font-semibold text-stone'>태그</p>
-          <AnimatePresence mode='wait'>
-            {showTags && (
-              <motion.div
-                key='tagContainer'
-                initial={{ height: 0 }}
-                animate={{ height: 'auto' }}
-                exit={{ height: 0 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className='overflow-hidden'
-              >
-                <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
-                  {tags.map((tag) => (
-                    <Chip
-                      key={tag.id}
-                      content={tag.content}
-                      isSelected={selectedTags.includes(tag.content)}
-                      onClick={() => toggleSelection(tag.content, setSelectedTags)}
-                      className='border-lightGrayBlue'
-                      selectedClassName='border-1 border-blue bg-blue/10 text-blue'
-                    />
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        )}
 
         {/* 플랫폼 영역 */}
         <div className='mt-4 bg-white rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-4 py-4'>
