@@ -29,6 +29,7 @@ const SaveCardList = () => {
 
         return {
           id: data.id,
+          url: data.url,
           title: data.title,
           memo: data.memo,
           platform: data.platform,

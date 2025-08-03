@@ -81,6 +81,7 @@ export interface BookmarkSearchDataProps {
 
 export interface SaveBookMarkProps {
   id: number;
+  url: string;
   title: string;
   memo: string;
   platform: string;

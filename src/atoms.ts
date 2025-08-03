@@ -8,6 +8,7 @@ const titleAtom = atom<string>('');
 const platformAtom = atom<string>('');
 const thumbnailAtom = atom<string | undefined>(undefined);
 const faviconAtom = atom<string | undefined>(undefined);
+const uploadUrlAtom = atom<string>('');
 const memoAtom = atom('');
 const visibleCardAtom = atom(false);
 const visibleCategoryAtom = atom(false);
@@ -38,6 +39,7 @@ export {
   thumbnailAtom,
   faviconAtom,
   memoAtom,
+  uploadUrlAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,

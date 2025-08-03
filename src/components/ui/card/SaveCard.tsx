@@ -98,7 +98,11 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
               />
             </motion.div>
           </div>
-          <Image src={data.image} className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4' />
+          <Image
+            src={data.image}
+            className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4'
+            onClick={() => window.open(data.url, '_blank')}
+          />
           <div className='flex justify-between items-start pl-2 pb-2'>
             <div className='flex-1'>
               <h3 className='font-semibold text-[20px] text-gray-900 mb-2 line-clamp-1 leading-tight'>

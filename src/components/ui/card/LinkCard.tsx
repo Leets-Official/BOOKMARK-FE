@@ -1,5 +1,5 @@
-import { getPresignedUrl } from '@/api/file/presigned_url_api';
-import { platformAtom, previewImageAtom, thumbnailAtom, titleAtom } from '@/atoms';
+import { getPresignedUrl, uploadImage } from '@/api/file/presigned_url_api';
+import { platformAtom, previewImageAtom, thumbnailAtom, titleAtom, uploadUrlAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
@@ -19,6 +19,7 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
   const setTitle = useSetAtom(titleAtom);
   const setPlatform = useSetAtom(platformAtom);
   const setThumbnail = useSetAtom(thumbnailAtom);
+  const setUploadUrl = useSetAtom(uploadUrlAtom);
 
   useEffect(() => {
     setTitle(title);
@@ -60,6 +61,16 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
       setImageError(true);
       return;
     }
+
+    const uploadedUrl = await uploadImage(presigned.data.presignedUrl, file);
+    if (typeof uploadedUrl !== 'string') {
+      console.error('실패: ', uploadedUrl.message);
+      setImageError(true);
+      return;
+    }
+
+    setUploadUrl(uploadedUrl);
+    console.log(uploadedUrl);
 
     const previewURL = URL.createObjectURL(file); // 파일을 브라우저에서 볼 수 있는 임시 URL 생성
     setPreviewImage(previewURL);

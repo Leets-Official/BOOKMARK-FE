@@ -14,6 +14,7 @@ import {
   memoAtom,
   platformAtom,
   thumbnailAtom,
+  uploadUrlAtom,
 } from '@/atoms';
 import { createCategory, getCategories } from '@/api/category/category';
 import { createTag, getTags } from '@/api/tag/tag';
@@ -33,6 +34,7 @@ const SaveButton = () => {
   const thumbnail = useAtomValue(thumbnailAtom);
   const faviconUrl = useAtomValue(faviconAtom);
   const memo = useAtomValue(memoAtom);
+  const uploadUrl = useAtomValue(uploadUrlAtom);
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
@@ -46,7 +48,7 @@ const SaveButton = () => {
     onSuccess: (res) => {
       console.log('✅ 저장된 북마크 데이터:', res);
       console.log('📦 data 필드:', res.data);
-      toast.success('저장되었습니다');
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
     },
     onError: () => {
       toast.error('저장에 실패했습니다');
@@ -131,7 +133,7 @@ const SaveButton = () => {
       memo: memo ?? '',
       file: {
         fileName: 'bookmarkExample.jpg',
-        fileUrl: thumbnail ?? '',
+        fileUrl: uploadUrl || thumbnail || '',
       },
       notification: {
         notifyAt: '2025-08-04T00:00:00',
