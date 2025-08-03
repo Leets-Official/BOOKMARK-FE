@@ -55,14 +55,6 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
     enabled: false,
   });
 
-  // 링크가 있으면 카테고리 보여주기
-  useEffect(() => {
-    if (control._formValues.url) {
-      setVisibleCard(true);
-      setVisibleCategory(true);
-    }
-  }, [control._formValues.url, setVisibleCard, setVisibleCategory]);
-
   useEffect(() => {
     if (bookmarkUrlData && bookmarkUrlData.length > 0) {
       const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
@@ -134,11 +126,11 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
             placeholder='링크를 입력해주세요'
             onChange={(e) => {
               field.onChange(e);
-              handleSetVisible(e);
             }}
             onBlur={() => {
               field.onBlur();
               handleLink(field.value);
+              handleSetVisible(field.value);
             }}
             value={field.value}
             errorMessage={fieldState.error?.message}

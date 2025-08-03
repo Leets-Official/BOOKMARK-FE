@@ -1,7 +1,7 @@
-import { visibleMemoAndAlarmAtom } from '@/atoms';
+import { memoAtom, visibleMemoAndAlarmAtom } from '@/atoms';
 import TextField from '@/components/ui/TextField';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { Controller, type Control } from 'react-hook-form';
 import type z from 'zod';
 import type { saveSchema } from '@/schema/save';
@@ -12,13 +12,13 @@ interface IMemoProps {
 
 const Memo = ({ control }: IMemoProps) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
-  const visible = atomVisible;
+  const setMemo = useSetAtom(memoAtom);
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 sm:px-6 pt-2 pb-5'>
       <p className='text-sm text-stone font-semibold mt-2'>메모</p>
       <AnimatePresence>
-        {visible && (
+        {atomVisible && (
           <motion.div
             key='memoContainer'
             initial={{ height: 0 }}
@@ -37,7 +37,10 @@ const Memo = ({ control }: IMemoProps) => {
                   maxLength={50}
                   value={field.value}
                   onBlur={field.onBlur}
-                  onChange={field.onChange}
+                  onChange={(value) => {
+                    field.onChange(value);
+                    setMemo(value);
+                  }}
                   errorMessage={fieldState.error?.message}
                   buttonVisible={false}
                 />

@@ -34,7 +34,7 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
         )}
       >
         <div className='p-3.5 pb-10'>
-          <div className='flex flex-wrap gap-2 mb-4 w-full h-20'>
+          <div className='flex flex-wrap gap-2 mb-4 w-full h-20 hide-scrollbar overflow-y-scroll'>
             <Chip
               content={data.category}
               isSelected={false}
@@ -62,7 +62,7 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
           <Image src={data.image} className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4' />
           <div className='flex justify-between items-start pl-2 pb-2'>
             <div className='flex-1'>
-              <h3 className='font-semibold text-[20px] text-gray-900 mb-2 line-clamp-1'>
+              <h3 className='font-semibold text-[20px] text-gray-900 mb-2 line-clamp-1 leading-tight'>
                 {data.title}
               </h3>
               <p className='text-[15px] text-gray-600 leading-relaxed mb-2 line-clamp-2'>
@@ -73,7 +73,7 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
                   <p className='text-sm text-stone'>
                     {dayjs(data.createdAt).format('YYYY.MM.DD HH:mm')} 저장
                   </p>
-                  <AlertIcon width={16} height={16} />
+                  <AlertIcon width={16} height={16} stroke={'#A4A8B2'} />
                 </div>
                 <div ref={iconRef} onClick={isOpen}>
                   <FolderDetailIcon

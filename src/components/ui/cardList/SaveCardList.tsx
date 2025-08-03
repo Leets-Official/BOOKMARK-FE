@@ -6,12 +6,12 @@ import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { searchBookmarks } from '@/api/bookmark/bookmark';
-import type { BookmarkSearchProps } from '@/types/api/bookmark';
+import type { SaveBookMarkProps, BookmarkSearchProps } from '@/types/api/bookmark';
 
 const SaveCardList = () => {
   const navigate = useNavigate();
   const [sortOrder, setSortOrder] = useState(true);
-  const [bookmarkData, setBookmarkData] = useState<any[]>([]);
+  const [bookmarkData, setBookmarkData] = useState<SaveBookMarkProps[]>([]);
 
   const sortLabel = sortOrder ? '최신순' : '오래된순';
   const displayCount = isMobile ? 6 : 9;
@@ -24,8 +24,8 @@ const SaveCardList = () => {
 
       const resData = content.map((data) => {
         const categoryInfo = data.categoryTagInfos?.[0];
-        const category = categoryInfo?.categoryName ?? '기타';
-        const tags = categoryInfo?.tags?.map((tag: any) => tag.tagName) ?? [];
+        const category = categoryInfo.categoryName;
+        const tags = categoryInfo?.tags.map((tag) => tag.tagName);
 
         return {
           id: data.id,
