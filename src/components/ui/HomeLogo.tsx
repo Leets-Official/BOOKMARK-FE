@@ -21,7 +21,7 @@ const HomLogo = () => {
       <div className='flex flex-col justify-center items-center gap-3'>
         <SymbolIcon className={clsx(isMobile ? 'w-[52px] h-[56px]' : 'w-[76px] h-[84px]')} />
         <p className={clsx('text-[#1A2033] font-semibold', isMobile ? 'text-base' : 'text-2xl')}>
-          {userInfo?.nickname ? <p>{userInfo.nickname}의 인사이트</p> : null}
+          {userInfo?.nickname ? `${userInfo.nickname}의 인사이트` : null}
         </p>
       </div>
     </div>
