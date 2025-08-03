@@ -2,12 +2,12 @@ import { AlertIcon, FolderDetailIcon } from '@/assets';
 import { Image, Chip, Button } from '@/components/common';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import { MenuPortal } from '@/utils/';
 import { useMenuHandler } from '@/hooks/menuPosition';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../modal/DeleteModal';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import type { SaveBookMarkProps } from '@/types/api/bookmark';
 
@@ -15,6 +15,35 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const navigate = useNavigate();
+
+  const x = useMotionValue(0);
+  const dragRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [constraints, setConstraints] = useState({ left: 0, right: 0 });
+
+  useEffect(() => {
+    const updateConstraints = () => {
+      if (dragRef.current && containerRef.current) {
+        const totalChipWidth = dragRef.current.scrollWidth;
+        const containerWidth = containerRef.current.offsetWidth;
+        const buffer = 8;
+        const maxDrag = totalChipWidth - containerWidth + buffer;
+        const newLeft = -Math.max(0, maxDrag);
+
+        setConstraints({ left: newLeft, right: 0 });
+
+        const currentX = x.get();
+        if (currentX < newLeft) {
+          x.set(newLeft);
+        } else if (currentX > 0) {
+          x.set(0);
+        }
+      }
+    };
+    updateConstraints();
+    window.addEventListener('resize', updateConstraints);
+    return () => window.removeEventListener('resize', updateConstraints);
+  }, [data, x]);
 
   const menuOpenStyles =
     isMenuOpen && !isMobile
@@ -34,30 +63,40 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
         )}
       >
         <div className='p-3.5 pb-10'>
-          <div className='flex flex-wrap gap-2 mb-4 w-full h-20 hide-scrollbar overflow-y-scroll'>
-            <Chip
-              content={data.category}
-              isSelected={false}
-              className='bg-[#80CA14] text-white border-[#EAEDF5] text-[15px] px-3 h-[36px]'
-            />
-            {data.tags?.map((tag, i) => (
+          <div ref={containerRef} className='overflow-hidden p-1'>
+            <motion.div
+              ref={dragRef}
+              style={{ x }}
+              drag='x'
+              dragConstraints={constraints}
+              dragElastic={0.05}
+              dragTransition={{ power: 0.01, timeConstant: 200 }}
+              className='flex gap-2 mb-4 w-full hide-scrollbar'
+            >
               <Chip
-                key={i}
-                content={tag}
+                content={data.category}
                 isSelected={false}
-                className='border-[#EAEDF5] text-[15px] px-3 h-[36px]'
+                className='bg-[#80CA14] text-white border-lightGrayBlue text-[15px] px-3 h-[36px] flex-shrink-0'
               />
-            ))}
-            <Chip
-              content={
-                <span className='flex items-center gap-1'>
-                  <img src={data.faviconUrl} alt='favicon' className='w-4 h-4' />
-                  <span>{data.platform}</span>
-                </span>
-              }
-              isSelected={false}
-              className='border-blue text-[15px] px-3 h-[36px]'
-            />
+              {data.tags?.map((tag, i) => (
+                <Chip
+                  key={i}
+                  content={tag}
+                  isSelected={false}
+                  className='border-[#EAEDF5] text-[15px] px-3 h-[36px] flex-shrink-0'
+                />
+              ))}
+              <Chip
+                content={
+                  <span className='flex items-center gap-1'>
+                    <img src={data.faviconUrl} alt='favicon' className='w-4 h-4' />
+                    <span>{data.platform}</span>
+                  </span>
+                }
+                isSelected={false}
+                className='border-blue text-[15px] px-3 h-[36px] flex-shrink-0'
+              />
+            </motion.div>
           </div>
           <Image src={data.image} className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4' />
           <div className='flex justify-between items-start pl-2 pb-2'>

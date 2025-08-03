@@ -130,7 +130,7 @@ const SaveButton = () => {
       url: url ?? '',
       memo: memo ?? '',
       file: {
-        fileName: 'marine-3352341_1280.jpg',
+        fileName: 'bookmarkExample.jpg',
         fileUrl: thumbnail ?? '',
       },
       notification: {
