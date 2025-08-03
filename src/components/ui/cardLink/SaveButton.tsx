@@ -9,7 +9,6 @@ import {
   selectedTagAtom,
   suggestionListAtom,
   linkAtom,
-  previewImageAtom,
   faviconAtom,
   titleAtom,
   memoAtom,
@@ -19,7 +18,7 @@ import { createCategory, getCategories } from '@/api/category/category';
 import { createTag, getTags } from '@/api/tag/tag';
 import { saveBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
-import { uploadImage } from '@/api/file/presigned_url_api';
+import type { BookmarkSaveProps } from '@/types/api/bookmark';
 
 const SaveButton = () => {
   const tempCategories = useAtomValue(tempCategoriesAtom);
@@ -31,7 +30,6 @@ const SaveButton = () => {
   const title = useAtomValue(titleAtom);
   const platfrom = useAtomValue(platformAtom);
   const faviconUrl = useAtomValue(faviconAtom);
-  const previewImage = useAtomValue(previewImageAtom);
   const memo = useAtomValue(memoAtom);
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
@@ -39,9 +37,13 @@ const SaveButton = () => {
   const queryClient = useQueryClient();
 
   const saveBookmarkMutation = useMutation({
-    mutationFn: saveBookmarks,
-    onSuccess: (data) => {
-      console.log('✅ 저장된 북마크 데이터:', data);
+    mutationFn: async (bookmarkData: BookmarkSaveProps) => {
+      const res = await saveBookmarks(bookmarkData);
+      return res;
+    },
+    onSuccess: (res) => {
+      console.log('✅ 저장된 북마크 데이터:', res);
+      console.log('📦 data 필드:', res.data);
       toast.success('저장되었습니다');
     },
     onError: () => {
@@ -118,52 +120,28 @@ const SaveButton = () => {
     const allTags = tagRes.data || [];
     const tagIds = allTags.filter((t) => selectedTag.includes(t.tagName)).map((t) => t.tagId);
 
-    // 이미지 처리
-    let file: { fileName: string; fileUrl: string } | undefined = undefined;
-    if (previewImage?.startsWith('blob')) {
-      const fileBlob = await fetch(previewImage).then((res) => res.blob());
-      const fileName = `uploaded_${Date.now()}.webp`;
-      const uploadResult = await uploadImage(previewImage, fileBlob as File);
-
-      // uploadImage 결과가 string인지 error 객체인지 확인
-      if (typeof uploadResult === 'string') {
-        file = {
-          fileName,
-          fileUrl: uploadResult,
-        };
-      } else {
-        // 업로드 실패 시 에러 처리
-        toast.error(uploadResult.message);
-        return; // 업로드 실패 시 전체 저장 프로세스 중단
-      }
-    }
-
     const platformUpper = platfrom?.toUpperCase() || 'ETC';
 
     // 북마크 저장 API 호출
-    const bookmarkData: any = {
+    const bookmarkData: BookmarkSaveProps = {
       title: title ?? '제목',
-      url,
-      memo,
-      platform: platformUpper as
-        | 'NAVER'
-        | 'NAVER_BLOG'
-        | 'TISTORY'
-        | 'YOUTUBE'
-        | 'INSTAGRAM'
-        | 'VELOG'
-        | 'ETC',
+      url: url ?? '',
+      memo: memo ?? '',
+      file: {
+        fileName: 'marine-3352341_1280.jpg',
+        fileUrl: 'https://cdn.pixabay.com/photo/2018/04/26/16/31/marine-3352341_1280.jpg',
+      },
+      notification: {
+        notifyAt: '2025-08-01T09:00:00',
+      },
+      platform: platformUpper as BookmarkSaveProps['platform'],
       categoryId,
-      tagIds,
       faviconUrl: faviconUrl ?? '',
+      tagIds,
     };
-
-    // file이 있을 때만 추가
-    if (file) {
-      bookmarkData.file = file;
-    }
-
+    console.log('📤 bookmarkData:', JSON.stringify(bookmarkData, null, 2));
     saveBookmarkMutation.mutate(bookmarkData);
+    console.log('📤 최종 bookmarkData', bookmarkData);
 
     setVisibleTag(false);
     setVisibleMemoAndAlarm(false);

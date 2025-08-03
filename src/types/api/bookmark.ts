@@ -26,8 +26,8 @@ export interface BookMarkURLProps {
 export interface BookmarkSaveProps {
   title: string;
   url: string;
-  memo: string;
-  file: {
+  memo?: string;
+  file?: {
     fileName: string;
     fileUrl: string;
   };

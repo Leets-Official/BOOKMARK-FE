@@ -19,15 +19,27 @@ const SaveCardList = () => {
   const searchBookMarkMutation = useMutation({
     mutationFn: searchBookmarks,
     onSuccess: (res) => {
-      console.log('✅ 조회된 북마크 데이터:', res);
+      console.log('조회된 북마크 데이터:', res);
       const content = res.data?.content ?? [];
 
-      const filtered = content.filter((item) => item.file !== null);
-      const nullFileItems = content.filter((item) => item.file === null);
-      if (nullFileItems.length > 0) {
-        console.warn('❗ file이 null인 북마크 발견:', nullFileItems);
-      }
-      const sorted = [...filtered].sort((a, b) =>
+      const resData = content.map((data) => {
+        const categoryInfo = data.categoryTagInfos?.[0];
+        const category = categoryInfo?.categoryName ?? '기타';
+        const tags = categoryInfo?.tags?.map((tag: any) => tag.tagName) ?? [];
+
+        return {
+          id: data.id,
+          title: data.title,
+          memo: data.memo,
+          platform: data.platform,
+          image: data.file?.fileUrl ?? '', // 없을 경우 대비
+          category,
+          tags,
+          createdAt: data.createdAt,
+        };
+      });
+
+      const sorted = [...resData].sort((a, b) =>
         sortOrder
           ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
@@ -35,7 +47,7 @@ const SaveCardList = () => {
       setBookmarkData(sorted);
     },
     onError: (err) => {
-      console.error('❌ 북마크 검색 실패:', err);
+      console.error('북마크 조회 실패:', err);
     },
   });
 
@@ -49,6 +61,7 @@ const SaveCardList = () => {
     };
 
     searchBookMarkMutation.mutate(requestBody);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [displayCount, sortOrder]);
 
   return (

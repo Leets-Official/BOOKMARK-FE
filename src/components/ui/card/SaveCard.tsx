@@ -9,6 +9,7 @@ import { useMenuHandler } from '@/hooks/menuPosition';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../modal/DeleteModal';
 import { useState } from 'react';
+import dayjs from 'dayjs';
 
 const SaveCard = ({ data }: { data: SaveCardProps }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -39,7 +40,7 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
               isSelected={false}
               className='bg-[#80CA14] text-white border-[#EAEDF5] text-[15px] px-3 h-[40px]'
             />
-            {data.tags.map((tag, i) => (
+            {data.tags?.map((tag, i) => (
               <Chip
                 key={i}
                 content={tag}
@@ -60,7 +61,9 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
               <p className='text-[15px] text-gray-600 leading-relaxed mb-2'>{data.memo}</p>
               <div className='absolute bottom-4 left-6 right-4 flex justify-between items-center'>
                 <div className='flex items-center gap-2'>
-                  <p className='text-sm text-stone'>2025.07.17 18:28 저장</p>
+                  <p className='text-sm text-stone'>
+                    {dayjs(data.createdAt).format('YYYY.MM.DD HH:mm')} 저장
+                  </p>
                   <AlertIcon width={16} height={16} />
                 </div>
                 <div ref={iconRef} onClick={isOpen}>
