@@ -11,7 +11,6 @@ import {
   selectedPlatformsAtom,
   searchContentsAtom,
 } from '@/atoms';
-import { dummyCardData } from '@/constants/DummyData';
 import { postSearchHistory } from '@/api/searchHistory/searchHistory';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCategoriesWithTag } from '@/api/category/category';
@@ -23,7 +22,7 @@ const Search = () => {
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
   const [categories, setCategories] = useState<{ categoryId: number; categoryName: string }[]>([]);
-  // 중복된 태그를 제외한 태그 목록
+  // tagName이 중복된 태그를 제외한 태그 목록
   const [tags, setTags] = useState<{ tagName: string; tagIds: number[]; categoryIds: number[] }[]>(
     [],
   );
@@ -65,67 +64,64 @@ const Search = () => {
     return Array.from(tagMap.values());
   };
 
-  if (!isPending) {
-    const categories = categoriesWithTag?.map((category) => ({
-      categoryId: category.categoryId,
-      categoryName: category.categoryName,
-    }));
-
-    const allTags = categoriesWithTag?.flatMap((category) =>
-      category.tags.map((tag) => ({
-        tagId: tag.tagId,
-        tagName: tag.tagName,
-        categoryId: tag.categoryId,
-      })),
-    );
-
-    // 중복 태그 처리
-    const processedTags = processDuplicateTags(allTags || []);
-
-    setCategories(categories || []);
-    setTags(processedTags || []);
-    console.log(processedTags);
-  }
-
   useEffect(() => {
-    const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(
-      (c, i) => ({ id: i, content: c }),
-    );
+    if (!isPending) {
+      const categories = categoriesWithTag?.map((category) => ({
+        categoryId: category.categoryId,
+        categoryName: category.categoryName,
+      }));
 
-    const onlyPatforms = Array.from(new Set(dummyCardData.map((item) => item.platform))).map(
-      (p, i) => ({ id: i, content: p }),
-    );
+      const allTags = categoriesWithTag?.flatMap((category) =>
+        category.tags.map((tag) => ({
+          tagId: tag.tagId,
+          tagName: tag.tagName,
+          categoryId: tag.categoryId,
+        })),
+      );
 
-    setCategories(onlyCategories);
-    setPlatforms(onlyPatforms);
-  }, []);
+      // 중복 태그 처리
+      const processedTags = processDuplicateTags(allTags || []);
 
-  useEffect(() => {
-    if (selectedCategories.length === 1) {
-      const tags = dummyCardData
-        .filter((item) => item.category === selectedCategories[0])
-        .flatMap((item) => item.tags);
-      const uniqueTags = Array.from(new Set(tags)).map((t, i) => ({ id: i, content: t }));
-      setTags(uniqueTags);
-    } else {
-      setTags([]);
+      setCategories(categories || []);
+      setTags(processedTags || []);
+      console.log(processedTags);
     }
-    setShowTags(selectedCategories.length === 1);
-  }, [selectedCategories]);
+  }, [isPending, categoriesWithTag]);
 
-  const toggleSelection = (
-    item: string,
-    // eslint-disable-next-line no-unused-vars
-    setFn: (updater: (prev: string[]) => string[]) => void,
-    type?: 'category' | undefined,
-  ) => {
-    setFn((prev) => {
-      if (type === 'category') {
-        setSelectedTags([]);
-        return prev.includes(item) ? [] : [item];
+  // useEffect(() => {
+  //   const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(
+  //     (c, i) => ({ id: i, content: c }),
+  //   );
+
+  //   const onlyPatforms = Array.from(new Set(dummyCardData.map((item) => item.platform))).map(
+  //     (p, i) => ({ id: i, content: p }),
+  //   );
+
+  //   setCategories(onlyCategories);
+  //   setPlatforms(onlyPatforms);
+  // }, []);
+
+  // useEffect(() => {
+  //   if (selectedCategories.length === 1) {
+  //     const tags = dummyCardData
+  //       .filter((item) => item.category === selectedCategories[0])
+  //       .flatMap((item) => item.tags);
+  //     const uniqueTags = Array.from(new Set(tags)).map((t, i) => ({ id: i, content: t }));
+  //     setTags(uniqueTags);
+  //   } else {
+  //     setTags([]);
+  //   }
+  //   setShowTags(selectedCategories.length === 1);
+  // }, [selectedCategories]);
+
+  const handleCategorySelection = (item: { categoryId: number; categoryName: string }) => {
+    setSelectedCategories((prev) => {
+      if (prev.some((selected) => selected.categoryId === item.categoryId)) {
+        return prev.filter((selected) => selected.categoryId !== item.categoryId);
       }
-      return prev.includes(item) ? prev.filter((v) => v !== item) : [...prev, item];
+      return [...prev, item];
     });
+    setSelectedTags([]);
   };
 
   // 검색어 추가
@@ -155,9 +151,11 @@ const Search = () => {
     addSearchHistory(searchContents);
   };
 
+  console.log(selectedCategories);
+
   return (
     <div className='max-w-[1200px] mx-auto min-h-screen w-full md:w-[768px] flex flex-col'>
-      <FilterSearchBar />
+      {/* <FilterSearchBar /> */}
 
       {/* 스크롤 가능한 컨텐츠 영역 */}
       <div className='flex-1 overflow-y-auto p-3 pb-40 hide-scrollbar'>
@@ -180,12 +178,12 @@ const Search = () => {
             <div className='flex flex-wrap gap-2 mb-6 p-0.5'>
               {categories.map((category) => (
                 <Chip
-                  key={category.id}
-                  content={category.content}
-                  isSelected={selectedCategories.includes(category.content)}
-                  onClick={() =>
-                    toggleSelection(category.content, setSelectedCategories, 'category')
-                  }
+                  key={category.categoryId}
+                  content={category.categoryName}
+                  isSelected={selectedCategories.some(
+                    (selected) => selected.categoryId === category.categoryId,
+                  )}
+                  onClick={() => handleCategorySelection(category)}
                   className='border-lightGrayBlue'
                   selectedClassName='border-1 border-lightGreen bg-lightGreen text-white'
                 />
@@ -206,10 +204,10 @@ const Search = () => {
                   <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
                     {tags.map((tag) => (
                       <Chip
-                        key={tag.id}
-                        content={tag.content}
-                        isSelected={selectedTags.includes(tag.content)}
-                        onClick={() => toggleSelection(tag.content, setSelectedTags)}
+                        key={tag.tagName}
+                        content={tag.tagName}
+                        isSelected={selectedTags.includes(tag.tagName)}
+                        onClick={() => { }}
                         className='border-lightGrayBlue'
                         selectedClassName='border-1 border-blue bg-blue/10 text-blue'
                       />
