@@ -2,14 +2,18 @@ import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
 import {
+  faviconAtom,
   isSaveButtonDisabledAtom,
   linkAtom,
   memoAtom,
+  platformAtom,
   previewImageAtom,
   selectedCategoryAtom,
   selectedTagAtom,
   tempCategoriesAtom,
   tempTagsAtom,
+  thumbnailAtom,
+  titleAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
@@ -53,6 +57,10 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const resetLink = useSetAtom(linkAtom);
+  const resetTitle = useSetAtom(titleAtom);
+  const resetPlaform = useSetAtom(platformAtom);
+  const resetThumbnail = useSetAtom(thumbnailAtom);
+  const resetFavicon = useSetAtom(faviconAtom);
   const resetCard = useSetAtom(visibleCardAtom);
   const resetVisibleCate = useSetAtom(visibleCategoryAtom);
   const resetVisibleTag = useSetAtom(visibleTagAtom);
@@ -79,13 +87,21 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   useEffect(() => {
     resetLink('');
+    resetTitle('');
+    resetPlaform('');
+    resetThumbnail('');
+    resetFavicon('');
     resetCard(false);
-  }, [resetLink, resetCard]);
+  }, [resetLink, resetCard, resetTitle, resetPlaform, resetThumbnail, resetFavicon]);
 
   const onPrev = () => {
     resetVisibleCate(false);
     resetVisibleTag(false);
     resetMemo('');
+    resetTitle('');
+    resetPlaform('');
+    resetThumbnail('');
+    resetFavicon('');
     resetSelectedCategory('');
     resetSelectedTag([]);
     resetTempCategories([]);

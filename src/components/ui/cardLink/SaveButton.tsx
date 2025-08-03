@@ -21,19 +21,6 @@ import { saveBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
 import { uploadImage } from '@/api/file/presigned_url_api';
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useSaveMutation = () => {
-  return useMutation({
-    mutationFn: saveBookmarks,
-    onSuccess: () => {
-      toast.success('저장되었습니다');
-    },
-    onError: () => {
-      toast.error('저장에 실패했습니다');
-    },
-  });
-};
-
 const SaveButton = () => {
   const tempCategories = useAtomValue(tempCategoriesAtom);
   const tempTags = useAtomValue(tempTagsAtom);
@@ -51,7 +38,16 @@ const SaveButton = () => {
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
   const queryClient = useQueryClient();
 
-  const { mutate: saveBookmarkMutate } = useSaveMutation();
+  const saveBookmarkMutation = useMutation({
+    mutationFn: saveBookmarks,
+    onSuccess: (data) => {
+      console.log('✅ 저장된 북마크 데이터:', data);
+      toast.success('저장되었습니다');
+    },
+    onError: () => {
+      toast.error('저장에 실패했습니다');
+    },
+  });
 
   const createCategoryMutation = useMutation({
     mutationFn: async (categoryName: string) => {
@@ -146,7 +142,7 @@ const SaveButton = () => {
 
     // 북마크 저장 API 호출
     const bookmarkData: any = {
-      title: title?.trim() ?? '제목',
+      title: title ?? '제목',
       url,
       memo,
       platform: platformUpper as
@@ -167,7 +163,7 @@ const SaveButton = () => {
       bookmarkData.file = file;
     }
 
-    saveBookmarkMutate(bookmarkData);
+    saveBookmarkMutation.mutate(bookmarkData);
 
     setVisibleTag(false);
     setVisibleMemoAndAlarm(false);

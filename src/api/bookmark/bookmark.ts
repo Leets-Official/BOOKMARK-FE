@@ -1,11 +1,21 @@
 import { apiRequest } from '@/api/api';
-import type { BookmarkProps, BookmarkSaveProps, BookMarkURLProps } from '@/types/api/bookmark';
+import type {
+  BookmarkProps,
+  BookmarkSaveProps,
+  BookmarkSearchDataProps,
+  BookmarkSearchProps,
+  BookMarkURLProps,
+} from '@/types/api/bookmark';
 import type { ApiResponse } from '@/types/common/api-response';
 
-export const getBookmarks = async (): Promise<ApiResponse<BookmarkProps[]>> => {
+export const getBookmarks = async (
+  categoryId: number,
+  tagId: number,
+): Promise<ApiResponse<BookmarkProps[]>> => {
   return apiRequest<BookmarkProps[]>({
     method: 'GET',
-    url: '/bookmarks/all',
+    url: '/bookmarks/filter',
+    params: { categoryId, tagId },
   });
 };
 
@@ -23,6 +33,16 @@ export const saveBookmarks = async (
   return apiRequest<string>({
     method: 'POST',
     url: '/bookmarks',
+    data: bookmarkData,
+  });
+};
+
+export const searchBookmarks = async (
+  bookmarkData: BookmarkSearchProps,
+): Promise<ApiResponse<BookmarkSearchDataProps>> => {
+  return apiRequest<BookmarkSearchDataProps>({
+    method: 'POST',
+    url: '/bookmarks/search',
     data: bookmarkData,
   });
 };
