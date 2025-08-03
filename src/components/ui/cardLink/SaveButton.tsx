@@ -49,6 +49,7 @@ const SaveButton = () => {
       console.log('✅ 저장된 북마크 데이터:', res);
       console.log('📦 data 필드:', res.data);
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: () => {
       toast.error('저장에 실패했습니다');
@@ -124,7 +125,22 @@ const SaveButton = () => {
     const allTags = tagRes.data || [];
     const tagIds = allTags.filter((t) => selectedTag.includes(t.tagName)).map((t) => t.tagId);
 
-    const platformUpper = platfrom?.toUpperCase() || 'ETC';
+    // 플랫폼 형식에 맞게 추출
+    const getPlatformType = (platformString: string): BookmarkSaveProps['platform'] => {
+      if (!platformString) return 'ETC';
+
+      const lowerPlatform = platformString.toLowerCase();
+
+      if (lowerPlatform.includes('blog') && platformString.includes('네이버')) return 'NAVER_BLOG';
+      if (lowerPlatform.includes('naver') && platformString.includes('네이버')) return 'NAVER';
+      if (lowerPlatform.includes('tistory')) return 'TISTORY';
+      if (lowerPlatform.includes('youtube')) return 'YOUTUBE';
+      if (lowerPlatform.includes('instagram')) return 'INSTAGRAM';
+      if (lowerPlatform.includes('velog')) return 'VELOG';
+      return 'ETC'; // 이외에는 ETC
+    };
+
+    const platformUpper = getPlatformType(platfrom);
 
     // 북마크 저장 API 호출
     const bookmarkData: BookmarkSaveProps = {
@@ -136,7 +152,7 @@ const SaveButton = () => {
         fileUrl: uploadUrl || thumbnail || '',
       },
       notification: {
-        notifyAt: '2025-08-04T00:00:00',
+        notifyAt: '2025-08-05T00:00:00',
       },
       platform: platformUpper as BookmarkSaveProps['platform'],
       categoryId,

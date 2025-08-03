@@ -10,11 +10,26 @@ import DeleteModal from '../modal/DeleteModal';
 import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import type { SaveBookMarkProps } from '@/types/api/bookmark';
+import { useQuery } from '@tanstack/react-query';
+import { notificaton } from '@/api/alarm/notification';
 
 const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const navigate = useNavigate();
+
+  const { data: notificationData } = useQuery({
+    queryKey: ['notification'],
+    queryFn: async () => {
+      const res = await notificaton(data.id);
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+  });
+
+  const isNotified = notificationData?.some((noti) => noti.isNotified) ?? false;
 
   const x = useMotionValue(0);
   const dragRef = useRef<HTMLDivElement>(null);
@@ -100,7 +115,7 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
           </div>
           <Image
             src={data.image}
-            className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4'
+            className='w-full aspect-[4/2.2] object-cover rounded-xl mb-4'
             onClick={() => window.open(data.url, '_blank')}
           />
           <div className='flex justify-between items-start pl-2 pb-2'>
@@ -116,7 +131,7 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
                   <p className='text-sm text-stone'>
                     {dayjs(data.createdAt).format('YYYY.MM.DD HH:mm')} 저장
                   </p>
-                  <AlertIcon width={16} height={16} stroke={'#A4A8B2'} />
+                  {isNotified && <AlertIcon width={16} height={16} stroke={'#A4A8B2'} />}
                 </div>
                 <div ref={iconRef} onClick={isOpen}>
                   <FolderDetailIcon
