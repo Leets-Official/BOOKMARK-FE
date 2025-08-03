@@ -6,14 +6,16 @@ import { useState } from 'react';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import clsx from 'clsx';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getUserInfo, updateUserNickname } from '@/api/users/user';
+import { deleteUserInfo, getUserInfo, updateUserNickname } from '@/api/users/user';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileEdit = () => {
   const [nickname, setNickname] = useState('');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // 유저 정보 조회 API
   const { data: userInfo, isPending } = useQuery({
@@ -57,6 +59,23 @@ const ProfileEdit = () => {
     updateUserNicknameMutation(nickname);
     setNickname('');
   };
+
+  const { mutate: deleteUserInfoMutation } = useMutation({
+    mutationFn: deleteUserInfo,
+    onSuccess: (res) => {
+      if (res.error) {
+        toast.dismiss();
+        toast.error('계정 삭제에 실패했습니다.');
+        return;
+      }
+      queryClient.clear(); // 모든 캐시 초기화 (로그아웃 처리)
+      navigate('/login', { replace: true });
+    },
+    onError: () => {
+      toast.dismiss();
+      toast.error('계정 삭제에 실패했습니다.');
+    },
+  });
 
   return (
     <>
@@ -131,7 +150,8 @@ const ProfileEdit = () => {
         isOpen={isDeleteModalOpen}
         onCancel={() => setIsDeleteModalOpen(false)}
         onDelete={() => {
-          console.log('계정삭제');
+          setIsDeleteModalOpen(false);
+          deleteUserInfoMutation();
         }}
         warningText='정말 계정을 삭제하시겠습니까?'
         subText='이 계정에 관련한 모든 내용은 영구삭제되며, 복구하실 수 없습니다'

@@ -19,4 +19,11 @@ const updateUserNickname = async (nickname: string): Promise<ApiResponse<string>
   });
 };
 
-export { getUserInfo, updateUserNickname };
+const deleteUserInfo = async (): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'DELETE',
+    url: '/users/withdraw',
+  });
+};
+
+export { getUserInfo, updateUserNickname, deleteUserInfo };
