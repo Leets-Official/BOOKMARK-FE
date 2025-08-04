@@ -5,15 +5,19 @@ import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import { Controller, type Control } from 'react-hook-form';
+import TextField from '../TextField';
+import type { saveSchema } from '@/schema/save';
+import type z from 'zod';
 
 interface CardProps {
-  title: string;
+  control: Control<z.infer<typeof saveSchema>>;
   platform: string;
   image?: string;
   isLoading?: boolean;
 }
 
-const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
+const LinkCard = ({ control, platform, image, isLoading }: CardProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
@@ -23,10 +27,10 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
   const setUploadUrl = useSetAtom(uploadUrlAtom);
 
   useEffect(() => {
-    setTitle(title);
+    setTitle(control._formValues.title);
     setPlatform(platform);
     setThumbnail(image);
-  }, [title, platform, setTitle, setPlatform, setThumbnail, image]);
+  }, [control._formValues.title, platform, setTitle, setPlatform, setThumbnail, image]);
 
   // 버튼 클릭 시 숨겨진 파일 입력창 엶
   const handleImageUpload = () => {
@@ -127,10 +131,26 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
         onChange={handleFileChange}
       />
       <div className='flex flex-col flex-1 leading-6'>
-        <p className='text-sm sm:text-base text-black font-semibold break-words line-clamp-2 pr-3'>
-          {title}
-        </p>
-        <p className='text-xs text-stone font-medium leading-6'>{platform}</p>
+        <Controller
+          name='title'
+          control={control}
+          render={({ field, fieldState }) => (
+            <TextField
+              label=''
+              placeholder='링크를 입력해주세요'
+              onChange={(e) => {
+                field.onChange(e);
+              }}
+              onBlur={() => {
+                field.onBlur();
+              }}
+              value={field.value}
+              errorMessage={fieldState.error?.message}
+              className='text-sm sm:text-base text-black font-semibold break-words'
+            />
+          )}
+        />
+        <p className='text-xs text-stone font-medium leading-6 ml-2'>{platform}</p>
       </div>
     </div>
   );

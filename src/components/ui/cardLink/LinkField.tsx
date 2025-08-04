@@ -61,7 +61,7 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
     const uploadExternalImage = async () => {
       if (bookmarkUrlData && bookmarkUrlData.length > 0) {
         const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
-        setValue('title', title);
+        setValue('title', title, { shouldValidate: true });
         setValue('platform', platform);
         setFavicon(faviconUrl);
 
@@ -160,7 +160,7 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
         <>
           <hr className='border-t-2 border-lightGrayBlue my-4' />
           <LinkCard
-            title={control._formValues.title}
+            control={control}
             platform={control._formValues.platform}
             image={control._formValues.image}
             isLoading={isLoading || isFetching}
