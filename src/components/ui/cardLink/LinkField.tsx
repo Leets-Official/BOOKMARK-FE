@@ -161,6 +161,7 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
           <hr className='border-t-2 border-lightGrayBlue my-4' />
           <LinkCard
             control={control}
+            setValue={setValue}
             platform={control._formValues.platform}
             image={control._formValues.image}
             isLoading={isLoading || isFetching}

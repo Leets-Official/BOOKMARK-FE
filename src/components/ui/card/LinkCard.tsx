@@ -5,19 +5,20 @@ import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Controller, type Control } from 'react-hook-form';
+import { Controller, type Control, type UseFormSetValue } from 'react-hook-form';
 import TextField from '../TextField';
 import type { saveSchema } from '@/schema/save';
 import type z from 'zod';
 
 interface CardProps {
   control: Control<z.infer<typeof saveSchema>>;
+  setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
   platform: string;
   image?: string;
   isLoading?: boolean;
 }
 
-const LinkCard = ({ control, platform, image, isLoading }: CardProps) => {
+const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
@@ -31,6 +32,12 @@ const LinkCard = ({ control, platform, image, isLoading }: CardProps) => {
     setPlatform(platform);
     setThumbnail(image);
   }, [control._formValues.title, platform, setTitle, setPlatform, setThumbnail, image]);
+
+  useEffect(() => {
+    if (imageError) {
+      setValue('image', '', { shouldValidate: true });
+    }
+  }, [imageError, setValue]);
 
   // 버튼 클릭 시 숨겨진 파일 입력창 엶
   const handleImageUpload = () => {
@@ -79,6 +86,7 @@ const LinkCard = ({ control, platform, image, isLoading }: CardProps) => {
 
     const previewURL = URL.createObjectURL(file); // 파일을 브라우저에서 볼 수 있는 임시 URL 생성
     setPreviewImage(previewURL);
+    setValue('image', uploadedUrl, { shouldValidate: true });
     setImageError(false);
   };
 
