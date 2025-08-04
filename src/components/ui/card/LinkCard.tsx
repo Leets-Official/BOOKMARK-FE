@@ -36,6 +36,7 @@ const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) 
   useEffect(() => {
     if (imageError) {
       setValue('image', '', { shouldValidate: true });
+      toast.error('이미지를 선택해주세요');
     }
   }, [imageError, setValue]);
 

@@ -23,12 +23,13 @@ import { useScrollLock } from '@/hooks/scrollLock';
 import { saveSchema } from '@/schema/save';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type z from 'zod';
-import { useForm } from 'react-hook-form';
+import { useForm, type FieldErrors } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import { BackArrowIcon } from '@/assets';
+import toast from 'react-hot-toast';
 
 const SaveButtonClass = tv({
   base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] sm:w-[400px] rounded-[10px]',
@@ -185,9 +186,27 @@ const Save = ({ type }: SaveInterfaceProps) => {
     else onPrev();
   };
 
+  const handleSaveError = (errors: FieldErrors<z.infer<typeof schema>>) => {
+    let errorMessage = '';
+    if (errors.image) {
+      errorMessage = errors.image.message ?? '이미지를 선택해주세요';
+    } else if (errors.title) {
+      errorMessage = errors.title.message ?? '제목을 입력해주세요';
+    } else if (errors.url) {
+      errorMessage = errors.url.message ?? 'URL을 입력해주세요';
+    } else if (errors.category) {
+      errorMessage = errors.category.message ?? '카테고리를 선택해주세요';
+    } else if (errors.tags) {
+      errorMessage = errors.tags.message ?? '태그를 선택해주세요';
+    } else {
+      errorMessage = '모든 필드를 올바르게 입력해주세요.';
+    }
+    toast.error(errorMessage);
+  };
+
   return (
     <>
-      <form id='save-form' onSubmit={handleSubmit(handleSave)}>
+      <form id='save-form' onSubmit={handleSubmit(handleSave, handleSaveError)}>
         <div className='fixed inset-0 z-100 justify-center flex flex-col items-center bg-[#adadb1]/60 backdrop-blur-[25px] w-full h-full'>
           <div className='absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-white/80 via-white/60 to-transparent'>
             <div className='relative w-[90%] sm:w-[600px] mx-auto flex flex-row items-center justify-center mt-5'>
@@ -230,7 +249,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
               type='submit'
               form='save-form'
               className={SaveButtonClass({ isDisabled: isSaveButtonDisabled })}
-              disabled={isSaveButtonDisabled}
             >
               {type === 'create' ? '저장하기' : '수정하기'}
             </button>
