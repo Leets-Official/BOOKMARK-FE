@@ -18,6 +18,7 @@ import Loading from '@/components/ui/loading/Loading';
 import type { SearchCategory, SearchTag } from '@/types/common/search';
 import { getPlatforms } from '@/api/platform/platform';
 import type { PlatformProps } from '@/types/api/platform';
+import { useNavigate } from 'react-router-dom';
 
 const Search = () => {
   // 실제 유저가 입력한 값들
@@ -37,6 +38,8 @@ const Search = () => {
   // 플랫폼 목록
   const [platforms, setPlatforms] = useState<PlatformProps[]>([]); // 전체 플랫폼
   const [visiblePlatforms, setVisiblePlatforms] = useState<PlatformProps[]>([]); // 유저가 선택할 수 있는 플랫폼
+
+  const navigate = useNavigate();
 
   const { data: categoriesWithTag, isPending: isCategoriesPending } = useQuery({
     queryKey: ['categoriesWithTags'],
@@ -212,8 +215,17 @@ const Search = () => {
   };
 
   const handleSearch = () => {
-    console.log({ selectedCategories, selectedTags, selectedPlatforms });
-    addSearchHistory(searchContents);
+    // URL 파라미터로 데이터 전달
+    const params = new URLSearchParams();
+    if (searchContents) params.append('keyword', searchContents);
+    if (selectedCategories.length > 0)
+      params.append('categories', JSON.stringify(selectedCategories));
+    if (selectedTags.length > 0) params.append('tags', JSON.stringify(selectedTags));
+    if (selectedPlatforms.length > 0) params.append('platforms', JSON.stringify(selectedPlatforms));
+
+    resetAll();
+    navigate(`/search-result?${params.toString()}`);
+    if (searchContents) addSearchHistory(searchContents);
   };
 
   return (

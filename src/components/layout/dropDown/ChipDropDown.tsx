@@ -75,7 +75,7 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
             <p className='text-15 text-stone font-semibold mt-3'>{title}</p>
             <div className='flex flex-row gap-3 flex-wrap pb-2'>
               {options.map((option) => (
-                <DropDown.Item key={option.id} onClick={() => console.log('clicked')}>
+                <DropDown.Item key={option.id}>
                   <Chip
                     key={option.id}
                     content={option.content}
