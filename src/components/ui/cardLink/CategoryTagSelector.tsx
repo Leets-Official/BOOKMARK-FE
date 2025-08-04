@@ -87,11 +87,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
         isSelected: temp === selectedCategory,
       }));
 
-    const sortedCate = [...categoriesWithTagsData].sort(
-      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-    );
-
-    const realCategory = sortedCate.map((category) => ({
+    const realCategory = [...categoriesWithTagsData].map((category) => ({
       id: category.categoryId.toString(),
       content: category.categoryName,
       isSelected: category.categoryName === selectedCategory,
