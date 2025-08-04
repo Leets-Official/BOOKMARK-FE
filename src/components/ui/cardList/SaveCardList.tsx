@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { searchBookmarks } from '@/api/bookmark/bookmark';
+import { postBookmarkSearchResult } from '@/api/bookmark/bookmark';
 import type { SaveBookMarkProps, BookmarkSearchProps } from '@/types/api/bookmark';
 
 const SaveCardList = () => {
@@ -24,7 +24,7 @@ const SaveCardList = () => {
 
   const { data } = useQuery({
     queryKey: ['bookmarks', homeBookmarkData], // POST 파라미터를 queryKey에 포함
-    queryFn: () => searchBookmarks(homeBookmarkData),
+    queryFn: () => postBookmarkSearchResult(homeBookmarkData),
   });
 
   const bookmarkData: SaveBookMarkProps[] = useMemo(() => {

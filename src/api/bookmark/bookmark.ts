@@ -1,8 +1,8 @@
 import { apiRequest } from '@/api/api';
 import type {
   BookmarkSaveProps,
-  BookmarkSearchDataProps,
-  BookmarkSearchProps,
+  BookmarkSearchResultProps,
+  BookmarkSearchResultRequestProps,
   BookMarkURLProps,
 } from '@/types/api/bookmark';
 import type { ApiResponse } from '@/types/common/api-response';
@@ -25,13 +25,13 @@ export const saveBookmarks = async (
   });
 };
 
-export const searchBookmarks = async (
-  bookmarkData: BookmarkSearchProps,
-): Promise<ApiResponse<BookmarkSearchDataProps>> => {
-  return apiRequest<BookmarkSearchDataProps>({
+export const postBookmarkSearchResult = async (
+  requestData: BookmarkSearchResultRequestProps,
+): Promise<ApiResponse<BookmarkSearchResultProps>> => {
+  return apiRequest<BookmarkSearchResultProps>({
     method: 'POST',
     url: '/bookmarks/search',
-    data: bookmarkData,
+    data: requestData,
   });
 };
 

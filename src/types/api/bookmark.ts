@@ -24,12 +24,14 @@ export interface BookmarkProps {
 }
 
 export interface BookmarkSearchResultRequestProps {
-  keyword: string;
-  categoryTagRequests: {
-    categoryId: number;
-    tagIds: number[];
-  }[];
-  platforms: string[];
+  keyword?: string | null;
+  categoryTagRequests?:
+    | {
+        categoryId: number;
+        tagIds: number[];
+      }[]
+    | null;
+  platforms?: string[] | null;
   page: number;
   size: number;
 }
@@ -93,7 +95,7 @@ export interface BookmarkSaveProps {
   notification?: {
     notifyAt: string;
   };
-  platform: 'NAVER' | 'NAVER_BLOG' | 'TISTORY' | 'YOUTUBE' | 'INSTAGRAM' | 'VELOG' | 'ETC';
+  platform: string;
   categoryId: number;
   faviconUrl: string;
   tagIds: number[];
@@ -110,32 +112,6 @@ export interface BookmarkSearchProps {
   platforms?: string[] | null;
   page: number;
   size: number;
-}
-
-export interface BookmarkSearchDataProps {
-  size: number;
-  content: {
-    id: number;
-    url: string;
-    title: string;
-    memo: string;
-    platform: string;
-    faviconUrl: string;
-    categoryTagInfos: {
-      categoryId: number;
-      categoryName: string;
-      tags: {
-        tagId: number;
-        tagName: string;
-      }[];
-    }[];
-    file?: {
-      fileName: string;
-      fileUrl: string;
-    } | null;
-    createdAt: string;
-    updatedAt: string;
-  }[];
 }
 
 export interface SaveBookMarkProps {
