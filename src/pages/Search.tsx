@@ -135,6 +135,28 @@ const Search = () => {
     }
   }, [selectedCategories, tags, platforms]);
 
+  // 선택된 태그가 현재 보이는 태그에 포함되어 있는지 확인
+  useEffect(() => {
+    setSelectedTags((prev) => {
+      const validSelectedTags = prev.filter((selectedTag) =>
+        visibleTags.some((visibleTag) =>
+          visibleTag.tagIds.some((tagId) => selectedTag.tagIds.includes(tagId)),
+        ),
+      );
+      return validSelectedTags;
+    });
+  }, [visibleTags, setSelectedTags]);
+
+  // 선택된 플랫폼이 현재 보이는 플랫폼에 포함되어 있는지 확인
+  useEffect(() => {
+    setSelectedPlatforms((prev) => {
+      const validSelectedPlatforms = prev.filter((selectedPlatform) =>
+        visiblePlatforms.some((visiblePlatform) => selectedPlatform === visiblePlatform.platform),
+      );
+      return validSelectedPlatforms;
+    });
+  }, [visiblePlatforms, setSelectedPlatforms]);
+
   // 카테고리 선택
   const handleCategorySelection = (item: SearchCategory) => {
     setSelectedCategories((prev) => {
@@ -143,8 +165,6 @@ const Search = () => {
       }
       return [...prev, item];
     });
-    setSelectedTags([]);
-    setSelectedPlatforms([]);
   };
 
   // 태그 선택
