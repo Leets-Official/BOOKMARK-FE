@@ -1,5 +1,5 @@
 import { CalendarIcon, ScheduleIcon } from '@/assets';
-import { dateOptionsAtom, timeOptionsAtom, visibleMemoAndAlarmAtom } from '@/atoms';
+import { visibleMemoAndAlarmAtom } from '@/atoms';
 import DateTimeDropDown from '@/components/layout/dropDown/DateTimeDropDown';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtomValue } from 'jotai';
@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { saveSchema } from '@/schema/save';
 import type { UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
+import { dateOptions, timeOptions } from '@/constants/dateTimeData';
 
 interface AlarmProps {
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
@@ -18,8 +19,6 @@ interface AlarmProps {
 
 const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) => {
   const DateTimeVisible = useAtomValue(visibleMemoAndAlarmAtom);
-  const dateOptions = useAtomValue(dateOptionsAtom);
-  const timeOptions = useAtomValue(timeOptionsAtom);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
