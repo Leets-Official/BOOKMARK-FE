@@ -1,6 +1,7 @@
 export interface SearchCategory {
   categoryId: number;
   categoryName: string;
+  platforms: string[];
 }
 
 export interface SearchTag {

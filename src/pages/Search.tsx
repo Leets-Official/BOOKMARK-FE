@@ -20,17 +20,23 @@ import { getPlatforms } from '@/api/platform/platform';
 import type { PlatformProps } from '@/types/api/platform';
 
 const Search = () => {
+  // 실제 유저가 입력한 값들
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
+
+  // 카테고리 목록
   const [categories, setCategories] = useState<SearchCategory[]>([]);
-  // tagName이 중복된 태그를 제외한 태그 목록
-  const [tags, setTags] = useState<SearchTag[]>([]);
-  // 유저가 선택할 수 있는 태그 목록
-  const [visibleTags, setVisibleTags] = useState<SearchTag[]>([]);
-  const [showTags, setShowTags] = useState(false);
-  const [platforms, setPlatforms] = useState<PlatformProps[]>([]);
+
+  // 태그 목록
+  const [tags, setTags] = useState<SearchTag[]>([]); // tagName이 중복된 태그를 제외한 태그 목록
+  const [visibleTags, setVisibleTags] = useState<SearchTag[]>([]); // 전체 태그
+  const [showTags, setShowTags] = useState(false); // 유저가 선택할 수 있는 태그
+
+  // 플랫폼 목록
+  const [platforms, setPlatforms] = useState<PlatformProps[]>([]); // 전체 플랫폼
+  const [visiblePlatforms, setVisiblePlatforms] = useState<PlatformProps[]>([]); // 유저가 선택할 수 있는 플랫폼
 
   const { data: categoriesWithTag, isPending: isCategoriesPending } = useQuery({
     queryKey: ['categoriesWithTags'],
@@ -84,6 +90,7 @@ const Search = () => {
       const categories = categoriesWithTag?.map((category) => ({
         categoryId: category.categoryId,
         categoryName: category.categoryName,
+        platforms: category.platforms,
       }));
 
       const allTags = categoriesWithTag?.flatMap((category) =>
@@ -114,13 +121,19 @@ const Search = () => {
       const visibleTags = tags.filter((tag) =>
         selectedCategories.some((category) => tag.categoryIds.includes(category.categoryId)),
       );
+      const visiblePlatforms = platforms.filter((platform) =>
+        selectedCategories.some((category) => category.platforms.includes(platform.platform)),
+      );
       setVisibleTags(visibleTags);
+      setVisiblePlatforms(visiblePlatforms);
       setShowTags(true);
     } else {
       setVisibleTags([]);
+      // 플랫폼 목록 초기화
+      setVisiblePlatforms(platforms);
       setShowTags(false);
     }
-  }, [selectedCategories, tags]);
+  }, [selectedCategories, tags, platforms]);
 
   // 카테고리 선택
   const handleCategorySelection = (item: SearchCategory) => {
@@ -131,6 +144,7 @@ const Search = () => {
       return [...prev, item];
     });
     setSelectedTags([]);
+    setSelectedPlatforms([]);
   };
 
   // 태그 선택
@@ -140,6 +154,16 @@ const Search = () => {
         return prev.filter((selected) => !selected.tagIds.includes(item.tagIds[0]));
       }
       return [...prev, item];
+    });
+  };
+
+  // 플랫폼 선택
+  const handlePlatformSelection = (item: PlatformProps) => {
+    setSelectedPlatforms((prev) => {
+      if (prev.includes(item.platform)) {
+        return prev.filter((platform) => platform !== item.platform);
+      }
+      return [...prev, item.platform];
     });
   };
 
@@ -250,7 +274,7 @@ const Search = () => {
             <Loading className='w-[15px] h-[15px] my-3' />
           ) : (
             <div className='flex flex-wrap gap-2'>
-              {platforms.map((platform, index) => (
+              {visiblePlatforms.map((platform, index) => (
                 <Chip
                   key={index}
                   content={
@@ -259,8 +283,8 @@ const Search = () => {
                       <span>{platform.platform}</span>
                     </span>
                   }
-                  isSelected={selectedPlatforms.includes(platform.content)}
-                  onClick={() => toggleSelection(platform.content, setSelectedPlatforms)}
+                  isSelected={selectedPlatforms.includes(platform.platform)}
+                  onClick={() => handlePlatformSelection(platform)}
                   className='border-lightGrayBlue'
                   selectedClassName='border-1 border-blue bg-blue/10'
                 />
