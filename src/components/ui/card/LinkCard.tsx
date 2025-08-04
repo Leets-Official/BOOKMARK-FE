@@ -4,6 +4,7 @@ import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
 import React, { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
 interface CardProps {
   title: string;
@@ -42,6 +43,7 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
 
     // 파일이 실제로 이미지인지 검증
     if (!file.type.startsWith('image/')) {
+      toast.error('선택된 파일이 이미지가 아닙니다');
       console.error('선택된 파일이 이미지가 아닙니다:', file.type);
       setImageError(true);
       return;
@@ -50,7 +52,7 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
     // 파일 크기 검증 (예: 5MB 이하)
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-      console.error('파일 크기가 너무 큽니다:', file.size);
+      toast.error('파일 크기가 너무 큽니다');
       setImageError(true);
       return;
     }

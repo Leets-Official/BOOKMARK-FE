@@ -75,6 +75,31 @@ const SaveButton = () => {
     },
   });
 
+  const processInstagramImage = async (imageUrl: string): Promise<string> => {
+    // 인스타그램 URL이면 서버에서 처리하도록 요청
+    if (imageUrl.includes('cdninstagram.com')) {
+      try {
+        // 백엔드에 이미지 프록시 API 요청
+        const response = await fetch('/api/proxy-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ imageUrl }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          return data.s3Url; // 백엔드에서 S3에 업로드 후 리턴한 URL
+        }
+      } catch (error) {
+        console.error('이미지 프록시 실패:', error);
+      }
+    }
+
+    return imageUrl; // 다른 URL은 그대로 사용
+  };
+
   const saveLinkData = async () => {
     if (!selectedCategory || selectedTag.length === 0) return;
 
@@ -141,6 +166,9 @@ const SaveButton = () => {
 
     const platformUpper = getPlatformType(platform);
 
+    const originalImageUrl = uploadUrl || thumbnail || '';
+    const processedImageUrl = await processInstagramImage(originalImageUrl);
+
     // 북마크 저장 API 호출
     const bookmarkData: BookmarkSaveProps = {
       title: title ?? '제목',
@@ -148,7 +176,7 @@ const SaveButton = () => {
       memo: memo ?? '',
       file: {
         fileName: 'bookmarkExample.jpg',
-        fileUrl: thumbnail || uploadUrl || '',
+        fileUrl: processedImageUrl,
       },
       notification: {
         notifyAt: '2025-08-05T00:00:00',

@@ -1,23 +1,11 @@
 import { apiRequest } from '@/api/api';
 import type {
-  BookmarkProps,
   BookmarkSaveProps,
   BookmarkSearchDataProps,
   BookmarkSearchProps,
   BookMarkURLProps,
 } from '@/types/api/bookmark';
 import type { ApiResponse } from '@/types/common/api-response';
-
-export const getBookmarks = async (
-  categoryId: number,
-  tagId: number,
-): Promise<ApiResponse<BookmarkProps[]>> => {
-  return apiRequest<BookmarkProps[]>({
-    method: 'GET',
-    url: '/bookmarks/filter',
-    params: { categoryId, tagId },
-  });
-};
 
 export const getBookmarksURL = async (url: string): Promise<ApiResponse<BookMarkURLProps[]>> => {
   return apiRequest<BookMarkURLProps[]>({
@@ -44,5 +32,12 @@ export const searchBookmarks = async (
     method: 'POST',
     url: '/bookmarks/search',
     data: bookmarkData,
+  });
+};
+
+export const deleteBookmarks = async (bookmarkId: number): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'DELETE',
+    url: `/bookmarks/${bookmarkId}`,
   });
 };

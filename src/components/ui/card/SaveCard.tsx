@@ -10,13 +10,16 @@ import DeleteModal from '../modal/DeleteModal';
 import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import type { SaveBookMarkProps } from '@/types/api/bookmark';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { notificaton } from '@/api/alarm/notification';
+import { deleteBookmarks } from '@/api/bookmark/bookmark';
+import toast from 'react-hot-toast';
 
 const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: notificationData } = useQuery({
     queryKey: ['notification'],
@@ -26,6 +29,17 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
         throw new Error(res.message);
       }
       return res.data;
+    },
+  });
+
+  const deleteBookmarkMutate = useMutation({
+    mutationFn: deleteBookmarks,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+      toast.success('북마크 삭제에 성공했습니다');
+    },
+    onError: () => {
+      toast.error('북마크 삭제에 실패했습니다');
     },
   });
 
@@ -176,10 +190,10 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onCancel={() => setIsDeleteModalOpen(false)}
-        warningText={`"${data.category}"카테고리를 정말 삭제할까요?`}
+        warningText='해당 북마크를 정말 삭제할까요?'
         onDelete={() => {
           setIsDeleteModalOpen(false);
-          console.log('삭제:', data.category);
+          deleteBookmarkMutate.mutate(data.id);
         }}
         onScrollLock={isDeleteModalOpen}
       />
