@@ -1,6 +1,8 @@
 import { atom } from 'jotai';
 import type { ChipProps } from './types/components/components';
 import { dateOptions, timeOptions } from './constants/dateTimeData';
+import type { SearchCategory, SearchTag } from './types/common/search';
+import type { PlatformProps } from './types/api/platform';
 
 // Save Page Atoms
 const linkAtom = atom('');
@@ -21,9 +23,9 @@ const selectedDateAtom = atom<string>('');
 const selectedTimeAtom = atom<string>('');
 const isSaveButtonDisabledAtom = atom<boolean>(true);
 const searchContentsAtom = atom<string>('');
-const selectedCategoriesAtom = atom<string[]>([]);
-const selectedTagsAtom = atom<string[]>([]);
-const selectedPlatformsAtom = atom<string[]>([]);
+const selectedCategoriesAtom = atom<SearchCategory[]>([]);
+const selectedTagsAtom = atom<SearchTag[]>([]);
+const selectedPlatformsAtom = atom<PlatformProps[]>([]);
 const previewImageAtom = atom<string | undefined>(undefined);
 const isSuggestionLoadingAtom = atom(false);
 const tempCategoriesAtom = atom<string[]>([]);
