@@ -2,7 +2,6 @@ import { AlertIcon, FolderDetailIcon } from '@/assets';
 import { Button, Image } from '@/components/common';
 import type { CompactCardProps } from '@/types/components/components';
 import { useRef, useEffect, useState } from 'react';
-import clsx from 'clsx';
 
 const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) => {
   const tagContainerRef = useRef<HTMLDivElement>(null);
