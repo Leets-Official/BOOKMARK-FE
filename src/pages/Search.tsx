@@ -16,6 +16,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCategoriesWithTag } from '@/api/category/category';
 import Loading from '@/components/ui/loading/Loading';
 import type { SearchCategory, SearchTag } from '@/types/common/search';
+import { getPlatforms } from '@/api/platform/platform';
+import type { PlatformProps } from '@/types/api/platform';
 
 const Search = () => {
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
@@ -28,12 +30,23 @@ const Search = () => {
   // 유저가 선택할 수 있는 태그 목록
   const [visibleTags, setVisibleTags] = useState<SearchTag[]>([]);
   const [showTags, setShowTags] = useState(false);
-  const [platforms, setPlatforms] = useState<{ id: number; content: string }[]>([]);
+  const [platforms, setPlatforms] = useState<PlatformProps[]>([]);
 
-  const { data: categoriesWithTag, isPending } = useQuery({
+  const { data: categoriesWithTag, isPending: isCategoriesPending } = useQuery({
     queryKey: ['categoriesWithTags'],
     queryFn: async () => {
       const res = await getCategoriesWithTag();
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+  });
+
+  const { data: platformsData, isPending: isPlatformsPending } = useQuery({
+    queryKey: ['platforms'],
+    queryFn: async () => {
+      const res = await getPlatforms();
       if (res.error) {
         throw new Error(res.message);
       }
@@ -65,8 +78,9 @@ const Search = () => {
     return Array.from(tagMap.values());
   };
 
+  // 카테고리 API 데이터 로드
   useEffect(() => {
-    if (!isPending) {
+    if (!isCategoriesPending) {
       const categories = categoriesWithTag?.map((category) => ({
         categoryId: category.categoryId,
         categoryName: category.categoryName,
@@ -86,7 +100,14 @@ const Search = () => {
       setCategories(categories || []);
       setTags(processedTags || []);
     }
-  }, [isPending, categoriesWithTag]);
+  }, [isCategoriesPending, categoriesWithTag]);
+
+  // 플랫폼 API 데이터 로드
+  useEffect(() => {
+    if (!isPlatformsPending) {
+      setPlatforms(platformsData || []);
+    }
+  }, [isPlatformsPending, platformsData]);
 
   useEffect(() => {
     if (selectedCategories.length !== 0) {
@@ -100,32 +121,6 @@ const Search = () => {
       setShowTags(false);
     }
   }, [selectedCategories, tags]);
-
-  // useEffect(() => {
-  //   const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(
-  //     (c, i) => ({ id: i, content: c }),
-  //   );
-
-  //   const onlyPatforms = Array.from(new Set(dummyCardData.map((item) => item.platform))).map(
-  //     (p, i) => ({ id: i, content: p }),
-  //   );
-
-  //   setCategories(onlyCategories);
-  //   setPlatforms(onlyPatforms);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (selectedCategories.length === 1) {
-  //     const tags = dummyCardData
-  //       .filter((item) => item.category === selectedCategories[0])
-  //       .flatMap((item) => item.tags);
-  //     const uniqueTags = Array.from(new Set(tags)).map((t, i) => ({ id: i, content: t }));
-  //     setTags(uniqueTags);
-  //   } else {
-  //     setTags([]);
-  //   }
-  //   setShowTags(selectedCategories.length === 1);
-  // }, [selectedCategories]);
 
   // 카테고리 선택
   const handleCategorySelection = (item: SearchCategory) => {
@@ -174,7 +169,8 @@ const Search = () => {
     console.log({ selectedCategories, selectedTags, selectedPlatforms });
     addSearchHistory(searchContents);
   };
-  console.log(selectedTags);
+
+  console.log(platforms);
 
   return (
     <div className='max-w-[1200px] mx-auto min-h-screen w-full md:w-[768px] flex flex-col'>
@@ -193,72 +189,84 @@ const Search = () => {
             </Button>
           )}
         </div>
-        {isPending ? (
-          <Loading className='w-[96px] h-[96px] m-5' />
-        ) : (
-          <div className='bg-white p-4 rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
-            <p className='mb-2 text-sm font-semibold text-stone'>카테고리</p>
-            <div className='flex flex-wrap gap-2 mb-6 p-0.5'>
-              {categories.map((category) => (
-                <Chip
-                  key={category.categoryId}
-                  content={category.categoryName}
-                  isSelected={selectedCategories.some(
-                    (selected) => selected.categoryId === category.categoryId,
-                  )}
-                  onClick={() => handleCategorySelection(category)}
-                  className='border-lightGrayBlue'
-                  selectedClassName='border-1 border-lightGreen bg-lightGreen text-white'
-                />
-              ))}
-            </div>
-            <hr className='border-1 border-lightGrayBlue mb-3' />
-            <p className='text-sm font-semibold text-stone'>태그</p>
-            <AnimatePresence mode='wait'>
-              {showTags && (
-                <motion.div
-                  key='tagContainer'
-                  initial={{ height: 0 }}
-                  animate={{ height: 'auto' }}
-                  exit={{ height: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className='overflow-hidden'
-                >
-                  <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
-                    {visibleTags.map((tag) => (
-                      <Chip
-                        key={tag.tagName}
-                        content={tag.tagName}
-                        isSelected={selectedTags.some((selected) =>
-                          selected.tagIds.includes(tag.tagIds[0]),
-                        )}
-                        onClick={() => handleTagSelection(tag)}
-                        className='border-lightGrayBlue'
-                        selectedClassName='border-1 border-blue bg-blue/10 text-blue'
-                      />
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+
+        <div className='bg-white p-4 rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
+          <p className='mb-2 text-sm font-semibold text-stone'>카테고리</p>
+          <div className='flex flex-wrap gap-2 mb-6 p-0.5'>
+            {isCategoriesPending ? (
+              <Loading className='w-[15px] h-[15px] my-3' />
+            ) : (
+              <>
+                {categories.map((category) => (
+                  <Chip
+                    key={category.categoryId}
+                    content={category.categoryName}
+                    isSelected={selectedCategories.some(
+                      (selected) => selected.categoryId === category.categoryId,
+                    )}
+                    onClick={() => handleCategorySelection(category)}
+                    className='border-lightGrayBlue'
+                    selectedClassName='border-1 border-lightGreen bg-lightGreen text-white'
+                  />
+                ))}
+              </>
+            )}
           </div>
-        )}
+          <hr className='border-1 border-lightGrayBlue mb-3' />
+          <p className='text-sm font-semibold text-stone'>태그</p>
+          <AnimatePresence mode='wait'>
+            {showTags && (
+              <motion.div
+                key='tagContainer'
+                initial={{ height: 0 }}
+                animate={{ height: 'auto' }}
+                exit={{ height: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className='overflow-hidden'
+              >
+                <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
+                  {visibleTags.map((tag) => (
+                    <Chip
+                      key={tag.tagName}
+                      content={tag.tagName}
+                      isSelected={selectedTags.some((selected) =>
+                        selected.tagIds.includes(tag.tagIds[0]),
+                      )}
+                      onClick={() => handleTagSelection(tag)}
+                      className='border-lightGrayBlue'
+                      selectedClassName='border-1 border-blue bg-blue/10 text-blue'
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* 플랫폼 영역 */}
         <div className='mt-4 bg-white rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-4 py-4'>
           <p className='mb-2 text-sm font-semibold text-stone'>플랫폼</p>
-          <div className='flex flex-wrap gap-2'>
-            {platforms.map((platform) => (
-              <Chip
-                key={platform.id}
-                content={platform.content}
-                isSelected={selectedPlatforms.includes(platform.content)}
-                onClick={() => toggleSelection(platform.content, setSelectedPlatforms)}
-                className='border-lightGrayBlue'
-                selectedClassName='border-1 border-blue bg-blue/10'
-              />
-            ))}
-          </div>
+          {isPlatformsPending ? (
+            <Loading className='w-[15px] h-[15px] my-3' />
+          ) : (
+            <div className='flex flex-wrap gap-2'>
+              {platforms.map((platform, index) => (
+                <Chip
+                  key={index}
+                  content={
+                    <span className='flex items-center gap-1'>
+                      <img src={platform.faviconUrl} alt='favicon' className='w-4 h-4' />
+                      <span>{platform.platform}</span>
+                    </span>
+                  }
+                  isSelected={selectedPlatforms.includes(platform.content)}
+                  onClick={() => toggleSelection(platform.content, setSelectedPlatforms)}
+                  className='border-lightGrayBlue'
+                  selectedClassName='border-1 border-blue bg-blue/10'
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
