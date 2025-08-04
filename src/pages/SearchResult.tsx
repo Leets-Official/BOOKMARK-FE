@@ -197,6 +197,15 @@ const SearchResult = () => {
     }
   }, [searchResult]);
 
+  // SearchResult 페이지에서만 body에 스크롤 클래스 추가
+  useEffect(() => {
+    document.body.classList.add('scroll-visible');
+
+    return () => {
+      document.body.classList.remove('scroll-visible');
+    };
+  }, []);
+
   // 스크롤 감지 useEffect
   useEffect(() => {
     const checkScroll = () => {
@@ -217,7 +226,7 @@ const SearchResult = () => {
   }, [optionCategoryList, optionTagList, optionPlatformList]);
 
   return (
-    <div className='max-w-[1200px] mx-auto relative min-h-screen flex flex-col gap-4 pb-25 bg-white'>
+    <div className='search-result-page max-w-[1200px] mx-auto relative min-h-screen flex flex-col gap-4 pb-25 bg-white'>
       <CommonHeader title={isMobile ? '링크 검색' : ''} />
       <ProfileHeader />
       <ChangeSearchBar barMarginTop={isMobile ? 20 : 50} isBackButton={true} />
