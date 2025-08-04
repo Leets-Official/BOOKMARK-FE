@@ -15,6 +15,13 @@ import SaveCard from '@/components/ui/card/SaveCard';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
 import { Outlet } from 'react-router-dom';
+import { useAtom } from 'jotai';
+import {
+  searchContentsAtom,
+  selectedCategoriesAtom,
+  selectedPlatformsAtom,
+  selectedTagsAtom,
+} from '@/atoms';
 
 const SearchResult = () => {
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
@@ -22,12 +29,18 @@ const SearchResult = () => {
   const [tagList, setTagList] = useState<ChipProps[]>(dummyTagList);
   const [platformList, setPlatformList] = useState<ChipProps[]>(dummyPlatformList);
 
+  // 실제 유저가 입력한 값들
+  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
+  const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
+  const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
+  const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
+
   // 스크롤 감지를 위한 상태와 ref
   const [hasScroll, setHasScroll] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // 마운트될 때 항상 위에서 시작
   useEffect(() => {
+    // 마운트될 때 항상 위에서 시작
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
 
