@@ -215,16 +215,16 @@ const Search = () => {
   };
 
   const handleSearch = () => {
-    // URL 파라미터로 데이터 전달
-    const params = new URLSearchParams();
-    if (searchContents) params.append('keyword', searchContents);
-    if (selectedCategories.length > 0)
-      params.append('categories', JSON.stringify(selectedCategories));
-    if (selectedTags.length > 0) params.append('tags', JSON.stringify(selectedTags));
-    if (selectedPlatforms.length > 0) params.append('platforms', JSON.stringify(selectedPlatforms));
+    const queryData = {
+      keyword: searchContents,
+      categories: selectedCategories,
+      tags: selectedTags,
+      platforms: selectedPlatforms,
+    };
 
+    const hash = btoa(encodeURIComponent(JSON.stringify(queryData)));
     resetAll();
-    navigate(`/search-result?${params.toString()}`);
+    navigate(`/search-result#${hash}`);
     if (searchContents) addSearchHistory(searchContents);
   };
 

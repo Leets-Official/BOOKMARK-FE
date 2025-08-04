@@ -191,13 +191,16 @@ const FolderCard = ({
         <div
           className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex hover:scale-103 duration-400 cursor-pointer'
           onClick={() => {
-            const queryData = [
-              {
-                categoryId: category.id,
-                categoryName: category.categoryName,
-              },
-            ];
-            navigate(`/search-result?categories=${JSON.stringify(queryData)}`);
+            const queryData = {
+              categories: [
+                {
+                  categoryId: category.id,
+                  categoryName: category.categoryName,
+                },
+              ],
+            };
+            const hash = btoa(encodeURIComponent(JSON.stringify(queryData)));
+            navigate(`/search-result#${hash}`);
           }}
         >
           {renderImages(images)}

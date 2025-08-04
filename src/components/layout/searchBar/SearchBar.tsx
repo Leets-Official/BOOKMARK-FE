@@ -93,7 +93,11 @@ const SearchBar = ({
   const postHistoryMutattion = useMutation({
     mutationFn: postSearchHistory,
     onSuccess: () => {
-      window.location.href = `/search-result?keyword=${encodeURIComponent(searchContents)}`;
+      const queryData = {
+        keyword: searchContents,
+      };
+      const hash = btoa(encodeURIComponent(JSON.stringify(queryData)));
+      window.location.href = `/search-result#${hash}`;
       setSearchContents('');
     },
     onError: (error) => {
