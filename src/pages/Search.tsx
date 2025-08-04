@@ -230,7 +230,7 @@ const Search = () => {
 
   return (
     <div className='max-w-[1200px] mx-auto min-h-screen w-full md:w-[768px] flex flex-col'>
-      <FilterSearchBar />
+      <FilterSearchBar handleSearch={handleSearch} />
 
       {/* 스크롤 가능한 컨텐츠 영역 */}
       <div className='flex-1 overflow-y-auto p-3 pb-40 hide-scrollbar'>
