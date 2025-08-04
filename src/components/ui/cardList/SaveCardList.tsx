@@ -14,20 +14,17 @@ const SaveCardList = () => {
   const sortLabel = sortOrder ? '최신순' : '오래된순';
   const displayCount = isMobile ? 6 : 9;
 
-  const requestBody: BookmarkSearchProps = useMemo(
-    () => ({
-      keyword: null,
-      categoryTagRequests: null,
-      platforms: null,
-      page: 0,
-      size: displayCount,
-    }),
-    [displayCount],
-  );
+  const homeBookmarkData: BookmarkSearchProps = {
+    keyword: null,
+    categoryTagRequests: null,
+    platforms: null,
+    page: 0,
+    size: 1000,
+  };
 
   const { data } = useQuery({
-    queryKey: ['bookmarks', requestBody], // POST 파라미터를 queryKey에 포함
-    queryFn: () => searchBookmarks(requestBody),
+    queryKey: ['bookmarks', homeBookmarkData], // POST 파라미터를 queryKey에 포함
+    queryFn: () => searchBookmarks(homeBookmarkData),
   });
 
   const bookmarkData: SaveBookMarkProps[] = useMemo(() => {
@@ -58,8 +55,8 @@ const SaveCardList = () => {
         : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
 
-    return sorted;
-  }, [data, sortOrder]);
+    return sorted.slice(0, displayCount); // 프론트에서 개수 설정
+  }, [data, sortOrder, displayCount]);
 
   return (
     <div className='pb-25 mt-20'>
