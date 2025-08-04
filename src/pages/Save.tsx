@@ -201,6 +201,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     } else {
       errorMessage = '모든 필드를 올바르게 입력해주세요.';
     }
+    toast.dismiss();
     toast.error(errorMessage);
   };
 
