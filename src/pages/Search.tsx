@@ -15,19 +15,20 @@ import { postSearchHistory } from '@/api/searchHistory/searchHistory';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCategoriesWithTag } from '@/api/category/category';
 import Loading from '@/components/ui/loading/Loading';
+import type { SearchCategory, SearchTag } from '@/types/common/search';
 
 const Search = () => {
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
-  const [categories, setCategories] = useState<{ categoryId: number; categoryName: string }[]>([]);
+  const [categories, setCategories] = useState<SearchCategory[]>([]);
   // tagName이 중복된 태그를 제외한 태그 목록
-  const [tags, setTags] = useState<{ tagName: string; tagIds: number[]; categoryIds: number[] }[]>(
-    [],
-  );
-  const [platforms, setPlatforms] = useState<{ id: number; content: string }[]>([]);
+  const [tags, setTags] = useState<SearchTag[]>([]);
+  // 유저가 선택할 수 있는 태그 목록
+  const [visibleTags, setVisibleTags] = useState<SearchTag[]>([]);
   const [showTags, setShowTags] = useState(false);
+  const [platforms, setPlatforms] = useState<{ id: number; content: string }[]>([]);
 
   const { data: categoriesWithTag, isPending } = useQuery({
     queryKey: ['categoriesWithTags'],
@@ -84,9 +85,21 @@ const Search = () => {
 
       setCategories(categories || []);
       setTags(processedTags || []);
-      console.log(processedTags);
     }
   }, [isPending, categoriesWithTag]);
+
+  useEffect(() => {
+    if (selectedCategories.length !== 0) {
+      const visibleTags = tags.filter((tag) =>
+        selectedCategories.some((category) => tag.categoryIds.includes(category.categoryId)),
+      );
+      setVisibleTags(visibleTags);
+      setShowTags(true);
+    } else {
+      setVisibleTags([]);
+      setShowTags(false);
+    }
+  }, [selectedCategories, tags]);
 
   // useEffect(() => {
   //   const onlyCategories = Array.from(new Set(dummyCardData.map((item) => item.category))).map(
@@ -151,8 +164,6 @@ const Search = () => {
     addSearchHistory(searchContents);
   };
 
-  console.log(selectedCategories);
-
   return (
     <div className='max-w-[1200px] mx-auto min-h-screen w-full md:w-[768px] flex flex-col'>
       {/* <FilterSearchBar /> */}
@@ -202,7 +213,7 @@ const Search = () => {
                   className='overflow-hidden'
                 >
                   <div className='flex flex-wrap gap-2 p-0.5 mt-4'>
-                    {tags.map((tag) => (
+                    {visibleTags.map((tag) => (
                       <Chip
                         key={tag.tagName}
                         content={tag.tagName}
