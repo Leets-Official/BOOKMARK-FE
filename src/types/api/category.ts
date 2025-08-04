@@ -8,8 +8,8 @@ export interface CategoryProps {
 export interface CategoryWithTagProps {
   categoryId: number;
   categoryName: string;
-  createdAt: string;
   tags: TagProps[];
+  platforms: string[];
 }
 
 export interface TagProps {
