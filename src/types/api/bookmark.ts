@@ -16,7 +16,7 @@ export interface BookmarkProps {
   updatedAt: string;
 }
 
-export interface BookmarkResultRequestProps {
+export interface BookmarkSearchResultRequestProps {
   keyword: string;
   categoryTagRequests: {
     categoryId: number;

@@ -22,17 +22,18 @@ const SearchResult = () => {
   const navigate = useNavigate();
 
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
-  const [categoryList, setCategoryList] = useState<ChipProps[]>(dummyCategoryList);
-  const [tagList, setTagList] = useState<ChipProps[]>(dummyTagList);
-  const [platformList, setPlatformList] = useState<ChipProps[]>(dummyPlatformList);
+  const [optionCategoryList, setOptionCategoryList] = useState<ChipProps[]>(dummyCategoryList);
+  const [optionTagList, setOptionTagList] = useState<ChipProps[]>(dummyTagList);
+  const [optionPlatformList, setOptionPlatformList] = useState<ChipProps[]>(dummyPlatformList);
 
   // URL 파라미터에서 데이터 받기
   const [searchParams] = useSearchParams();
 
+  // 파라미터 상태 관리
   const [searchContents, setSearchContents] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<SearchCategory[]>([]);
-  const [selectedTags, setSelectedTags] = useState<SearchTag[]>([]);
-  const [selectedPlatforms, setSelectedPlatforms] = useState<PlatformProps[]>([]);
+  const [paramsCategories, setParamsCategories] = useState<SearchCategory[]>([]);
+  const [paramsTags, setParamsTags] = useState<SearchTag[]>([]);
+  const [paramsPlatforms, setParamsPlatforms] = useState<PlatformProps[]>([]);
 
   // 검색 결과
   const [bookmarks, setBookmarks] = useState<BookmarkSearchResultProps['content']>([]);
@@ -64,15 +65,15 @@ const SearchResult = () => {
     try {
       if (categoriesParam) {
         const categories = JSON.parse(categoriesParam);
-        setSelectedCategories(categories);
+        setParamsCategories(categories);
       }
       if (tagsParam) {
         const tags = JSON.parse(tagsParam);
-        setSelectedTags(tags);
+        setParamsTags(tags);
       }
       if (platformsParam) {
         const platforms = JSON.parse(platformsParam);
-        setSelectedPlatforms(platforms);
+        setParamsPlatforms(platforms);
       }
     } catch (error) {
       toast.error('검색 결과를 불러오는데 실패했습니다.');
@@ -83,18 +84,18 @@ const SearchResult = () => {
     navigate,
     searchParams,
     setSearchContents,
-    setSelectedCategories,
-    setSelectedTags,
-    setSelectedPlatforms,
+    setParamsCategories,
+    setParamsTags,
+    setParamsPlatforms,
   ]);
 
   useEffect(() => {
     // 마운트될 때 항상 위에서 시작
     window.scrollTo({ top: 0, behavior: 'auto' });
 
-    const categoryTagRequests = selectedCategories.map((category) => {
+    const categoryTagRequests = paramsCategories.map((category) => {
       // selectedTags에서 categoryId가 categoryIds 배열에 포함된 태그만 필터링
-      const tagList = selectedTags
+      const tagList = paramsTags
         .filter((tag) => tag.categoryIds.includes(category.categoryId))
         .map((tag) => {
           const tagIdIndex = tag.categoryIds.indexOf(category.categoryId);
@@ -107,7 +108,7 @@ const SearchResult = () => {
       };
     });
 
-    const platforms = selectedPlatforms.map((platform) => platform.platform);
+    const platforms = paramsPlatforms.map((platform) => platform.platform);
 
     // POST 요청 데이터 구성
     const requestData = {
@@ -120,18 +121,56 @@ const SearchResult = () => {
 
     // POST 요청 보내기
     BookmarkSearchResultMutation(requestData);
-  }, [
-    selectedCategories,
-    selectedTags,
-    selectedPlatforms,
-    searchContents,
-    BookmarkSearchResultMutation,
-  ]);
+  }, [paramsCategories, paramsTags, paramsPlatforms, searchContents, BookmarkSearchResultMutation]);
 
   // searchResultData가 변경될 때만 searchResult 업데이트
   useEffect(() => {
     if (searchResult?.data) {
       setBookmarks(searchResult.data.content);
+
+      // 중복 제거
+      const uniqueCategories = [
+        ...new Set(
+          searchResult.data.content.map((bookmark) => bookmark.categoryTagInfos[0].categoryName),
+        ),
+      ];
+
+      const uniqueTags = [
+        ...new Set(
+          searchResult.data.content.map((bookmark) => bookmark.categoryTagInfos[0].tags[0].tagName),
+        ),
+      ];
+
+      const uniquePlatforms = [
+        ...new Set(searchResult.data.content.map((bookmark) => bookmark.platform)),
+      ];
+
+      setOptionCategoryList(
+        uniqueCategories.map((category, index) => ({
+          id: index,
+          content: category.toString(),
+          isSelected: false,
+          type: 'category',
+        })),
+      );
+
+      setOptionTagList(
+        uniqueTags.map((tag, index) => ({
+          id: index,
+          content: tag.toString(),
+          isSelected: false,
+          type: 'tag',
+        })),
+      );
+
+      setOptionPlatformList(
+        uniquePlatforms.map((platform, index) => ({
+          id: index,
+          content: platform,
+          isSelected: false,
+          type: 'platform',
+        })),
+      );
     }
   }, [searchResult]);
 
@@ -152,7 +191,7 @@ const SearchResult = () => {
       clearTimeout(timer);
       window.removeEventListener('resize', checkScroll);
     };
-  }, [categoryList, tagList, platformList]);
+  }, [optionCategoryList, optionTagList, optionPlatformList]);
 
   return (
     <div className='max-w-[1200px] mx-auto relative min-h-screen flex flex-col gap-4 pb-25 bg-white'>
@@ -167,9 +206,17 @@ const SearchResult = () => {
         )}
       >
         {/* 카테고리, 태그, 플랫폼 칩 드롭다운 */}
-        <ChipDropDown title='카테고리' options={categoryList} onChange={setCategoryList} />
-        <ChipDropDown title='태그' options={tagList} onChange={setTagList} />
-        <ChipDropDown title='플랫폼' options={platformList} onChange={setPlatformList} />
+        <ChipDropDown
+          title='카테고리'
+          options={optionCategoryList}
+          onChange={setOptionCategoryList}
+        />
+        <ChipDropDown title='태그' options={optionTagList} onChange={setOptionTagList} />
+        <ChipDropDown
+          title='플랫폼'
+          options={optionPlatformList}
+          onChange={setOptionPlatformList}
+        />
       </div>
 
       {isPending ? (
