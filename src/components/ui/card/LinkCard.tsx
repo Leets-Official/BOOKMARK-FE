@@ -72,7 +72,6 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
     }
 
     setUploadUrl(uploadedUrl);
-    console.log(uploadedUrl);
 
     const previewURL = URL.createObjectURL(file); // 파일을 브라우저에서 볼 수 있는 임시 URL 생성
     setPreviewImage(previewURL);
@@ -82,6 +81,7 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
   // 이미지 로딩 실패 시
   const handleImageError = () => {
     setImageError(true); // 이미지 로딩 실패 시 에러 상태로 설정
+    console.log('이미지 로딩 실패:', finalImage);
   };
 
   const finalImage = previewImage === null ? undefined : previewImage || image;

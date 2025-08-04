@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   tempCategoriesAtom,
   tempTagsAtom,
@@ -34,7 +34,7 @@ const SaveButton = () => {
   const thumbnail = useAtomValue(thumbnailAtom);
   const faviconUrl = useAtomValue(faviconAtom);
   const memo = useAtomValue(memoAtom);
-  const uploadUrl = useAtomValue(uploadUrlAtom);
+  const [uploadUrl, setUploadUrl] = useAtom(uploadUrlAtom);
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
@@ -49,6 +49,7 @@ const SaveButton = () => {
       toast.success('저장되었습니다');
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      setUploadUrl('');
     },
     onError: () => {
       toast.error('저장에 실패했습니다');
@@ -155,9 +156,10 @@ const SaveButton = () => {
 
       const lowerPlatform = platformString.toLowerCase();
 
-      if (lowerPlatform.includes('blog') || platformString.includes('네이버')) return 'NAVER BLOG';
+      if (lowerPlatform.includes('blog') || platformString.includes('네이버')) return 'NAVER_BLOG';
       if (lowerPlatform.includes('naver')) return 'NAVER';
-      if (lowerPlatform.includes('tistory')) return 'TISTORY';
+      if (lowerPlatform.includes('tistory') || platformString.includes('티스토리'))
+        return 'TISTORY';
       if (lowerPlatform.includes('youtube')) return 'YOUTUBE';
       if (lowerPlatform.includes('instagram')) return 'INSTAGRAM';
       if (lowerPlatform.includes('velog')) return 'VELOG';
@@ -166,7 +168,7 @@ const SaveButton = () => {
 
     const platformUpper = getPlatformType(platform);
 
-    const originalImageUrl = uploadUrl || thumbnail || '';
+    const originalImageUrl = uploadUrl && uploadUrl.trim() !== '' ? uploadUrl : thumbnail || '';
     const processedImageUrl = await processInstagramImage(originalImageUrl);
 
     // 북마크 저장 API 호출
@@ -179,7 +181,7 @@ const SaveButton = () => {
         fileUrl: processedImageUrl,
       },
       notification: {
-        notifyAt: '2025-08-05T00:00:00',
+        notifyAt: '2025-08-05T00:00:00.326Z',
       },
       platform: platformUpper as BookmarkSaveProps['platform'],
       categoryId,

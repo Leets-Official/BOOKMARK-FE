@@ -140,11 +140,7 @@ const FolderCard = ({
     setIsScollLock(false);
   };
 
-  const images = [
-    'https://cdn.pixabay.com/photo/2018/04/26/16/31/marine-3352341_1280.jpg',
-    'https://cdn.pixabay.com/photo/2016/03/08/20/03/flag-1244648_1280.jpg',
-    'https://cdn.pixabay.com/photo/2018/04/26/12/14/travel-3351825_1280.jpg',
-  ];
+  const images = category.thumbnailUrls || [];
 
   // 이미지 렌더링
   const renderImages = (images: string[]) => {

@@ -115,16 +115,24 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
                   className='border-[#EAEDF5] text-[15px] px-3 h-[36px] flex-shrink-0'
                 />
               ))}
-              <Chip
-                content={
-                  <span className='flex items-center gap-1'>
-                    <img src={data.faviconUrl} alt='favicon' className='w-4 h-4' />
-                    <span>{data.platform}</span>
-                  </span>
-                }
-                isSelected={false}
-                className='border-blue text-[15px] px-3 h-[36px] flex-shrink-0'
-              />
+              {data.faviconUrl ? (
+                <Chip
+                  content={
+                    <span className='flex items-center gap-1'>
+                      <img src={data.faviconUrl} alt='favicon' className='w-4 h-4' />
+                      <span>{data.platform}</span>
+                    </span>
+                  }
+                  isSelected={false}
+                  className='border-blue text-[15px] px-3 h-[36px] flex-shrink-0'
+                />
+              ) : (
+                <Chip
+                  content={data.platform}
+                  isSelected={false}
+                  className='border-blue text-[15px] px-3 h-[36px] flex-shrink-0'
+                />
+              )}
             </motion.div>
           </div>
           <Image
