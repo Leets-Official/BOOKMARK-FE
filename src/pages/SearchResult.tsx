@@ -280,12 +280,15 @@ const SearchResult = () => {
                     key={bookmark.id}
                     data={{
                       id: bookmark.id,
+                      url: bookmark.url,
                       title: bookmark.title,
-                      category: bookmark.categoryTagInfos[0].categoryName,
-                      tags: bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName),
-                      image: bookmark.file.fileUrl,
                       memo: bookmark.memo,
                       platform: bookmark.platform,
+                      image: bookmark.file.fileUrl,
+                      faviconUrl: bookmark.faviconUrl,
+                      category: bookmark.categoryTagInfos[0].categoryName,
+                      tags: bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName),
+                      createdAt: bookmark.createdAt,
                     }}
                   />
                 ))}
