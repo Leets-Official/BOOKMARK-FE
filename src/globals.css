@@ -193,4 +193,9 @@
   .thin-scrollbar::-webkit-scrollbar-thumb:hover {
     background-color: rgba(0, 0, 0, 0.3);
   }
+
+  /* SearchResult 페이지에서만 body 스크롤 보여주기 */
+  body.scroll-visible {
+    overflow-y: scroll;
+  }
 }

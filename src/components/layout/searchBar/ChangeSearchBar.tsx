@@ -65,7 +65,7 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
                 {isBackButton && (
                   <Button
                     icon={<BackArrowIcon width={20} height={20} stroke='black' strokeWidth={2} />}
-                    onClick={() => navigate('/')}
+                    onClick={() => navigate(-1)}
                     className='cursor-pointer p-2.5 rounded-full border border-lightGrayBlue bg-snowGray/70 hover:brightness-90 transition'
                   />
                 )}
