@@ -127,7 +127,8 @@ const Search = () => {
   //   setShowTags(selectedCategories.length === 1);
   // }, [selectedCategories]);
 
-  const handleCategorySelection = (item: { categoryId: number; categoryName: string }) => {
+  // 카테고리 선택
+  const handleCategorySelection = (item: SearchCategory) => {
     setSelectedCategories((prev) => {
       if (prev.some((selected) => selected.categoryId === item.categoryId)) {
         return prev.filter((selected) => selected.categoryId !== item.categoryId);
@@ -135,6 +136,16 @@ const Search = () => {
       return [...prev, item];
     });
     setSelectedTags([]);
+  };
+
+  // 태그 선택
+  const handleTagSelection = (item: SearchTag) => {
+    setSelectedTags((prev) => {
+      if (prev.some((selected) => selected.tagIds.includes(item.tagIds[0]))) {
+        return prev.filter((selected) => !selected.tagIds.includes(item.tagIds[0]));
+      }
+      return [...prev, item];
+    });
   };
 
   // 검색어 추가
@@ -163,6 +174,7 @@ const Search = () => {
     console.log({ selectedCategories, selectedTags, selectedPlatforms });
     addSearchHistory(searchContents);
   };
+  console.log(selectedTags);
 
   return (
     <div className='max-w-[1200px] mx-auto min-h-screen w-full md:w-[768px] flex flex-col'>
@@ -217,8 +229,10 @@ const Search = () => {
                       <Chip
                         key={tag.tagName}
                         content={tag.tagName}
-                        isSelected={selectedTags.includes(tag.tagName)}
-                        onClick={() => { }}
+                        isSelected={selectedTags.some((selected) =>
+                          selected.tagIds.includes(tag.tagIds[0]),
+                        )}
+                        onClick={() => handleTagSelection(tag)}
                         className='border-lightGrayBlue'
                         selectedClassName='border-1 border-blue bg-blue/10 text-blue'
                       />
