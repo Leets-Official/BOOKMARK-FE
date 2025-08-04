@@ -14,17 +14,12 @@ import { isMobile } from 'react-device-detect';
 import SaveCard from '@/components/ui/card/SaveCard';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
-import { Outlet } from 'react-router-dom';
-import { useAtom } from 'jotai';
-import {
-  searchContentsAtom,
-  selectedCategoriesAtom,
-  selectedPlatformsAtom,
-  selectedTagsAtom,
-} from '@/atoms';
+import { Outlet, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { postBookmarkSearchResult } from '@/api/bookmark/bookmark';
 import Loading from '@/components/ui/loading/Loading';
+import type { SearchCategory, SearchTag } from '@/types/common/search';
+import type { PlatformProps } from '@/types/api/platform';
 
 const SearchResult = () => {
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
@@ -32,11 +27,13 @@ const SearchResult = () => {
   const [tagList, setTagList] = useState<ChipProps[]>(dummyTagList);
   const [platformList, setPlatformList] = useState<ChipProps[]>(dummyPlatformList);
 
-  // 실제 유저가 입력한 값들
-  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
-  const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
-  const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
-  const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
+  // URL 파라미터에서 데이터 받기
+  const [searchParams] = useSearchParams();
+
+  const [searchContents, setSearchContents] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState<SearchCategory[]>([]);
+  const [selectedTags, setSelectedTags] = useState<SearchTag[]>([]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<PlatformProps[]>([]);
 
   // 스크롤 감지를 위한 상태와 ref
   const [hasScroll, setHasScroll] = useState(false);
@@ -48,21 +45,55 @@ const SearchResult = () => {
     data: searchResult,
   } = useMutation({
     mutationFn: postBookmarkSearchResult,
-    onSuccess: (data) => {
-      console.log('검색 결과:', data);
-      if (data.error) {
-        throw new Error(data.message);
-      }
-      return data.data;
-    },
     onError: (error) => {
       console.error('검색 에러:', error);
     },
   });
 
+  // URL 파라미터에서 값을 가져와서 atom에 설정
+  useEffect(() => {
+    const keyword = searchParams.get('keyword');
+    const categoriesParam = searchParams.get('categories');
+    const tagsParam = searchParams.get('tags');
+    const platformsParam = searchParams.get('platforms');
+
+    if (keyword) setSearchContents(keyword);
+    if (categoriesParam) {
+      try {
+        const categories = JSON.parse(categoriesParam);
+        setSelectedCategories(categories);
+      } catch (error) {
+        console.error('카테고리 파라미터 파싱 에러:', error);
+      }
+    }
+    if (tagsParam) {
+      try {
+        const tags = JSON.parse(tagsParam);
+        setSelectedTags(tags);
+      } catch (error) {
+        console.error('태그 파라미터 파싱 에러:', error);
+      }
+    }
+    if (platformsParam) {
+      try {
+        const platforms = JSON.parse(platformsParam);
+        setSelectedPlatforms(platforms);
+      } catch (error) {
+        console.error('플랫폼 파라미터 파싱 에러:', error);
+      }
+    }
+  }, [
+    searchParams,
+    setSearchContents,
+    setSelectedCategories,
+    setSelectedTags,
+    setSelectedPlatforms,
+  ]);
+
   useEffect(() => {
     // 마운트될 때 항상 위에서 시작
     window.scrollTo({ top: 0, behavior: 'auto' });
+    console.log(selectedCategories, selectedTags, selectedPlatforms);
 
     const categoryTagRequests = selectedCategories.map((category) => {
       // selectedTags에서 categoryId가 categoryIds 배열에 포함된 태그만 필터링
@@ -92,10 +123,14 @@ const SearchResult = () => {
 
     // POST 요청 보내기
     BookmarkSearchResultMutation(requestData);
-    console.log(searchResult);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    console.log(selectedCategories, selectedTags, selectedPlatforms);
+  }, [
+    selectedCategories,
+    selectedTags,
+    selectedPlatforms,
+    searchContents,
+    BookmarkSearchResultMutation,
+  ]);
 
   // 스크롤 감지 useEffect
   useEffect(() => {

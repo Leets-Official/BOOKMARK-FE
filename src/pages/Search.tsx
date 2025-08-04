@@ -215,7 +215,16 @@ const Search = () => {
   };
 
   const handleSearch = () => {
-    navigate('/search-result');
+    // URL 파라미터로 데이터 전달
+    const params = new URLSearchParams();
+    if (searchContents) params.append('keyword', searchContents);
+    if (selectedCategories.length > 0)
+      params.append('categories', JSON.stringify(selectedCategories));
+    if (selectedTags.length > 0) params.append('tags', JSON.stringify(selectedTags));
+    if (selectedPlatforms.length > 0) params.append('platforms', JSON.stringify(selectedPlatforms));
+
+    resetAll();
+    navigate(`/search-result?${params.toString()}`);
     addSearchHistory(searchContents);
   };
 
