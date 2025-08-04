@@ -2,15 +2,12 @@ import { getSuggestionTag } from '@/agent/TagAgent';
 import { getBookmarksURL } from '@/api/bookmark/bookmark';
 import { getPresignedUrl } from '@/api/file/presigned_url_api';
 import {
-  memoAtom,
   suggestionListAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
   isSuggestionLoadingAtom,
-  linkAtom,
-  faviconAtom,
 } from '@/atoms';
 import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
@@ -37,9 +34,6 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
   const setSuggestionList = useSetAtom(suggestionListAtom);
   const setIsSuggestionLoading = useSetAtom(isSuggestionLoadingAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
-  const setLink = useSetAtom(linkAtom);
-  const resetMemo = useSetAtom(memoAtom);
-  const setFavicon = useSetAtom(faviconAtom);
 
   const {
     data: bookmarkUrlData,
@@ -63,7 +57,7 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
         const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
         setValue('title', title, { shouldValidate: true });
         setValue('platform', platform);
-        setFavicon(faviconUrl);
+        setValue('favicon', faviconUrl);
 
         // thumbnailUrl이 유효하면 presigned 방식으로 S3 업로드
         if (thumbnailUrl && thumbnailUrl.startsWith('http')) {
@@ -82,12 +76,11 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
     };
 
     uploadExternalImage();
-  }, [bookmarkUrlData, setFavicon, setValue]);
+  }, [bookmarkUrlData, setValue]);
 
   const handleLink = (v: string) => {
     if (v.length > 0) {
       refetch();
-      setLink(v);
       setVisibleCard(true);
       setVisibleCategory(true);
 
@@ -127,7 +120,6 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
       setVisibleTag(false);
       setVisibleMemoAndAlarm(false);
       setSuggestionList([]); // 제안 리스트 빈 배열로 초기화
-      resetMemo('');
     }
   };
 

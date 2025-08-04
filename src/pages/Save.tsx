@@ -2,18 +2,12 @@ import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
 import {
-  faviconAtom,
   isSaveButtonDisabledAtom,
-  linkAtom,
-  memoAtom,
-  platformAtom,
   previewImageAtom,
   selectedCategoryAtom,
   selectedTagAtom,
   tempCategoriesAtom,
   tempTagsAtom,
-  thumbnailAtom,
-  titleAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
@@ -47,24 +41,17 @@ interface SaveInterfaceProps {
 
 const Save = ({ type }: SaveInterfaceProps) => {
   useScrollLock(true); // PC일 때는 스크롤 방지
-  const { saveLinkData } = SaveButton();
   const navigate = useNavigate();
   const { id } = useParams();
-
+  const { saveLinkData } = SaveButton();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
   const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const resetLink = useSetAtom(linkAtom);
-  const resetTitle = useSetAtom(titleAtom);
-  const resetPlaform = useSetAtom(platformAtom);
-  const resetThumbnail = useSetAtom(thumbnailAtom);
-  const resetFavicon = useSetAtom(faviconAtom);
   const resetCard = useSetAtom(visibleCardAtom);
   const resetVisibleCate = useSetAtom(visibleCategoryAtom);
   const resetVisibleTag = useSetAtom(visibleTagAtom);
-  const resetMemo = useSetAtom(memoAtom);
   const resetSelectedCategory = useSetAtom(selectedCategoryAtom);
   const resetSelectedTag = useSetAtom(selectedTagAtom);
   const resetTempCategories = useSetAtom(tempCategoriesAtom);
@@ -86,22 +73,12 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
-    resetLink('');
-    resetTitle('');
-    resetPlaform('');
-    resetThumbnail('');
-    resetFavicon('');
     resetCard(false);
-  }, [resetLink, resetCard, resetTitle, resetPlaform, resetThumbnail, resetFavicon]);
+  }, [resetCard]);
 
   const onPrev = () => {
     resetVisibleCate(false);
     resetVisibleTag(false);
-    resetMemo('');
-    resetTitle('');
-    resetPlaform('');
-    resetThumbnail('');
-    resetFavicon('');
     resetSelectedCategory('');
     resetSelectedTag([]);
     resetTempCategories([]);
@@ -167,11 +144,17 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   const onSubmit = (data: z.infer<typeof schema>) => {
     console.log(data);
-    saveLinkData();
+    saveLinkData(data);
     setPreviewImage(undefined);
     onPrev();
   };
 
+  const handleBackClick = () => {
+    if (hasChanges) setIsDeleteModalOpen(true);
+    else onPrev();
+  };
+
+  // 유효한 데이터 handleSubmit
   const handleSave = () => {
     if (previewImage) {
       setValue('image', previewImage);
@@ -181,11 +164,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     }
   };
 
-  const handleBackClick = () => {
-    if (hasChanges) setIsDeleteModalOpen(true);
-    else onPrev();
-  };
-
+  // 유효하지 않은 데이터 handleSubmit
   const handleSaveError = (errors: FieldErrors<z.infer<typeof schema>>) => {
     let errorMessage = '';
     if (errors.image) {

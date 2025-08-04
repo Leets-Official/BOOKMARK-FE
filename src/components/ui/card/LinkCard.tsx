@@ -1,5 +1,5 @@
 import { getPresignedUrl, uploadImage } from '@/api/file/presigned_url_api';
-import { platformAtom, previewImageAtom, thumbnailAtom, titleAtom, uploadUrlAtom } from '@/atoms';
+import { previewImageAtom, uploadUrlAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
@@ -22,24 +22,17 @@ const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
-  const setTitle = useSetAtom(titleAtom);
-  const setPlatform = useSetAtom(platformAtom);
-  const setThumbnail = useSetAtom(thumbnailAtom);
   const setUploadUrl = useSetAtom(uploadUrlAtom);
-
-  useEffect(() => {
-    setTitle(control._formValues.title);
-    setPlatform(platform);
-    setThumbnail(image);
-  }, [control._formValues.title, platform, setTitle, setPlatform, setThumbnail, image]);
 
   useEffect(() => {
     if (imageError) {
       setValue('image', '', { shouldValidate: true });
       toast.dismiss();
       toast.error('올바른 이미지를 선택해주세요');
+    } else {
+      if (image) setValue('image', image, { shouldValidate: true });
     }
-  }, [imageError, setValue]);
+  }, [imageError, image, setValue]);
 
   // 버튼 클릭 시 숨겨진 파일 입력창 엶
   const handleImageUpload = () => {

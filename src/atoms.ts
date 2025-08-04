@@ -5,13 +5,7 @@ import type { SearchCategory, SearchTag } from './types/common/search';
 import type { PlatformProps } from './types/api/platform';
 
 // Save Page Atoms
-const linkAtom = atom('');
-const titleAtom = atom<string>('');
-const platformAtom = atom<string>('');
-const thumbnailAtom = atom<string | undefined>(undefined);
-const faviconAtom = atom<string | undefined>(undefined);
 const uploadUrlAtom = atom<string>('');
-const memoAtom = atom('');
 const visibleCardAtom = atom(false);
 const visibleCategoryAtom = atom(false);
 const visibleTagAtom = atom(false);
@@ -38,12 +32,6 @@ const selectedTagAtom = atom<string[]>([]);
 const scrollBarWidthAtom = atom(0);
 
 export {
-  linkAtom,
-  titleAtom,
-  platformAtom,
-  thumbnailAtom,
-  faviconAtom,
-  memoAtom,
   uploadUrlAtom,
   visibleCardAtom,
   visibleCategoryAtom,
