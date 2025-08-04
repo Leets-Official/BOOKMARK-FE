@@ -16,6 +16,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, updateCategory } from '@/api/category/category';
 import toast from 'react-hot-toast';
 import { useScrollLock } from '@/hooks/scrollLock';
+import { useNavigate } from 'react-router-dom';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
@@ -36,6 +37,8 @@ const FolderCard = ({
   const [isScrollLock, setIsScollLock] = useState(false);
 
   useScrollLock(isScrollLock);
+
+  const navigate = useNavigate();
 
   const schema = modalAddSchema('category', allCategoryNames);
   const queryClient = useQueryClient();
@@ -185,7 +188,18 @@ const FolderCard = ({
     <>
       <div className={clsx(isMobile ? 'min-w-40 pt-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 mt-2')}>
         {/**카테고리에 카드가 하나만 있으면 폴더에 하나만, 두개 있으면 1 : 1 비율... 3개까지 표시 */}
-        <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex hover:scale-103 duration-400 cursor-pointer'>
+        <div
+          className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex hover:scale-103 duration-400 cursor-pointer'
+          onClick={() => {
+            const queryData = [
+              {
+                categoryId: category.id,
+                categoryName: category.categoryName,
+              },
+            ];
+            navigate(`/search-result?categories=${JSON.stringify(queryData)}`);
+          }}
+        >
           {renderImages(images)}
         </div>
         <div className='flex items-center justify-between pt-2'>
