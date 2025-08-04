@@ -2,7 +2,7 @@ import CompactCard from '@/components/ui/card/CompactCard';
 import ChipDropDown from '@/components/layout/dropDown/ChipDropDown';
 import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
 import { dummyCategoryList, dummyPlatformList, dummyTagList } from '@/constants/DummyData';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import type { ChipProps } from '@/types/components/components';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
@@ -37,6 +37,30 @@ const SearchResult = () => {
 
   // 검색 결과
   const [bookmarks, setBookmarks] = useState<BookmarkSearchResultProps['content']>([]);
+
+  // 필터링된 검색 결과
+  const filteredBookmarks = useMemo(() => {
+    return bookmarks.filter((bookmark) => {
+      const selectedCategories = optionCategoryList
+        .filter((cat) => cat.isSelected)
+        .map((cat) => cat.content);
+      const selectedTags = optionTagList.filter((tag) => tag.isSelected).map((tag) => tag.content);
+      const selectedPlatforms = optionPlatformList
+        .filter((platform) => platform.isSelected)
+        .map((platform) => platform.content);
+
+      const categoryMatch =
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(bookmark.categoryTagInfos[0]?.categoryName);
+      const tagMatch =
+        selectedTags.length === 0 ||
+        bookmark.categoryTagInfos[0]?.tags.some((tag) => selectedTags.includes(tag.tagName));
+      const platformMatch =
+        selectedPlatforms.length === 0 || selectedPlatforms.includes(bookmark.platform);
+
+      return categoryMatch && tagMatch && platformMatch;
+    });
+  }, [bookmarks, optionCategoryList, optionTagList, optionPlatformList]);
 
   // 스크롤 감지를 위한 상태와 ref
   const [hasScroll, setHasScroll] = useState(false);
@@ -228,7 +252,7 @@ const SearchResult = () => {
           {/* 카드 더미 리스트 */}
           <div className={clsx('flex flex-col gap-3 mb-10', isMobile ? 'px-4' : '')}>
             {isMobile ? (
-              bookmarks.map((bookmark) => (
+              filteredBookmarks.map((bookmark) => (
                 <CompactCard
                   key={bookmark.id}
                   id={bookmark.id}
@@ -241,7 +265,7 @@ const SearchResult = () => {
               ))
             ) : (
               <div className='w-[95%] max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-                {bookmarks.map((bookmark) => (
+                {filteredBookmarks.map((bookmark) => (
                   <SaveCard
                     key={bookmark.id}
                     data={{
