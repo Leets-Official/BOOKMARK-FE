@@ -11,9 +11,9 @@ import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import type { SaveBookMarkProps } from '@/types/api/bookmark';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { notificaton } from '@/api/alarm/notification';
 import { deleteBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
+import { getNotificaton } from '@/api/alarm/notification';
 
 const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -24,7 +24,7 @@ const SaveCard = ({ data }: { data: SaveBookMarkProps }) => {
   const { data: notificationData } = useQuery({
     queryKey: ['notification'],
     queryFn: async () => {
-      const res = await notificaton(data.id);
+      const res = await getNotificaton(data.id);
       if (res.error) {
         throw new Error(res.message);
       }
