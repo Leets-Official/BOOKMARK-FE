@@ -23,9 +23,12 @@ const selectedDateAtom = atom<string>('');
 const selectedTimeAtom = atom<string>('');
 const isSaveButtonDisabledAtom = atom<boolean>(true);
 const searchContentsAtom = atom<string>('');
-const selectedCategoriesAtom = atom<SearchCategory[]>([]);
-const selectedTagsAtom = atom<SearchTag[]>([]);
-const selectedPlatformsAtom = atom<PlatformProps[]>([]);
+const selectedCategoriesAtom = atom<string[]>([]);
+const selectedTagsAtom = atom<string[]>([]);
+const selectedPlatformsAtom = atom<string[]>([]);
+const selectedSearchCategoriesAtom = atom<SearchCategory[]>([]);
+const selectedSearchTagsAtom = atom<SearchTag[]>([]);
+const selectedSearchPlatformsAtom = atom<PlatformProps[]>([]);
 const previewImageAtom = atom<string | undefined>(undefined);
 const isSuggestionLoadingAtom = atom(false);
 const tempCategoriesAtom = atom<string[]>([]);
@@ -63,4 +66,7 @@ export {
   selectedCategoryAtom,
   selectedTagAtom,
   scrollBarWidthAtom,
+  selectedSearchCategoriesAtom,
+  selectedSearchTagsAtom,
+  selectedSearchPlatformsAtom,
 };

@@ -1,5 +1,6 @@
 import { getSuggestionTag } from '@/agent/TagAgent';
 import { getBookmarksURL } from '@/api/bookmark/bookmark';
+import { getPresignedUrl } from '@/api/file/presigned_url_api';
 import {
   memoAtom,
   suggestionListAtom,
@@ -15,6 +16,7 @@ import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
 import type { saveSchema } from '@/schema/save';
 import type { BookMarkURLProps } from '@/types/api/bookmark';
+import { S3UploadImage } from '@/utils/S3PresignedImage';
 import { useQuery } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
@@ -56,13 +58,30 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
   });
 
   useEffect(() => {
-    if (bookmarkUrlData && bookmarkUrlData.length > 0) {
-      const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
-      setValue('title', title);
-      setValue('image', thumbnailUrl);
-      setValue('platform', platform);
-      setFavicon(faviconUrl);
-    }
+    const uploadExternalImage = async () => {
+      if (bookmarkUrlData && bookmarkUrlData.length > 0) {
+        const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
+        setValue('title', title);
+        setValue('platform', platform);
+        setFavicon(faviconUrl);
+
+        // thumbnailUrl이 유효하면 presigned 방식으로 S3 업로드
+        if (thumbnailUrl && thumbnailUrl.startsWith('http')) {
+          const uploadedImageUrl = await S3UploadImage(
+            thumbnailUrl,
+            `bookmark-${Date.now()}.jpg`,
+            getPresignedUrl,
+          );
+          if (uploadedImageUrl) {
+            setValue('image', uploadedImageUrl); // 업로드한 URL로 설정
+          } else {
+            setValue('image', thumbnailUrl); // fallback
+          }
+        }
+      }
+    };
+
+    uploadExternalImage();
   }, [bookmarkUrlData, setFavicon, setValue]);
 
   const handleLink = (v: string) => {
