@@ -1,7 +1,6 @@
 import CompactCard from '@/components/ui/card/CompactCard';
 import ChipDropDown from '@/components/layout/dropDown/ChipDropDown';
 import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
-import { dummyCategoryList, dummyPlatformList, dummyTagList } from '@/constants/DummyData';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import type { ChipProps } from '@/types/components/components';
 import clsx from 'clsx';
@@ -22,9 +21,9 @@ const SearchResult = () => {
   const navigate = useNavigate();
 
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
-  const [optionCategoryList, setOptionCategoryList] = useState<ChipProps[]>(dummyCategoryList);
-  const [optionTagList, setOptionTagList] = useState<ChipProps[]>(dummyTagList);
-  const [optionPlatformList, setOptionPlatformList] = useState<ChipProps[]>(dummyPlatformList);
+  const [optionCategoryList, setOptionCategoryList] = useState<ChipProps[]>([]);
+  const [optionTagList, setOptionTagList] = useState<ChipProps[]>([]);
+  const [optionPlatformList, setOptionPlatformList] = useState<ChipProps[]>([]);
 
   // URL 파라미터에서 데이터 받기
   const [searchParams] = useSearchParams();
@@ -249,7 +248,6 @@ const SearchResult = () => {
         </div>
       ) : (
         <>
-          {/* 카드 더미 리스트 */}
           <div className={clsx('flex flex-col gap-3 mb-10', isMobile ? 'px-4' : '')}>
             {isMobile ? (
               filteredBookmarks.map((bookmark) => (
