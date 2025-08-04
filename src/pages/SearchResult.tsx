@@ -22,6 +22,9 @@ import {
   selectedPlatformsAtom,
   selectedTagsAtom,
 } from '@/atoms';
+import { useMutation } from '@tanstack/react-query';
+import { postBookmarkSearchResult } from '@/api/bookmark/bookmark';
+import Loading from '@/components/ui/loading/Loading';
 
 const SearchResult = () => {
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
@@ -39,9 +42,59 @@ const SearchResult = () => {
   const [hasScroll, setHasScroll] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  const {
+    mutate: BookmarkSearchResultMutation,
+    isPending,
+    data: searchResult,
+  } = useMutation({
+    mutationFn: postBookmarkSearchResult,
+    onSuccess: (data) => {
+      console.log('검색 결과:', data);
+      if (data.error) {
+        throw new Error(data.message);
+      }
+      return data.data;
+    },
+    onError: (error) => {
+      console.error('검색 에러:', error);
+    },
+  });
+
   useEffect(() => {
     // 마운트될 때 항상 위에서 시작
     window.scrollTo({ top: 0, behavior: 'auto' });
+
+    const categoryTagRequests = selectedCategories.map((category) => {
+      // selectedTags에서 categoryId가 categoryIds 배열에 포함된 태그만 필터링
+      const tagList = selectedTags
+        .filter((tag) => tag.categoryIds.includes(category.categoryId))
+        .map((tag) => {
+          const tagIdIndex = tag.categoryIds.indexOf(category.categoryId);
+          return tag.tagIds[tagIdIndex];
+        });
+
+      return {
+        categoryId: category.categoryId,
+        tagIds: tagList,
+      };
+    });
+
+    const platforms = selectedPlatforms.map((platform) => platform.platform);
+
+    // POST 요청 데이터 구성
+    const requestData = {
+      keyword: searchContents,
+      categoryTagRequests,
+      platforms,
+      page: 0,
+      size: 9999,
+    };
+
+    // POST 요청 보내기
+    BookmarkSearchResultMutation(requestData);
+    console.log(searchResult);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 스크롤 감지 useEffect
@@ -80,28 +133,38 @@ const SearchResult = () => {
         <ChipDropDown title='태그' options={tagList} onChange={setTagList} />
         <ChipDropDown title='플랫폼' options={platformList} onChange={setPlatformList} />
       </div>
-      {/* 카드 더미 리스트 */}
-      <div className={clsx('flex flex-col gap-3 mb-10', isMobile ? 'px-4' : '')}>
-        {isMobile ? (
-          dummyCardData.map((card) => (
-            <CompactCard
-              key={card.id}
-              id={card.id}
-              title={card.memo}
-              image={card.image}
-              memo={card.memo}
-              category={card.category}
-              tags={card.tags}
-            />
-          ))
-        ) : (
-          <div className='w-[95%] max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-            {dummyCardData.map((card) => (
-              <SaveCard key={card.id} data={card} />
-            ))}
+
+      {isPending ? (
+        <div className='flex justify-center items-center'>
+          <Loading className='w-[15px] h-[15px]' />
+        </div>
+      ) : (
+        <>
+          {/* 카드 더미 리스트 */}
+          <div className={clsx('flex flex-col gap-3 mb-10', isMobile ? 'px-4' : '')}>
+            {isMobile ? (
+              dummyCardData.map((card) => (
+                <CompactCard
+                  key={card.id}
+                  id={card.id}
+                  title={card.memo}
+                  image={card.image}
+                  memo={card.memo}
+                  category={card.category}
+                  tags={card.tags}
+                />
+              ))
+            ) : (
+              <div className='w-[95%] max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+                {dummyCardData.map((card) => (
+                  <SaveCard key={card.id} data={card} />
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
+
       <Outlet />
     </div>
   );
