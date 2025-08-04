@@ -225,7 +225,7 @@ const Search = () => {
 
     resetAll();
     navigate(`/search-result?${params.toString()}`);
-    addSearchHistory(searchContents);
+    if (searchContents) addSearchHistory(searchContents);
   };
 
   return (

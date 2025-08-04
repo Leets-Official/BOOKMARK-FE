@@ -191,9 +191,21 @@ const FilterSearchBar: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const resetAll = () => {
+    setSelectedCategories([]);
+    setSelectedTags([]);
+    setSelectedPlatforms([]);
+    onPrev();
+  };
+
   return (
     <div className='w-full bg-white shadow-md relative' ref={historyRef}>
-      <div className='absolute top-2 left-2 z-20 cursor-pointer' onClick={onPrev}>
+      <div
+        className='absolute top-2 left-2 z-20 cursor-pointer'
+        onClick={() => {
+          resetAll();
+        }}
+      >
         <LeftIcon width={30} height={30} stroke='#000000' />
       </div>
       <AnimatePresence>
