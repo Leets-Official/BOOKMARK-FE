@@ -40,7 +40,7 @@ const CardListHeader = ({
               <p className='overflow-hidden max-sm:text-base text-xl'>{currentNum}</p>
               {!isMobile && (
                 <div onClick={onNext} className='hover:brightness-0'>
-                  <RightIcon width={24} height={24} strokeWidth={1.5} />
+                  <RightIcon width={24} height={24} strokeWidth={1.5} stroke='#545966' />
                 </div>
               )}
             </>
