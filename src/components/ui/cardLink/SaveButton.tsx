@@ -30,7 +30,7 @@ const SaveButton = () => {
   const suggestionList = useAtomValue(suggestionListAtom);
   const url = useAtomValue(linkAtom);
   const title = useAtomValue(titleAtom);
-  const platfrom = useAtomValue(platformAtom);
+  const platform = useAtomValue(platformAtom);
   const thumbnail = useAtomValue(thumbnailAtom);
   const faviconUrl = useAtomValue(faviconAtom);
   const memo = useAtomValue(memoAtom);
@@ -45,9 +45,8 @@ const SaveButton = () => {
       const res = await saveBookmarks(bookmarkData);
       return res;
     },
-    onSuccess: (res) => {
-      console.log('✅ 저장된 북마크 데이터:', res);
-      console.log('📦 data 필드:', res.data);
+    onSuccess: () => {
+      toast.success('저장되었습니다');
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
@@ -131,8 +130,8 @@ const SaveButton = () => {
 
       const lowerPlatform = platformString.toLowerCase();
 
-      if (lowerPlatform.includes('blog') && platformString.includes('네이버')) return 'NAVER_BLOG';
-      if (lowerPlatform.includes('naver') && platformString.includes('네이버')) return 'NAVER';
+      if (lowerPlatform.includes('blog') || platformString.includes('네이버')) return 'NAVER BLOG';
+      if (lowerPlatform.includes('naver')) return 'NAVER';
       if (lowerPlatform.includes('tistory')) return 'TISTORY';
       if (lowerPlatform.includes('youtube')) return 'YOUTUBE';
       if (lowerPlatform.includes('instagram')) return 'INSTAGRAM';
@@ -140,7 +139,7 @@ const SaveButton = () => {
       return 'ETC'; // 이외에는 ETC
     };
 
-    const platformUpper = getPlatformType(platfrom);
+    const platformUpper = getPlatformType(platform);
 
     // 북마크 저장 API 호출
     const bookmarkData: BookmarkSaveProps = {
@@ -149,7 +148,7 @@ const SaveButton = () => {
       memo: memo ?? '',
       file: {
         fileName: 'bookmarkExample.jpg',
-        fileUrl: uploadUrl || thumbnail || '',
+        fileUrl: thumbnail || uploadUrl || '',
       },
       notification: {
         notifyAt: '2025-08-05T00:00:00',
@@ -159,9 +158,8 @@ const SaveButton = () => {
       faviconUrl: faviconUrl ?? '',
       tagIds,
     };
-    console.log('📤 bookmarkData:', JSON.stringify(bookmarkData, null, 2));
+
     saveBookmarkMutation.mutate(bookmarkData);
-    console.log('📤 최종 bookmarkData', bookmarkData);
 
     setVisibleTag(false);
     setVisibleMemoAndAlarm(false);

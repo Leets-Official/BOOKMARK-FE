@@ -1,70 +1,65 @@
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import SaveCard from '../card/SaveCard';
 import Button from '@/components/common/Button';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { searchBookmarks } from '@/api/bookmark/bookmark';
 import type { SaveBookMarkProps, BookmarkSearchProps } from '@/types/api/bookmark';
 
 const SaveCardList = () => {
   const navigate = useNavigate();
   const [sortOrder, setSortOrder] = useState(true);
-  const [bookmarkData, setBookmarkData] = useState<SaveBookMarkProps[]>([]);
-
   const sortLabel = sortOrder ? '최신순' : '오래된순';
   const displayCount = isMobile ? 6 : 9;
 
-  const searchBookMarkMutation = useMutation({
-    mutationFn: searchBookmarks,
-    onSuccess: (res) => {
-      console.log('조회된 북마크 데이터:', res);
-      const content = res.data?.content ?? [];
-
-      const resData = content.map((data) => {
-        const categoryInfo = data.categoryTagInfos?.[0];
-        const category = categoryInfo.categoryName;
-        const tags = categoryInfo?.tags.map((tag) => tag.tagName);
-
-        return {
-          id: data.id,
-          url: data.url,
-          title: data.title,
-          memo: data.memo,
-          platform: data.platform,
-          image: data.file?.fileUrl ?? '', // 없을 경우 대비
-          category,
-          tags,
-          faviconUrl: data.faviconUrl,
-          createdAt: data.createdAt,
-        };
-      });
-
-      const sorted = [...resData].sort((a, b) =>
-        sortOrder
-          ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-      );
-      setBookmarkData(sorted);
-    },
-    onError: (err) => {
-      console.error('북마크 조회 실패:', err);
-    },
-  });
-
-  useEffect(() => {
-    const requestBody: BookmarkSearchProps = {
+  const requestBody: BookmarkSearchProps = useMemo(
+    () => ({
       keyword: null,
       categoryTagRequests: null,
       platforms: null,
       page: 0,
       size: displayCount,
-    };
+    }),
+    [displayCount],
+  );
 
-    searchBookMarkMutation.mutate(requestBody);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [displayCount, sortOrder]);
+  const { data } = useQuery({
+    queryKey: ['bookmarks', requestBody], // POST 파라미터를 queryKey에 포함
+    queryFn: () => searchBookmarks(requestBody),
+  });
+
+  const bookmarkData: SaveBookMarkProps[] = useMemo(() => {
+    const content = data?.data?.content ?? [];
+
+    const resData = content.map((data) => {
+      const categoryInfo = data.categoryTagInfos?.[0];
+      const category = categoryInfo?.categoryName;
+      const tags = categoryInfo?.tags.map((tag) => tag.tagName);
+
+      return {
+        id: data.id,
+        url: data.url,
+        title: data.title,
+        memo: data.memo,
+        platform: data.platform,
+        image: data.file?.fileUrl ?? '',
+        category,
+        tags,
+        faviconUrl: data.faviconUrl,
+        createdAt: data.createdAt,
+      };
+    });
+
+    const sorted = [...resData].sort((a, b) =>
+      sortOrder
+        ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+
+    return sorted;
+  }, [data, sortOrder]);
 
   return (
     <div className='pb-25 mt-20'>

@@ -29,7 +29,6 @@ import { useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import { BackArrowIcon } from '@/assets';
-import toast from 'react-hot-toast';
 
 const SaveButtonClass = tv({
   base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] sm:w-[400px] rounded-[10px]',
@@ -170,7 +169,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
     saveLinkData();
     setPreviewImage(undefined);
     onPrev();
-    toast.success('저장되었습니다');
   };
 
   const handleSave = () => {

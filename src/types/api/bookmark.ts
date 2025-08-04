@@ -34,7 +34,7 @@ export interface BookmarkSaveProps {
   notification?: {
     notifyAt: string;
   };
-  platform: 'NAVER' | 'NAVER_BLOG' | 'TISTORY' | 'YOUTUBE' | 'INSTAGRAM' | 'VELOG' | 'ETC';
+  platform: 'NAVER' | 'NAVER BLOG' | 'TISTORY' | 'YOUTUBE' | 'INSTAGRAM' | 'VELOG' | 'ETC';
   categoryId: number;
   faviconUrl: string;
   tagIds: number[];
