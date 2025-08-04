@@ -4,9 +4,9 @@ import React, { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import {
-  selectedCategoriesAtom,
-  selectedTagsAtom,
-  selectedPlatformsAtom,
+  selectedSearchCategoriesAtom,
+  selectedSearchTagsAtom,
+  selectedSearchPlatformsAtom,
   searchContentsAtom,
 } from '@/atoms';
 import { useNavigate } from 'react-router-dom';
@@ -50,9 +50,9 @@ const FilterSearchBar: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false);
   const historyRef = useRef<HTMLDivElement>(null);
 
-  const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
-  const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
-  const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
+  const [selectedCategories, setSelectedCategories] = useAtom(selectedSearchCategoriesAtom);
+  const [selectedTags, setSelectedTags] = useAtom(selectedSearchTagsAtom);
+  const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedSearchPlatformsAtom);
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
