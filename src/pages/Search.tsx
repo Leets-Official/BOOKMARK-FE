@@ -6,9 +6,9 @@ import { Chip, Button } from '@/components/common';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import {
-  selectedCategoriesAtom,
-  selectedTagsAtom,
-  selectedPlatformsAtom,
+  selectedSearchCategoriesAtom,
+  selectedSearchTagsAtom,
+  selectedSearchPlatformsAtom,
   searchContentsAtom,
 } from '@/atoms';
 import { postSearchHistory } from '@/api/searchHistory/searchHistory';
@@ -23,9 +23,9 @@ import { useNavigate } from 'react-router-dom';
 const Search = () => {
   // 실제 유저가 입력한 값들
   const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
-  const [selectedCategories, setSelectedCategories] = useAtom(selectedCategoriesAtom);
-  const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
-  const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedPlatformsAtom);
+  const [selectedCategories, setSelectedCategories] = useAtom(selectedSearchCategoriesAtom);
+  const [selectedTags, setSelectedTags] = useAtom(selectedSearchTagsAtom);
+  const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedSearchPlatformsAtom);
 
   // 카테고리 목록
   const [categories, setCategories] = useState<SearchCategory[]>([]);

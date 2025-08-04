@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   tempCategoriesAtom,
   tempTagsAtom,
@@ -8,9 +8,19 @@ import {
   selectedCategoryAtom,
   selectedTagAtom,
   suggestionListAtom,
+  linkAtom,
+  faviconAtom,
+  titleAtom,
+  memoAtom,
+  platformAtom,
+  thumbnailAtom,
+  uploadUrlAtom,
 } from '@/atoms';
 import { createCategory, getCategories } from '@/api/category/category';
-import { createTag } from '@/api/tag/tag';
+import { createTag, getTags } from '@/api/tag/tag';
+import { saveBookmarks } from '@/api/bookmark/bookmark';
+import toast from 'react-hot-toast';
+import type { BookmarkSaveRequestProps } from '@/types/api/bookmark';
 
 const SaveButton = () => {
   const tempCategories = useAtomValue(tempCategoriesAtom);
@@ -18,11 +28,33 @@ const SaveButton = () => {
   const selectedCategory = useAtomValue(selectedCategoryAtom);
   const selectedTag = useAtomValue(selectedTagAtom);
   const suggestionList = useAtomValue(suggestionListAtom);
+  const url = useAtomValue(linkAtom);
+  const title = useAtomValue(titleAtom);
+  const platform = useAtomValue(platformAtom);
+  const thumbnail = useAtomValue(thumbnailAtom);
+  const faviconUrl = useAtomValue(faviconAtom);
+  const memo = useAtomValue(memoAtom);
+  const [uploadUrl, setUploadUrl] = useAtom(uploadUrlAtom);
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
-
   const queryClient = useQueryClient();
+
+  const saveBookmarkMutation = useMutation({
+    mutationFn: async (bookmarkData: BookmarkSaveRequestProps) => {
+      const res = await saveBookmarks(bookmarkData);
+      return res;
+    },
+    onSuccess: () => {
+      toast.success('저장되었습니다');
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      setUploadUrl('');
+    },
+    onError: () => {
+      toast.error('저장에 실패했습니다');
+    },
+  });
 
   const createCategoryMutation = useMutation({
     mutationFn: async (categoryName: string) => {
@@ -43,6 +75,31 @@ const SaveButton = () => {
       queryClient.invalidateQueries({ queryKey: ['tags'] });
     },
   });
+
+  const processInstagramImage = async (imageUrl: string): Promise<string> => {
+    // 인스타그램 URL이면 서버에서 처리하도록 요청
+    if (imageUrl.includes('cdninstagram.com')) {
+      try {
+        // 백엔드에 이미지 프록시 API 요청
+        const response = await fetch('/api/proxy-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ imageUrl }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          return data.s3Url; // 백엔드에서 S3에 업로드 후 리턴한 URL
+        }
+      } catch (error) {
+        console.error('이미지 프록시 실패:', error);
+      }
+    }
+
+    return imageUrl; // 다른 URL은 그대로 사용
+  };
 
   const saveLinkData = async () => {
     if (!selectedCategory || selectedTag.length === 0) return;
@@ -72,19 +129,71 @@ const SaveButton = () => {
       selectedTag.includes(tag),
     );
 
-    const createTag = [...selectedSuggestionTags, ...selectedTempTags];
+    const res = await getTags(categoryId); // 기존 태그 조회
+    const existingTags = res.data || [];
+    const selectedExistingTags = existingTags
+      .filter((t) => selectedTag.includes(t.tagName))
+      .map((t) => ({ id: t.tagId, name: t.tagName }));
 
-    // 여러개의 태그 생성을 실행하는 동안 기다림 -> 하나라도 실패하면 reject
+    // 새로 생성할 태그 (suggestion + temp 중 기존에 없던 것)
+    const createTagNames = [...selectedSuggestionTags, ...selectedTempTags].filter(
+      (tag) => !selectedExistingTags.some((t) => t.name === tag),
+    );
+
     await Promise.all(
-      createTag.map((tag) => createTagMutation.mutateAsync({ categoryId, tagName: tag })),
+      createTagNames.map((tag) => createTagMutation.mutateAsync({ categoryId, tagName: tag })),
     );
 
     await queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
 
+    const tagRes = await getTags(categoryId);
+    const allTags = tagRes.data || [];
+    const tagIds = allTags.filter((t) => selectedTag.includes(t.tagName)).map((t) => t.tagId);
+
+    // 플랫폼 형식에 맞게 추출
+    const getPlatformType = (platformString: string): BookmarkSaveRequestProps['platform'] => {
+      if (!platformString) return 'ETC';
+
+      const lowerPlatform = platformString.toLowerCase();
+
+      if (lowerPlatform.includes('blog') || platformString.includes('네이버')) return 'NAVER_BLOG';
+      if (lowerPlatform.includes('naver')) return 'NAVER';
+      if (lowerPlatform.includes('tistory') || platformString.includes('티스토리'))
+        return 'TISTORY';
+      if (lowerPlatform.includes('youtube')) return 'YOUTUBE';
+      if (lowerPlatform.includes('instagram')) return 'INSTAGRAM';
+      if (lowerPlatform.includes('velog')) return 'VELOG';
+      return 'ETC'; // 이외에는 ETC
+    };
+
+    const platformUpper = getPlatformType(platform);
+
+    const originalImageUrl = uploadUrl && uploadUrl.trim() !== '' ? uploadUrl : thumbnail || '';
+    const processedImageUrl = await processInstagramImage(originalImageUrl);
+
+    // 북마크 저장 API 호출
+    const bookmarkData: BookmarkSaveRequestProps = {
+      title: title ?? '제목',
+      url: url ?? '',
+      memo: memo ?? '',
+      file: {
+        fileName: 'bookmarkExample.jpg',
+        fileUrl: processedImageUrl,
+      },
+      notification: {
+        notifyAt: '2025-08-05T00:00:00.326Z',
+      },
+      platform: platformUpper as BookmarkSaveRequestProps['platform'],
+      categoryId,
+      faviconUrl: faviconUrl ?? '',
+      tagIds,
+    };
+
+    saveBookmarkMutation.mutate(bookmarkData);
+
     setVisibleTag(false);
     setVisibleMemoAndAlarm(false);
   };
-
   return { saveLinkData };
 };
 

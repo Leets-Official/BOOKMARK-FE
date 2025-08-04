@@ -2,14 +2,18 @@ import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
 import {
+  faviconAtom,
   isSaveButtonDisabledAtom,
   linkAtom,
   memoAtom,
+  platformAtom,
   previewImageAtom,
   selectedCategoryAtom,
   selectedTagAtom,
   tempCategoriesAtom,
   tempTagsAtom,
+  thumbnailAtom,
+  titleAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
@@ -25,7 +29,6 @@ import { useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import { BackArrowIcon } from '@/assets';
-import toast from 'react-hot-toast';
 
 const SaveButtonClass = tv({
   base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] sm:w-[400px] rounded-[10px]',
@@ -53,6 +56,10 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const resetLink = useSetAtom(linkAtom);
+  const resetTitle = useSetAtom(titleAtom);
+  const resetPlaform = useSetAtom(platformAtom);
+  const resetThumbnail = useSetAtom(thumbnailAtom);
+  const resetFavicon = useSetAtom(faviconAtom);
   const resetCard = useSetAtom(visibleCardAtom);
   const resetVisibleCate = useSetAtom(visibleCategoryAtom);
   const resetVisibleTag = useSetAtom(visibleTagAtom);
@@ -79,13 +86,21 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   useEffect(() => {
     resetLink('');
+    resetTitle('');
+    resetPlaform('');
+    resetThumbnail('');
+    resetFavicon('');
     resetCard(false);
-  }, [resetLink, resetCard]);
+  }, [resetLink, resetCard, resetTitle, resetPlaform, resetThumbnail, resetFavicon]);
 
   const onPrev = () => {
     resetVisibleCate(false);
     resetVisibleTag(false);
     resetMemo('');
+    resetTitle('');
+    resetPlaform('');
+    resetThumbnail('');
+    resetFavicon('');
     resetSelectedCategory('');
     resetSelectedTag([]);
     resetTempCategories([]);
@@ -154,7 +169,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
     saveLinkData();
     setPreviewImage(undefined);
     onPrev();
-    toast.success('저장되었습니다');
   };
 
   const handleSave = () => {
@@ -234,6 +248,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
             setIsDeleteModalOpen(false);
             onPrev();
           }}
+          onScrollLock={false}
         />
       )}
     </>

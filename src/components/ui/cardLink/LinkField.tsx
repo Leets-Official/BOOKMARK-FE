@@ -1,4 +1,6 @@
 import { getSuggestionTag } from '@/agent/TagAgent';
+import { getBookmarksURL } from '@/api/bookmark/bookmark';
+import { getPresignedUrl } from '@/api/file/presigned_url_api';
 import {
   memoAtom,
   suggestionListAtom,
@@ -7,10 +9,15 @@ import {
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
   isSuggestionLoadingAtom,
+  linkAtom,
+  faviconAtom,
 } from '@/atoms';
 import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
 import type { saveSchema } from '@/schema/save';
+import type { BookMarkURLProps } from '@/types/api/bookmark';
+import { S3UploadImage } from '@/utils/S3PresignedImage';
+import { useQuery } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 import { Controller, type Control, type UseFormSetValue } from 'react-hook-form';
@@ -23,33 +30,67 @@ interface ILinkField {
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
 }
 
-const LinkField = ({ editable = true, isLoading = false, control, setValue }: ILinkField) => {
+const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
   const [visibleCard, setVisibleCard] = useAtom(visibleCardAtom);
   const setVisibleCategory = useSetAtom(visibleCategoryAtom);
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setSuggestionList = useSetAtom(suggestionListAtom);
   const setIsSuggestionLoading = useSetAtom(isSuggestionLoadingAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
+  const setLink = useSetAtom(linkAtom);
   const resetMemo = useSetAtom(memoAtom);
+  const setFavicon = useSetAtom(faviconAtom);
 
-  // 링크가 있으면 카테고리 보여주기
+  const {
+    data: bookmarkUrlData,
+    refetch,
+    isFetching,
+  } = useQuery<BookMarkURLProps[]>({
+    queryKey: ['bookmarkPreview'],
+    queryFn: async () => {
+      const res = await getBookmarksURL(control._formValues.url);
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+    enabled: false,
+  });
+
   useEffect(() => {
-    if (control._formValues.url) {
-      setVisibleCard(true);
-      setVisibleCategory(true);
-    }
-  }, [control._formValues.url, setVisibleCard, setVisibleCategory]);
+    const uploadExternalImage = async () => {
+      if (bookmarkUrlData && bookmarkUrlData.length > 0) {
+        const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
+        setValue('title', title);
+        setValue('platform', platform);
+        setFavicon(faviconUrl);
+
+        // thumbnailUrl이 유효하면 presigned 방식으로 S3 업로드
+        if (thumbnailUrl && thumbnailUrl.startsWith('http')) {
+          const uploadedImageUrl = await S3UploadImage(
+            thumbnailUrl,
+            `bookmark-${Date.now()}.jpg`,
+            getPresignedUrl,
+          );
+          if (uploadedImageUrl) {
+            setValue('image', uploadedImageUrl); // 업로드한 URL로 설정
+          } else {
+            setValue('image', thumbnailUrl); // fallback
+          }
+        }
+      }
+    };
+
+    uploadExternalImage();
+  }, [bookmarkUrlData, setFavicon, setValue]);
 
   const handleLink = (v: string) => {
-    // 임시로 링크가 있으면 카테고리 보여주기 -> 추후에는 링크가 올바른지 및 추출 구현 필요
-    // 임시 제목, 플랫폼, 이미지 설정
-    setValue('title', '제목');
-    setValue('platform', '플랫폼');
-    setValue('image', 'https://www.google.com/image.png');
-
     if (v.length > 0) {
+      refetch();
+      setLink(v);
       setVisibleCard(true);
       setVisibleCategory(true);
+
       // 카테고리가 이미 선택되어 있는 경우(edit) 태그 보여주기
       if (control._formValues.category) {
         setVisibleTag(true);
@@ -93,7 +134,7 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 sm:px-6 pb-4'>
       <p className='text-sm text-stone font-semibold mt-4'>
-        링크 입력<span className='text-[#FF2C3D]'>*</span>
+        링크 입력<span className='text-redText'>*</span>
       </p>
       <Controller
         name='url'
@@ -104,11 +145,11 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
             placeholder='링크를 입력해주세요'
             onChange={(e) => {
               field.onChange(e);
-              handleSetVisible(e);
             }}
             onBlur={() => {
               field.onBlur();
               handleLink(field.value);
+              handleSetVisible(field.value);
             }}
             value={field.value}
             errorMessage={fieldState.error?.message}
@@ -122,8 +163,7 @@ const LinkField = ({ editable = true, isLoading = false, control, setValue }: IL
             title={control._formValues.title}
             platform={control._formValues.platform}
             image={control._formValues.image}
-            isLoading={isLoading}
-            editable={editable}
+            isLoading={isLoading || isFetching}
           />
         </>
       )}

@@ -2,18 +2,77 @@ import { AlertIcon, FolderDetailIcon } from '@/assets';
 import { Image, Chip, Button } from '@/components/common';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
-import type { SaveCardProps } from '@/types/components/components';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import { MenuPortal } from '@/utils/';
 import { useMenuHandler } from '@/hooks/menuPosition';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../modal/DeleteModal';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import dayjs from 'dayjs';
+import type { BookMarkProps } from '@/types/api/bookmark';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { deleteBookmarks } from '@/api/bookmark/bookmark';
+import toast from 'react-hot-toast';
+import { getNotificaton } from '@/api/alarm/notification';
 
-const SaveCard = ({ data }: { data: SaveCardProps }) => {
+const SaveCard = ({ data }: { data: BookMarkProps }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { data: notificationData } = useQuery({
+    queryKey: ['notification'],
+    queryFn: async () => {
+      const res = await getNotificaton(data.id);
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+  });
+
+  const deleteBookmarkMutate = useMutation({
+    mutationFn: deleteBookmarks,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+      toast.success('북마크 삭제에 성공했습니다');
+    },
+    onError: () => {
+      toast.error('북마크 삭제에 실패했습니다');
+    },
+  });
+
+  const isNotified = notificationData?.some((noti) => noti.isNotified) ?? false;
+
+  const x = useMotionValue(0);
+  const dragRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [constraints, setConstraints] = useState({ left: 0, right: 0 });
+
+  useEffect(() => {
+    const updateConstraints = () => {
+      if (dragRef.current && containerRef.current) {
+        const totalChipWidth = dragRef.current.scrollWidth;
+        const containerWidth = containerRef.current.offsetWidth;
+        const buffer = 8;
+        const maxDrag = totalChipWidth - containerWidth + buffer;
+        const newLeft = -Math.max(0, maxDrag);
+
+        setConstraints({ left: newLeft, right: 0 });
+
+        const currentX = x.get();
+        if (currentX < newLeft) {
+          x.set(newLeft);
+        } else if (currentX > 0) {
+          x.set(0);
+        }
+      }
+    };
+    updateConstraints();
+    window.addEventListener('resize', updateConstraints);
+    return () => window.removeEventListener('resize', updateConstraints);
+  }, [data, x]);
 
   const menuOpenStyles =
     isMenuOpen && !isMobile
@@ -33,35 +92,68 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
         )}
       >
         <div className='p-3.5 pb-10'>
-          <div className='flex flex-wrap gap-2 mb-4 w-9/10'>
-            <Chip
-              content={data.category}
-              isSelected={false}
-              className='bg-[#80CA14] text-white border-[#EAEDF5] text-[15px] px-3 h-[40px]'
-            />
-            {data.tags.map((tag, i) => (
+          <div ref={containerRef} className='overflow-hidden p-1'>
+            <motion.div
+              ref={dragRef}
+              style={{ x }}
+              drag='x'
+              dragConstraints={constraints}
+              dragElastic={0.05}
+              dragTransition={{ power: 0.01, timeConstant: 200 }}
+              className='flex gap-2 mb-4 w-full hide-scrollbar'
+            >
               <Chip
-                key={i}
-                content={tag}
+                content={data.category}
                 isSelected={false}
-                className='border-[#EAEDF5] text-[15px] px-3 h-[36px]'
+                className='bg-[#80CA14] text-white border-lightGrayBlue text-[15px] px-3 h-[36px] flex-shrink-0'
               />
-            ))}
-            <Chip
-              content={data.platform}
-              isSelected={false}
-              className='border-blue text-[15px] px-3 h-[36px]'
-            />
+              {data.tags?.map((tag, i) => (
+                <Chip
+                  key={i}
+                  content={tag}
+                  isSelected={false}
+                  className='border-[#EAEDF5] text-[15px] px-3 h-[36px] flex-shrink-0'
+                />
+              ))}
+              {data.faviconUrl ? (
+                <Chip
+                  content={
+                    <span className='flex items-center gap-1'>
+                      <img src={data.faviconUrl} alt='favicon' className='w-4 h-4' />
+                      <span>{data.platform}</span>
+                    </span>
+                  }
+                  isSelected={false}
+                  className='border-blue text-[15px] px-3 h-[36px] flex-shrink-0'
+                />
+              ) : (
+                <Chip
+                  content={data.platform}
+                  isSelected={false}
+                  className='border-blue text-[15px] px-3 h-[36px] flex-shrink-0'
+                />
+              )}
+            </motion.div>
           </div>
-          <Image src={data.image} className='w-full aspect-[4/2.3] object-cover rounded-xl mb-4' />
+          <Image
+            src={data.image}
+            className='w-full aspect-[4/2.2] object-cover rounded-xl mb-4'
+            onClick={() => window.open(data.url, '_blank')}
+          />
           <div className='flex justify-between items-start pl-2 pb-2'>
             <div className='flex-1'>
-              <h3 className='font-semibold text-[20px] text-gray-900 mb-2'>{data.title}</h3>
-              <p className='text-[15px] text-gray-600 leading-relaxed mb-2'>{data.memo}</p>
+              <h3 className='font-semibold text-[20px] text-gray-900 mb-2 line-clamp-1 leading-tight'>
+                {data.title}
+              </h3>
+              <p className='text-[15px] text-gray-600 leading-relaxed mb-2 line-clamp-2'>
+                {data.memo}
+              </p>
               <div className='absolute bottom-4 left-6 right-4 flex justify-between items-center'>
                 <div className='flex items-center gap-2'>
-                  <p className='text-sm text-stone'>2025.07.17 18:28 저장</p>
-                  <AlertIcon width={16} height={16} />
+                  <p className='text-sm text-stone'>
+                    {dayjs(data.createdAt).format('YYYY.MM.DD HH:mm')} 저장
+                  </p>
+                  {isNotified && <AlertIcon width={16} height={16} stroke={'#A4A8B2'} />}
                 </div>
                 <div ref={iconRef} onClick={isOpen}>
                   <FolderDetailIcon
@@ -106,10 +198,10 @@ const SaveCard = ({ data }: { data: SaveCardProps }) => {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onCancel={() => setIsDeleteModalOpen(false)}
-        warningText={`"${data.category}"카테고리를 정말 삭제할까요?`}
+        warningText='해당 북마크를 정말 삭제할까요?'
         onDelete={() => {
           setIsDeleteModalOpen(false);
-          console.log('삭제:', data.category);
+          deleteBookmarkMutate.mutate(data.id);
         }}
         onScrollLock={isDeleteModalOpen}
       />

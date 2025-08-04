@@ -25,9 +25,9 @@ export interface CategoryCardProps {
 export interface SaveCardProps {
   id: number;
   title: string;
+  memo: string;
   category: string;
   tags: string[];
   image: string;
-  memo: string;
   platform: string;
 }

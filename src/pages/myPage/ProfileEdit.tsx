@@ -65,17 +65,17 @@ const ProfileEdit = () => {
     onSuccess: (res) => {
       if (res.error) {
         toast.dismiss();
-        toast.error('계정 삭제에 실패했습니다.');
+        toast.error('계정 삭제에 실패했습니다');
         return;
       }
       toast.dismiss();
-      toast.success('계정이 삭제되었습니다.');
+      toast.success('계정이 삭제되었습니다');
       queryClient.clear(); // 모든 캐시 초기화 (로그아웃 처리)
       navigate('/login', { replace: true });
     },
     onError: () => {
       toast.dismiss();
-      toast.error('계정 삭제에 실패했습니다.');
+      toast.error('계정 삭제에 실패했습니다');
     },
   });
 

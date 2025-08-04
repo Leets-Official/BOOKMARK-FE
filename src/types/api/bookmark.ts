@@ -1,3 +1,10 @@
+export interface BookMarkURLProps {
+  title: string;
+  thumbnailUrl: string;
+  faviconUrl: string;
+  platform: string;
+}
+
 export interface BookmarkProps {
   id: number;
   url: string;
@@ -17,12 +24,14 @@ export interface BookmarkProps {
 }
 
 export interface BookmarkSearchResultRequestProps {
-  keyword: string;
-  categoryTagRequests: {
-    categoryId: number;
-    tagIds: number[];
-  }[];
-  platforms: string[];
+  keyword?: string | null;
+  categoryTagRequests?:
+    | {
+        categoryId: number;
+        tagIds: number[];
+      }[]
+    | null;
+  platforms?: string[] | null;
   page: number;
   size: number;
 }
@@ -73,4 +82,47 @@ export interface BookmarkSearchResultProps {
   first: boolean;
   last: boolean;
   empty: boolean;
+}
+
+export interface BookmarkSaveRequestProps {
+  title: string;
+  url: string;
+  memo?: string;
+  file?: {
+    fileName: string;
+    fileUrl: string;
+  };
+  notification?: {
+    notifyAt: string;
+  };
+  platform: string;
+  categoryId: number;
+  faviconUrl: string;
+  tagIds: number[];
+}
+
+export interface BookmarkSearchProps {
+  keyword?: string | null;
+  categoryTagRequests?:
+    | {
+        categoryId: number;
+        tagIds: number[];
+      }[]
+    | null;
+  platforms?: string[] | null;
+  page: number;
+  size: number;
+}
+
+export interface BookMarkProps {
+  id: number;
+  url: string;
+  title: string;
+  memo: string;
+  platform: string;
+  image: string;
+  faviconUrl: string;
+  category: string;
+  tags: string[];
+  createdAt: string;
 }

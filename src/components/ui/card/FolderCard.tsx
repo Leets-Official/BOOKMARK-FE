@@ -12,10 +12,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import type { CategoryProps } from '@/types/api/category';
-import { getBookmarks } from '@/api/bookmark/bookmark';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, updateCategory } from '@/api/category/category';
-import Loading from '../loading/Loading';
 import toast from 'react-hot-toast';
 import { useScrollLock } from '@/hooks/scrollLock';
 
@@ -35,14 +33,18 @@ const FolderCard = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler(); // 아이콘 기반으로 메뉴바 위치를 설정하는 커스텀 훅
-  const [isDisabled, setIsDisabled] = useState(true);
   const [isScrollLock, setIsScollLock] = useState(false);
 
   useScrollLock(isScrollLock);
 
   const schema = modalAddSchema('category', allCategoryNames);
   const queryClient = useQueryClient();
-  const { handleSubmit, control, reset } = useForm<z.infer<typeof schema>>({
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isValid, isSubmitting },
+  } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: {
@@ -50,10 +52,7 @@ const FolderCard = ({
     },
   });
 
-  const { data: bookmarks, isPending: isBookmarksLoading } = useQuery({
-    queryKey: ['bookmarks'],
-    queryFn: () => getBookmarks(),
-  });
+  const isDisabled = !isValid || isSubmitting;
 
   const { mutate: updateCategoryMutation } = useMutation({
     mutationFn: (categoryName: string) => updateCategory(category.id, categoryName),
@@ -88,6 +87,7 @@ const FolderCard = ({
 
       toast.success('카테고리 수정 완료');
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
     },
   });
 
@@ -128,25 +128,19 @@ const FolderCard = ({
 
       toast.success('카테고리 삭제 완료');
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
     },
   });
-
-  if (!bookmarks || bookmarks.error || !bookmarks.data) {
-    if (bookmarks?.error) {
-      console.error('북마크 조회 실패:', bookmarks.message);
-    }
-    return;
-  }
 
   const handleConfirmModal = (data: z.infer<typeof schema>) => {
     if (!data.category.trim()) return;
     updateCategoryMutation(data.category);
     setIsModalOpen(false);
     reset();
-    setIsDisabled(true);
+    setIsScollLock(false);
   };
 
-  const images = bookmarks.data.slice(0, 3).map((bookmark) => bookmark.thumbnailUrl);
+  const images = category.thumbnailUrls || [];
 
   // 이미지 렌더링
   const renderImages = (images: string[]) => {
@@ -184,7 +178,6 @@ const FolderCard = ({
         </>
       );
     }
-
     return null;
   };
 
@@ -193,13 +186,7 @@ const FolderCard = ({
       <div className={clsx(isMobile ? 'min-w-40 pt-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 mt-2')}>
         {/**카테고리에 카드가 하나만 있으면 폴더에 하나만, 두개 있으면 1 : 1 비율... 3개까지 표시 */}
         <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex hover:scale-103 duration-400 cursor-pointer'>
-          {isBookmarksLoading ? (
-            <div className='w-full h-full flex items-center justify-center'>
-              <Loading className='w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
-            </div>
-          ) : (
-            renderImages(images)
-          )}
+          {renderImages(images)}
         </div>
         <div className='flex items-center justify-between pt-2'>
           <p className={TitleText}>{category.categoryName}</p>
@@ -245,7 +232,6 @@ const FolderCard = ({
         onCancel={() => {
           setIsModalOpen(false);
           reset();
-          setIsDisabled(true);
           setIsScollLock(false);
         }}
         onConfirm={handleSubmit(handleConfirmModal)}
@@ -264,7 +250,6 @@ const FolderCard = ({
               onChange={field.onChange}
               onBlur={field.onBlur}
               errorMessage={fieldState.error?.message}
-              setDisabled={(disabled) => setIsDisabled(disabled)}
             />
           )}
         />

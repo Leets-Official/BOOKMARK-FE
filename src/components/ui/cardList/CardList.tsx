@@ -3,9 +3,9 @@ import FolderCard from '../card/FolderCard';
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import { useEffect, useState } from 'react';
 import { getCardsPerSlide } from '@/utils/CardPerSlide';
-import { useQueryClient } from '@tanstack/react-query';
-import { getBookmarks } from '@/api/bookmark/bookmark';
+// import { useQueryClient } from '@tanstack/react-query';
 import type { CategoryProps } from '@/types/api/category';
+import { LeftIcon, RightIcon } from '@/assets';
 
 // 슬라이드 애니메이션용 variants 정의
 const rowVariants = {
@@ -24,8 +24,8 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const [leaving, setLeaving] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const [cardsPerSlide, setCardsPerSlide] = useState(getCardsPerSlide()); // 초기 계산
-  const queryClient = useQueryClient();
 
   const allCategoryNames = categories.map((cat) => cat.categoryName);
 
@@ -68,34 +68,8 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [categories.length]); // 카드 수가 변할 때만 다시 바인딩
 
-  // 다음 슬라이드 미리 로드
-  useEffect(() => {
-    // 카테고리가 없으면 미리 로드하지 않음
-    if (categories.length === 0) return;
-
-    // 현재 페이지의 북마크도 미리 로드 (안전장치)
-    const preload = () => {
-      queryClient.prefetchQuery({
-        queryKey: ['bookmarks'],
-        queryFn: getBookmarks,
-      });
-    };
-    preload(); // 현재, 이전, 다음 카드슬라이스에 대해 각각 한 번만 미리 로드
-
-    if (index > 0) {
-      preload();
-    }
-    if (index < maxIndex) {
-      preload();
-    }
-  }, [index, categories, cardsPerSlide, maxIndex, queryClient]);
-
-  const toggleLeaving = () => {
-    setLeaving(false);
-  };
-
   return (
-    <div className='mt-50'>
+    <div className='mt-50 max-w-[1200px]'>
       <CardListHeader
         onNext={increaseIndex}
         onPrev={decreaseIndex}
@@ -103,8 +77,35 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
         title='카테고리'
         showPagination={true}
       />
-      <div className='relative w-[95%] max-sm:w-9/10 mx-auto overflow-hidden'>
-        <AnimatePresence custom={direction} initial={false} onExitComplete={toggleLeaving}>
+      <div
+        className='relative w-[95%] max-sm:w-9/10 mx-auto overflow-hidden'
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        {hovered && (
+          <button
+            onClick={decreaseIndex}
+            className='absolute z-10 top-[43%] left-3 -translate-y-1/2 bg-[#696b7499] text-white text-5xl rounded-full w-15 h-15 flex items-center justify-center transition hover:brightness-75'
+          >
+            <LeftIcon width={40} height={40} stroke='#ffffffce' strokeWidth={2} />
+          </button>
+        )}
+
+        {/* 오른쪽 버튼 */}
+        {hovered && (
+          <button
+            onClick={increaseIndex}
+            className='absolute z-10 right-3 top-[43%] -translate-y-1/2 bg-[#696b7499] text-white text-5xl rounded-full w-15 h-15 flex items-center justify-center transition hover:brightness-75'
+          >
+            <RightIcon width={40} height={40} stroke='#ffffffce' strokeWidth={2} />
+          </button>
+        )}
+
+        <AnimatePresence
+          custom={direction}
+          initial={false}
+          onExitComplete={() => setLeaving(false)}
+        >
           <motion.div
             key={index}
             variants={rowVariants}
