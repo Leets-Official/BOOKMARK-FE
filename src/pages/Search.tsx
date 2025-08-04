@@ -151,7 +151,9 @@ const Search = () => {
   useEffect(() => {
     setSelectedPlatforms((prev) => {
       const validSelectedPlatforms = prev.filter((selectedPlatform) =>
-        visiblePlatforms.some((visiblePlatform) => selectedPlatform === visiblePlatform.platform),
+        visiblePlatforms.some(
+          (visiblePlatform) => selectedPlatform.platform === visiblePlatform.platform,
+        ),
       );
       return validSelectedPlatforms;
     });
@@ -180,10 +182,10 @@ const Search = () => {
   // 플랫폼 선택
   const handlePlatformSelection = (item: PlatformProps) => {
     setSelectedPlatforms((prev) => {
-      if (prev.includes(item.platform)) {
-        return prev.filter((platform) => platform !== item.platform);
+      if (prev.some((selected) => selected.platform === item.platform)) {
+        return prev.filter((selected) => selected.platform !== item.platform);
       }
-      return [...prev, item.platform];
+      return [...prev, item];
     });
   };
 
@@ -214,11 +216,9 @@ const Search = () => {
     addSearchHistory(searchContents);
   };
 
-  console.log(platforms);
-
   return (
     <div className='max-w-[1200px] mx-auto min-h-screen w-full md:w-[768px] flex flex-col'>
-      {/* <FilterSearchBar /> */}
+      <FilterSearchBar />
 
       {/* 스크롤 가능한 컨텐츠 영역 */}
       <div className='flex-1 overflow-y-auto p-3 pb-40 hide-scrollbar'>
@@ -303,7 +303,9 @@ const Search = () => {
                       <span>{platform.platform}</span>
                     </span>
                   }
-                  isSelected={selectedPlatforms.includes(platform.platform)}
+                  isSelected={selectedPlatforms.some(
+                    (selected) => selected.platform === platform.platform,
+                  )}
                   onClick={() => handlePlatformSelection(platform)}
                   className='border-lightGrayBlue'
                   selectedClassName='border-1 border-blue bg-blue/10'

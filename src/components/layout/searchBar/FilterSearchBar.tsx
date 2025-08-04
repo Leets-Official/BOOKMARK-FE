@@ -13,6 +13,9 @@ import { useNavigate } from 'react-router-dom';
 import { deleteSearchHistory, getSearchHistory } from '@/api/searchHistory/searchHistory';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { GetSearchHistoryProps } from '@/types/api/searchHistory';
+import type { SearchCategory } from '@/types/common/search';
+import type { PlatformProps } from '@/types/api/platform';
+import type { SearchTag } from '@/types/common/search';
 
 interface AnimatedHeightProps {
   show: boolean;
@@ -94,20 +97,21 @@ const FilterSearchBar: React.FC = () => {
     removeSearchHistory(searchHistoryId);
   };
 
-  const handleDeleteCategory = (category: string) =>
-    setSelectedCategories((prev) => prev.filter((c) => c !== category));
+  const handleDeleteCategory = (category: SearchCategory) =>
+    setSelectedCategories((prev) => prev.filter((c) => c.categoryId !== category.categoryId));
 
-  const handleDeleteTag = (tag: string) => setSelectedTags((prev) => prev.filter((t) => t !== tag));
+  const handleDeleteTag = (tag: SearchTag) =>
+    setSelectedTags((prev) => prev.filter((t) => !t.tagIds.includes(tag.tagIds[0])));
 
-  const handleDeletePlatform = (platform: string) =>
-    setSelectedPlatforms((prev) => prev.filter((p) => p !== platform));
+  const handleDeletePlatform = (platform: PlatformProps) =>
+    setSelectedPlatforms((prev) => prev.filter((p) => p.platform !== platform.platform));
 
   const hasHistory = history && !history.error && history.data?.length > 0;
 
   const renderChip = (
-    items: string[],
+    data: SearchCategory[] | SearchTag[] | PlatformProps[],
     // eslint-disable-next-line no-unused-vars
-    onDelete: (item: string) => void,
+    onDelete: (item: any) => void, // onDelete 함수 타입을 광범위하게 지정할 수 없어 any로 설정
     type: 'category' | 'tag' | 'platform',
   ) => {
     // 타입별로 다른 selectedClassName 정의
@@ -131,13 +135,43 @@ const FilterSearchBar: React.FC = () => {
       }
     };
 
+    const items = data.map((item) => {
+      if (type === 'platform') {
+        const platformItem = item as PlatformProps;
+        return {
+          displayName: platformItem.platform,
+          icon: platformItem.faviconUrl,
+          originalItem: platformItem,
+        };
+      } else if (type === 'category') {
+        const categoryItem = item as SearchCategory;
+        return {
+          displayName: categoryItem.categoryName,
+          icon: null,
+          originalItem: categoryItem,
+        };
+      } else {
+        const tagItem = item as SearchTag;
+        return {
+          displayName: tagItem.tagName,
+          icon: null,
+          originalItem: tagItem,
+        };
+      }
+    });
+
     return items.map((item) => (
       <Chip
-        key={`${type}-${item}`}
-        content={item}
+        key={`${type}-${item.displayName}`}
+        content={
+          <span className='flex items-center gap-1'>
+            {item.icon && <img src={item.icon} alt='favicon' className='w-4 h-4' />}
+            <span>{item.displayName}</span>
+          </span>
+        }
         isSelected={true}
         selectedClassName={getSelectedClassName(type)}
-        onDelete={() => onDelete(item)}
+        onDelete={() => onDelete(item.originalItem)}
         deleteIconColor={getDeleteIconColor(type)}
       />
     ));
