@@ -1,12 +1,7 @@
 import CompactCard from '@/components/ui/card/CompactCard';
 import ChipDropDown from '@/components/layout/dropDown/ChipDropDown';
 import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
-import {
-  dummyCardData,
-  dummyCategoryList,
-  dummyPlatformList,
-  dummyTagList,
-} from '@/constants/DummyData';
+import { dummyCategoryList, dummyPlatformList, dummyTagList } from '@/constants/DummyData';
 import { useState, useRef, useEffect } from 'react';
 import type { ChipProps } from '@/types/components/components';
 import clsx from 'clsx';
@@ -14,14 +9,18 @@ import { isMobile } from 'react-device-detect';
 import SaveCard from '@/components/ui/card/SaveCard';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { postBookmarkSearchResult } from '@/api/bookmark/bookmark';
 import Loading from '@/components/ui/loading/Loading';
 import type { SearchCategory, SearchTag } from '@/types/common/search';
 import type { PlatformProps } from '@/types/api/platform';
+import toast from 'react-hot-toast';
+import type { BookmarkSearchResultProps } from '@/types/api/bookmark';
 
 const SearchResult = () => {
+  const navigate = useNavigate();
+
   // 카테고리, 태그, 플랫폼 칩 드롭다운 상태 관리(더미 데이터)
   const [categoryList, setCategoryList] = useState<ChipProps[]>(dummyCategoryList);
   const [tagList, setTagList] = useState<ChipProps[]>(dummyTagList);
@@ -34,6 +33,9 @@ const SearchResult = () => {
   const [selectedCategories, setSelectedCategories] = useState<SearchCategory[]>([]);
   const [selectedTags, setSelectedTags] = useState<SearchTag[]>([]);
   const [selectedPlatforms, setSelectedPlatforms] = useState<PlatformProps[]>([]);
+
+  // 검색 결과
+  const [bookmarks, setBookmarks] = useState<BookmarkSearchResultProps['content']>([]);
 
   // 스크롤 감지를 위한 상태와 ref
   const [hasScroll, setHasScroll] = useState(false);
@@ -58,31 +60,27 @@ const SearchResult = () => {
     const platformsParam = searchParams.get('platforms');
 
     if (keyword) setSearchContents(keyword);
-    if (categoriesParam) {
-      try {
+
+    try {
+      if (categoriesParam) {
         const categories = JSON.parse(categoriesParam);
         setSelectedCategories(categories);
-      } catch (error) {
-        console.error('카테고리 파라미터 파싱 에러:', error);
       }
-    }
-    if (tagsParam) {
-      try {
+      if (tagsParam) {
         const tags = JSON.parse(tagsParam);
         setSelectedTags(tags);
-      } catch (error) {
-        console.error('태그 파라미터 파싱 에러:', error);
       }
-    }
-    if (platformsParam) {
-      try {
+      if (platformsParam) {
         const platforms = JSON.parse(platformsParam);
         setSelectedPlatforms(platforms);
-      } catch (error) {
-        console.error('플랫폼 파라미터 파싱 에러:', error);
       }
+    } catch (error) {
+      toast.error('검색 결과를 불러오는데 실패했습니다.');
+      console.error('URL 파라미터 파싱 에러:', error);
+      navigate('/', { replace: true });
     }
   }, [
+    navigate,
     searchParams,
     setSearchContents,
     setSelectedCategories,
@@ -93,7 +91,6 @@ const SearchResult = () => {
   useEffect(() => {
     // 마운트될 때 항상 위에서 시작
     window.scrollTo({ top: 0, behavior: 'auto' });
-    console.log(selectedCategories, selectedTags, selectedPlatforms);
 
     const categoryTagRequests = selectedCategories.map((category) => {
       // selectedTags에서 categoryId가 categoryIds 배열에 포함된 태그만 필터링
@@ -123,7 +120,6 @@ const SearchResult = () => {
 
     // POST 요청 보내기
     BookmarkSearchResultMutation(requestData);
-    console.log(selectedCategories, selectedTags, selectedPlatforms);
   }, [
     selectedCategories,
     selectedTags,
@@ -131,6 +127,13 @@ const SearchResult = () => {
     searchContents,
     BookmarkSearchResultMutation,
   ]);
+
+  // searchResultData가 변경될 때만 searchResult 업데이트
+  useEffect(() => {
+    if (searchResult?.data) {
+      setBookmarks(searchResult.data.content);
+    }
+  }, [searchResult]);
 
   // 스크롤 감지 useEffect
   useEffect(() => {
@@ -178,21 +181,32 @@ const SearchResult = () => {
           {/* 카드 더미 리스트 */}
           <div className={clsx('flex flex-col gap-3 mb-10', isMobile ? 'px-4' : '')}>
             {isMobile ? (
-              dummyCardData.map((card) => (
+              bookmarks.map((bookmark) => (
                 <CompactCard
-                  key={card.id}
-                  id={card.id}
-                  title={card.memo}
-                  image={card.image}
-                  memo={card.memo}
-                  category={card.category}
-                  tags={card.tags}
+                  key={bookmark.id}
+                  id={bookmark.id}
+                  title={bookmark.title}
+                  image={bookmark.file.fileUrl}
+                  memo={bookmark.memo}
+                  category={bookmark.categoryTagInfos[0].categoryName}
+                  tags={bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName)}
                 />
               ))
             ) : (
               <div className='w-[95%] max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-                {dummyCardData.map((card) => (
-                  <SaveCard key={card.id} data={card} />
+                {bookmarks.map((bookmark) => (
+                  <SaveCard
+                    key={bookmark.id}
+                    data={{
+                      id: bookmark.id,
+                      title: bookmark.title,
+                      category: bookmark.categoryTagInfos[0].categoryName,
+                      tags: bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName),
+                      image: bookmark.file.fileUrl,
+                      memo: bookmark.memo,
+                      platform: bookmark.platform,
+                    }}
+                  />
                 ))}
               </div>
             )}
