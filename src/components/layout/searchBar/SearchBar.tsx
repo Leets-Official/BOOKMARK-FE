@@ -94,6 +94,7 @@ const SearchBar = ({
     mutationFn: postSearchHistory,
     onSuccess: () => {
       navigate(`/search-result?keyword=${encodeURIComponent(searchContents)}`);
+      setSearchContents('');
     },
     onError: (error) => {
       console.error('검색 기록 전송 실패', error);
