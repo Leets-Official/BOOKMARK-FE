@@ -84,7 +84,7 @@ export interface BookmarkSearchResultProps {
   empty: boolean;
 }
 
-export interface BookmarkSaveProps {
+export interface BookmarkSaveRequestProps {
   title: string;
   url: string;
   memo?: string;
@@ -114,7 +114,7 @@ export interface BookmarkSearchProps {
   size: number;
 }
 
-export interface SaveBookMarkProps {
+export interface BookMarkProps {
   id: number;
   url: string;
   title: string;

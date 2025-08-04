@@ -20,7 +20,7 @@ import { createCategory, getCategories } from '@/api/category/category';
 import { createTag, getTags } from '@/api/tag/tag';
 import { saveBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
-import type { BookmarkSaveProps } from '@/types/api/bookmark';
+import type { BookmarkSaveRequestProps } from '@/types/api/bookmark';
 
 const SaveButton = () => {
   const tempCategories = useAtomValue(tempCategoriesAtom);
@@ -41,7 +41,7 @@ const SaveButton = () => {
   const queryClient = useQueryClient();
 
   const saveBookmarkMutation = useMutation({
-    mutationFn: async (bookmarkData: BookmarkSaveProps) => {
+    mutationFn: async (bookmarkData: BookmarkSaveRequestProps) => {
       const res = await saveBookmarks(bookmarkData);
       return res;
     },
@@ -151,7 +151,7 @@ const SaveButton = () => {
     const tagIds = allTags.filter((t) => selectedTag.includes(t.tagName)).map((t) => t.tagId);
 
     // 플랫폼 형식에 맞게 추출
-    const getPlatformType = (platformString: string): BookmarkSaveProps['platform'] => {
+    const getPlatformType = (platformString: string): BookmarkSaveRequestProps['platform'] => {
       if (!platformString) return 'ETC';
 
       const lowerPlatform = platformString.toLowerCase();
@@ -172,7 +172,7 @@ const SaveButton = () => {
     const processedImageUrl = await processInstagramImage(originalImageUrl);
 
     // 북마크 저장 API 호출
-    const bookmarkData: BookmarkSaveProps = {
+    const bookmarkData: BookmarkSaveRequestProps = {
       title: title ?? '제목',
       url: url ?? '',
       memo: memo ?? '',
@@ -183,7 +183,7 @@ const SaveButton = () => {
       notification: {
         notifyAt: '2025-08-05T00:00:00.326Z',
       },
-      platform: platformUpper as BookmarkSaveProps['platform'],
+      platform: platformUpper as BookmarkSaveRequestProps['platform'],
       categoryId,
       faviconUrl: faviconUrl ?? '',
       tagIds,

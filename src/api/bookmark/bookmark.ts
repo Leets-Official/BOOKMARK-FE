@@ -1,6 +1,6 @@
 import { apiRequest } from '@/api/api';
 import type {
-  BookmarkSaveProps,
+  BookmarkSaveRequestProps,
   BookmarkSearchResultProps,
   BookmarkSearchResultRequestProps,
   BookMarkURLProps,
@@ -16,7 +16,7 @@ export const getBookmarksURL = async (url: string): Promise<ApiResponse<BookMark
 };
 
 export const saveBookmarks = async (
-  bookmarkData: BookmarkSaveProps,
+  bookmarkData: BookmarkSaveRequestProps,
 ): Promise<ApiResponse<string>> => {
   return apiRequest<string>({
     method: 'POST',

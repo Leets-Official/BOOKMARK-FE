@@ -6,7 +6,7 @@ import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { postBookmarkSearchResult } from '@/api/bookmark/bookmark';
-import type { SaveBookMarkProps, BookmarkSearchProps } from '@/types/api/bookmark';
+import type { BookMarkProps, BookmarkSearchProps } from '@/types/api/bookmark';
 
 const SaveCardList = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const SaveCardList = () => {
     queryFn: () => postBookmarkSearchResult(homeBookmarkData),
   });
 
-  const bookmarkData: SaveBookMarkProps[] = useMemo(() => {
+  const bookmarkData: BookMarkProps[] = useMemo(() => {
     const content = data?.data?.content ?? [];
 
     const resData = content.map((data) => {
