@@ -72,6 +72,8 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   // 변경사항 추적을 위한 상태
   const [hasChanges, setHasChanges] = useState(false);
+  // 이미지 변경 여부 추적
+  const [isImageChanged, setIsImageChanged] = useState(false);
 
   // 수정 모드에서 기존 데이터 조회
   const { data: bookmarkData, isPending } = useQuery({
@@ -183,12 +185,14 @@ const Save = ({ type }: SaveInterfaceProps) => {
         watchedValues.image !== defaultValues.image;
 
       setHasChanges(isChanged);
+      setIsImageChanged(watchedValues.image !== defaultValues.image);
     }
   }, [watchedValues, defaultValues, type]);
 
   const onSubmit = (data: z.infer<typeof schema>) => {
     if (type === 'edit') {
       console.log(data);
+      console.log(isImageChanged);
       return;
     }
     console.log(data);
