@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import clsx from 'clsx';
 
 interface ImageProps {
   src: string;
@@ -9,7 +10,23 @@ interface ImageProps {
 }
 
 const Image: React.FC<ImageProps> = ({ src, alt = 'image', onClick, className, onError }) => {
-  return <img src={src} alt={alt} onClick={onClick} className={className} onError={onError} />;
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      onClick={onClick}
+      onLoad={() => setLoaded(true)}
+      className={clsx(
+        className,
+        'transition-opacity duration-700 ease-in-out',
+        loaded ? 'opacity-100' : 'opacity-0',
+      )}
+      onError={onError}
+      loading='lazy'
+    />
+  );
 };
 
 export default Image;

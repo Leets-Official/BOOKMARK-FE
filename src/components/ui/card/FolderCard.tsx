@@ -183,7 +183,7 @@ const FolderCard = ({
 
   return (
     <>
-      <div className={clsx(isMobile ? 'min-w-40 pt-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 mt-2')}>
+      <div className={clsx(isMobile ? 'w-40 pt-2' : 'w-1/2 lg:w-1/3 xl:w-1/4 mt-2')}>
         {/**카테고리에 카드가 하나만 있으면 폴더에 하나만, 두개 있으면 1 : 1 비율... 3개까지 표시 */}
         <div className='w-full aspect-[3/2] rounded-2xl overflow-hidden flex hover:scale-103 duration-400 cursor-pointer'>
           {renderImages(images)}

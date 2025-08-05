@@ -252,7 +252,7 @@ const SearchResult = () => {
       </div>
 
       {isPending ? (
-        <div className='flex justify-center items-center'>
+        <div className='flex mt-10 justify-center items-center'>
           <Loading className='w-[15px] h-[15px]' />
         </div>
       ) : (
@@ -283,6 +283,9 @@ const SearchResult = () => {
                       image: bookmark.file.fileUrl,
                       memo: bookmark.memo,
                       platform: bookmark.platform,
+                      faviconUrl: bookmark.faviconUrl ?? '',
+                      url: bookmark.url,
+                      createdAt: bookmark.createdAt,
                     }}
                   />
                 ))}

@@ -7,7 +7,6 @@ interface CardListHeaderProps {
   currentNum?: string;
   title: string;
   showPagination?: boolean;
-  showCategory?: boolean;
   showAllContent?: boolean;
   sortLabel?: string;
   onSortToggle?: () => void;

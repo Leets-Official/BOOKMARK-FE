@@ -41,12 +41,8 @@ const MobileCardList = ({ categories }: { categories: CategoryProps[] }) => {
   }, [categories, x]);
 
   return (
-    <div className='mt-20'>
-      <CardListHeader
-        currentNum={categories.length.toString()}
-        title='카테고리'
-        showCategory={true}
-      />
+    <div className='mt-25'>
+      <CardListHeader currentNum={categories.length.toString()} title='카테고리' />
       <div ref={containerRef} className='relative overflow-hidden w-4/5 max-sm:w-9/10 mx-auto'>
         <motion.div
           ref={dragRef}

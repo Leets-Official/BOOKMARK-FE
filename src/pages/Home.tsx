@@ -31,8 +31,8 @@ const Home = () => {
       <HomLogo />
       <ChangeSearchBar barMarginTop={isMobile ? 225 : 285} />
       {isPending ? (
-        <div className={isMobile ? 'mt-20' : 'mt50'}>
-          <CardListHeader currentNum={'0'} title='카테고리' showCategory={true} />
+        <div className='sm:mt-50 mt-25'>
+          <CardListHeader title='카테고리' />
           <Loading className='bg-white w-full h-[252px] rounded-xl  p-3 py-6 flex justify-center items-center' />
         </div>
       ) : (
