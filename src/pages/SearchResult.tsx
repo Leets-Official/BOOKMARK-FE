@@ -225,10 +225,12 @@ const SearchResult = () => {
   // 스크롤 감지 useEffect
   useEffect(() => {
     const checkScroll = () => {
-      if (scrollContainerRef.current) {
-        const { scrollWidth, clientWidth } = scrollContainerRef.current;
-        setHasScroll(scrollWidth > clientWidth);
-      }
+      requestAnimationFrame(() => {
+        if (scrollContainerRef.current) {
+          const { scrollWidth, clientWidth } = scrollContainerRef.current;
+          setHasScroll(scrollWidth > clientWidth);
+        }
+      });
     };
 
     // DOM이 완전히 렌더링된 후 체크
