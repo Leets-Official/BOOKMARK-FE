@@ -311,7 +311,9 @@ const Search = () => {
                   key={index}
                   content={
                     <span className='flex items-center gap-1'>
-                      <img src={platform.faviconUrl} alt='favicon' className='w-4 h-4' />
+                      {platform.faviconUrl && (
+                        <img src={platform.faviconUrl} alt='favicon' className='w-4 h-4' />
+                      )}
                       <span>{platform.platform}</span>
                     </span>
                   }

@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { tv } from 'tailwind-variants';
 import { FilteringIcon, FixedFilteringIcon, SearchIcon } from '@/assets';
 import Input from '@/components/common/Input';
-import { searchContentsAtom } from '@/atoms';
-import { useAtom } from 'jotai';
 import { useMutation } from '@tanstack/react-query';
 import { postSearchHistory } from '@/api/searchHistory/searchHistory';
+import { searchContentsAtom } from '@/atoms';
+import { useAtom } from 'jotai';
 
 interface IHomeSearchBarProps {
   isFixed?: boolean;
@@ -79,17 +79,8 @@ const SearchBar = ({
   isFixed = false,
   isBlur = false,
 }: IHomeSearchBarProps) => {
-  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // 홈으로 돌아갈 땐 무조건 검색어 초기화
-  useEffect(() => {
-    if (location.pathname === '/') {
-      setSearchContents('');
-    }
-  }, [location.pathname, setSearchContents]);
-
+  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const postHistoryMutattion = useMutation({
     mutationFn: postSearchHistory,
     onSuccess: () => {
