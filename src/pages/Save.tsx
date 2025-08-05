@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
 import {
-  isSaveButtonDisabledAtom,
   previewImageAtom,
   selectedCategoryAtom,
   selectedTagAtom,
@@ -12,7 +11,7 @@ import {
   visibleCategoryAtom,
   visibleTagAtom,
 } from '@/atoms';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useScrollLock } from '@/hooks/scrollLock';
 import { saveSchema } from '@/schema/save';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -49,7 +48,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const { saveLinkData } = SaveButton();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
-  const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const setCard = useSetAtom(visibleCardAtom);
@@ -110,7 +108,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     control,
     setValue,
     reset,
-    formState: { errors },
+    formState: { errors, isValid },
     getValues,
     watch,
   } = useForm<z.infer<typeof schema>>({
@@ -278,7 +276,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
             <button
               type='submit'
               form='save-form'
-              className={SaveButtonClass({ isDisabled: isSaveButtonDisabled })}
+              className={SaveButtonClass({ isDisabled: !isValid })}
             >
               {type === 'create' ? '저장하기' : '수정하기'}
             </button>

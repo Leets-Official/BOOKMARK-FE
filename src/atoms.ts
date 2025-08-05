@@ -10,7 +10,6 @@ const visibleCategoryAtom = atom(false);
 const visibleTagAtom = atom(false);
 const visibleMemoAndAlarmAtom = atom(false);
 const suggestionListAtom = atom<ChipProps[]>([]);
-const isSaveButtonDisabledAtom = atom<boolean>(true);
 const previewImageAtom = atom<string | undefined>(undefined);
 const isSuggestionLoadingAtom = atom(false);
 const tempCategoriesAtom = atom<string[]>([]);
@@ -34,7 +33,6 @@ export {
   visibleTagAtom,
   visibleMemoAndAlarmAtom,
   suggestionListAtom,
-  isSaveButtonDisabledAtom,
   searchContentsAtom,
   previewImageAtom,
   isSuggestionLoadingAtom,
