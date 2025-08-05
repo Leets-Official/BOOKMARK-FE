@@ -11,10 +11,6 @@ const visibleTagAtom = atom(false);
 const visibleMemoAndAlarmAtom = atom(false);
 const suggestionListAtom = atom<ChipProps[]>([]);
 const isSaveButtonDisabledAtom = atom<boolean>(true);
-const searchContentsAtom = atom<string>('');
-const selectedCategoriesAtom = atom<string[]>([]);
-const selectedTagsAtom = atom<string[]>([]);
-const selectedPlatformsAtom = atom<string[]>([]);
 const previewImageAtom = atom<string | undefined>(undefined);
 const isSuggestionLoadingAtom = atom(false);
 const tempCategoriesAtom = atom<string[]>([]);
@@ -23,6 +19,7 @@ const selectedCategoryAtom = atom<string>('');
 const selectedTagAtom = atom<string[]>([]);
 
 // Search Page Atoms
+const searchContentsAtom = atom<string>('');
 const selectedSearchCategoriesAtom = atom<SearchCategory[]>([]);
 const selectedSearchTagsAtom = atom<SearchTag[]>([]);
 const selectedSearchPlatformsAtom = atom<PlatformProps[]>([]);
@@ -39,9 +36,6 @@ export {
   suggestionListAtom,
   isSaveButtonDisabledAtom,
   searchContentsAtom,
-  selectedCategoriesAtom,
-  selectedTagsAtom,
-  selectedPlatformsAtom,
   previewImageAtom,
   isSuggestionLoadingAtom,
   tempCategoriesAtom,
