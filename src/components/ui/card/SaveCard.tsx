@@ -14,7 +14,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
 
-const SaveCard = ({ data }: { data: BookmarkProps }) => {
+const SaveCard = ({ data, type = 'home' }: { data: BookmarkProps; type?: 'search' | 'home' }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const navigate = useNavigate();
@@ -23,8 +23,13 @@ const SaveCard = ({ data }: { data: BookmarkProps }) => {
   const deleteBookmarkMutate = useMutation({
     mutationFn: deleteBookmarks,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      // 북마크 조회 이벤트
+      if (type === 'search') {
+        window.dispatchEvent(new Event('bookmarkDeleted'));
+      } else {
+        queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+        queryClient.invalidateQueries({ queryKey: ['categories'] });
+      }
       toast.success('북마크 삭제에 성공했습니다');
     },
     onError: () => {
