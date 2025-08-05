@@ -47,6 +47,7 @@ const SaveCardList = () => {
         tags,
         faviconUrl: data.faviconUrl,
         createdAt: data.createdAt,
+        isNotified: data.notificationResponse?.isNotified ?? false,
       };
     });
 

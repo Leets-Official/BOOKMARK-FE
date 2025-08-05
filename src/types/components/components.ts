@@ -9,6 +9,7 @@ export interface BookmarkProps {
   category: string;
   tags: string[];
   createdAt: string;
+  isNotified: boolean;
 }
 
 export interface ChipProps {
@@ -23,10 +24,14 @@ export interface ChipProps {
 export interface CompactCardProps {
   id: number;
   title: string;
+  url: string;
   image: string;
   memo: string;
   category: string;
   tags: string[];
+  platform: string;
+  faviconUrl: string;
+  isNotified: boolean;
 }
 
 export interface CategoryCardProps {

@@ -10,27 +10,15 @@ import DeleteModal from '../modal/DeleteModal';
 import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import type { BookmarkProps } from '@/types/components/components';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
-import { getNotificaton } from '@/api/alarm/notification';
 
 const SaveCard = ({ data }: { data: BookmarkProps }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-  const { data: notificationData } = useQuery({
-    queryKey: ['notification'],
-    queryFn: async () => {
-      const res = await getNotificaton(data.id);
-      if (res.error) {
-        throw new Error(res.message);
-      }
-      return res.data;
-    },
-  });
 
   const deleteBookmarkMutate = useMutation({
     mutationFn: deleteBookmarks,
@@ -42,8 +30,6 @@ const SaveCard = ({ data }: { data: BookmarkProps }) => {
       toast.error('북마크 삭제에 실패했습니다');
     },
   });
-
-  const isNotified = notificationData?.some((noti) => noti.isNotified) ?? false;
 
   const x = useMotionValue(0);
   const dragRef = useRef<HTMLDivElement>(null);
@@ -153,7 +139,7 @@ const SaveCard = ({ data }: { data: BookmarkProps }) => {
                   <p className='text-sm text-stone'>
                     {dayjs(data.createdAt).format('YYYY.MM.DD HH:mm')} 저장
                   </p>
-                  {isNotified && <AlertIcon width={16} height={16} stroke={'#A4A8B2'} />}
+                  {data.isNotified && <AlertIcon width={16} height={16} stroke={'#A4A8B2'} />}
                 </div>
                 <div ref={iconRef} onClick={isOpen}>
                   <FolderDetailIcon
