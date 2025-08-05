@@ -99,6 +99,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     setSelectedTag([]);
     resetTempCategories([]);
     resetTempTags({});
+    setPreviewImage(undefined);
     reset();
     navigate(-1);
   };
@@ -191,7 +192,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   const onSubmit = (data: z.infer<typeof schema>) => {
     if (type === 'edit') {
-      console.log(data);
       console.log(isImageChanged);
       return;
     }
@@ -260,7 +260,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
             )}
           >
             <div className='flex flex-col items-center gap-3 w-full py-5'>
-              <LinkField control={control} setValue={setValue} />
+              <LinkField control={control} setValue={setValue} isEdit={type === 'edit'} />
               <CategoryTagSelector
                 setValue={setValue}
                 error={errors}

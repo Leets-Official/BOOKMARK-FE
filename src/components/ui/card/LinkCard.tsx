@@ -30,7 +30,9 @@ const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) 
       toast.dismiss();
       toast.error('올바른 이미지를 선택해주세요');
     } else {
-      if (image) setValue('image', image, { shouldValidate: true });
+      if (image) {
+        setValue('image', image, { shouldValidate: true });
+      }
     }
   }, [imageError, image, setValue]);
 
