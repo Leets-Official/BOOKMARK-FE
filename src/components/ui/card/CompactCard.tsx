@@ -51,7 +51,7 @@ const CompactCard = ({
 
   return (
     <>
-      <div className='w-full border border-gray-200 shadow-[0px_2px_7px_rgba(2,34,94,0.1)] rounded-2xl p-2 flex items-center flex-row gap-4'>
+      <div className='w-full border border-gray-200 shadow-[0px_2px_7px_rgba(2,34,94,0.1)] rounded-2xl p-2 flex flex-row gap-4'>
         <div className='relative aspect-square w-[104px] md:w-[160px] flex-shrink-0'>
           <Image
             src={image}
@@ -63,7 +63,7 @@ const CompactCard = ({
             <AlertIcon width={16} height={16} stroke='white' className='absolute top-1 right-1' />
           )}
         </div>
-        <div className='flex flex-col gap-2 justify-between w-full min-w-0'>
+        <div className='flex flex-col gap-2 justify-between w-full min-w-0 mt-2'>
           <p className='text-sm sm:text-base font-semibold whitespace-nowrap overflow-hidden text-ellipsis'>
             {title}
           </p>
