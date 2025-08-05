@@ -6,7 +6,7 @@ import DeleteModal from '../modal/DeleteModal';
 import { useMenuHandler } from '@/hooks/menuPosition';
 import { useEffect, useRef, useState } from 'react';
 
-const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) => {
+const CompactCard = ({ title, image, memo, category, tags, isNotified }: CompactCardProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const tagContainerRef = useRef<HTMLDivElement>(null);
@@ -30,7 +30,9 @@ const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) =
             className='absolute inset-0 w-full h-full object-cover rounded-lg'
             onClick={() => console.log('Image clicked')}
           />
-          <AlertIcon width={16} height={16} stroke='white' className='absolute top-1 right-1' />
+          {isNotified && (
+            <AlertIcon width={16} height={16} stroke='white' className='absolute top-1 right-1' />
+          )}
         </div>
         <div className='flex flex-col gap-2 justify-between w-full min-w-0'>
           <p className='text-sm sm:text-base font-semibold whitespace-nowrap overflow-hidden text-ellipsis'>
