@@ -24,6 +24,8 @@ import clsx from 'clsx';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import { BackArrowIcon } from '@/assets';
 import toast from 'react-hot-toast';
+import { useQuery } from '@tanstack/react-query';
+import { getBookmark } from '@/api/bookmark/bookmark';
 
 const SaveButtonClass = tv({
   base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] sm:w-[400px] rounded-[10px]',
@@ -72,6 +74,19 @@ const Save = ({ type }: SaveInterfaceProps) => {
   // 변경사항 추적을 위한 상태
   const [hasChanges, setHasChanges] = useState(false);
 
+  // 수정 모드에서 기존 데이터 조회
+  const { data: bookmarkData, isPending } = useQuery({
+    queryKey: ['bookmark', id],
+    queryFn: async () => {
+      const res = await getBookmark(Number(id));
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data;
+    },
+    enabled: !!id,
+  });
+
   useEffect(() => {
     resetCard(false);
   }, [resetCard]);
@@ -104,23 +119,22 @@ const Save = ({ type }: SaveInterfaceProps) => {
   });
 
   useEffect(() => {
-    if (id) {
-      console.log(id);
+    if (id && !isPending && bookmarkData) {
       const newValues = {
-        url: 'https://www.google.com',
-        tags: ['파스타', '이탈리안', '데이트'],
-        category: '맛집',
-        title: '홍대 파스타 맛집 추천',
-        platform: '인스타그램',
-        image: 'https://cdn.pixabay.com/photo/2018/04/26/16/31/marine-3352341_1280.jpg',
-        memo: '홍대 파스타 맛집 추천',
+        url: bookmarkData.url,
+        tags: bookmarkData.categoryTagInfos[0].tags.map((tag) => tag.tagName),
+        category: bookmarkData.categoryTagInfos[0].categoryName,
+        title: bookmarkData.title,
+        platform: bookmarkData.platform,
+        image: bookmarkData.file.fileUrl,
+        memo: bookmarkData.memo,
         date: '내일 (금)',
         time: '12:00',
       };
       setDefaultValues(newValues);
       reset(newValues);
     }
-  }, [id, reset, getValues]);
+  }, [id, reset, getValues, isPending, bookmarkData]);
 
   const watchedValues = watch();
 

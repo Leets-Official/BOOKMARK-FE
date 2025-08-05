@@ -12,14 +12,14 @@ export interface BookmarkProps {
   memo: string;
   platform: string;
   faviconUrl: string;
-  categoryTagInfo: {
+  categoryTagInfos: {
     categoryId: number;
     categoryName: string;
     tags: {
       id: number;
       tagName: string;
     }[];
-  };
+  }[];
   file: {
     fileId: number;
     fileName: string;

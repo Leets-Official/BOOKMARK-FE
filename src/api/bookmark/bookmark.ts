@@ -4,6 +4,7 @@ import type {
   BookmarkSearchResultProps,
   BookmarkSearchResultRequestProps,
   BookMarkURLProps,
+  BookmarkProps,
 } from '@/types/api/bookmark';
 import type { ApiResponse } from '@/types/common/api-response';
 
@@ -12,6 +13,13 @@ export const getBookmarksURL = async (url: string): Promise<ApiResponse<BookMark
     method: 'GET',
     url: '/preview',
     params: { url },
+  });
+};
+
+export const getBookmark = async (bookmarkId: number): Promise<ApiResponse<BookmarkProps>> => {
+  return apiRequest<BookmarkProps>({
+    method: 'GET',
+    url: `/bookmarks/${bookmarkId}`,
   });
 };
 
