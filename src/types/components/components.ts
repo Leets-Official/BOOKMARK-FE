@@ -24,6 +24,7 @@ export interface ChipProps {
 export interface CompactCardProps {
   id: number;
   title: string;
+  url: string;
   image: string;
   memo: string;
   category: string;

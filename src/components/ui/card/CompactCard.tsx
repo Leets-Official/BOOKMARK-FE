@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 
 const CompactCard = ({
   title,
+  url,
   image,
   memo,
   category,
@@ -37,7 +38,7 @@ const CompactCard = ({
             src={image}
             alt='CompactCard'
             className='absolute inset-0 w-full h-full object-cover rounded-lg'
-            onClick={() => console.log('Image clicked')}
+            onClick={() => window.open(url, '_blank')}
           />
           {isNotified && (
             <AlertIcon width={16} height={16} stroke='white' className='absolute top-1 right-1' />

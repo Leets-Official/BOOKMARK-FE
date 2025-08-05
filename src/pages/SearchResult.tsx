@@ -267,6 +267,7 @@ const SearchResult = () => {
                   key={bookmark.id}
                   id={bookmark.id}
                   title={bookmark.title}
+                  url={bookmark.url}
                   image={bookmark.file.fileUrl}
                   memo={bookmark.memo}
                   category={bookmark.categoryTagInfos[0].categoryName}
