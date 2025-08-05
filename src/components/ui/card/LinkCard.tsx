@@ -142,7 +142,7 @@ const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) 
           render={({ field, fieldState }) => (
             <TextField
               label=''
-              placeholder='링크를 입력해주세요'
+              placeholder='제목을 입력해주세요'
               onChange={(e) => {
                 field.onChange(e);
               }}
