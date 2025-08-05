@@ -19,7 +19,6 @@
     "dayjs": "^1.11.13",
     "framer-motion": "^12.23.3",
     "jotai": "^2.12.5",
-    "langchain": "^0.3.29",
     "lottie-react": "^2.4.1",
     "react": "^19.1.0",
     "react-device-detect": "^2.2.3",
