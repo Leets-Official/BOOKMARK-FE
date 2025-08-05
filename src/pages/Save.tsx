@@ -222,14 +222,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
     let errorMessage = '';
     if (errors.image) {
       errorMessage = errors.image.message ?? '이미지를 선택해주세요';
-    } else if (errors.title) {
-      errorMessage = errors.title.message ?? '제목을 입력해주세요';
-    } else if (errors.url) {
-      errorMessage = errors.url.message ?? 'URL을 입력해주세요';
-    } else if (errors.category) {
-      errorMessage = errors.category.message ?? '카테고리를 선택해주세요';
-    } else if (errors.tags) {
-      errorMessage = errors.tags.message ?? '태그를 선택해주세요';
     } else {
       errorMessage = '모든 필드를 올바르게 입력해주세요.';
     }
