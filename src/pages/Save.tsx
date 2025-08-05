@@ -26,6 +26,7 @@ import { BackArrowIcon } from '@/assets';
 import toast from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import { getBookmark } from '@/api/bookmark/bookmark';
+import { formatDate } from '@/constants/dataFormat';
 
 const SaveButtonClass = tv({
   base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] sm:w-[400px] rounded-[10px]',
@@ -51,11 +52,11 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const isSaveButtonDisabled = useAtomValue(isSaveButtonDisabledAtom);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const resetCard = useSetAtom(visibleCardAtom);
-  const resetVisibleCate = useSetAtom(visibleCategoryAtom);
-  const resetVisibleTag = useSetAtom(visibleTagAtom);
-  const resetSelectedCategory = useSetAtom(selectedCategoryAtom);
-  const resetSelectedTag = useSetAtom(selectedTagAtom);
+  const setCard = useSetAtom(visibleCardAtom);
+  const setVisibleCate = useSetAtom(visibleCategoryAtom);
+  const setVisibleTag = useSetAtom(visibleTagAtom);
+  const setSelectedCategory = useSetAtom(selectedCategoryAtom);
+  const setSelectedTag = useSetAtom(selectedTagAtom);
   const resetTempCategories = useSetAtom(tempCategoriesAtom);
   const resetTempTags = useSetAtom(tempTagsAtom);
 
@@ -88,14 +89,14 @@ const Save = ({ type }: SaveInterfaceProps) => {
   });
 
   useEffect(() => {
-    resetCard(false);
-  }, [resetCard]);
+    setCard(false);
+  }, [setCard]);
 
   const onPrev = () => {
-    resetVisibleCate(false);
-    resetVisibleTag(false);
-    resetSelectedCategory('');
-    resetSelectedTag([]);
+    setVisibleCate(false);
+    setVisibleTag(false);
+    setSelectedCategory('');
+    setSelectedTag([]);
     resetTempCategories([]);
     resetTempTags({});
     reset();
@@ -120,6 +121,17 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   useEffect(() => {
     if (id && !isPending && bookmarkData) {
+      let date = '';
+      let time = '';
+
+      if (bookmarkData.notificationResponse) {
+        date = formatDate('2025-08-05T06:31:05.620Z');
+        time = new Date('2025-08-05T06:31:05.620Z').toLocaleTimeString('ko-KR', {
+          hour: 'numeric',
+          hour12: true,
+        });
+      }
+
       const newValues = {
         url: bookmarkData.url,
         tags: bookmarkData.categoryTagInfos[0].tags.map((tag) => tag.tagName),
@@ -128,13 +140,31 @@ const Save = ({ type }: SaveInterfaceProps) => {
         platform: bookmarkData.platform,
         image: bookmarkData.file.fileUrl,
         memo: bookmarkData.memo,
-        date: '내일 (금)',
-        time: '12:00',
+        date: date,
+        time: time,
       };
+
+      // 기존 데이터 설정
+      setCard(true);
+      setVisibleCate(true);
+      setVisibleTag(true);
+      setSelectedCategory(newValues.category);
+      setSelectedTag(newValues.tags);
       setDefaultValues(newValues);
       reset(newValues);
     }
-  }, [id, reset, getValues, isPending, bookmarkData]);
+  }, [
+    id,
+    reset,
+    getValues,
+    isPending,
+    bookmarkData,
+    setSelectedCategory,
+    setSelectedTag,
+    setCard,
+    setVisibleCate,
+    setVisibleTag,
+  ]);
 
   const watchedValues = watch();
 
