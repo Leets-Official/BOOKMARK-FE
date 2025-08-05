@@ -8,12 +8,6 @@ import {
   selectedCategoryAtom,
   selectedTagAtom,
   suggestionListAtom,
-  linkAtom,
-  faviconAtom,
-  titleAtom,
-  memoAtom,
-  platformAtom,
-  thumbnailAtom,
   uploadUrlAtom,
   alarmAtAtom,
 } from '@/atoms';
@@ -22,6 +16,8 @@ import { createTag, getTags } from '@/api/tag/tag';
 import { saveBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
 import type { BookmarkSaveRequestProps } from '@/types/api/bookmark';
+import type { saveSchema } from '@/schema/save';
+import type z from 'zod';
 
 const SaveButton = () => {
   const tempCategories = useAtomValue(tempCategoriesAtom);
@@ -29,12 +25,6 @@ const SaveButton = () => {
   const selectedCategory = useAtomValue(selectedCategoryAtom);
   const selectedTag = useAtomValue(selectedTagAtom);
   const suggestionList = useAtomValue(suggestionListAtom);
-  const url = useAtomValue(linkAtom);
-  const title = useAtomValue(titleAtom);
-  const platform = useAtomValue(platformAtom);
-  const thumbnail = useAtomValue(thumbnailAtom);
-  const faviconUrl = useAtomValue(faviconAtom);
-  const memo = useAtomValue(memoAtom);
   const [uploadUrl, setUploadUrl] = useAtom(uploadUrlAtom);
   const alarmAt = useAtomValue(alarmAtAtom);
 
@@ -103,7 +93,14 @@ const SaveButton = () => {
     return imageUrl; // 다른 URL은 그대로 사용
   };
 
-  const saveLinkData = async () => {
+  const saveLinkData = async (data: z.infer<typeof saveSchema>) => {
+    const url = data.url;
+    const title = data.title;
+    const platform = data.platform;
+    const thumbnail = data.image;
+    const faviconUrl = data.favicon;
+    const memo = data.memo;
+
     if (!selectedCategory || selectedTag.length === 0) return;
 
     let categoryId: number | null = null;

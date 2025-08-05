@@ -3,7 +3,6 @@ import { Chip } from '@/components/common';
 import { AddIcon } from '@/assets';
 import { useEffect, useMemo, useState } from 'react';
 import {
-  isSaveButtonDisabledAtom,
   suggestionListAtom,
   visibleCategoryAtom,
   visibleMemoAndAlarmAtom,
@@ -40,7 +39,6 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   const openTag = visibleTag;
 
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom); // 메모, 알림
-  const setIsSaveButtonDisabled = useSetAtom(isSaveButtonDisabledAtom); // 저장하기 버튼
 
   const [suggestionList, setSuggestionList] = useAtom(suggestionListAtom);
   const isSuggestionLoading = useAtomValue(isSuggestionLoadingAtom); // 아직 제안 태그 못가져 왔으면 로딩상태
@@ -159,8 +157,7 @@ const CategoryTagSelector = ({ editCate, editTag, setValue, error }: ICateTagPro
   // selectedTag가 렌더링이 끝나면 상태 업데이트 진행
   useEffect(() => {
     setVisibleMemoAndAlarm(selectedTag.length > 0);
-    setIsSaveButtonDisabled(selectedTag.length === 0);
-  }, [selectedTag, setIsSaveButtonDisabled, setVisibleMemoAndAlarm]);
+  }, [selectedTag, setVisibleMemoAndAlarm]);
 
   // 저장 페이지가 닫힐 때 모든 입력값 초기화
   useEffect(() => {

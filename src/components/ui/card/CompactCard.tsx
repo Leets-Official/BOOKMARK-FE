@@ -6,7 +6,17 @@ import DeleteModal from '../modal/DeleteModal';
 import { useMenuHandler } from '@/hooks/menuPosition';
 import { useEffect, useRef, useState } from 'react';
 
-const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) => {
+const CompactCard = ({
+  title,
+  url,
+  image,
+  memo,
+  category,
+  tags,
+  isNotified,
+  platform,
+  faviconUrl,
+}: CompactCardProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const tagContainerRef = useRef<HTMLDivElement>(null);
@@ -28,9 +38,11 @@ const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) =
             src={image}
             alt='CompactCard'
             className='absolute inset-0 w-full h-full object-cover rounded-lg'
-            onClick={() => console.log('Image clicked')}
+            onClick={() => window.open(url, '_blank')}
           />
-          <AlertIcon width={16} height={16} stroke='white' className='absolute top-1 right-1' />
+          {isNotified && (
+            <AlertIcon width={16} height={16} stroke='white' className='absolute top-1 right-1' />
+          )}
         </div>
         <div className='flex flex-col gap-2 justify-between w-full min-w-0'>
           <p className='text-sm sm:text-base font-semibold whitespace-nowrap overflow-hidden text-ellipsis'>
@@ -46,7 +58,7 @@ const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) =
               </p>
               <div
                 ref={tagContainerRef}
-                className='relative flex flex-row gap-2 overflow-hidden min-w-0'
+                className='relative flex flex-row gap-2 overflow-hidden min-w-0 items-center'
               >
                 {tags.map((tag, index) => (
                   <p
@@ -56,6 +68,10 @@ const CompactCard = ({ title, image, memo, category, tags }: CompactCardProps) =
                     {tag}
                   </p>
                 ))}
+                <div className='flex flex-row items-center gap-1 bg-snowGray rounded-lg px-2 py-1 '>
+                  {faviconUrl && <img src={faviconUrl} alt='favicon' className='w-3 h-3' />}
+                  <p className='text-[10px] text-darkGray font-medium flex-shrink-0'>{platform}</p>
+                </div>
                 {isOverflow && (
                   <div className='pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white/80 to-transparent' />
                 )}

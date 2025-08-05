@@ -11,8 +11,18 @@ import Loading from '@/components/ui/loading/Loading';
 import CardListHeader from '@/components/layout/header/CardListHeader';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
 import HomeFooter from '@/components/layout/footer/HomeFooter';
+import { useSetAtom } from 'jotai';
+import { searchContentsAtom } from '@/atoms';
+import { useEffect } from 'react';
 
 const Home = () => {
+  const setSearchContents = useSetAtom(searchContentsAtom);
+
+  // 홈으로 돌아갈 땐 무조건 검색어 초기화
+  useEffect(() => {
+    setSearchContents('');
+  }, [setSearchContents]);
+
   // 카테고리 조회
   const { data: categories, isPending } = useQuery({
     queryKey: ['categories'],

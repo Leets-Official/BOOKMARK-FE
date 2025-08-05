@@ -16,6 +16,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, updateCategory } from '@/api/category/category';
 import toast from 'react-hot-toast';
 import { useScrollLock } from '@/hooks/scrollLock';
+import { useNavigate } from 'react-router-dom';
 
 // 제목 텍스트 스타일 (반응형)
 const TitleText =
@@ -36,6 +37,8 @@ const FolderCard = ({
   const [isScrollLock, setIsScollLock] = useState(false);
 
   useScrollLock(isScrollLock);
+
+  const navigate = useNavigate();
 
   const schema = modalAddSchema('category', allCategoryNames);
   const queryClient = useQueryClient();
@@ -142,11 +145,22 @@ const FolderCard = ({
 
   const images = category.thumbnailUrls || [];
 
-  const handleImageClick = () => {
+  const handleCategoryClick = () => {
     if (!images.length) {
       toast.dismiss();
       toast.error('저장된 링크가 없는 카테고리입니다.');
     }
+
+    const queryData = {
+      categories: [
+        {
+          categoryId: category.id,
+          categoryName: category.categoryName,
+        },
+      ],
+    };
+    const hash = btoa(encodeURIComponent(JSON.stringify(queryData)));
+    navigate(`/search-result#${hash}`);
   };
 
   // 이미지 렌더링
@@ -195,9 +209,9 @@ const FolderCard = ({
         <div
           className={clsx(
             'w-full aspect-[3/2] rounded-2xl overflow-hidden flex hover:scale-103 duration-400 cursor-pointer',
-            !images.length && 'border border-lightBlueGray', // images가 없을 때만 테두리 적용
+            !images.length && 'border border-lightBlueGray',
           )}
-          onClick={handleImageClick}
+          onClick={handleCategoryClick}
         >
           {renderImages(images)}
         </div>

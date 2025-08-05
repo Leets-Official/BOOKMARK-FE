@@ -41,11 +41,11 @@ export interface BookmarkProps {
 export interface BookmarkSearchResultRequestProps {
   keyword?: string | null;
   categoryTagRequests?:
-    | {
-        categoryId: number;
-        tagIds: number[];
-      }[]
-    | null;
+  | {
+    categoryId: number;
+    tagIds: number[];
+  }[]
+  | null;
   platforms?: string[] | null;
   page: number;
   size: number;

@@ -1,7 +1,7 @@
-import { memoAtom, visibleMemoAndAlarmAtom } from '@/atoms';
+import { visibleMemoAndAlarmAtom } from '@/atoms';
 import TextField from '@/components/ui/TextField';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { Controller, type Control } from 'react-hook-form';
 import type z from 'zod';
 import type { saveSchema } from '@/schema/save';
@@ -12,7 +12,6 @@ interface IMemoProps {
 
 const Memo = ({ control }: IMemoProps) => {
   const atomVisible = useAtomValue(visibleMemoAndAlarmAtom);
-  const setMemo = useSetAtom(memoAtom);
 
   return (
     <div className='bg-white w-full rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)] px-3 sm:px-6 pt-2 pb-5'>
@@ -39,7 +38,6 @@ const Memo = ({ control }: IMemoProps) => {
                   onBlur={field.onBlur}
                   onChange={(value) => {
                     field.onChange(value);
-                    setMemo(value);
                   }}
                   errorMessage={fieldState.error?.message}
                   buttonVisible={false}

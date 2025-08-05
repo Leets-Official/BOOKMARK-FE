@@ -19,6 +19,7 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
   const [isBlur, setIsBlur] = useState(false);
   const scrollBarWidth = useAtomValue(scrollBarWidthAtom);
   const navigate = useNavigate();
+
   useEffect(() => {
     const handleScroll = () => {
       if (!searchBarRef.current) return; // 아직 검색창이 렌더링 되지 않았으면 종료
