@@ -24,6 +24,7 @@ const SaveCard = ({ data }: { data: BookmarkProps }) => {
     mutationFn: deleteBookmarks,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast.success('북마크 삭제에 성공했습니다');
     },
     onError: () => {

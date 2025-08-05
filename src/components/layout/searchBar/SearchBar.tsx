@@ -123,7 +123,7 @@ const SearchBar = ({
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') EnterFn();
           }}
-          placeholder='제목, 태그 검색'
+          placeholder='제목, 메모 검색'
         />
         <div className='absolute left-5 top-1/2 -translate-y-1/2'>
           <SearchIcon className={searchIconStyle({ isFixed, isBlur })} />

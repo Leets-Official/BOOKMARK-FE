@@ -45,7 +45,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   useScrollLock(true); // PC일 때는 스크롤 방지
   const navigate = useNavigate();
   const { id } = useParams();
-  const { saveLinkData } = SaveButton();
+  const { saveLinkData, updateLinkData } = SaveButton();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -192,11 +192,12 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   const onSubmit = (data: z.infer<typeof schema>) => {
     if (type === 'edit') {
-      console.log(isImageChanged);
-      return;
+      if (!id) return;
+      updateLinkData(data, Number(id), isImageChanged);
+    } else {
+      saveLinkData(data);
     }
     console.log(data);
-    saveLinkData(data);
     setPreviewImage(undefined);
     onPrev();
   };

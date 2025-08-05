@@ -38,7 +38,7 @@ export const updateBookmarks = async (
   bookmarkData: BookmarkSaveRequestProps,
 ): Promise<ApiResponse<string>> => {
   return apiRequest<string>({
-    method: 'PUT',
+    method: 'PATCH',
     url: `/bookmarks/${bookmarkId}`,
     data: bookmarkData,
   });

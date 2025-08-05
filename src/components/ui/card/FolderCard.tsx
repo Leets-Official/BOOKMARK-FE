@@ -148,7 +148,8 @@ const FolderCard = ({
   const handleCategoryClick = () => {
     if (!images.length) {
       toast.dismiss();
-      toast.error('저장된 링크가 없는 카테고리입니다.');
+      toast.error('저장된 링크가 없는 카테고리입니다');
+      return;
     }
 
     const queryData = {

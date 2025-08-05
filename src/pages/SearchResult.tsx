@@ -293,7 +293,7 @@ const SearchResult = () => {
                       category: bookmark.categoryTagInfos[0].categoryName,
                       tags: bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName),
                       createdAt: bookmark.createdAt,
-                      isNotified: bookmark.notificationResponse?.isNotified ?? false,
+                      isNotified: bookmark.notificationResponse?.isNotified === false,
                     }}
                   />
                 ))}

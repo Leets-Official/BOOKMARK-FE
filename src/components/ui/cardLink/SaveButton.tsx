@@ -13,7 +13,7 @@ import {
 } from '@/atoms';
 import { createCategory, getCategories } from '@/api/category/category';
 import { createTag, getTags } from '@/api/tag/tag';
-import { saveBookmarks } from '@/api/bookmark/bookmark';
+import { saveBookmarks, updateBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
 import type { BookmarkSaveRequestProps } from '@/types/api/bookmark';
 import type { saveSchema } from '@/schema/save';
@@ -93,6 +93,7 @@ const SaveButton = () => {
     return imageUrl; // 다른 URL은 그대로 사용
   };
 
+  // 북마크 저장
   const saveLinkData = async (data: z.infer<typeof saveSchema>) => {
     const url = data.url;
     const title = data.title;
@@ -171,11 +172,102 @@ const SaveButton = () => {
     };
 
     saveBookmarkMutation.mutate(bookmarkData);
-
     setVisibleTag(false);
     setVisibleMemoAndAlarm(false);
   };
-  return { saveLinkData };
+
+  // 북마크 수정
+  const updateLinkData = async (
+    data: z.infer<typeof saveSchema>,
+    bookmarkId: number,
+    isImageChanged: boolean,
+  ) => {
+    const url = data.url;
+    const title = data.title;
+    const platform = data.platform;
+    const thumbnail = data.image;
+    const faviconUrl = data.favicon;
+    const memo = data.memo;
+
+    if (!selectedCategory || selectedTag.length === 0) return;
+
+    let categoryId: number | null = null;
+
+    if (tempCategories.includes(selectedCategory)) {
+      await createCategoryMutation.mutateAsync(selectedCategory);
+      const res = await getCategories();
+      const matched = res.data?.find((c) => c.categoryName === selectedCategory);
+      categoryId = matched?.id ?? null;
+    }
+
+    if (!categoryId) {
+      const res = await getCategories();
+      categoryId = res.data?.find((c) => c.categoryName === selectedCategory)?.id ?? null;
+      if (!categoryId) throw new Error('카테고리 ID 찾기 실패');
+    }
+
+    const selectedSuggestionTags = suggestionList.filter((s) => s.isSelected).map((s) => s.content);
+    const selectedTempTags = (tempTags[selectedCategory] || []).filter((t) =>
+      selectedTag.includes(t),
+    );
+
+    const res = await getTags(categoryId);
+    const existingTags = res.data || [];
+    const selectedExistingTags = existingTags
+      .filter((t) => selectedTag.includes(t.tagName))
+      .map((t) => ({ id: t.tagId, name: t.tagName }));
+
+    const createTagNames = [...selectedSuggestionTags, ...selectedTempTags].filter(
+      (tag) => !selectedExistingTags.some((t) => t.name === tag),
+    );
+
+    await Promise.all(
+      createTagNames.map((tag) => createTagMutation.mutateAsync({ categoryId, tagName: tag })),
+    );
+
+    await queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+
+    const tagRes = await getTags(categoryId);
+    const tagIds = (tagRes.data || [])
+      .filter((t) => selectedTag.includes(t.tagName))
+      .map((t) => t.tagId);
+
+    const originalImageUrl = uploadUrl && uploadUrl.trim() !== '' ? uploadUrl : thumbnail || '';
+    const processedImageUrl = isImageChanged
+      ? await processInstagramImage(originalImageUrl)
+      : originalImageUrl;
+
+    const bookmarkData: BookmarkSaveRequestProps = {
+      title: title ?? '제목',
+      url: url ?? '',
+      memo: memo ?? '',
+      file: {
+        fileName: 'bookmarkExample.jpg',
+        fileUrl: processedImageUrl,
+      },
+      notification: {
+        notifyAt: alarmAt ?? '',
+      },
+      platform,
+      categoryId,
+      faviconUrl: faviconUrl ?? '',
+      tagIds,
+    };
+
+    try {
+      await updateBookmarks(bookmarkId, bookmarkData);
+      toast.success('수정되었습니다');
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      setVisibleTag(false);
+      setVisibleMemoAndAlarm(false);
+    } catch (err) {
+      toast.error('수정에 실패했습니다');
+      console.error(err);
+    }
+  };
+
+  return { saveLinkData, updateLinkData };
 };
 
 export default SaveButton;
