@@ -2,15 +2,12 @@ import { getSuggestionTag } from '@/agent/TagAgent';
 import { getBookmarksURL } from '@/api/bookmark/bookmark';
 import { getPresignedUrl } from '@/api/file/presigned_url_api';
 import {
-  memoAtom,
   suggestionListAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
   isSuggestionLoadingAtom,
-  linkAtom,
-  faviconAtom,
 } from '@/atoms';
 import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
@@ -19,7 +16,7 @@ import type { BookMarkURLProps } from '@/types/api/bookmark';
 import { S3UploadImage } from '@/utils/S3PresignedImage';
 import { useQuery } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, type Control, type UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
 
@@ -28,18 +25,18 @@ interface ILinkField {
   isLoading?: boolean;
   control: Control<z.infer<typeof saveSchema>>;
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
+  isEdit: boolean;
 }
 
-const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
+const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILinkField) => {
   const [visibleCard, setVisibleCard] = useAtom(visibleCardAtom);
   const setVisibleCategory = useSetAtom(visibleCategoryAtom);
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setSuggestionList = useSetAtom(suggestionListAtom);
   const setIsSuggestionLoading = useSetAtom(isSuggestionLoadingAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
-  const setLink = useSetAtom(linkAtom);
-  const resetMemo = useSetAtom(memoAtom);
-  const setFavicon = useSetAtom(faviconAtom);
+
+  const [flag, setFlag] = useState(isEdit);
 
   const {
     data: bookmarkUrlData,
@@ -59,11 +56,17 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
 
   useEffect(() => {
     const uploadExternalImage = async () => {
+      // 수정 모드일 때는 처음에 로드 안함
+      if (flag) {
+        setFlag(false);
+        return;
+      }
+
       if (bookmarkUrlData && bookmarkUrlData.length > 0) {
         const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
-        setValue('title', title);
+        setValue('title', title, { shouldValidate: true });
         setValue('platform', platform);
-        setFavicon(faviconUrl);
+        setValue('favicon', faviconUrl);
 
         // thumbnailUrl이 유효하면 presigned 방식으로 S3 업로드
         if (thumbnailUrl && thumbnailUrl.startsWith('http')) {
@@ -82,12 +85,12 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
     };
 
     uploadExternalImage();
-  }, [bookmarkUrlData, setFavicon, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookmarkUrlData, setValue]);
 
   const handleLink = (v: string) => {
     if (v.length > 0) {
       refetch();
-      setLink(v);
       setVisibleCard(true);
       setVisibleCategory(true);
 
@@ -127,7 +130,6 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
       setVisibleTag(false);
       setVisibleMemoAndAlarm(false);
       setSuggestionList([]); // 제안 리스트 빈 배열로 초기화
-      resetMemo('');
     }
   };
 
@@ -160,7 +162,8 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
         <>
           <hr className='border-t-2 border-lightGrayBlue my-4' />
           <LinkCard
-            title={control._formValues.title}
+            control={control}
+            setValue={setValue}
             platform={control._formValues.platform}
             image={control._formValues.image}
             isLoading={isLoading || isFetching}

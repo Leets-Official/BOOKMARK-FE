@@ -1,32 +1,40 @@
 import { getPresignedUrl, uploadImage } from '@/api/file/presigned_url_api';
-import { platformAtom, previewImageAtom, thumbnailAtom, titleAtom, uploadUrlAtom } from '@/atoms';
+import { previewImageAtom, uploadUrlAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import { Controller, type Control, type UseFormSetValue } from 'react-hook-form';
+import TextField from '../TextField';
+import type { saveSchema } from '@/schema/save';
+import type z from 'zod';
 
 interface CardProps {
-  title: string;
+  control: Control<z.infer<typeof saveSchema>>;
+  setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
   platform: string;
   image?: string;
   isLoading?: boolean;
 }
 
-const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
+const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
-  const setTitle = useSetAtom(titleAtom);
-  const setPlatform = useSetAtom(platformAtom);
-  const setThumbnail = useSetAtom(thumbnailAtom);
   const setUploadUrl = useSetAtom(uploadUrlAtom);
 
   useEffect(() => {
-    setTitle(title);
-    setPlatform(platform);
-    setThumbnail(image);
-  }, [title, platform, setTitle, setPlatform, setThumbnail, image]);
+    if (imageError) {
+      setValue('image', '', { shouldValidate: true });
+      toast.dismiss();
+      toast.error('올바른 이미지를 선택해주세요');
+    } else {
+      if (image) {
+        setValue('image', image, { shouldValidate: true });
+      }
+    }
+  }, [imageError, image, setValue]);
 
   // 버튼 클릭 시 숨겨진 파일 입력창 엶
   const handleImageUpload = () => {
@@ -75,6 +83,7 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
 
     const previewURL = URL.createObjectURL(file); // 파일을 브라우저에서 볼 수 있는 임시 URL 생성
     setPreviewImage(previewURL);
+    setValue('image', uploadedUrl, { shouldValidate: true });
     setImageError(false);
   };
 
@@ -127,10 +136,26 @@ const LinkCard = ({ title, platform, image, isLoading }: CardProps) => {
         onChange={handleFileChange}
       />
       <div className='flex flex-col flex-1 leading-6'>
-        <p className='text-sm sm:text-base text-black font-semibold break-words line-clamp-2 pr-3'>
-          {title}
-        </p>
-        <p className='text-xs text-stone font-medium leading-6'>{platform}</p>
+        <Controller
+          name='title'
+          control={control}
+          render={({ field, fieldState }) => (
+            <TextField
+              label=''
+              placeholder='제목을 입력해주세요'
+              onChange={(e) => {
+                field.onChange(e);
+              }}
+              onBlur={() => {
+                field.onBlur();
+              }}
+              value={field.value}
+              errorMessage={fieldState.error?.message}
+              className='text-sm sm:text-base text-black font-semibold break-words'
+            />
+          )}
+        />
+        <p className='text-xs text-stone font-medium leading-6 ml-2'>{platform}</p>
       </div>
     </div>
   );

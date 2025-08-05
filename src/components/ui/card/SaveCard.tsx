@@ -9,13 +9,13 @@ import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../modal/DeleteModal';
 import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
-import type { BookMarkProps } from '@/types/api/bookmark';
+import type { BookmarkProps } from '@/types/components/components';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
 import { getNotificaton } from '@/api/alarm/notification';
 
-const SaveCard = ({ data }: { data: BookMarkProps }) => {
+const SaveCard = ({ data }: { data: BookmarkProps }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const navigate = useNavigate();

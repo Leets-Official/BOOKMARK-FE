@@ -8,7 +8,7 @@ import { isMobile } from 'react-device-detect';
 import SaveCard from '@/components/ui/card/SaveCard';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import ProfileHeader from '@/components/layout/header/ProfileHeader';
-import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { postBookmarkSearchResult } from '@/api/bookmark/bookmark';
 import Loading from '@/components/ui/loading/Loading';
@@ -25,8 +25,8 @@ const SearchResult = () => {
   const [optionTagList, setOptionTagList] = useState<ChipProps[]>([]);
   const [optionPlatformList, setOptionPlatformList] = useState<ChipProps[]>([]);
 
-  // URL 파라미터에서 데이터 받기
-  const [searchParams] = useSearchParams();
+  // hash 파라미터 가져오기
+  const location = useLocation();
 
   // 파라미터 상태 관리
   const [searchContents, setSearchContents] = useState('');
@@ -78,34 +78,37 @@ const SearchResult = () => {
 
   // URL 파라미터에서 값을 가져와서 atom에 설정
   useEffect(() => {
-    const keyword = searchParams.get('keyword');
-    const categoriesParam = searchParams.get('categories');
-    const tagsParam = searchParams.get('tags');
-    const platformsParam = searchParams.get('platforms');
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      const decoded = atob(hash);
+      const queryData = JSON.parse(decodeURIComponent(decoded));
 
-    if (keyword) setSearchContents(keyword);
+      const keyword = queryData.keyword;
+      const categoriesParam = queryData.categories;
+      const tagsParam = queryData.tags;
+      const platformsParam = queryData.platforms;
 
-    try {
-      if (categoriesParam) {
-        const categories = JSON.parse(categoriesParam);
-        setParamsCategories(categories);
+      if (keyword) setSearchContents(keyword);
+
+      try {
+        if (categoriesParam) {
+          setParamsCategories(categoriesParam);
+        }
+        if (tagsParam) {
+          setParamsTags(tagsParam);
+        }
+        if (platformsParam) {
+          setParamsPlatforms(platformsParam);
+        }
+      } catch (error) {
+        toast.error('검색 결과를 불러오는데 실패했습니다.');
+        console.error('URL 파라미터 파싱 에러:', error);
+        navigate('/', { replace: true });
       }
-      if (tagsParam) {
-        const tags = JSON.parse(tagsParam);
-        setParamsTags(tags);
-      }
-      if (platformsParam) {
-        const platforms = JSON.parse(platformsParam);
-        setParamsPlatforms(platforms);
-      }
-    } catch (error) {
-      toast.error('검색 결과를 불러오는데 실패했습니다.');
-      console.error('URL 파라미터 파싱 에러:', error);
-      navigate('/', { replace: true });
     }
   }, [
+    location.hash,
     navigate,
-    searchParams,
     setSearchContents,
     setParamsCategories,
     setParamsTags,
@@ -277,12 +280,15 @@ const SearchResult = () => {
                     key={bookmark.id}
                     data={{
                       id: bookmark.id,
+                      url: bookmark.url,
                       title: bookmark.title,
-                      category: bookmark.categoryTagInfos[0].categoryName,
-                      tags: bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName),
-                      image: bookmark.file.fileUrl,
                       memo: bookmark.memo,
                       platform: bookmark.platform,
+                      image: bookmark.file.fileUrl,
+                      faviconUrl: bookmark.faviconUrl,
+                      category: bookmark.categoryTagInfos[0].categoryName,
+                      tags: bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName),
+                      createdAt: bookmark.createdAt,
                     }}
                   />
                 ))}

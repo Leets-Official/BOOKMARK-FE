@@ -215,22 +215,22 @@ const Search = () => {
   };
 
   const handleSearch = () => {
-    // URL 파라미터로 데이터 전달
-    const params = new URLSearchParams();
-    if (searchContents) params.append('keyword', searchContents);
-    if (selectedCategories.length > 0)
-      params.append('categories', JSON.stringify(selectedCategories));
-    if (selectedTags.length > 0) params.append('tags', JSON.stringify(selectedTags));
-    if (selectedPlatforms.length > 0) params.append('platforms', JSON.stringify(selectedPlatforms));
+    const queryData = {
+      keyword: searchContents,
+      categories: selectedCategories,
+      tags: selectedTags,
+      platforms: selectedPlatforms,
+    };
 
+    const hash = btoa(encodeURIComponent(JSON.stringify(queryData)));
     resetAll();
-    navigate(`/search-result?${params.toString()}`);
+    navigate(`/search-result#${hash}`);
     if (searchContents) addSearchHistory(searchContents);
   };
 
   return (
     <div className='max-w-[1200px] mx-auto min-h-screen w-full md:w-[768px] flex flex-col'>
-      <FilterSearchBar />
+      <FilterSearchBar handleSearch={handleSearch} />
 
       {/* 스크롤 가능한 컨텐츠 영역 */}
       <div className='flex-1 overflow-y-auto p-3 pb-40 hide-scrollbar'>
@@ -311,7 +311,9 @@ const Search = () => {
                   key={index}
                   content={
                     <span className='flex items-center gap-1'>
-                      <img src={platform.faviconUrl} alt='favicon' className='w-4 h-4' />
+                      {platform.faviconUrl && (
+                        <img src={platform.faviconUrl} alt='favicon' className='w-4 h-4' />
+                      )}
                       <span>{platform.platform}</span>
                     </span>
                   }

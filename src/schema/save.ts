@@ -1,19 +1,20 @@
 import { z } from 'zod';
 
 const saveSchema = z.object({
+  title: z.string().min(1, { message: '제목을 입력해주세요' }),
   url: z
     .string()
     .min(1, { message: 'URL을 입력해주세요' })
     .url({ message: '유효하지 않은 URL입니다' }),
+  memo: z.string().max(50, { message: '최대 50자까지 입력가능해요' }).optional(),
+  platform: z.string(),
+  favicon: z.string().optional(),
   tags: z
     .array(z.string())
     .min(1, { message: '태그를 선택해주세요' })
     .max(3, { message: '최대 3개까지 선택가능해요' }),
   category: z.string().min(1, { message: '카테고리를 선택해주세요' }),
-  title: z.string(),
-  platform: z.string(),
-  image: z.string(),
-  memo: z.string().max(50, { message: '최대 50자까지 입력가능해요' }).optional(),
+  image: z.string().min(1, { message: '이미지를 선택해주세요' }),
   date: z.string().optional(),
   time: z.string().optional(),
 });

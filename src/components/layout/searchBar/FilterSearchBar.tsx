@@ -1,13 +1,13 @@
-import { DeleteIcon, HistoryIcon, LeftIcon, RoundDeleteIcon } from '@/assets';
+import { DeleteIcon, HistoryIcon, LeftIcon, RoundDeleteIcon, SearchIcon } from '@/assets';
 import { Input, Button, Chip } from '@/components/common';
 import React, { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import {
+  searchContentsAtom,
   selectedSearchCategoriesAtom,
   selectedSearchTagsAtom,
   selectedSearchPlatformsAtom,
-  searchContentsAtom,
 } from '@/atoms';
 import { useNavigate } from 'react-router-dom';
 import { deleteSearchHistory, getSearchHistory } from '@/api/searchHistory/searchHistory';
@@ -16,6 +16,8 @@ import type { GetSearchHistoryProps } from '@/types/api/searchHistory';
 import type { SearchCategory } from '@/types/common/search';
 import type { PlatformProps } from '@/types/api/platform';
 import type { SearchTag } from '@/types/common/search';
+import { isMobile } from 'react-device-detect';
+import clsx from 'clsx';
 
 interface AnimatedHeightProps {
   show: boolean;
@@ -46,14 +48,14 @@ const AnimatedHeight: React.FC<AnimatedHeightProps> = ({ show, children }) => {
   );
 };
 
-const FilterSearchBar: React.FC = () => {
+const FilterSearchBar: React.FC<{ handleSearch: () => void }> = ({ handleSearch }) => {
   const [isFocused, setIsFocused] = useState(false);
   const historyRef = useRef<HTMLDivElement>(null);
 
+  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const [selectedCategories, setSelectedCategories] = useAtom(selectedSearchCategoriesAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedSearchTagsAtom);
   const [selectedPlatforms, setSelectedPlatforms] = useAtom(selectedSearchPlatformsAtom);
-  const [searchContents, setSearchContents] = useAtom(searchContentsAtom);
   const navigate = useNavigate();
   const onPrev = () => navigate(-1);
 
@@ -219,19 +221,31 @@ const FilterSearchBar: React.FC = () => {
       </AnimatePresence>
 
       {/* 검색창 */}
-      <div className='flex items-center w-full h-12 px-2 bg-white z-10 relative'>
+      <div
+        className={clsx(
+          'flex items-center w-full h-12 pl-2 bg-white z-10 relative',
+          isMobile && 'pr-2',
+        )}
+      >
         <div className='w-[30px] mr-2'></div>
         <Input
           value={searchContents}
           onChange={onChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
-          className='flex-1 border-none focus:outline-none text-15 placeholder-gray-400 bg-transparent'
+          className='flex-1 border-none focus:outline-none text-15 placeholder-gray-400 bg-transparent mr-2'
           placeholder='제목, 메모, 태그'
         />
         <div className='mr-1 cursor-pointer hover:brightness-90' onClick={clearInput}>
           <RoundDeleteIcon width={22} height={22} />
         </div>
+        {!isMobile && (
+          <Button
+            onClick={handleSearch}
+            icon={<SearchIcon className='w-5 h-5' stroke='white' />}
+            className='cursor-pointer flex items-center justify-center gap-2 bg-blue text-15 hover:brightness-90 transition h-full w-12'
+          />
+        )}
       </div>
 
       {/* 최근 검색 기록 */}
