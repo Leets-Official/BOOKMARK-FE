@@ -105,6 +105,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   useEffect(() => {
     if (id) {
+      console.log(id);
       const newValues = {
         url: 'https://www.google.com',
         tags: ['파스타', '이탈리안', '데이트'],
