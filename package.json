@@ -36,6 +36,8 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/retry": "^0.12.5",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.35.0",
     "@typescript-eslint/parser": "^8.35.0",
     "@vitejs/plugin-react": "^4.4.1",

@@ -25,26 +25,19 @@ const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) =
   const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
   const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
   const setAlarmAt = useSetAtom(alarmAtAtom);
+  const alarmAt = useAtomValue(alarmAtAtom); // ✅ alarmAtAtom 읽기 추가
 
   const alarmRef = useRef<HTMLDivElement>(null);
 
   const getDateTime = (dateOption: string, timeOption: string): string | null => {
     if (!dateOption || !timeOption) return null;
 
-    let daysLater: number | null = null;
-
-    if (dateOption.includes('오늘')) {
-      daysLater = 0;
-    } else {
-      const dateMatch = dateOption.match(/(\d+)일 뒤/);
-      if (dateMatch) {
-        daysLater = parseInt(dateMatch[1], 10);
-      }
-    }
-
+    const dateMatch = dateOption.match(/(\d+)일 뒤/);
     const timeMatch = timeOption.match(/(오전|오후)\s*(\d+)시/);
-    if (daysLater === null || !timeMatch) return null;
 
+    if (!dateMatch || !timeMatch) return null;
+
+    let daysLater = parseInt(dateMatch[1], 10);
     let hour = parseInt(timeMatch[2], 10);
     const isAM = timeMatch[1] === '오전';
 
@@ -61,19 +54,11 @@ const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) =
     return combinedDate.format('YYYY-MM-DDTHH:mm:ss');
   };
 
-  useEffect(() => {
-    const isDropdownOpen = isDateDropDownOpen || isTimeDropDownOpen;
-    onDropdownScroll(isDropdownOpen);
-  }, [isDateDropDownOpen, isTimeDropDownOpen, onDropdownScroll]);
-
   const isDropDownCenter = () => {
     if (!alarmRef.current) return false;
-
     const rect = alarmRef.current.getBoundingClientRect();
     const elementCenter = rect.top + rect.height / 2;
     const viewportCenter = window.innerHeight / 2;
-
-    // 뷰포트 중앙에서 ±80px 범위 내에 있으면 중앙에 있다고 판단
     return Math.abs(elementCenter - viewportCenter) <= 80;
   };
 
@@ -83,24 +68,55 @@ const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) =
     const setDropDownOpen = isDate ? setIsDateDropDownOpen : setIsTimeDropDownOpen;
 
     if (open) {
-      if (isCenter)
-        setDropDownOpen(true); // 이미 중앙에 있으면 바로 열기
-      else {
-        alarmRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }); // 중앙에 없으면 먼저 스크롤 후 열기
-
+      if (isCenter) {
+        setDropDownOpen(true);
+      } else {
+        alarmRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setTimeout(() => {
           setDropDownOpen(true);
         }, 150);
       }
-    } else setDropDownOpen(false);
+    } else {
+      setDropDownOpen(false);
+    }
   };
 
-  // 수정 모드일 때 초기값 설정
+  // 🔁 DropDown 열림 상태가 부모에게 전달되도록
   useEffect(() => {
-    if (editDate) setSelectedDate(editDate);
-    if (editTime) setSelectedTime(editTime);
-  }, [editDate, editTime]);
+    const isDropdownOpen = isDateDropDownOpen || isTimeDropDownOpen;
+    onDropdownScroll(isDropdownOpen);
+  }, [isDateDropDownOpen, isTimeDropDownOpen, onDropdownScroll]);
 
+  // ✅ 수정 모드일 경우 ISO 값으로부터 selectedDate/Time 역추출
+  useEffect(() => {
+    // editDate/editTime이 우선이므로 이 값이 있으면 설정
+    if (editDate && editTime) {
+      setSelectedDate(editDate);
+      setSelectedTime(editTime);
+      return;
+    }
+
+    if (!alarmAt) return;
+
+    const parsed = dayjs(alarmAt);
+    if (!parsed.isValid()) return;
+
+    const now = dayjs().startOf('day');
+    const targetDay = parsed.startOf('day');
+    const daysDiff = targetDay.diff(now, 'day');
+
+    const dateOption = dateOptions.find((opt) => opt.id === daysDiff);
+    const hour = parsed.hour();
+    const isAM = hour < 12;
+    const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    const timeStr = `${isAM ? '오전' : '오후'} ${hour12}시`;
+    const timeOption = timeOptions.find((opt) => opt.name === timeStr);
+
+    if (dateOption) setSelectedDate(dateOption.name);
+    if (timeOption) setSelectedTime(timeOption.name);
+  }, [editDate, editTime, alarmAt]);
+
+  // ✅ 선택된 값이 바뀔 때마다 form에 설정 및 ISO 포맷으로 변환 저장
   useEffect(() => {
     setValue('date', selectedDate);
     setValue('time', selectedTime);
