@@ -154,7 +154,6 @@ const SaveButton = () => {
 
     const originalImageUrl = uploadUrl && uploadUrl.trim() !== '' ? uploadUrl : thumbnail || '';
     const processedImageUrl = await processInstagramImage(originalImageUrl);
-    console.log(alarmAt);
 
     // 북마크 저장 API 호출
     const bookmarkData: BookmarkSaveRequestProps = {

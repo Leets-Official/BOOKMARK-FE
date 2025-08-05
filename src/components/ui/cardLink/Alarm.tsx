@@ -58,7 +58,7 @@ const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) =
       .set('second', 0)
       .set('millisecond', 0);
 
-    return combinedDate.toISOString();
+    return combinedDate.format('YYYY-MM-DDTHH:mm:ss');
   };
 
   useEffect(() => {

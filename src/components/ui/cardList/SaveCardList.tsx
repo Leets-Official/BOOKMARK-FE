@@ -6,7 +6,8 @@ import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { postBookmarkSearchResult } from '@/api/bookmark/bookmark';
-import type { BookMarkProps, BookmarkSearchProps } from '@/types/api/bookmark';
+import type { BookmarkSearchResultRequestProps } from '@/types/api/bookmark';
+import type { BookmarkProps } from '@/types/components/components';
 
 const SaveCardList = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const SaveCardList = () => {
   const sortLabel = sortOrder ? '최신순' : '오래된순';
   const displayCount = isMobile ? 6 : 9;
 
-  const homeBookmarkData: BookmarkSearchProps = {
+  const homeBookmarkData: BookmarkSearchResultRequestProps = {
     keyword: null,
     categoryTagRequests: null,
     platforms: null,
@@ -27,7 +28,7 @@ const SaveCardList = () => {
     queryFn: () => postBookmarkSearchResult(homeBookmarkData),
   });
 
-  const bookmarkData: BookMarkProps[] = useMemo(() => {
+  const bookmarkData: BookmarkProps[] = useMemo(() => {
     const content = data?.data?.content ?? [];
 
     const resData = content.map((data) => {

@@ -1,3 +1,16 @@
+export interface BookmarkProps {
+  id: number;
+  url: string;
+  title: string;
+  memo: string;
+  platform: string;
+  image: string;
+  faviconUrl: string;
+  category: string;
+  tags: string[];
+  createdAt: string;
+}
+
 export interface ChipProps {
   id: number;
   content: string;
