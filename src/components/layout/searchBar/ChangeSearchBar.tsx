@@ -24,7 +24,6 @@ const ChangeSearchBar = ({ barMarginTop, isBackButton = false }: ChangeSearchBar
       if (!searchBarRef.current) return; // 아직 검색창이 렌더링 되지 않았으면 종료
 
       //검색창 DOM 요소의 위치 정보를 가져옴 (브라우저 뷰포트 기준)
-      // -> getBoundingClientRect()는 브라우저에서 뷰포트(화면) 내 위치를 알려주는 메서드
       const barPosition = searchBarRef.current.getBoundingClientRect();
       const isPassedMargin = barPosition.top <= -barMarginTop; // 검색창의 상단이 화면 맨 위에 닿으면 true
 

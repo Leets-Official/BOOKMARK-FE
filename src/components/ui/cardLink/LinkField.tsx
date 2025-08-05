@@ -1,6 +1,6 @@
-import { getSuggestionTag } from '@/agent/TagAgent';
 import { getBookmarksURL } from '@/api/bookmark/bookmark';
 import { getPresignedUrl } from '@/api/file/presigned_url_api';
+import { getSuggestionTags } from '@/api/tag/tag';
 import {
   memoAtom,
   suggestionListAtom,
@@ -58,7 +58,7 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
   });
 
   useEffect(() => {
-    const uploadExternalImage = async () => {
+    const uploadlImageAndSuggestion = async () => {
       if (bookmarkUrlData && bookmarkUrlData.length > 0) {
         const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
         setValue('title', title);
@@ -78,11 +78,37 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
             setValue('image', thumbnailUrl); // fallback
           }
         }
+
+        // AI 추천 태그 가져오기
+        setIsSuggestionLoading(true);
+        try {
+          const res = await getSuggestionTags(title);
+          console.log(res);
+
+          // API 응답 구조 확인 및 처리
+          if (res.data?.message?.tags && Array.isArray(res.data.message.tags)) {
+            const suggestionTags = res.data.message.tags.map((tag: string, index: number) => ({
+              id: index,
+              content: tag,
+              isSelected: false,
+              type: 'suggestion' as const,
+            }));
+            setSuggestionList(suggestionTags);
+          } else {
+            console.warn('Unexpected API response structure:', res);
+            setSuggestionList([]);
+          }
+        } catch (error) {
+          console.error('Failed to get suggestion tags:', error);
+          setSuggestionList([]);
+        } finally {
+          setIsSuggestionLoading(false);
+        }
       }
     };
 
-    uploadExternalImage();
-  }, [bookmarkUrlData, setFavicon, setValue]);
+    uploadlImageAndSuggestion();
+  }, [bookmarkUrlData, setFavicon, setIsSuggestionLoading, setSuggestionList, setValue]);
 
   const handleLink = (v: string) => {
     if (v.length > 0) {
@@ -95,22 +121,6 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
       if (control._formValues.category) {
         setVisibleTag(true);
       }
-      // 제목이 있으면 태그 제안 가져오기
-      setIsSuggestionLoading(true);
-      getSuggestionTag(v)
-        .then((res) => {
-          setSuggestionList(
-            res.tags.map((t: string, index: number) => ({
-              id: index,
-              content: t,
-              isSelected: false,
-              type: 'suggestion',
-            })),
-          );
-        })
-        .finally(() => {
-          setIsSuggestionLoading(false);
-        });
     }
   };
 

@@ -23,9 +23,6 @@ const selectedDateAtom = atom<string>('');
 const selectedTimeAtom = atom<string>('');
 const isSaveButtonDisabledAtom = atom<boolean>(true);
 const searchContentsAtom = atom<string>('');
-const selectedCategoriesAtom = atom<string[]>([]);
-const selectedTagsAtom = atom<string[]>([]);
-const selectedPlatformsAtom = atom<string[]>([]);
 const selectedSearchCategoriesAtom = atom<SearchCategory[]>([]);
 const selectedSearchTagsAtom = atom<SearchTag[]>([]);
 const selectedSearchPlatformsAtom = atom<PlatformProps[]>([]);
@@ -56,9 +53,6 @@ export {
   selectedTimeAtom,
   isSaveButtonDisabledAtom,
   searchContentsAtom,
-  selectedCategoriesAtom,
-  selectedTagsAtom,
-  selectedPlatformsAtom,
   previewImageAtom,
   isSuggestionLoadingAtom,
   tempCategoriesAtom,

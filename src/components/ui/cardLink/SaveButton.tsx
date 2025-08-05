@@ -150,24 +150,6 @@ const SaveButton = () => {
     const allTags = tagRes.data || [];
     const tagIds = allTags.filter((t) => selectedTag.includes(t.tagName)).map((t) => t.tagId);
 
-    // 플랫폼 형식에 맞게 추출
-    const getPlatformType = (platformString: string): BookmarkSaveRequestProps['platform'] => {
-      if (!platformString) return 'ETC';
-
-      const lowerPlatform = platformString.toLowerCase();
-
-      if (lowerPlatform.includes('blog') || platformString.includes('네이버')) return 'NAVER_BLOG';
-      if (lowerPlatform.includes('naver')) return 'NAVER';
-      if (lowerPlatform.includes('tistory') || platformString.includes('티스토리'))
-        return 'TISTORY';
-      if (lowerPlatform.includes('youtube')) return 'YOUTUBE';
-      if (lowerPlatform.includes('instagram')) return 'INSTAGRAM';
-      if (lowerPlatform.includes('velog')) return 'VELOG';
-      return 'ETC'; // 이외에는 ETC
-    };
-
-    const platformUpper = getPlatformType(platform);
-
     const originalImageUrl = uploadUrl && uploadUrl.trim() !== '' ? uploadUrl : thumbnail || '';
     const processedImageUrl = await processInstagramImage(originalImageUrl);
 
@@ -181,9 +163,9 @@ const SaveButton = () => {
         fileUrl: processedImageUrl,
       },
       notification: {
-        notifyAt: '2025-08-05T00:00:00.326Z',
+        notifyAt: '2025-08-07T00:00:00.326Z',
       },
-      platform: platformUpper as BookmarkSaveRequestProps['platform'],
+      platform: platform,
       categoryId,
       faviconUrl: faviconUrl ?? '',
       tagIds,
