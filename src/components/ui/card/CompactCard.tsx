@@ -5,8 +5,13 @@ import { MenuPortal } from '@/utils';
 import DeleteModal from '../modal/DeleteModal';
 import { useMenuHandler } from '@/hooks/menuPosition';
 import { useEffect, useRef, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { deleteBookmarks } from '@/api/bookmark/bookmark';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const CompactCard = ({
+  id,
   title,
   url,
   image,
@@ -21,6 +26,20 @@ const CompactCard = ({
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const tagContainerRef = useRef<HTMLDivElement>(null);
   const [isOverflow, setIsOverflow] = useState(false);
+
+  const navigate = useNavigate();
+
+  const deleteBookmarkMutate = useMutation({
+    mutationFn: deleteBookmarks,
+    onSuccess: () => {
+      // 북마크 삭제 이벤트 발생 (SearchResult에서 검색 다시 실행)
+      window.dispatchEvent(new Event('bookmarkDeleted'));
+      toast.success('북마크 삭제에 성공했습니다');
+    },
+    onError: () => {
+      toast.error('북마크 삭제에 실패했습니다');
+    },
+  });
 
   useEffect(() => {
     if (tagContainerRef.current) {
@@ -79,7 +98,7 @@ const CompactCard = ({
             </div>
             <div ref={iconRef} onClick={isOpen}>
               <Button
-                onClick={() => console.log('clicked')}
+                onClick={() => isOpen}
                 icon={
                   <FolderDetailIcon
                     width={24}
@@ -98,6 +117,7 @@ const CompactCard = ({
           <Button
             onClick={() => {
               isClose();
+              navigate(`edit/${id}`);
             }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15 cursor-pointer'
           >
@@ -121,6 +141,7 @@ const CompactCard = ({
         warningText={`링크를 정말 삭제할까요?`}
         onDelete={() => {
           setIsDeleteModalOpen(false);
+          deleteBookmarkMutate.mutate(id);
         }}
         onScrollLock={isDeleteModalOpen}
       />

@@ -70,9 +70,16 @@ const SearchResult = () => {
     isPending,
     data: searchResult,
   } = useMutation({
+    mutationKey: ['bookmarkSearchResult'],
     mutationFn: postBookmarkSearchResult,
     onError: (error) => {
       console.error('검색 에러:', error);
+    },
+    onSuccess: (data) => {
+      // 검색 결과가 성공적으로 업데이트되면 상태도 업데이트
+      if (data?.data) {
+        setBookmarks(data.data.content);
+      }
     },
   });
 
@@ -157,9 +164,21 @@ const SearchResult = () => {
     setParamsPlatforms,
   ]);
 
-  // 파라미터가 변경될 때마다 검색 실행
+  // 파라미터가 변경될 때마다 검색 실행 + 북마크 삭제 후 검색 결과 다시 불러오기
   useEffect(() => {
+    // 파라미터 변경 시 검색 실행
     getBookmarkSearchResult();
+
+    // 북마크 삭제 이벤트 리스너 등록
+    const handleBookmarkDeleted = () => {
+      getBookmarkSearchResult();
+    };
+
+    window.addEventListener('bookmarkDeleted', handleBookmarkDeleted);
+
+    return () => {
+      window.removeEventListener('bookmarkDeleted', handleBookmarkDeleted);
+    };
   }, [getBookmarkSearchResult]);
 
   // searchResultData가 변경될 때만 searchResult 업데이트
@@ -297,6 +316,7 @@ const SearchResult = () => {
                 {filteredBookmarks.map((bookmark) => (
                   <SaveCard
                     key={bookmark.id}
+                    type='search'
                     data={{
                       id: bookmark.id,
                       url: bookmark.url,
