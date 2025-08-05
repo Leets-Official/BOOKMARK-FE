@@ -1,7 +1,6 @@
-import api, { apiRequest } from '@/api/api';
+import { apiRequest } from '@/api/api';
 import type { SuggestionTagApiResponse, TagProps } from '@/types/api/category';
 import type { ApiResponse } from '@/types/common/api-response';
-import type { AxiosResponse } from 'axios';
 
 const createTag = async (categoryId: number, tagName: string): Promise<ApiResponse<TagProps[]>> => {
   return apiRequest<TagProps[]>({
@@ -22,22 +21,11 @@ const getTags = async (categoryId: number): Promise<ApiResponse<TagProps[]>> => 
 export const getSuggestionTags = async (
   title: string,
 ): Promise<ApiResponse<SuggestionTagApiResponse>> => {
-  try {
-    const response: AxiosResponse<SuggestionTagApiResponse> = await api.get('/tags/generate', {
-      params: { title },
-    });
-
-    return { data: response.data, error: false };
-  } catch (error: any) {
-    if (error.response && error.response.status < 500) {
-      return {
-        data: null,
-        error: true,
-        message: error.response.data?.message || '요청에 실패했습니다.',
-      };
-    }
-    throw error;
-  }
+  return apiRequest<SuggestionTagApiResponse>({
+    method: 'GET',
+    url: '/tags/generate',
+    params: { title },
+  });
 };
 
 const updateTag = async (tagId: number, tagName: string): Promise<ApiResponse<string>> => {

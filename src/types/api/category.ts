@@ -20,7 +20,5 @@ export interface TagProps {
 }
 
 export interface SuggestionTagApiResponse {
-  message: {
-    tags: string[];
-  };
+  tags: string[];
 }

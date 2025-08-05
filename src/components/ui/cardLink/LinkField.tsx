@@ -86,8 +86,8 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
           console.log(res);
 
           // API 응답 구조 확인 및 처리
-          if (res.data?.message?.tags && Array.isArray(res.data.message.tags)) {
-            const suggestionTags = res.data.message.tags.map((tag: string, index: number) => ({
+          if (res.data?.tags && Array.isArray(res.data.tags)) {
+            const suggestionTags = res.data.tags.map((tag: string, index: number) => ({
               id: index,
               content: tag,
               isSelected: false,
