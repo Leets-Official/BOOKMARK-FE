@@ -1,6 +1,5 @@
 import { atom } from 'jotai';
 import type { ChipProps } from './types/components/components';
-import { dateOptions, timeOptions } from './constants/dateTimeData';
 import type { SearchCategory, SearchTag } from './types/common/search';
 import type { PlatformProps } from './types/api/platform';
 
@@ -17,8 +16,6 @@ const visibleCategoryAtom = atom(false);
 const visibleTagAtom = atom(false);
 const visibleMemoAndAlarmAtom = atom(false);
 const suggestionListAtom = atom<ChipProps[]>([]);
-const dateOptionsAtom = atom<{ id: number; name: string }[]>(dateOptions);
-const timeOptionsAtom = atom<{ id: number; name: string }[]>(timeOptions);
 const selectedDateAtom = atom<string>('');
 const selectedTimeAtom = atom<string>('');
 const isSaveButtonDisabledAtom = atom<boolean>(true);
@@ -33,6 +30,7 @@ const tempTagsAtom = atom<Record<string, string[]>>({});
 const selectedCategoryAtom = atom<string>('');
 const selectedTagAtom = atom<string[]>([]);
 const scrollBarWidthAtom = atom(0);
+const alarmAtAtom = atom<string | null>(null);
 
 export {
   linkAtom,
@@ -47,8 +45,6 @@ export {
   visibleTagAtom,
   visibleMemoAndAlarmAtom,
   suggestionListAtom,
-  dateOptionsAtom,
-  timeOptionsAtom,
   selectedDateAtom,
   selectedTimeAtom,
   isSaveButtonDisabledAtom,
@@ -63,4 +59,5 @@ export {
   selectedSearchCategoriesAtom,
   selectedSearchTagsAtom,
   selectedSearchPlatformsAtom,
+  alarmAtAtom,
 };

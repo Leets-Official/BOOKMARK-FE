@@ -1,12 +1,14 @@
 import { CalendarIcon, ScheduleIcon } from '@/assets';
-import { dateOptionsAtom, timeOptionsAtom, visibleMemoAndAlarmAtom } from '@/atoms';
+import { alarmAtAtom, visibleMemoAndAlarmAtom } from '@/atoms';
 import DateTimeDropDown from '@/components/layout/dropDown/DateTimeDropDown';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef, useState } from 'react';
 import type { saveSchema } from '@/schema/save';
 import type { UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
+import { dateOptions, timeOptions } from '@/constants/dateTimeData';
+import dayjs from 'dayjs';
 
 interface AlarmProps {
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
@@ -18,14 +20,46 @@ interface AlarmProps {
 
 const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) => {
   const DateTimeVisible = useAtomValue(visibleMemoAndAlarmAtom);
-  const dateOptions = useAtomValue(dateOptionsAtom);
-  const timeOptions = useAtomValue(timeOptionsAtom);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
   const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
+  const setAlarmAt = useSetAtom(alarmAtAtom);
 
   const alarmRef = useRef<HTMLDivElement>(null);
+
+  const getDateTime = (dateOption: string, timeOption: string): string | null => {
+    if (!dateOption || !timeOption) return null;
+
+    let daysLater: number | null = null;
+
+    if (dateOption.includes('오늘')) {
+      daysLater = 0;
+    } else {
+      const dateMatch = dateOption.match(/(\d+)일 뒤/);
+      if (dateMatch) {
+        daysLater = parseInt(dateMatch[1], 10);
+      }
+    }
+
+    const timeMatch = timeOption.match(/(오전|오후)\s*(\d+)시/);
+    if (daysLater === null || !timeMatch) return null;
+
+    let hour = parseInt(timeMatch[2], 10);
+    const isAM = timeMatch[1] === '오전';
+
+    if (!isAM && hour !== 12) hour += 12;
+    if (isAM && hour === 12) hour = 0;
+
+    const combinedDate = dayjs()
+      .add(daysLater, 'day')
+      .set('hour', hour)
+      .set('minute', 0)
+      .set('second', 0)
+      .set('millisecond', 0);
+
+    return combinedDate.toISOString();
+  };
 
   useEffect(() => {
     const isDropdownOpen = isDateDropDownOpen || isTimeDropDownOpen;
@@ -70,7 +104,12 @@ const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) =
   useEffect(() => {
     setValue('date', selectedDate);
     setValue('time', selectedTime);
-  }, [selectedDate, selectedTime, setValue]);
+
+    const isoString = getDateTime(selectedDate, selectedTime);
+    if (isoString) {
+      setAlarmAt(isoString);
+    }
+  }, [selectedDate, selectedTime, setAlarmAt, setValue]);
 
   return (
     <div

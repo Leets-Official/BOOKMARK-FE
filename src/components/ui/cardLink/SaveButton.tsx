@@ -15,6 +15,7 @@ import {
   platformAtom,
   thumbnailAtom,
   uploadUrlAtom,
+  alarmAtAtom,
 } from '@/atoms';
 import { createCategory, getCategories } from '@/api/category/category';
 import { createTag, getTags } from '@/api/tag/tag';
@@ -35,6 +36,7 @@ const SaveButton = () => {
   const faviconUrl = useAtomValue(faviconAtom);
   const memo = useAtomValue(memoAtom);
   const [uploadUrl, setUploadUrl] = useAtom(uploadUrlAtom);
+  const alarmAt = useAtomValue(alarmAtAtom);
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
@@ -152,6 +154,7 @@ const SaveButton = () => {
 
     const originalImageUrl = uploadUrl && uploadUrl.trim() !== '' ? uploadUrl : thumbnail || '';
     const processedImageUrl = await processInstagramImage(originalImageUrl);
+    console.log(alarmAt);
 
     // 북마크 저장 API 호출
     const bookmarkData: BookmarkSaveRequestProps = {
@@ -163,7 +166,7 @@ const SaveButton = () => {
         fileUrl: processedImageUrl,
       },
       notification: {
-        notifyAt: '2025-08-07T00:00:00.326Z',
+        notifyAt: alarmAt ?? '',
       },
       platform: platform,
       categoryId,

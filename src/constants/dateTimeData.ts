@@ -3,16 +3,22 @@ import 'dayjs/locale/ko';
 
 dayjs.locale('ko');
 
-const dateList = Array.from({ length: 14 }, (_, i) => {
-  const daysLater = i + 1;
-  const date = dayjs().add(daysLater, 'day');
-  const week = date.format('ddd');
+const dateList = [
+  {
+    id: 0,
+    name: '오늘',
+  },
+  ...Array.from({ length: 14 }, (_, i) => {
+    const daysLater = i + 1;
+    const date = dayjs().add(daysLater, 'day');
+    const week = date.format('ddd');
 
-  return {
-    id: daysLater,
-    name: `${daysLater}일 뒤 (${week})`,
-  };
-});
+    return {
+      id: daysLater,
+      name: `${daysLater}일 뒤 (${week})`,
+    };
+  }),
+];
 
 const timeList = Array.from({ length: 24 }, (_, i) => {
   const date = dayjs().add(i + 1, 'hour'); // 현재 시각 기준 +1시간부터 시작
@@ -26,7 +32,7 @@ const timeList = Array.from({ length: 24 }, (_, i) => {
   };
 });
 
-const dateOptions = [{ id: 0, name: '날짜 선택' }, ...dateList];
+const dateOptions = [{ id: -1, name: '날짜 선택' }, ...dateList];
 const timeOptions = [{ id: 0, name: '시간 선택' }, ...timeList];
 
 export { dateOptions, timeOptions };

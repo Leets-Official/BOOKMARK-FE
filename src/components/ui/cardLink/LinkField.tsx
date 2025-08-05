@@ -83,7 +83,6 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
         setIsSuggestionLoading(true);
         try {
           const res = await getSuggestionTags(title);
-          console.log(res);
 
           // API 응답 구조 확인 및 처리
           if (res.data?.tags && Array.isArray(res.data.tags)) {
@@ -95,7 +94,6 @@ const LinkField = ({ isLoading = false, control, setValue }: ILinkField) => {
             }));
             setSuggestionList(suggestionTags);
           } else {
-            console.warn('Unexpected API response structure:', res);
             setSuggestionList([]);
           }
         } catch (error) {
