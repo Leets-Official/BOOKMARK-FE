@@ -176,6 +176,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
       // edit 모드에서는 초기값과 현재값 비교
       const isChanged =
         watchedValues.url !== defaultValues.url ||
+        watchedValues.title !== defaultValues.title ||
         watchedValues.category !== defaultValues.category ||
         JSON.stringify(watchedValues.tags?.sort()) !== JSON.stringify(defaultValues.tags?.sort()) ||
         watchedValues.memo !== defaultValues.memo ||
