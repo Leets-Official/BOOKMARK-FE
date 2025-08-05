@@ -264,10 +264,14 @@ const SearchResult = () => {
                   key={bookmark.id}
                   id={bookmark.id}
                   title={bookmark.title}
+                  url={bookmark.url}
                   image={bookmark.file.fileUrl}
                   memo={bookmark.memo}
                   category={bookmark.categoryTagInfos[0].categoryName}
                   tags={bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName)}
+                  platform={bookmark.platform}
+                  faviconUrl={bookmark.faviconUrl}
+                  isNotified={bookmark.notificationResponse?.isNotified ?? false}
                 />
               ))
             ) : (
@@ -286,6 +290,7 @@ const SearchResult = () => {
                       faviconUrl: bookmark.faviconUrl ?? '',
                       url: bookmark.url,
                       createdAt: bookmark.createdAt,
+                      isNotified: bookmark.notificationResponse?.isNotified ?? false,
                     }}
                   />
                 ))}

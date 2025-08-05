@@ -139,7 +139,7 @@ const SaveCard = ({ data }: { data: BookmarkProps }) => {
                   <p className='text-sm text-stone'>
                     {dayjs(data.createdAt).format('YYYY.MM.DD HH:mm')} 저장
                   </p>
-                  <AlertIcon width={16} height={16} stroke={'#A4A8B2'} />
+                  {data.isNotified && <AlertIcon width={16} height={16} stroke={'#A4A8B2'} />}
                 </div>
                 <div ref={iconRef} onClick={isOpen}>
                   <FolderDetailIcon
