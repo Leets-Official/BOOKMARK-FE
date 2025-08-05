@@ -28,6 +28,8 @@ export interface CompactCardProps {
   memo: string;
   category: string;
   tags: string[];
+  platform: string;
+  faviconUrl: string;
   isNotified: boolean;
 }
 

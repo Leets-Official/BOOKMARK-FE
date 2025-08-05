@@ -271,6 +271,8 @@ const SearchResult = () => {
                   memo={bookmark.memo}
                   category={bookmark.categoryTagInfos[0].categoryName}
                   tags={bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName)}
+                  platform={bookmark.platform}
+                  faviconUrl={bookmark.faviconUrl}
                   isNotified={bookmark.notificationResponse?.isNotified ?? false}
                 />
               ))
