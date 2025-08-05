@@ -33,6 +33,17 @@ export const saveBookmarks = async (
   });
 };
 
+export const updateBookmarks = async (
+  bookmarkId: number,
+  bookmarkData: BookmarkSaveRequestProps,
+): Promise<ApiResponse<string>> => {
+  return apiRequest<string>({
+    method: 'PUT',
+    url: `/bookmarks/${bookmarkId}`,
+    data: bookmarkData,
+  });
+};
+
 export const postBookmarkSearchResult = async (
   requestData: BookmarkSearchResultRequestProps,
 ): Promise<ApiResponse<BookmarkSearchResultProps>> => {

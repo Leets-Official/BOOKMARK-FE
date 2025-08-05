@@ -188,6 +188,10 @@ const Save = ({ type }: SaveInterfaceProps) => {
   }, [watchedValues, defaultValues, type]);
 
   const onSubmit = (data: z.infer<typeof schema>) => {
+    if (type === 'edit') {
+      console.log(data);
+      return;
+    }
     console.log(data);
     saveLinkData(data);
     setPreviewImage(undefined);
