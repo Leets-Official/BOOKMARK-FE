@@ -1,7 +1,7 @@
 import CompactCard from '@/components/ui/card/CompactCard';
 import ChipDropDown from '@/components/layout/dropDown/ChipDropDown';
 import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import type { ChipProps } from '@/types/components/components';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
@@ -76,6 +76,43 @@ const SearchResult = () => {
     },
   });
 
+  useEffect(() => {
+    // 마운트될 때 항상 위에서 시작
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
+
+  const getBookmarkSearchResult = useCallback(() => {
+    const categoryTagRequests = paramsCategories.map((category) => {
+      // selectedTags에서 categoryId가 categoryIds 배열에 포함된 태그만 필터링
+      const tagList = paramsTags
+        .filter((tag) => tag.categoryIds.includes(category.categoryId))
+        .map((tag) => {
+          const tagIdIndex = tag.categoryIds.indexOf(category.categoryId);
+          return tag.tagIds[tagIdIndex];
+        });
+
+      return {
+        categoryId: category.categoryId,
+        tagIds: tagList,
+      };
+    });
+
+    const platforms = paramsPlatforms.map((platform) => platform.platform);
+
+    // POST 요청 데이터 구성
+    const requestData = {
+      keyword: searchContents,
+      categoryTagRequests,
+      platforms,
+      page: 0,
+      size: 9999,
+    };
+
+    // POST 요청 보내기
+    BookmarkSearchResultMutation(requestData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramsCategories, paramsTags, paramsPlatforms, searchContents]);
+
   // URL 파라미터에서 값을 가져와서 atom에 설정
   useEffect(() => {
     const hash = window.location.hash.slice(1);
@@ -105,6 +142,11 @@ const SearchResult = () => {
         console.error('URL 파라미터 파싱 에러:', error);
         navigate('/', { replace: true });
       }
+    } else {
+      setSearchContents('');
+      setParamsCategories([]);
+      setParamsTags([]);
+      setParamsPlatforms([]);
     }
   }, [
     location.hash,
@@ -115,39 +157,10 @@ const SearchResult = () => {
     setParamsPlatforms,
   ]);
 
+  // 파라미터가 변경될 때마다 검색 실행
   useEffect(() => {
-    // 마운트될 때 항상 위에서 시작
-    window.scrollTo({ top: 0, behavior: 'auto' });
-
-    const categoryTagRequests = paramsCategories.map((category) => {
-      // selectedTags에서 categoryId가 categoryIds 배열에 포함된 태그만 필터링
-      const tagList = paramsTags
-        .filter((tag) => tag.categoryIds.includes(category.categoryId))
-        .map((tag) => {
-          const tagIdIndex = tag.categoryIds.indexOf(category.categoryId);
-          return tag.tagIds[tagIdIndex];
-        });
-
-      return {
-        categoryId: category.categoryId,
-        tagIds: tagList,
-      };
-    });
-
-    const platforms = paramsPlatforms.map((platform) => platform.platform);
-
-    // POST 요청 데이터 구성
-    const requestData = {
-      keyword: searchContents,
-      categoryTagRequests,
-      platforms,
-      page: 0,
-      size: 9999,
-    };
-
-    // POST 요청 보내기
-    BookmarkSearchResultMutation(requestData);
-  }, [paramsCategories, paramsTags, paramsPlatforms, searchContents, BookmarkSearchResultMutation]);
+    getBookmarkSearchResult();
+  }, [getBookmarkSearchResult]);
 
   // searchResultData가 변경될 때만 searchResult 업데이트
   useEffect(() => {
