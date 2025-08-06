@@ -117,7 +117,8 @@ const CompactCard = ({
           <Button
             onClick={() => {
               isClose();
-              navigate(`edit/${id}`);
+              const currentHash = window.location.hash;
+              navigate(`edit/${id}${currentHash}`);
             }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15 cursor-pointer'
           >

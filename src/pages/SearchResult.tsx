@@ -118,8 +118,6 @@ const SearchResult = () => {
       size: 9999,
     };
 
-    console.log(requestData);
-
     // POST 요청 보내기
     BookmarkSearchResultMutation(requestData);
   };
@@ -134,7 +132,6 @@ const SearchResult = () => {
     setIsInitialized(false);
 
     const hash = window.location.hash.slice(1);
-    console.log(hash);
     if (hash) {
       const decoded = atob(hash);
       const queryData = JSON.parse(decodeURIComponent(decoded));
@@ -170,10 +167,7 @@ const SearchResult = () => {
   // 파라미터가 변경될 때마다 검색 실행 + 북마크 삭제 후 검색 결과 다시 불러오기
   useEffect(() => {
     // 초기화가 완료된 후에만 검색 실행
-    if (isInitialized) {
-      getBookmarkSearchResult();
-      console.log('execute');
-    }
+    if (isInitialized) getBookmarkSearchResult();
 
     // 북마크 삭제 이벤트 리스너 등록
     const handleBookmarkDeleted = () => {
