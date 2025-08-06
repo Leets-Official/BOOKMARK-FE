@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
+import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardLink';
+import { useSubmit } from '@/hooks/submit';
 import {
   previewImageAtom,
   selectedCategoryAtom,
@@ -44,7 +45,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   useScrollLock(true); // PC일 때는 스크롤 방지
   const navigate = useNavigate();
   const { id } = useParams();
-  const { saveLinkData, updateLinkData } = SaveButton();
+  const { saveLinkData, updateLinkData } = useSubmit();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -186,14 +187,15 @@ const Save = ({ type }: SaveInterfaceProps) => {
   }, [watchedValues, defaultValues, type]);
 
   const onSubmit = (data: z.infer<typeof schema>) => {
-    console.log('=== onSubmit 시작 ===');
-    console.log('전체 data:', data);
-    console.log('date:', data.date, 'time:', data.time);
-
     if (type === 'edit') {
-      if (!id) return;
+      if (!id) {
+        console.log('edit 모드인데 id가 없음');
+        return;
+      }
+      console.log('updateLinkData 호출');
       updateLinkData(data, Number(id));
     } else {
+      console.log('saveLinkData 호출');
       saveLinkData(data);
     }
     setPreviewImage(undefined);

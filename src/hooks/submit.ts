@@ -18,7 +18,7 @@ import type { BookmarkSaveRequestProps } from '@/types/api/bookmark';
 import type { saveSchema } from '@/schema/save';
 import type z from 'zod';
 
-const SaveButton = () => {
+export const useSubmit = () => {
   const tempCategories = useAtomValue(tempCategoriesAtom);
   const tempTags = useAtomValue(tempTagsAtom);
   const selectedCategory = useAtomValue(selectedCategoryAtom);
@@ -135,9 +135,17 @@ const SaveButton = () => {
     );
 
     // 새 태그 생성
-    await Promise.all(
-      createTagNames.map((tag) => createTagMutation.mutateAsync({ categoryId, tagName: tag })),
-    );
+    if (createTagNames.length > 0) {
+      try {
+        console.log('createTagNames', createTagNames);
+        await Promise.all(
+          createTagNames.map((tag) => createTagMutation.mutateAsync({ categoryId, tagName: tag })),
+        );
+      } catch (error) {
+        console.error('태그 생성 중 오류:', error);
+        throw new Error('태그 생성에 실패했습니다');
+      }
+    }
 
     await queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
 
@@ -173,7 +181,7 @@ const SaveButton = () => {
     return {
       title: title ?? '제목',
       url: url ?? '',
-      memo: memo ?? '',
+      memo: memo?.trim() || undefined,
       thumbnailUrl: uploadUrl || thumbnail || '',
       notification: {
         notifyAt: `${date}T${time}Z`,
@@ -185,26 +193,37 @@ const SaveButton = () => {
     };
   };
 
-  // 공통 로직: UI 상태 정리
   const resetUIState = () => {
     setVisibleTag(false);
     setVisibleMemoAndAlarm(false);
   };
 
-  // 북마크 저장
   const saveLinkData = async (data: z.infer<typeof saveSchema>) => {
+    console.log('=== saveLinkData 시작 ===');
     try {
+      console.log('getCategoryId 호출');
       const categoryId = await getCategoryId();
+      console.log('categoryId:', categoryId);
+
+      console.log('getTagIds 호출');
       const tagIds = await getTagIds(categoryId);
+      console.log('tagIds:', tagIds);
+
+      console.log('createBookmarkData 호출');
       const bookmarkData = createBookmarkData(data, categoryId, tagIds);
+      console.log('bookmarkData:', bookmarkData);
+
+      console.log('saveBookmarkMutation 호출');
       saveBookmarkMutation.mutate(bookmarkData);
       resetUIState();
     } catch (error) {
       console.error('북마크 저장 중 오류:', error);
+      toast.error(error instanceof Error ? error.message : '북마크 저장에 실패했습니다');
+      console.log('=== saveLinkData 실패 - 함수 종료 ===');
+      return; // 에러 발생 시 함수 종료
     }
   };
 
-  // 북마크 수정
   const updateLinkData = async (data: z.infer<typeof saveSchema>, bookmarkId: number) => {
     try {
       const categoryId = await getCategoryId();
@@ -215,10 +234,13 @@ const SaveButton = () => {
       resetUIState();
     } catch (error) {
       console.error('북마크 수정 중 오류:', error);
+      toast.error(error instanceof Error ? error.message : '북마크 수정에 실패했습니다');
+      return; // 에러 발생 시 함수 종료
     }
   };
 
-  return { saveLinkData, updateLinkData };
+  return {
+    saveLinkData,
+    updateLinkData,
+  };
 };
-
-export default SaveButton;
