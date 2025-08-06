@@ -50,6 +50,8 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
       return res.data;
     },
     enabled: false,
+    gcTime: 0, // 즉시 가비지 컬렉션
+    staleTime: 0, // 항상 stale로 처리
   });
 
   useEffect(() => {
@@ -140,6 +142,12 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
             placeholder='링크를 입력해주세요'
             onChange={(e) => {
               field.onChange(e);
+              if (e.length === 0) {
+                setValue('title', '');
+                setValue('image', '');
+                setValue('platform', '');
+                setValue('favicon', '');
+              }
             }}
             onBlur={() => {
               field.onBlur();
