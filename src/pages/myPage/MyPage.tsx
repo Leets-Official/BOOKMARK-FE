@@ -65,19 +65,24 @@ const MyPage = () => {
         <div
           className='w-[351px] flex flex-row items-center rounded-[40px] border-2 border-lightGrayBlue p-4 gap-6'
           style={{ boxShadow: '0 2px 7px 0 rgba(2, 34, 94, 0.1)' }}
+          onClick={() => {
+            navigate('/my-page/profile-edit', { replace: true });
+          }}
         >
           {isPending ? (
             <div className='w-[128px] h-[128px] rounded-[40px] bg-gray-200' />
           ) : (
             <>
-              <Image
-                src={ensureHttps(userInfo?.profileImage || '')}
-                alt='profile'
-                className='w-[128px] h-[128px] rounded-[40px]'
-                onClick={() => {
+              <div className='max-w-[128px] w-full'>
+                <Image
+                  src={ensureHttps(userInfo?.profileImage || '')}
+                  alt='profile'
+                  className='w-full h-auto aspect-square rounded-[40px] object-cover'
+                  onClick={() => {
                   navigate('/my-page/profile-edit', { replace: true });
                 }}
-              />
+                />
+              </div>
               <div className='flex flex-col justify-center gap-4'>
                 <p className='text-2xl font-semibold'>{userInfo?.nickname}</p>
                 <p className='text-15 font-normal'>{userInfo?.email}</p>

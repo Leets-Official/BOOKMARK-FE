@@ -167,7 +167,7 @@ const CategoryCard = ({
           onClick={() => setIsTagsOpen(!isTagsOpen)}
           className={clsx(
             'cursor-pointer transition-transform duration-200',
-            isTagsOpen ? 'rotate-[-90deg]' : 'rotate-90',
+            isTagsOpen ? 'rotate-90' : 'rotate-[-90deg]',
           )}
         >
           <BackArrowIcon width={16} height={16} />

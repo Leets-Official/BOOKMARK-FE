@@ -248,7 +248,7 @@ const Search = () => {
 
         <div className='bg-white p-4 rounded-xl shadow-[0_2px_7px_rgba(2,34,94,0.1)]'>
           <p className='mb-2 text-sm font-semibold text-stone'>카테고리</p>
-          <div className='flex flex-wrap gap-2 mb-6 p-0.5'>
+          <div className='flex flex-wrap gap-2 p-0.5'>
             {isCategoriesPending ? (
               <Loading className='w-[15px] h-[15px] my-3' />
             ) : (
@@ -261,8 +261,8 @@ const Search = () => {
                       (selected) => selected.categoryId === category.categoryId,
                     )}
                     onClick={() => handleCategorySelection(category)}
-                    className='border-lightGrayBlue'
-                    selectedClassName='border-1 border-lightGreen bg-lightGreen text-white'
+                    className='border-lightGrayBlue mb-4 mt-2'
+                    selectedClassName='border-1 border-lightGreen bg-lightGreen text-white mb-4 mt-2'
                   />
                 ))}
               </>

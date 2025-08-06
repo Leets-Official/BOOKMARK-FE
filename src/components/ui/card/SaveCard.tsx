@@ -14,7 +14,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
 
-const SaveCard = ({ data, type = 'home' }: { data: BookmarkProps; type?: 'search' | 'home' }) => {
+const SaveCard = ({
+  data,
+  type = 'home',
+  color,
+}: {
+  data: BookmarkProps;
+  type?: 'search' | 'home';
+  color: string;
+}) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
   const navigate = useNavigate();
@@ -116,7 +124,8 @@ const SaveCard = ({ data, type = 'home' }: { data: BookmarkProps; type?: 'search
               <Chip
                 content={data.category}
                 isSelected={false}
-                className='bg-[#80CA14] text-white border-lightGrayBlue text-[15px] px-3 h-[36px] flex-shrink-0'
+                className='text-white border-lightGrayBlue text-[15px] px-3 h-[36px] flex-shrink-0'
+                color={color}
               />
               {data.tags?.map((tag, i) => (
                 <Chip
