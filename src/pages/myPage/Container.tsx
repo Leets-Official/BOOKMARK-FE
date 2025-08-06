@@ -59,13 +59,12 @@ const MyPage = () => {
     navigate('/login');
   };
 
+  const currentHash = window.location.hash;
+
   return (
     <div
       className={overlayStyle({ isMobile })}
-      onClick={() => {
-        const currentHash = window.location.hash;
-        navigate(isSearchResult ? `/search-result${currentHash}` : `/`);
-      }}
+      onClick={() => navigate(isSearchResult ? `/search-result${currentHash}` : `/`)}
     >
       <div className={modalStyle({ isMobile })} onClick={(e) => e.stopPropagation()}>
         {isMobile ? (
@@ -85,7 +84,7 @@ const MyPage = () => {
                     'text-left p-3 rounded-lg transition-colors text-stone',
                     isProfileEdit ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
-                  onClick={() => navigate('./profile-edit')}
+                  onClick={() => navigate(`./profile-edit${currentHash}`)}
                 >
                   프로필 수정
                 </Button>
@@ -95,7 +94,7 @@ const MyPage = () => {
                     'text-left p-3 rounded-lg transition-colors text-stone',
                     isCategoryManagement ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
-                  onClick={() => navigate('./category-management')}
+                  onClick={() => navigate(`./category-management${currentHash}`)}
                 >
                   카테고리 / 태그 관리
                 </Button>
@@ -105,7 +104,7 @@ const MyPage = () => {
                     'text-left p-3 rounded-lg transition-colors text-stone',
                     isInquiry ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
-                  onClick={() => navigate('./inquiry')}
+                  onClick={() => navigate(`./inquiry${currentHash}`)}
                 >
                   문의하기
                 </Button>
