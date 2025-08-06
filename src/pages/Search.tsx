@@ -250,7 +250,7 @@ const Search = () => {
           <p className='mb-2 text-sm font-semibold text-stone'>카테고리</p>
           <div className='flex flex-wrap gap-2 p-0.5'>
             {isCategoriesPending ? (
-              <Loading className='w-[15px] h-[15px] my-3' />
+              <Loading className='w-[15px] h-[15px] my-3 mb-6' />
             ) : (
               <>
                 {categories.map((category) => (

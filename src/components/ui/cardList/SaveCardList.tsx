@@ -8,17 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { postBookmarkSearchResult } from '@/api/bookmark/bookmark';
 import type { BookmarkSearchResultRequestProps } from '@/types/api/bookmark';
 import type { BookmarkProps } from '@/types/components/components';
-
-const categoryColors = [
-  '#397FFF',
-  '#4828D7',
-  '#80CA14',
-  '#9747FF',
-  '#F835AA',
-  '#FF2C3D',
-  '#FF5A39',
-  '#FFC400',
-];
+import { getColorForCategory } from '@/utils/categoryColor';
 
 const SaveCardList = () => {
   const navigate = useNavigate();
@@ -72,17 +62,6 @@ const SaveCardList = () => {
     return sorted.slice(0, displayCount); // 프론트에서 개수 설정
   }, [data, sortOrder, displayCount]);
 
-  const uniqueCategories = Array.from(
-    new Set((data?.data?.content ?? []).map((item) => item.categoryTagInfos?.[0]?.categoryName)),
-  );
-
-  const categoryColorMap = new Map(
-    uniqueCategories.map((category, idx) => [
-      category,
-      categoryColors[idx % categoryColors.length],
-    ]),
-  );
-
   return (
     <div className='pb-25 mt-20'>
       <CardListHeader
@@ -93,11 +72,7 @@ const SaveCardList = () => {
       />
       <div className='w-[95%] max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
         {bookmarkData.map((card) => (
-          <SaveCard
-            key={card.id}
-            data={card}
-            color={categoryColorMap.get(card.category) ?? '#80CA14'}
-          />
+          <SaveCard key={card.id} data={card} color={getColorForCategory(card.category)} />
         ))}
       </div>
       <div className='flex justify-center mt-10'>

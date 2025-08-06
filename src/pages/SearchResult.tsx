@@ -16,17 +16,7 @@ import type { SearchCategory, SearchTag } from '@/types/common/search';
 import type { PlatformProps } from '@/types/api/platform';
 import toast from 'react-hot-toast';
 import type { BookmarkSearchResultProps } from '@/types/api/bookmark';
-
-const categoryColors = [
-  '#397FFF',
-  '#4828D7',
-  '#80CA14',
-  '#9747FF',
-  '#F835AA',
-  '#FF2C3D',
-  '#FF5A39',
-  '#FFC400',
-];
+import { getColorForCategory } from '@/utils/categoryColor';
 
 const SearchResult = () => {
   const navigate = useNavigate();
@@ -280,19 +270,6 @@ const SearchResult = () => {
     };
   }, [optionCategoryList, optionTagList, optionPlatformList]);
 
-  const categoryColorMap = useMemo(() => {
-    const uniqueCategories = Array.from(
-      new Set(filteredBookmarks.map((bookmark) => bookmark.categoryTagInfos[0]?.categoryName)),
-    );
-
-    return new Map(
-      uniqueCategories.map((category, idx) => [
-        category,
-        categoryColors[idx % categoryColors.length],
-      ]),
-    );
-  }, [filteredBookmarks]);
-
   return (
     <div className='search-result-page max-w-[1200px] mx-auto relative min-h-screen flex flex-col gap-4 pb-25 bg-white'>
       <CommonHeader title={isMobile ? '링크 검색' : ''} />
@@ -361,9 +338,7 @@ const SearchResult = () => {
                       createdAt: bookmark.createdAt,
                       isNotified: bookmark.notificationResponse?.isNotified === false,
                     }}
-                    color={
-                      categoryColorMap.get(bookmark.categoryTagInfos[0]?.categoryName) ?? '#80CA14'
-                    }
+                    color={getColorForCategory(bookmark.categoryTagInfos[0]?.categoryName)}
                   />
                 ))}
               </div>

@@ -245,7 +245,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   return (
     <>
       <form id='save-form' onSubmit={handleSubmit(handleSave, handleSaveError)}>
-        <div className='fixed inset-0 z-100 justify-center flex flex-col items-center bg-[#adadb1]/60 backdrop-blur-[25px] w-full h-full'>
+        <div className='fixed inset-0 z-100 justify-center flex flex-col items-center bg-[#eeeeee]/60 backdrop-blur-[25px] w-full h-full'>
           <div className='absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-white/80 via-white/60 to-transparent'>
             <div className='relative w-[90%] sm:w-[600px] mx-auto flex flex-row items-center justify-center mt-5'>
               <div
