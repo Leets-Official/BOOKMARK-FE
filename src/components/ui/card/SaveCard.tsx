@@ -21,7 +21,7 @@ const SaveCard = ({
 }: {
   data: BookmarkProps;
   type?: 'search' | 'home';
-  color: string;
+  color?: string;
 }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { isMenuOpen, menuPosition, iconRef, isOpen, isClose } = useMenuHandler();
