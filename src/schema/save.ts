@@ -17,6 +17,7 @@ const saveSchema = z.object({
   image: z.string().min(1, { message: '이미지를 선택해주세요' }),
   date: z.string().optional(),
   time: z.string().optional(),
+  notificationId: z.number().optional(),
 });
 
 // 추가 Modal Schema

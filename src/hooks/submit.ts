@@ -188,8 +188,35 @@ export const useSubmit = () => {
     categoryId: number,
     tagIds: number[],
   ): BookmarkSaveRequestProps => {
-    const { url, title, platform, image: thumbnail, favicon: faviconUrl, memo, date, time } = data;
-    const notification = date && time ? { notifyAt: `${date}T${time}Z` } : undefined;
+    const {
+      url,
+      title,
+      platform,
+      image: thumbnail,
+      favicon: faviconUrl,
+      memo,
+      date,
+      time,
+      notificationId,
+    } = data;
+
+    let notification = undefined;
+
+    if (date && time) {
+      if (notificationId !== 0) {
+        notification = {
+          notifyAt: `${date}T${time}Z`,
+          notificationId: notificationId,
+        };
+      } else {
+        notification = {
+          notifyAt: `${date}T${time}Z`,
+        };
+      }
+    }
+
+    console.log('notification', notification);
+
     const mappedPlatform = platform ? detectPlatform(platform) : 'ETC';
 
     return {

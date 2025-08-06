@@ -133,12 +133,14 @@ const Save = ({ type }: SaveInterfaceProps) => {
     if (id && !isPending && bookmarkData) {
       let date = '';
       let time = '';
+      let notificationId = 0;
 
       if (bookmarkData.notificationResponse) {
         const AllDate = bookmarkData.notificationResponse.notifyAt;
         console.log('AllDate', AllDate);
         date = AllDate.split('T')[0];
         time = AllDate.split('T')[1];
+        notificationId = bookmarkData.notificationResponse.notificationId;
       }
 
       const newValues = {
@@ -151,6 +153,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
         memo: bookmarkData.memo,
         date: date,
         time: time,
+        notificationId: notificationId,
       };
 
       // 기존 데이터 설정
