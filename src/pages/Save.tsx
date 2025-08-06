@@ -205,10 +205,8 @@ const Save = ({ type }: SaveInterfaceProps) => {
         console.log('edit 모드인데 id가 없음');
         return;
       }
-      console.log('updateLinkData 호출');
       updateLinkData(data, Number(id));
     } else {
-      console.log('saveLinkData 호출');
       saveLinkData(data);
     }
     setPreviewImage(undefined);

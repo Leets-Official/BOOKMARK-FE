@@ -151,7 +151,6 @@ export const useSubmit = () => {
     // 새 태그 생성
     if (createTagNames.length > 0) {
       try {
-        console.log('createTagNames', createTagNames);
         await Promise.all(
           createTagNames.map((tag) => createTagMutation.mutateAsync({ categoryId, tagName: tag })),
         );
@@ -212,7 +211,6 @@ export const useSubmit = () => {
   };
 
   const saveLinkData = async (data: z.infer<typeof saveSchema>) => {
-    console.log('=== saveLinkData 시작 ===');
     try {
       const categoryId = await getCategoryId();
       const tagIds = await getTagIds(categoryId);
