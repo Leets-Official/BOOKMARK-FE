@@ -41,11 +41,11 @@ export interface BookmarkProps {
 export interface BookmarkSearchResultRequestProps {
   keyword?: string | null;
   categoryTagRequests?:
-  | {
-    categoryId: number;
-    tagIds: number[];
-  }[]
-  | null;
+    | {
+        categoryId: number;
+        tagIds: number[];
+      }[]
+    | null;
   platforms?: string[] | null;
   page: number;
   size: number;
@@ -82,10 +82,7 @@ export interface BookmarkSaveRequestProps {
   title: string;
   url: string;
   memo?: string;
-  file?: {
-    fileName: string;
-    fileUrl: string;
-  };
+  thumbnailUrl: string;
   notification?: {
     notifyAt: string;
   };

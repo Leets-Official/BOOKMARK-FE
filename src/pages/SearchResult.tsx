@@ -296,7 +296,7 @@ const SearchResult = () => {
       </div>
 
       {isPending ? (
-        <div className='flex justify-center items-center'>
+        <div className='flex mt-10 justify-center items-center'>
           <Loading className='w-[15px] h-[15px]' />
         </div>
       ) : (
@@ -335,7 +335,7 @@ const SearchResult = () => {
                       category: bookmark.categoryTagInfos[0].categoryName,
                       tags: bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName),
                       createdAt: bookmark.createdAt,
-                      isNotified: bookmark.notificationResponse?.isNotified ?? false,
+                      isNotified: bookmark.notificationResponse?.isNotified === false,
                     }}
                   />
                 ))}

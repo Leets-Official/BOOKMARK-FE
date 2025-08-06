@@ -1,5 +1,5 @@
 import { apiRequest } from '@/api/api';
-import type { TagProps } from '@/types/api/category';
+import type { SuggestionTagApiResponse, TagProps } from '@/types/api/category';
 import type { ApiResponse } from '@/types/common/api-response';
 
 const createTag = async (categoryId: number, tagName: string): Promise<ApiResponse<TagProps[]>> => {
@@ -15,6 +15,16 @@ const getTags = async (categoryId: number): Promise<ApiResponse<TagProps[]>> => 
     method: 'GET',
     url: '/tags',
     params: { categoryId },
+  });
+};
+
+export const getSuggestionTags = async (
+  title: string,
+): Promise<ApiResponse<SuggestionTagApiResponse>> => {
+  return apiRequest<SuggestionTagApiResponse>({
+    method: 'GET',
+    url: '/tags/generate',
+    params: { title },
   });
 };
 

@@ -8,12 +8,12 @@ interface DateTimeDropDownProps {
   // eslint-disable-next-line no-unused-vars
   setIsOpen: (isOpen: boolean) => void;
   icon: React.ReactNode;
-  options: { id: number; name: string }[];
+  options: { id: number; content: string; visableContent: string }[];
   title: string;
   subTitle: string;
-  selectedOption: string;
+  selectedOption: { id: number; content: string; visableContent: string };
   // eslint-disable-next-line no-unused-vars
-  setSelectedOption: (option: string) => void;
+  setSelectedOption: (option: { id: number; content: string; visableContent: string }) => void;
 }
 
 const DateTimeDropDown = ({
@@ -26,7 +26,7 @@ const DateTimeDropDown = ({
   selectedOption,
   setSelectedOption,
 }: DateTimeDropDownProps) => {
-  const onItemClick = (option: string) => {
+  const onItemClick = (option: { id: number; content: string; visableContent: string }) => {
     setSelectedOption(option);
     setIsOpen(false);
   };
@@ -50,7 +50,7 @@ const DateTimeDropDown = ({
         >
           <div className='flex flex-row gap-2 items-center text-stone text-15 font-medium'>
             {!isOpen && icon}
-            <p>{selectedOption || title}</p>
+            <p>{selectedOption.visableContent || title}</p>
           </div>
           <div
             className={clsx(
@@ -73,10 +73,10 @@ const DateTimeDropDown = ({
           {options.map((option) => (
             <DropDown.Item
               key={option.id}
-              onClick={() => onItemClick(option.name)}
+              onClick={() => onItemClick(option)}
               className='hover:bg-gray-100 py-3 px-1'
             >
-              {option.name}
+              {option.visableContent}
             </DropDown.Item>
           ))}
         </div>

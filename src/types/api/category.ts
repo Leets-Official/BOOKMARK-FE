@@ -18,3 +18,7 @@ export interface TagProps {
   categoryId: number;
   tagName: string;
 }
+
+export interface SuggestionTagApiResponse {
+  tags: string[];
+}

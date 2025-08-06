@@ -7,7 +7,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { saveSchema } from '@/schema/save';
 import type { UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
-import { dateOptions, timeOptions } from '@/constants/dateTimeData';
+import { dateOptions, timeOptions } from '@/hooks/date/dateTimeData';
+import { formatDate, formatTime } from '@/hooks/date/formatVisableDate';
 
 interface AlarmProps {
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
@@ -19,26 +20,26 @@ interface AlarmProps {
 
 const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) => {
   const DateTimeVisible = useAtomValue(visibleMemoAndAlarmAtom);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
+  const [selectedDate, setSelectedDate] = useState({
+    id: 0,
+    content: '',
+    visableContent: '날짜 선택',
+  });
+  const [selectedTime, setSelectedTime] = useState({
+    id: 0,
+    content: '',
+    visableContent: '시간 선택',
+  });
   const [isDateDropDownOpen, setIsDateDropDownOpen] = useState(false);
   const [isTimeDropDownOpen, setIsTimeDropDownOpen] = useState(false);
 
   const alarmRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const isDropdownOpen = isDateDropDownOpen || isTimeDropDownOpen;
-    onDropdownScroll(isDropdownOpen);
-  }, [isDateDropDownOpen, isTimeDropDownOpen, onDropdownScroll]);
-
   const isDropDownCenter = () => {
     if (!alarmRef.current) return false;
-
     const rect = alarmRef.current.getBoundingClientRect();
     const elementCenter = rect.top + rect.height / 2;
     const viewportCenter = window.innerHeight / 2;
-
-    // 뷰포트 중앙에서 ±80px 범위 내에 있으면 중앙에 있다고 판단
     return Math.abs(elementCenter - viewportCenter) <= 80;
   };
 
@@ -48,27 +49,41 @@ const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) =
     const setDropDownOpen = isDate ? setIsDateDropDownOpen : setIsTimeDropDownOpen;
 
     if (open) {
-      if (isCenter)
-        setDropDownOpen(true); // 이미 중앙에 있으면 바로 열기
-      else {
-        alarmRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }); // 중앙에 없으면 먼저 스크롤 후 열기
-
+      if (isCenter) {
+        setDropDownOpen(true);
+      } else {
+        alarmRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setTimeout(() => {
           setDropDownOpen(true);
         }, 150);
       }
-    } else setDropDownOpen(false);
+    } else {
+      setDropDownOpen(false);
+    }
   };
 
-  // 수정 모드일 때 초기값 설정
+  // 🔁 DropDown 열림 상태가 부모에게 전달되도록
   useEffect(() => {
-    if (editDate) setSelectedDate(editDate);
-    if (editTime) setSelectedTime(editTime);
-  }, [editDate, editTime]);
+    const isDropdownOpen = isDateDropDownOpen || isTimeDropDownOpen;
+    onDropdownScroll(isDropdownOpen);
+  }, [isDateDropDownOpen, isTimeDropDownOpen, onDropdownScroll]);
 
   useEffect(() => {
-    setValue('date', selectedDate);
-    setValue('time', selectedTime);
+    // editDate/editTime이 우선이므로 이 값이 있으면 설정
+    if (editDate && editTime) {
+      setSelectedDate({ id: 0, content: '', visableContent: formatDate(editDate) });
+      setSelectedTime({ id: 0, content: '', visableContent: formatTime(editTime) });
+
+      // 수정 모드일 경우 기존 값 초기화
+      setValue('date', '');
+      setValue('time', '');
+      return;
+    }
+  }, [editDate, editTime, setValue]);
+
+  useEffect(() => {
+    setValue('date', selectedDate.content);
+    setValue('time', selectedTime.content);
   }, [selectedDate, selectedTime, setValue]);
 
   return (

@@ -1,5 +1,5 @@
 import { getPresignedUrl, uploadImage } from '@/api/file/presigned_url_api';
-import { previewImageAtom, uploadUrlAtom } from '@/atoms';
+import { uploadUrlAtom, viewImageAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
@@ -14,15 +14,14 @@ interface CardProps {
   control: Control<z.infer<typeof saveSchema>>;
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
   platform: string;
-  image?: string;
   isLoading?: boolean;
 }
 
-const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) => {
+const LinkCard = ({ control, setValue, platform, isLoading }: CardProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [previewImage, setPreviewImage] = useAtom(previewImageAtom); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
   const setUploadUrl = useSetAtom(uploadUrlAtom);
+  const [image, setImage] = useAtom(viewImageAtom);
 
   useEffect(() => {
     if (imageError) {
@@ -80,21 +79,12 @@ const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) 
     }
 
     setUploadUrl(uploadedUrl);
-
-    const previewURL = URL.createObjectURL(file); // 파일을 브라우저에서 볼 수 있는 임시 URL 생성
-    setPreviewImage(previewURL);
     setValue('image', uploadedUrl, { shouldValidate: true });
+    setImage(uploadedUrl);
     setImageError(false);
   };
 
-  // 이미지 로딩 실패 시
-  const handleImageError = () => {
-    setImageError(true); // 이미지 로딩 실패 시 에러 상태로 설정
-    console.log('이미지 로딩 실패:', finalImage);
-  };
-
-  const finalImage = previewImage === null ? undefined : previewImage || image;
-  const isValidImage = finalImage && !imageError; // finalImage가 유효한지 판단
+  const isValidImage = image && !imageError; // finalImage가 유효한지 판단
 
   return (
     <div className='flex flex-row items-center w-full'>
@@ -111,11 +101,7 @@ const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) 
           )}
           onClick={handleImageUpload || undefined}
         >
-          <Image
-            src={finalImage}
-            className='h-full w-full object-center object-cover'
-            onError={handleImageError}
-          />
+          <Image src={image} className='h-full w-full object-center object-cover' />
         </div>
       ) : (
         <Button

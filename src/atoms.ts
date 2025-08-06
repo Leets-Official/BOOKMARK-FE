@@ -9,6 +9,7 @@ const visibleCardAtom = atom(false);
 const visibleCategoryAtom = atom(false);
 const visibleTagAtom = atom(false);
 const visibleMemoAndAlarmAtom = atom(false);
+const viewImageAtom = atom<string>('');
 const suggestionListAtom = atom<ChipProps[]>([]);
 const previewImageAtom = atom<string | undefined>(undefined);
 const isSuggestionLoadingAtom = atom(false);
@@ -32,6 +33,7 @@ export {
   visibleCategoryAtom,
   visibleTagAtom,
   visibleMemoAndAlarmAtom,
+  viewImageAtom,
   suggestionListAtom,
   searchContentsAtom,
   previewImageAtom,

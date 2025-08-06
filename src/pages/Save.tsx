@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { Memo, Alarm, LinkField, CategoryTagSelector, SaveButton } from '@/components/ui/cardLink';
+import { Memo, Alarm, LinkField, CategoryTagSelector } from '@/components/ui/cardLink';
+import { useSubmit } from '@/hooks/submit';
 import {
   previewImageAtom,
   selectedCategoryAtom,
   selectedTagAtom,
   tempCategoriesAtom,
   tempTagsAtom,
+  viewImageAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
@@ -23,9 +25,8 @@ import clsx from 'clsx';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import { BackArrowIcon } from '@/assets';
 import toast from 'react-hot-toast';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getBookmark } from '@/api/bookmark/bookmark';
-import { formatDate } from '@/constants/dataFormat';
 
 const SaveButtonClass = tv({
   base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] sm:w-[400px] rounded-[10px]',
@@ -45,7 +46,14 @@ const Save = ({ type }: SaveInterfaceProps) => {
   useScrollLock(true); // PC일 때는 스크롤 방지
   const navigate = useNavigate();
   const { id } = useParams();
-  const { saveLinkData } = SaveButton();
+  const { saveLinkData, updateLinkData } = useSubmit();
+  const queryClient = useQueryClient();
+
+  // Save 페이지 진입 시 bookmarkPreview 캐시 삭제
+  useEffect(() => {
+    queryClient.removeQueries({ queryKey: ['bookmarkPreview'] });
+  }, [queryClient]);
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -56,6 +64,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const setSelectedCategory = useSetAtom(selectedCategoryAtom);
   const setSelectedTag = useSetAtom(selectedTagAtom);
   const resetTempCategories = useSetAtom(tempCategoriesAtom);
+  const setViewImage = useSetAtom(viewImageAtom);
   const resetTempTags = useSetAtom(tempTagsAtom);
 
   const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
@@ -72,8 +81,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   // 변경사항 추적을 위한 상태
   const [hasChanges, setHasChanges] = useState(false);
-  // 이미지 변경 여부 추적
-  const [isImageChanged, setIsImageChanged] = useState(false);
 
   // 수정 모드에서 기존 데이터 조회
   const { data: bookmarkData, isPending } = useQuery({
@@ -86,6 +93,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
       return res.data;
     },
     enabled: !!id,
+    staleTime: 0,
   });
 
   useEffect(() => {
@@ -100,6 +108,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     resetTempCategories([]);
     resetTempTags({});
     setPreviewImage(undefined);
+    setViewImage('');
     reset();
     navigate(-1);
   };
@@ -126,11 +135,10 @@ const Save = ({ type }: SaveInterfaceProps) => {
       let time = '';
 
       if (bookmarkData.notificationResponse) {
-        date = formatDate('2025-08-05T06:31:05.620Z');
-        time = new Date('2025-08-05T06:31:05.620Z').toLocaleTimeString('ko-KR', {
-          hour: 'numeric',
-          hour12: true,
-        });
+        const AllDate = bookmarkData.notificationResponse.notifyAt;
+        console.log('AllDate', AllDate);
+        date = AllDate.split('T')[0];
+        time = AllDate.split('T')[1];
       }
 
       const newValues = {
@@ -146,13 +154,14 @@ const Save = ({ type }: SaveInterfaceProps) => {
       };
 
       // 기존 데이터 설정
+      reset(newValues);
       setCard(true);
       setVisibleCate(true);
       setVisibleTag(true);
       setSelectedCategory(newValues.category);
       setSelectedTag(newValues.tags);
+      setViewImage(newValues.image);
       setDefaultValues(newValues);
-      reset(newValues);
     }
   }, [
     id,
@@ -165,6 +174,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     setCard,
     setVisibleCate,
     setVisibleTag,
+    setViewImage,
   ]);
 
   const watchedValues = watch();
@@ -186,17 +196,21 @@ const Save = ({ type }: SaveInterfaceProps) => {
         watchedValues.image !== defaultValues.image;
 
       setHasChanges(isChanged);
-      setIsImageChanged(watchedValues.image !== defaultValues.image);
     }
   }, [watchedValues, defaultValues, type]);
 
   const onSubmit = (data: z.infer<typeof schema>) => {
     if (type === 'edit') {
-      console.log(isImageChanged);
-      return;
+      if (!id) {
+        console.log('edit 모드인데 id가 없음');
+        return;
+      }
+      console.log('updateLinkData 호출');
+      updateLinkData(data, Number(id));
+    } else {
+      console.log('saveLinkData 호출');
+      saveLinkData(data);
     }
-    console.log(data);
-    saveLinkData(data);
     setPreviewImage(undefined);
     onPrev();
   };
@@ -221,14 +235,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
     let errorMessage = '';
     if (errors.image) {
       errorMessage = errors.image.message ?? '이미지를 선택해주세요';
-    } else if (errors.title) {
-      errorMessage = errors.title.message ?? '제목을 입력해주세요';
-    } else if (errors.url) {
-      errorMessage = errors.url.message ?? 'URL을 입력해주세요';
-    } else if (errors.category) {
-      errorMessage = errors.category.message ?? '카테고리를 선택해주세요';
-    } else if (errors.tags) {
-      errorMessage = errors.tags.message ?? '태그를 선택해주세요';
     } else {
       errorMessage = '모든 필드를 올바르게 입력해주세요.';
     }

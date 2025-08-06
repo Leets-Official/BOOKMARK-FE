@@ -69,7 +69,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   }, [categories.length]); // 카드 수가 변할 때만 다시 바인딩
 
   return (
-    <div className='mt-50 max-w-[1200px]'>
+    <div className='sm:mt-50 mt-25 max-w-[1200px]'>
       <CardListHeader
         onNext={increaseIndex}
         onPrev={decreaseIndex}

@@ -14,7 +14,7 @@ const HomeFooter = () => {
         paddingRight: scrollBarWidth > 0 ? `${scrollBarWidth}px` : undefined,
       }}
     >
-      <div className='max-w-[1200px] mx-auto relative pointer-events-auto'>
+      <div className='max-w-[1200px] mx-auto relative pointer-events-auto cursor-pointer'>
         <div className='flex justify-end pr-4 absolute bottom-4 right-0'>
           <div
             onClick={() => navigate('save')}

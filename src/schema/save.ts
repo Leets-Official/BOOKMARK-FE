@@ -6,7 +6,7 @@ const saveSchema = z.object({
     .string()
     .min(1, { message: 'URL을 입력해주세요' })
     .url({ message: '유효하지 않은 URL입니다' }),
-  memo: z.string().max(50, { message: '최대 50자까지 입력가능해요' }).optional(),
+  memo: z.string().max(50, { message: '최대 50자까지 입력가능해요' }).nullable().optional(),
   platform: z.string(),
   favicon: z.string().optional(),
   tags: z
