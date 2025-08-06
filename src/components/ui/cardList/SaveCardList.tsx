@@ -72,6 +72,17 @@ const SaveCardList = () => {
     return sorted.slice(0, displayCount); // 프론트에서 개수 설정
   }, [data, sortOrder, displayCount]);
 
+  const uniqueCategories = Array.from(
+    new Set((data?.data?.content ?? []).map((item) => item.categoryTagInfos?.[0]?.categoryName)),
+  );
+
+  const categoryColorMap = new Map(
+    uniqueCategories.map((category, idx) => [
+      category,
+      categoryColors[idx % categoryColors.length],
+    ]),
+  );
+
   return (
     <div className='pb-25 mt-20'>
       <CardListHeader
@@ -81,11 +92,11 @@ const SaveCardList = () => {
         onSortToggle={() => setSortOrder((prev) => !prev)}
       />
       <div className='w-[95%] max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-        {bookmarkData.map((card, index) => (
+        {bookmarkData.map((card) => (
           <SaveCard
             key={card.id}
             data={card}
-            color={categoryColors[index % categoryColors.length]}
+            color={categoryColorMap.get(card.category) ?? '#80CA14'}
           />
         ))}
       </div>
