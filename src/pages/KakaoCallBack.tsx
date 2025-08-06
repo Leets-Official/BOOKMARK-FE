@@ -23,7 +23,6 @@ function KakaoCallBack() {
       if (res.error) {
         console.error('kakao login 실패, error', res.message);
         toast.error('로그인 실패');
-        // 토스트가 표시될 시간을 주기 위해 약간의 지연 추가
         navigate('/login', { replace: true });
         return;
       }
@@ -38,7 +37,6 @@ function KakaoCallBack() {
     onError: (error) => {
       console.error('kakao login 실패, error', error);
       toast.error('로그인 실패');
-      // 토스트가 표시될 시간을 주기 위해 약간의 지연 추가
       navigate('/login', { replace: true });
     },
   });
