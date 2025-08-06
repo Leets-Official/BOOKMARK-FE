@@ -24,7 +24,7 @@ const HomeFooter = () => {
             )}
           >
             링크 추가
-            <span className='h-9 sm:text-[30px] text-[24px]'>+</span>
+            <span className='sm:h-9 h-7 sm:text-[30px] text-[24px]'>+</span>
           </div>
         </div>
       </div>
