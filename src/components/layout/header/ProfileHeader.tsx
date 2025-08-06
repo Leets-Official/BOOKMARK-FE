@@ -31,9 +31,9 @@ const ProfileHeader = () => {
               onClick={() => {
                 const currentHash = window.location.hash;
                 if (isMobile) {
-                  navigate(`./my-page${currentHash}`);
+                  navigate(`./my-page${currentHash}`, { replace: true });
                 } else {
-                  navigate(`./my-page/profile-edit${currentHash}`);
+                  navigate(`./my-page/profile-edit${currentHash}`, { replace: true });
                 }
               }}
               className='cursor-pointer'

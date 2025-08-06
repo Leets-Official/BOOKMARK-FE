@@ -61,11 +61,12 @@ const MyPage = () => {
 
   const currentHash = window.location.hash;
 
+  const handleClose = () => {
+    navigate(isSearchResult ? `/search-result${currentHash}` : `/`, { replace: true });
+  };
+
   return (
-    <div
-      className={overlayStyle({ isMobile })}
-      onClick={() => navigate(isSearchResult ? `/search-result${currentHash}` : `/`)}
-    >
+    <div className={overlayStyle({ isMobile })} onClick={handleClose}>
       <div className={modalStyle({ isMobile })} onClick={(e) => e.stopPropagation()}>
         {isMobile ? (
           // 모바일: 전체 화면
@@ -84,7 +85,7 @@ const MyPage = () => {
                     'text-left p-3 rounded-lg transition-colors text-stone',
                     isProfileEdit ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
-                  onClick={() => navigate(`./profile-edit${currentHash}`)}
+                  onClick={() => navigate(`./profile-edit${currentHash}`, { replace: true })}
                 >
                   프로필 수정
                 </Button>
@@ -94,7 +95,7 @@ const MyPage = () => {
                     'text-left p-3 rounded-lg transition-colors text-stone',
                     isCategoryManagement ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
-                  onClick={() => navigate(`./category-management${currentHash}`)}
+                  onClick={() => navigate(`./category-management${currentHash}`, { replace: true })}
                 >
                   카테고리 / 태그 관리
                 </Button>
@@ -104,7 +105,7 @@ const MyPage = () => {
                     'text-left p-3 rounded-lg transition-colors text-stone',
                     isInquiry ? 'bg-grayBg' : 'hover:bg-gray-100',
                   )}
-                  onClick={() => navigate(`./inquiry${currentHash}`)}
+                  onClick={() => navigate(`./inquiry${currentHash}`, { replace: true })}
                 >
                   문의하기
                 </Button>
@@ -130,7 +131,7 @@ const MyPage = () => {
             <div className='absolute top-10 right-10'>
               <Button
                 icon={<DeleteIcon width={12} height={12} stroke='#000000' />}
-                onClick={() => navigate(isSearchResult ? '/search-result' : '/')}
+                onClick={handleClose}
                 className='cursor-pointer'
               />
             </div>
