@@ -19,10 +19,16 @@ const kakaoLogin = async () => {
 };
 
 const kakaoLoginApi = async (code: string): Promise<ApiResponse<KakaoLoginResponse>> => {
+  const currentOrigin = window.location.origin;
+  const fullRedirectUri = `${currentOrigin}/${KAKAO_REDIRECT_URI} 123`;
+
   return apiRequest<KakaoLoginResponse>({
     method: 'GET',
     url: '/auth/login/kakao',
-    params: { code },
+    params: {
+      code: code,
+      redirectUri: fullRedirectUri,
+    },
   });
 };
 
