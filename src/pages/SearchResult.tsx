@@ -192,7 +192,7 @@ const SearchResult = () => {
   useEffect(() => {
     if (searchResult?.data) {
       setBookmarks(searchResult.data.content);
-      console.log('searchResult', searchResult.data.content);
+
       // 중복 제거
       const uniqueCategories = [
         ...new Set(
@@ -219,8 +219,6 @@ const SearchResult = () => {
           platformFaviconMap.set(bookmark.platform, bookmark.faviconUrl);
         }
       });
-
-      console.log('uniquePlatformNames', uniquePlatformNames);
 
       setOptionCategoryList(
         uniqueCategories.map((category, index) => ({
