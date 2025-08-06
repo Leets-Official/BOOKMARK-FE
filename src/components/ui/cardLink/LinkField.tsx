@@ -1,5 +1,4 @@
 import { getBookmarksURL } from '@/api/bookmark/bookmark';
-import { getPresignedUrl } from '@/api/file/presigned_url_api';
 import { getSuggestionTags } from '@/api/tag/tag';
 import {
   suggestionListAtom,
@@ -13,7 +12,6 @@ import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
 import type { saveSchema } from '@/schema/save';
 import type { BookMarkURLProps } from '@/types/api/bookmark';
-import { S3UploadImage } from '@/utils/S3PresignedImage';
 import { useQuery } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 import { useEffect, useState } from 'react';
@@ -55,7 +53,7 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
   });
 
   useEffect(() => {
-    const uploadlImageAndSuggestion = async () => {
+    const handleBookmarkUrlInfo = async () => {
       // 수정 모드일 때는 처음에 로드 안함
       if (flag) {
         setFlag(false);
@@ -65,22 +63,9 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
       if (bookmarkUrlData && bookmarkUrlData.length > 0) {
         const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
         setValue('title', title, { shouldValidate: true });
+        setValue('image', thumbnailUrl);
         setValue('platform', platform);
         setValue('favicon', faviconUrl);
-
-        // thumbnailUrl이 유효하면 presigned 방식으로 S3 업로드
-        if (thumbnailUrl && thumbnailUrl.startsWith('http')) {
-          const uploadedImageUrl = await S3UploadImage(
-            thumbnailUrl,
-            `bookmark-${Date.now()}.jpg`,
-            getPresignedUrl,
-          );
-          if (uploadedImageUrl) {
-            setValue('image', uploadedImageUrl); // 업로드한 URL로 설정
-          } else {
-            setValue('image', thumbnailUrl); // fallback
-          }
-        }
 
         // AI 추천 태그 가져오기
         setIsSuggestionLoading(true);
@@ -108,7 +93,7 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
       }
     };
 
-    uploadlImageAndSuggestion();
+    handleBookmarkUrlInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookmarkUrlData, setIsSuggestionLoading, setSuggestionList, setValue]);
 

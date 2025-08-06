@@ -68,31 +68,6 @@ const SaveButton = () => {
     },
   });
 
-  const processInstagramImage = async (imageUrl: string): Promise<string> => {
-    // 인스타그램 URL이면 서버에서 처리하도록 요청
-    if (imageUrl.includes('cdninstagram.com')) {
-      try {
-        // 백엔드에 이미지 프록시 API 요청
-        const response = await fetch('/api/proxy-image', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ imageUrl }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          return data.s3Url; // 백엔드에서 S3에 업로드 후 리턴한 URL
-        }
-      } catch (error) {
-        console.error('이미지 프록시 실패:', error);
-      }
-    }
-
-    return imageUrl; // 다른 URL은 그대로 사용
-  };
-
   // 북마크 저장
   const saveLinkData = async (data: z.infer<typeof saveSchema>) => {
     const url = data.url;
@@ -150,18 +125,12 @@ const SaveButton = () => {
     const allTags = tagRes.data || [];
     const tagIds = allTags.filter((t) => selectedTag.includes(t.tagName)).map((t) => t.tagId);
 
-    const originalImageUrl = uploadUrl && uploadUrl.trim() !== '' ? uploadUrl : thumbnail || '';
-    const processedImageUrl = await processInstagramImage(originalImageUrl);
-
     // 북마크 저장 API 호출
     const bookmarkData: BookmarkSaveRequestProps = {
       title: title ?? '제목',
       url: url ?? '',
       memo: memo ?? '',
-      file: {
-        fileName: 'bookmarkExample.jpg',
-        fileUrl: processedImageUrl,
-      },
+      thumbnail: uploadUrl || thumbnail,
       notification: {
         notifyAt: alarmAt ?? '',
       },
@@ -177,11 +146,7 @@ const SaveButton = () => {
   };
 
   // 북마크 수정
-  const updateLinkData = async (
-    data: z.infer<typeof saveSchema>,
-    bookmarkId: number,
-    isImageChanged: boolean,
-  ) => {
+  const updateLinkData = async (data: z.infer<typeof saveSchema>, bookmarkId: number) => {
     const url = data.url;
     const title = data.title;
     const platform = data.platform;
@@ -232,19 +197,11 @@ const SaveButton = () => {
       .filter((t) => selectedTag.includes(t.tagName))
       .map((t) => t.tagId);
 
-    const originalImageUrl = uploadUrl && uploadUrl.trim() !== '' ? uploadUrl : thumbnail || '';
-    const processedImageUrl = isImageChanged
-      ? await processInstagramImage(originalImageUrl)
-      : originalImageUrl;
-
     const bookmarkData: BookmarkSaveRequestProps = {
       title: title ?? '제목',
       url: url ?? '',
       memo: memo ?? '',
-      file: {
-        fileName: 'bookmarkExample.jpg',
-        fileUrl: processedImageUrl,
-      },
+      thumbnail: uploadUrl || thumbnail,
       notification: {
         notifyAt: alarmAt ?? '',
       },
