@@ -10,6 +10,7 @@ import MyPage from './myPage/MyPage';
 import ProfileEdit from './myPage/ProfileEdit';
 import CategoryManagement from './myPage/CategoryManagement';
 import Inquiry from './myPage/Inquiry';
+import Error from './Error';
 
 export {
   Home,
@@ -24,4 +25,5 @@ export {
   ProfileEdit,
   CategoryManagement,
   Inquiry,
+  Error,
 };

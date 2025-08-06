@@ -12,6 +12,7 @@ import {
   ProfileEdit,
   CategoryManagement,
   Inquiry,
+  Error,
 } from '@/pages';
 import App from '@/App';
 
@@ -105,6 +106,10 @@ const router = createBrowserRouter([
   {
     path: '/auth/login/kakao',
     element: <KakaoCallBack />,
+  },
+  {
+    path: '*',
+    element: <Error />,
   },
 ]);
 
