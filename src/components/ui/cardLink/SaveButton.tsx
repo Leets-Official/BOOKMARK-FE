@@ -177,7 +177,7 @@ const SaveButton = () => {
       memo: memo ?? '',
       thumbnailUrl: uploadUrl || thumbnail || '',
       notification: {
-        notifyAt: '',
+        notifyAt: `${date}T${time}Z`,
       },
       platform: mappedPlatform,
       categoryId,

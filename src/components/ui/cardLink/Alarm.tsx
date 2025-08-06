@@ -7,8 +7,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { saveSchema } from '@/schema/save';
 import type { UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
-import { dateOptions, timeOptions } from '@/constants/dateTimeData';
-import { formatDate, formatTime } from '@/constants/formatVisableData';
+import { dateOptions, timeOptions } from '@/hooks/dateTimeData';
+import { formatDate, formatTime } from '@/hooks/formatVisableData';
 
 interface AlarmProps {
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;

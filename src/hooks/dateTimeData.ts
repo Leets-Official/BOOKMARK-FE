@@ -16,14 +16,16 @@ const dateList = Array.from({ length: 14 }, (_, i) => {
 });
 
 const timeList = Array.from({ length: 24 }, (_, i) => {
-  const date = dayjs().add(i + 1, 'hour'); // 현재 시각 기준 +1시간부터 시작
+  // 현재 시간을 정각으로 설정 (분, 초, 밀리초를 0으로)
+  const now = dayjs().startOf('hour');
+  const date = now.add(i + 1, 'hour'); // 현재 시각 기준 +1시간부터 시작
   const hour = date.hour();
   const isAM = hour < 12;
   const isHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
 
   return {
     id: i + 1,
-    content: `T${date.format('HH:mm:ss.SSS')}Z`,
+    content: date.format('HH:mm:ss.SSS'),
     visableContent: `${isAM ? '오전' : '오후'} ${isHour}시`,
   };
 });
