@@ -8,6 +8,7 @@ import {
   selectedTagAtom,
   tempCategoriesAtom,
   tempTagsAtom,
+  viewImageAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
@@ -63,6 +64,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const setSelectedCategory = useSetAtom(selectedCategoryAtom);
   const setSelectedTag = useSetAtom(selectedTagAtom);
   const resetTempCategories = useSetAtom(tempCategoriesAtom);
+  const [viewImage, setViewImage] = useAtom(viewImageAtom);
   const resetTempTags = useSetAtom(tempTagsAtom);
 
   const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
@@ -91,6 +93,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
       return res.data;
     },
     enabled: !!id,
+    staleTime: 0,
   });
 
   useEffect(() => {
@@ -105,6 +108,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     resetTempCategories([]);
     resetTempTags({});
     setPreviewImage(undefined);
+    setViewImage('');
     reset();
     navigate(-1);
   };
@@ -150,13 +154,14 @@ const Save = ({ type }: SaveInterfaceProps) => {
       };
 
       // 기존 데이터 설정
+      reset(newValues);
       setCard(true);
       setVisibleCate(true);
       setVisibleTag(true);
       setSelectedCategory(newValues.category);
       setSelectedTag(newValues.tags);
+      setViewImage(newValues.image);
       setDefaultValues(newValues);
-      reset(newValues);
     }
   }, [
     id,
@@ -169,6 +174,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     setCard,
     setVisibleCate,
     setVisibleTag,
+    setViewImage,
   ]);
 
   const watchedValues = watch();
