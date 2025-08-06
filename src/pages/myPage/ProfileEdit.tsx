@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteUserInfo, getUserInfo, updateUserNickname } from '@/api/users/user';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import ensureHttps from '@/hooks/ensureHttps';
 
 const ProfileEdit = () => {
   const [nickname, setNickname] = useState('');
@@ -108,7 +109,7 @@ const ProfileEdit = () => {
               <div className='w-[96px] h-[96px] rounded-[20px] bg-gray-200' />
             ) : (
               <Image
-                src={userInfo?.profileImage || ''}
+                src={ensureHttps(userInfo?.profileImage || '')}
                 alt='profile'
                 className='w-[96px] h-[96px] rounded-[20px]'
               />

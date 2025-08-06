@@ -80,6 +80,11 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
 
       toast.success('태그 수정 완료');
       queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+
+      // 검색 결과 페이지에서 태그 수정 시 검색 결과 다시 불러오기
+      if (window.location.pathname.includes('search-result')) {
+        window.dispatchEvent(new Event('bookmarkChanged'));
+      }
     },
   });
 
@@ -112,6 +117,11 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
 
       toast.success('태그 삭제 완료');
       queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+
+      // 검색 결과 페이지에서 태그 삭제 시 검색 결과 다시 불러오기
+      if (window.location.pathname.includes('search-result')) {
+        window.dispatchEvent(new Event('bookmarkChanged'));
+      }
     },
   });
 
