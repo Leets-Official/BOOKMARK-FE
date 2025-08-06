@@ -215,8 +215,6 @@ export const useSubmit = () => {
       }
     }
 
-    console.log('notification', notification);
-
     const mappedPlatform = platform ? detectPlatform(platform) : 'ETC';
 
     return {

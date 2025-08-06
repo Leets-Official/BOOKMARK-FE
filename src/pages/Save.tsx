@@ -137,7 +137,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
       if (bookmarkData.notificationResponse) {
         const AllDate = bookmarkData.notificationResponse.notifyAt;
-        console.log('AllDate', AllDate);
         date = AllDate.split('T')[0];
         time = AllDate.split('T')[1];
         notificationId = bookmarkData.notificationResponse.notificationId;
