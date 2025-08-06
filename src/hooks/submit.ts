@@ -51,7 +51,10 @@ export const useSubmit = () => {
       const res = await createCategory(categoryName);
       return res;
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
+      if (res.error) {
+        throw new Error(res.message || '카테고리 생성에 실패했습니다');
+      }
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
@@ -61,7 +64,10 @@ export const useSubmit = () => {
       const res = await createTag(categoryId, tagName);
       return res;
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
+      if (res.error) {
+        throw new Error(res.message || '태그 생성에 실패했습니다');
+      }
       queryClient.invalidateQueries({ queryKey: ['tags'] });
     },
   });
@@ -77,7 +83,10 @@ export const useSubmit = () => {
       const res = await updateBookmarks(bookmarkId, data);
       return res;
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
+      if (res.error) {
+        throw new Error(res.message || '수정에 실패했습니다');
+      }
       toast.success('수정되었습니다');
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
@@ -95,7 +104,12 @@ export const useSubmit = () => {
 
     // 임시 생성한 카테고리를 선택한 상태이면 카테고리 생성
     if (tempCategories.includes(selectedCategory)) {
-      await createCategoryMutation.mutateAsync(selectedCategory);
+      try {
+        await createCategoryMutation.mutateAsync(selectedCategory);
+      } catch (error) {
+        console.error('카테고리 생성 중 오류:', error);
+        throw new Error(error as string);
+      }
       const res = await getCategories();
       const matchedCate = res.data?.find((c) => c.categoryName === selectedCategory);
       categoryId = matchedCate?.id ?? null;
@@ -143,7 +157,7 @@ export const useSubmit = () => {
         );
       } catch (error) {
         console.error('태그 생성 중 오류:', error);
-        throw new Error('태그 생성에 실패했습니다');
+        throw new Error(error as string);
       }
     }
 
@@ -201,25 +215,13 @@ export const useSubmit = () => {
   const saveLinkData = async (data: z.infer<typeof saveSchema>) => {
     console.log('=== saveLinkData 시작 ===');
     try {
-      console.log('getCategoryId 호출');
       const categoryId = await getCategoryId();
-      console.log('categoryId:', categoryId);
-
-      console.log('getTagIds 호출');
       const tagIds = await getTagIds(categoryId);
-      console.log('tagIds:', tagIds);
-
-      console.log('createBookmarkData 호출');
       const bookmarkData = createBookmarkData(data, categoryId, tagIds);
-      console.log('bookmarkData:', bookmarkData);
-
-      console.log('saveBookmarkMutation 호출');
       saveBookmarkMutation.mutate(bookmarkData);
       resetUIState();
     } catch (error) {
-      console.error('북마크 저장 중 오류:', error);
       toast.error(error instanceof Error ? error.message : '북마크 저장에 실패했습니다');
-      console.log('=== saveLinkData 실패 - 함수 종료 ===');
       return; // 에러 발생 시 함수 종료
     }
   };
@@ -229,7 +231,6 @@ export const useSubmit = () => {
       const categoryId = await getCategoryId();
       const tagIds = await getTagIds(categoryId);
       const bookmarkData = createBookmarkData(data, categoryId, tagIds);
-
       await updateBookmarkMutation.mutateAsync({ bookmarkId, data: bookmarkData });
       resetUIState();
     } catch (error) {
