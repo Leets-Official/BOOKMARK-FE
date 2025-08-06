@@ -7,16 +7,19 @@ import {
   visibleMemoAndAlarmAtom,
   visibleTagAtom,
   isSuggestionLoadingAtom,
+  viewImageAtom,
 } from '@/atoms';
 import LinkCard from '@/components/ui/card/LinkCard';
 import TextField from '@/components/ui/TextField';
 import type { saveSchema } from '@/schema/save';
 import type { BookMarkURLProps } from '@/types/api/bookmark';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import { Controller, type Control, type UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
+import { getThumbnailImage } from '@/api/file/thumbnail_api';
+import toast from 'react-hot-toast';
 
 interface ILinkField {
   editable?: boolean;
@@ -34,7 +37,46 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
   const setIsSuggestionLoading = useSetAtom(isSuggestionLoadingAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
 
+  const queryClient = useQueryClient();
+
   const [flag, setFlag] = useState(isEdit);
+
+  const [image, setImage] = useAtom(viewImageAtom);
+
+  // 썸네일 이미지 API 호출
+  const { refetch: refetchThumbnailImage, data: thumbnailImage } = useQuery({
+    queryKey: ['thumbnailImage', image],
+    queryFn: async () => {
+      if (!image) return null;
+      const response = await getThumbnailImage(image);
+      if (response.error) {
+        console.error('썸네일 이미지 가져오기 실패:', response.message);
+        toast.error(response.message || '썸네일 이미지 가져오기 실패');
+        throw new Error(response.message || '썸네일 이미지 가져오기 실패');
+      }
+      setImage(response.data);
+      return response.data;
+    },
+    enabled: false,
+    retry: 0,
+  });
+
+  useEffect(() => {
+    // 수정 모드일 때는 썸네일 이미지를 다시 가져오지 않음
+    if (control._formValues.url && !isEdit) {
+      refetchThumbnailImage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [control._formValues.url, isEdit]);
+
+  // Blob URL 정리
+  useEffect(() => {
+    return () => {
+      if (thumbnailImage && thumbnailImage.startsWith('blob:')) {
+        URL.revokeObjectURL(thumbnailImage);
+      }
+    };
+  }, [thumbnailImage]);
 
   const {
     data: bookmarkUrlData,
@@ -47,6 +89,13 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
       if (res.error) {
         throw new Error(res.message);
       }
+
+      const { title, thumbnailUrl, platform, faviconUrl } = res.data[0];
+
+      setValue('title', title, { shouldValidate: true });
+      setValue('platform', platform);
+      setValue('favicon', faviconUrl);
+      setValue('image', thumbnailUrl);
       return res.data;
     },
     enabled: false,
@@ -65,9 +114,9 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
       if (bookmarkUrlData && bookmarkUrlData.length > 0) {
         const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
         setValue('title', title, { shouldValidate: true });
-        setValue('image', thumbnailUrl);
         setValue('platform', platform);
         setValue('favicon', faviconUrl);
+        setImage(thumbnailUrl);
 
         // AI 추천 태그 가져오기
         setIsSuggestionLoading(true);
@@ -143,10 +192,12 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
             onChange={(e) => {
               field.onChange(e);
               if (e.length === 0) {
+                queryClient.removeQueries({ queryKey: ['bookmarkPreview'] });
                 setValue('title', '');
                 setValue('image', '');
                 setValue('platform', '');
                 setValue('favicon', '');
+                setImage('');
               }
             }}
             onBlur={() => {
@@ -166,8 +217,7 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
             control={control}
             setValue={setValue}
             platform={control._formValues.platform}
-            image={control._formValues.image}
-            isLoading={isLoading || isFetching}
+            isLoading={isLoading || isFetching || image === ''}
           />
         </>
       )}

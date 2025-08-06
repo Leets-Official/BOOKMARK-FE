@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import {
   tempCategoriesAtom,
   tempTagsAtom,
@@ -8,7 +8,6 @@ import {
   selectedCategoryAtom,
   selectedTagAtom,
   suggestionListAtom,
-  uploadUrlAtom,
 } from '@/atoms';
 import { createCategory, getCategories } from '@/api/category/category';
 import { createTag, getTags } from '@/api/tag/tag';
@@ -24,7 +23,6 @@ export const useSubmit = () => {
   const selectedCategory = useAtomValue(selectedCategoryAtom);
   const selectedTag = useAtomValue(selectedTagAtom);
   const suggestionList = useAtomValue(suggestionListAtom);
-  const [uploadUrl, setUploadUrl] = useAtom(uploadUrlAtom);
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
@@ -42,7 +40,6 @@ export const useSubmit = () => {
       toast.success('저장되었습니다');
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
-      setUploadUrl('');
     },
     onError: () => {
       toast.error('저장에 실패했습니다');
@@ -193,14 +190,14 @@ export const useSubmit = () => {
     tagIds: number[],
   ): BookmarkSaveRequestProps => {
     const { url, title, platform, image: thumbnail, favicon: faviconUrl, memo, date, time } = data;
-
     const notification = date && time ? { notifyAt: `${date}T${time}Z` } : undefined;
     const mappedPlatform = platform ? detectPlatform(platform) : 'ETC';
+
     return {
       title: title ?? '제목',
       url: url ?? '',
       memo: memo?.trim() || undefined,
-      thumbnailUrl: uploadUrl || thumbnail || '',
+      thumbnailUrl: thumbnail || '',
       notification: notification,
       platform: mappedPlatform,
       categoryId,
@@ -235,6 +232,7 @@ export const useSubmit = () => {
       const bookmarkData = createBookmarkData(data, categoryId, tagIds);
       await updateBookmarkMutation.mutateAsync({ bookmarkId, data: bookmarkData });
       resetUIState();
+      queryClient.removeQueries({ queryKey: ['bookmark', bookmarkId] });
     } catch (error) {
       console.error('북마크 수정 중 오류:', error);
       toast.error(error instanceof Error ? error.message : '북마크 수정에 실패했습니다');

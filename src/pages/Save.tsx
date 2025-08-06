@@ -8,6 +8,7 @@ import {
   selectedTagAtom,
   tempCategoriesAtom,
   tempTagsAtom,
+  viewImageAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
@@ -63,6 +64,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const setSelectedCategory = useSetAtom(selectedCategoryAtom);
   const setSelectedTag = useSetAtom(selectedTagAtom);
   const resetTempCategories = useSetAtom(tempCategoriesAtom);
+  const [viewImage, setViewImage] = useAtom(viewImageAtom);
   const resetTempTags = useSetAtom(tempTagsAtom);
 
   const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
@@ -80,6 +82,11 @@ const Save = ({ type }: SaveInterfaceProps) => {
   // 변경사항 추적을 위한 상태
   const [hasChanges, setHasChanges] = useState(false);
 
+  // viewImage 상태 변경 추적
+  useEffect(() => {
+    console.log('viewImage 상태가 변경됨:', viewImage);
+  }, [viewImage]);
+
   // 수정 모드에서 기존 데이터 조회
   const { data: bookmarkData, isPending } = useQuery({
     queryKey: ['bookmark', id],
@@ -91,6 +98,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
       return res.data;
     },
     enabled: !!id,
+    staleTime: 0,
   });
 
   useEffect(() => {
@@ -105,6 +113,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     resetTempCategories([]);
     resetTempTags({});
     setPreviewImage(undefined);
+    setViewImage('');
     reset();
     navigate(-1);
   };
@@ -150,13 +159,14 @@ const Save = ({ type }: SaveInterfaceProps) => {
       };
 
       // 기존 데이터 설정
+      reset(newValues);
       setCard(true);
       setVisibleCate(true);
       setVisibleTag(true);
       setSelectedCategory(newValues.category);
       setSelectedTag(newValues.tags);
+      setViewImage(newValues.image);
       setDefaultValues(newValues);
-      reset(newValues);
     }
   }, [
     id,
@@ -169,6 +179,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     setCard,
     setVisibleCate,
     setVisibleTag,
+    setViewImage,
   ]);
 
   const watchedValues = watch();

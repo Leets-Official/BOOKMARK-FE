@@ -1,6 +1,5 @@
 import { getPresignedUrl, uploadImage } from '@/api/file/presigned_url_api';
-import { getThumbnailImage } from '@/api/file/thumbnail_api';
-import { previewImageAtom, uploadUrlAtom } from '@/atoms';
+import { uploadUrlAtom, viewImageAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
@@ -10,58 +9,19 @@ import { Controller, type Control, type UseFormSetValue } from 'react-hook-form'
 import TextField from '../TextField';
 import type { saveSchema } from '@/schema/save';
 import type z from 'zod';
-import { useQuery } from '@tanstack/react-query';
 
 interface CardProps {
   control: Control<z.infer<typeof saveSchema>>;
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
   platform: string;
-  image?: string;
   isLoading?: boolean;
 }
 
-const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) => {
+const LinkCard = ({ control, setValue, platform, isLoading }: CardProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [previewImage, setPreviewImage] = useAtom(previewImageAtom); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
   const setUploadUrl = useSetAtom(uploadUrlAtom);
-
-  // 썸네일 이미지 API 호출
-  const {
-    refetch: refetchThumbnailImage,
-    data: thumbnailImage,
-    isPending: thumbnailLoading,
-  } = useQuery({
-    queryKey: ['thumbnailImage', image],
-    queryFn: async () => {
-      if (!image) return null;
-      const response = await getThumbnailImage(image);
-      if (response.error) {
-        console.error('썸네일 이미지 가져오기 실패:', response.message);
-        toast.error(response.message || '썸네일 이미지 가져오기 실패');
-        throw new Error(response.message || '썸네일 이미지 가져오기 실패');
-      }
-      return response.data;
-    },
-    enabled: false,
-    retry: 0,
-  });
-
-  useEffect(() => {
-    if (image) {
-      refetchThumbnailImage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [image]);
-
-  // Blob URL 정리
-  useEffect(() => {
-    return () => {
-      if (thumbnailImage && thumbnailImage.startsWith('blob:')) {
-        URL.revokeObjectURL(thumbnailImage);
-      }
-    };
-  }, [thumbnailImage]);
+  const [image, setImage] = useAtom(viewImageAtom);
 
   useEffect(() => {
     if (imageError) {
@@ -119,16 +79,12 @@ const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) 
     }
 
     setUploadUrl(uploadedUrl);
-
-    const previewURL = URL.createObjectURL(file); // 파일을 브라우저에서 볼 수 있는 임시 URL 생성
-    setPreviewImage(previewURL);
     setValue('image', uploadedUrl, { shouldValidate: true });
+    setImage(uploadedUrl);
     setImageError(false);
   };
 
-  const finalImage = previewImage === null ? undefined : previewImage || thumbnailImage;
-
-  const isValidImage = finalImage && !imageError; // finalImage가 유효한지 판단
+  const isValidImage = image && !imageError; // finalImage가 유효한지 판단
 
   return (
     <div className='flex flex-row items-center w-full'>
@@ -145,13 +101,7 @@ const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) 
           )}
           onClick={handleImageUpload || undefined}
         >
-          {thumbnailLoading ? (
-            <div className='h-full w-full flex items-center justify-center bg-gray-100'>
-              <div className='spinner border-4 border-gray-400 border-t-gray-200 rounded-full w-6 h-6 animate-spin' />
-            </div>
-          ) : (
-            <Image src={finalImage} className='h-full w-full object-center object-cover' />
-          )}
+          <Image src={image} className='h-full w-full object-center object-cover' />
         </div>
       ) : (
         <Button
