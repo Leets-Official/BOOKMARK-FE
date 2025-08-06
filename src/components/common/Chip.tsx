@@ -16,6 +16,7 @@ interface ChipProps {
   selectedClassName?: string;
   deleteIconColor?: string;
   suggestion?: boolean;
+  color?: string;
 }
 
 const Chip = ({
@@ -30,6 +31,7 @@ const Chip = ({
   selectedClassName,
   deleteIconColor = '#000000',
   suggestion,
+  color,
 }: ChipProps) => {
   const hoverAnimation = disabled ? undefined : { scale: 1.05 };
   const tapAnimation = disabled ? undefined : { scale: 0.95 };
@@ -43,6 +45,7 @@ const Chip = ({
         !isSelected ? className : selectedClassName,
         ' group relative',
       )}
+      style={{ backgroundColor: color }}
       animate={{ scale: 1 }}
       transition={{ duration: 0.2 }}
       whileHover={hoverAnimation}
