@@ -64,7 +64,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const setSelectedCategory = useSetAtom(selectedCategoryAtom);
   const setSelectedTag = useSetAtom(selectedTagAtom);
   const resetTempCategories = useSetAtom(tempCategoriesAtom);
-  const [viewImage, setViewImage] = useAtom(viewImageAtom);
+  const setViewImage = useSetAtom(viewImageAtom);
   const resetTempTags = useSetAtom(tempTagsAtom);
 
   const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
