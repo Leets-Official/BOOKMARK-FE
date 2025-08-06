@@ -25,7 +25,7 @@ const SaveCard = ({ data, type = 'home' }: { data: BookmarkProps; type?: 'search
     onSuccess: () => {
       // 북마크 조회 이벤트
       if (type === 'search') {
-        window.dispatchEvent(new Event('bookmarkDeleted'));
+        window.dispatchEvent(new Event('bookmarkChanged'));
       } else {
         queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       }

@@ -169,15 +169,15 @@ const SearchResult = () => {
     // 초기화가 완료된 후에만 검색 실행
     if (isInitialized) getBookmarkSearchResult();
 
-    // 북마크 삭제 이벤트 리스너 등록
-    const handleBookmarkDeleted = () => {
+    // 북마크 변경 이벤트 리스너 등록
+    const handleBookmarkChanged = () => {
       getBookmarkSearchResult();
     };
 
-    window.addEventListener('bookmarkDeleted', handleBookmarkDeleted);
+    window.addEventListener('bookmarkChanged', handleBookmarkChanged);
 
     return () => {
-      window.removeEventListener('bookmarkDeleted', handleBookmarkDeleted);
+      window.removeEventListener('bookmarkChanged', handleBookmarkChanged);
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
