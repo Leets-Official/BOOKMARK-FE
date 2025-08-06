@@ -11,7 +11,7 @@ const Inquiry = () => {
   // 모바일은 접근 불가
   useEffect(() => {
     if (isMobile) {
-      navigate('/my-page');
+      navigate('/my-page', { replace: true });
     }
   }, [navigate]);
 

@@ -33,7 +33,7 @@ const CompactCard = ({
     mutationFn: deleteBookmarks,
     onSuccess: () => {
       // 북마크 삭제 이벤트 발생 (SearchResult에서 검색 다시 실행)
-      window.dispatchEvent(new Event('bookmarkDeleted'));
+      window.dispatchEvent(new Event('bookmarkChanged'));
       toast.success('북마크 삭제에 성공했습니다');
     },
     onError: () => {
@@ -117,7 +117,8 @@ const CompactCard = ({
           <Button
             onClick={() => {
               isClose();
-              navigate(`edit/${id}`);
+              const currentHash = window.location.hash;
+              navigate(`edit/${id}${currentHash}`);
             }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15 cursor-pointer'
           >

@@ -44,7 +44,7 @@ const SaveCard = ({ data, type = 'home' }: { data: BookmarkProps; type?: 'search
     onSuccess: () => {
       // 북마크 조회 이벤트
       if (type === 'search') {
-        window.dispatchEvent(new Event('bookmarkDeleted'));
+        window.dispatchEvent(new Event('bookmarkChanged'));
       } else {
         queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
         queryClient.invalidateQueries({ queryKey: ['categories'] });
@@ -188,7 +188,8 @@ const SaveCard = ({ data, type = 'home' }: { data: BookmarkProps; type?: 'search
           <Button
             onClick={() => {
               isClose();
-              navigate(`edit/${data.id}`);
+              const currentHash = window.location.hash;
+              navigate(`edit/${data.id}${currentHash}`);
             }}
             className='text-left px-1 py-3 text-stone hover:bg-gray-100 rounded text-15 cursor-pointer'
           >

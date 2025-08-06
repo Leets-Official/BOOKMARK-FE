@@ -9,6 +9,7 @@ import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getUserInfo } from '@/api/users/user';
+import ensureHttps from '@/hooks/ensureHttps';
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const MyPage = () => {
 
   useEffect(() => {
     if (!isMobile) {
-      navigate('/my-page/profile-edit');
+      navigate('/my-page/profile-edit', { replace: true });
     }
   }, [navigate]);
 
@@ -70,11 +71,11 @@ const MyPage = () => {
           ) : (
             <>
               <Image
-                src={userInfo?.profileImage || ''}
+                src={ensureHttps(userInfo?.profileImage || '')}
                 alt='profile'
                 className='w-[128px] h-[128px] rounded-[40px]'
                 onClick={() => {
-                  navigate('/my-page/profile-edit');
+                  navigate('/my-page/profile-edit', { replace: true });
                 }}
               />
               <div className='flex flex-col justify-center gap-4'>
@@ -90,7 +91,7 @@ const MyPage = () => {
           <Button
             className='text-15 text-stone font-medium text-left px-4 py-2 cursor-pointer'
             onClick={() => {
-              navigate('/my-page/category-management');
+              navigate('/my-page/category-management', { replace: true });
             }}
           >
             카테고리 / 태그 관리

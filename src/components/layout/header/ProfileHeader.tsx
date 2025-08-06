@@ -29,10 +29,11 @@ const ProfileHeader = () => {
                 />
               }
               onClick={() => {
+                const currentHash = window.location.hash;
                 if (isMobile) {
-                  navigate('./my-page');
+                  navigate(`./my-page${currentHash}`, { replace: true });
                 } else {
-                  navigate('./my-page/profile-edit');
+                  navigate(`./my-page/profile-edit${currentHash}`, { replace: true });
                 }
               }}
               className='cursor-pointer'
