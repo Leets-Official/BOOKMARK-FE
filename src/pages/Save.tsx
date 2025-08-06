@@ -120,15 +120,19 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   useEffect(() => {
     if (id && !isPending && bookmarkData) {
-      let date = '';
-      let time = '';
+      let date = '날짜 선택';
+      let time = '시간 선택';
 
       if (bookmarkData.notificationResponse) {
-        date = formatDate('2025-08-05T06:31:05.620Z');
-        time = new Date('2025-08-05T06:31:05.620Z').toLocaleTimeString('ko-KR', {
-          hour: 'numeric',
-          hour12: true,
-        });
+        date = formatDate(bookmarkData.notificationResponse.notifyAt);
+        if (date === '날짜 선택') {
+          time = '시간 선택';
+        } else {
+          time = new Date(bookmarkData.notificationResponse.notifyAt).toLocaleTimeString('ko-KR', {
+            hour: 'numeric',
+            hour12: true,
+          });
+        }
       }
 
       const newValues = {

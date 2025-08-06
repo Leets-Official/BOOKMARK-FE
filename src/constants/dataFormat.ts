@@ -6,7 +6,9 @@ const formatDate = (dateStr: string) => {
   const today = dayjs();
   const diffDays = date.diff(today, 'day');
 
-  if (diffDays === 0) {
+  if (diffDays < 0) {
+    return '날짜 선택';
+  } else if (diffDays === 0) {
     return '오늘';
   } else {
     return `${diffDays}일 뒤 (${week})`;

@@ -68,23 +68,37 @@ const SaveButton = () => {
     },
   });
 
-  // 북마크 저장
-  const saveLinkData = async (data: z.infer<typeof saveSchema>) => {
-    const url = data.url;
-    const title = data.title;
-    const platform = data.platform;
-    const thumbnail = data.image;
-    const faviconUrl = data.favicon;
-    const memo = data.memo;
+  const updateBookmarkMutation = useMutation({
+    mutationFn: async ({
+      bookmarkId,
+      data,
+    }: {
+      bookmarkId: number;
+      data: BookmarkSaveRequestProps;
+    }) => {
+      const res = await updateBookmarks(bookmarkId, data);
+      return res;
+    },
+    onSuccess: () => {
+      toast.success('수정되었습니다');
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
+    onError: () => {
+      toast.error('수정에 실패했습니다');
+    },
+  });
 
-    if (!selectedCategory || selectedTag.length === 0) return;
+  // 공통 로직: 카테고리 ID 처리
+  const getCategoryId = async (): Promise<number> => {
+    if (!selectedCategory) throw new Error('카테고리가 선택되지 않았습니다');
 
     let categoryId: number | null = null;
 
     // 임시 생성한 카테고리를 선택한 상태이면 카테고리 생성
     if (tempCategories.includes(selectedCategory)) {
       await createCategoryMutation.mutateAsync(selectedCategory);
-      const res = await getCategories(); // 다시 카테고리를 조회해서 카테고리 ID 찾음
+      const res = await getCategories();
       const matchedCate = res.data?.find((c) => c.categoryName === selectedCategory);
       categoryId = matchedCate?.id ?? null;
     }
@@ -93,8 +107,15 @@ const SaveButton = () => {
     if (!categoryId) {
       const res = await getCategories();
       categoryId = res.data?.find((c) => c.categoryName === selectedCategory)?.id ?? null;
-      if (!categoryId) throw new Error('카테고리 ID 찾기 실패'); // 카테고리 ID를 찾는데도 없으면 에러
+      if (!categoryId) throw new Error('카테고리 ID 찾기 실패');
     }
+
+    return categoryId;
+  };
+
+  // 공통 로직: 태그 ID 처리
+  const getTagIds = async (categoryId: number): Promise<number[]> => {
+    if (selectedTag.length === 0) throw new Error('태그가 선택되지 않았습니다');
 
     // 제안 태그 중 선택된 태그
     const selectedSuggestionTags = suggestionList.filter((s) => s.isSelected).map((s) => s.content);
@@ -104,7 +125,7 @@ const SaveButton = () => {
       selectedTag.includes(tag),
     );
 
-    const res = await getTags(categoryId); // 기존 태그 조회
+    const res = await getTags(categoryId);
     const existingTags = res.data || [];
     const selectedExistingTags = existingTags
       .filter((t) => selectedTag.includes(t.tagName))
@@ -115,18 +136,30 @@ const SaveButton = () => {
       (tag) => !selectedExistingTags.some((t) => t.name === tag),
     );
 
+    // 새 태그 생성
     await Promise.all(
       createTagNames.map((tag) => createTagMutation.mutateAsync({ categoryId, tagName: tag })),
     );
 
     await queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
 
+    // 최종 태그 ID 조회
     const tagRes = await getTags(categoryId);
     const allTags = tagRes.data || [];
     const tagIds = allTags.filter((t) => selectedTag.includes(t.tagName)).map((t) => t.tagId);
 
-    // 북마크 저장 API 호출
-    const bookmarkData: BookmarkSaveRequestProps = {
+    return tagIds;
+  };
+
+  // 공통 로직: 북마크 데이터 생성
+  const createBookmarkData = (
+    data: z.infer<typeof saveSchema>,
+    categoryId: number,
+    tagIds: number[],
+  ): BookmarkSaveRequestProps => {
+    const { url, title, platform, image: thumbnail, favicon: faviconUrl, memo } = data;
+
+    return {
       title: title ?? '제목',
       url: url ?? '',
       memo: memo ?? '',
@@ -139,88 +172,39 @@ const SaveButton = () => {
       faviconUrl: faviconUrl ?? '',
       tagIds,
     };
+  };
 
-    saveBookmarkMutation.mutate(bookmarkData);
+  // 공통 로직: UI 상태 정리
+  const resetUIState = () => {
     setVisibleTag(false);
     setVisibleMemoAndAlarm(false);
   };
 
+  // 북마크 저장
+  const saveLinkData = async (data: z.infer<typeof saveSchema>) => {
+    try {
+      const categoryId = await getCategoryId();
+      const tagIds = await getTagIds(categoryId);
+      const bookmarkData = createBookmarkData(data, categoryId, tagIds);
+
+      saveBookmarkMutation.mutate(bookmarkData);
+      resetUIState();
+    } catch (error) {
+      console.error('북마크 저장 중 오류:', error);
+    }
+  };
+
   // 북마크 수정
   const updateLinkData = async (data: z.infer<typeof saveSchema>, bookmarkId: number) => {
-    const url = data.url;
-    const title = data.title;
-    const platform = data.platform;
-    const thumbnail = data.image;
-    const faviconUrl = data.favicon;
-    const memo = data.memo;
-
-    if (!selectedCategory || selectedTag.length === 0) return;
-
-    let categoryId: number | null = null;
-
-    if (tempCategories.includes(selectedCategory)) {
-      await createCategoryMutation.mutateAsync(selectedCategory);
-      const res = await getCategories();
-      const matched = res.data?.find((c) => c.categoryName === selectedCategory);
-      categoryId = matched?.id ?? null;
-    }
-
-    if (!categoryId) {
-      const res = await getCategories();
-      categoryId = res.data?.find((c) => c.categoryName === selectedCategory)?.id ?? null;
-      if (!categoryId) throw new Error('카테고리 ID 찾기 실패');
-    }
-
-    const selectedSuggestionTags = suggestionList.filter((s) => s.isSelected).map((s) => s.content);
-    const selectedTempTags = (tempTags[selectedCategory] || []).filter((t) =>
-      selectedTag.includes(t),
-    );
-
-    const res = await getTags(categoryId);
-    const existingTags = res.data || [];
-    const selectedExistingTags = existingTags
-      .filter((t) => selectedTag.includes(t.tagName))
-      .map((t) => ({ id: t.tagId, name: t.tagName }));
-
-    const createTagNames = [...selectedSuggestionTags, ...selectedTempTags].filter(
-      (tag) => !selectedExistingTags.some((t) => t.name === tag),
-    );
-
-    await Promise.all(
-      createTagNames.map((tag) => createTagMutation.mutateAsync({ categoryId, tagName: tag })),
-    );
-
-    await queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
-
-    const tagRes = await getTags(categoryId);
-    const tagIds = (tagRes.data || [])
-      .filter((t) => selectedTag.includes(t.tagName))
-      .map((t) => t.tagId);
-
-    const bookmarkData: BookmarkSaveRequestProps = {
-      title: title ?? '제목',
-      url: url ?? '',
-      memo: memo ?? '',
-      thumbnailUrl: uploadUrl || thumbnail,
-      notification: {
-        notifyAt: alarmAt ?? '',
-      },
-      platform,
-      categoryId,
-      faviconUrl: faviconUrl ?? '',
-      tagIds,
-    };
-
     try {
-      await updateBookmarks(bookmarkId, bookmarkData);
-      toast.success('수정되었습니다');
-      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-      setVisibleTag(false);
-      setVisibleMemoAndAlarm(false);
-    } catch (err) {
-      toast.error('수정에 실패했습니다');
-      console.error(err);
+      const categoryId = await getCategoryId();
+      const tagIds = await getTagIds(categoryId);
+      const bookmarkData = createBookmarkData(data, categoryId, tagIds);
+
+      await updateBookmarkMutation.mutateAsync({ bookmarkId, data: bookmarkData });
+      resetUIState();
+    } catch (error) {
+      console.error('북마크 수정 중 오류:', error);
     }
   };
 
