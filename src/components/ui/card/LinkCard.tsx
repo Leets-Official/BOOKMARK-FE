@@ -1,5 +1,5 @@
 import { getPresignedUrl, uploadImage } from '@/api/file/presigned_url_api';
-import { previewImageAtom, uploadUrlAtom } from '@/atoms';
+import { previewImageAtom, thumbnailUrlAtom, uploadUrlAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
@@ -23,6 +23,7 @@ const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) 
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom); // 미리보기용 이미지 URL 상태
   const [imageError, setImageError] = useState(false);
   const setUploadUrl = useSetAtom(uploadUrlAtom);
+  const setThumnail = useSetAtom(thumbnailUrlAtom);
 
   useEffect(() => {
     if (imageError) {
@@ -93,6 +94,7 @@ const LinkCard = ({ control, setValue, platform, image, isLoading }: CardProps) 
     console.log('이미지 로딩 실패:', finalImage);
   };
 
+  setThumnail(image);
   const finalImage = previewImage === null ? undefined : previewImage || image;
   const isValidImage = finalImage && !imageError; // finalImage가 유효한지 판단
 

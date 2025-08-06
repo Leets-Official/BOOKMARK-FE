@@ -10,6 +10,7 @@ import {
   suggestionListAtom,
   uploadUrlAtom,
   alarmAtAtom,
+  thumbnailUrlAtom,
 } from '@/atoms';
 import { createCategory, getCategories } from '@/api/category/category';
 import { createTag, getTags } from '@/api/tag/tag';
@@ -26,6 +27,7 @@ const SaveButton = () => {
   const selectedTag = useAtomValue(selectedTagAtom);
   const suggestionList = useAtomValue(suggestionListAtom);
   const [uploadUrl, setUploadUrl] = useAtom(uploadUrlAtom);
+  const [thumbnailUrl, setThumbnailUrl] = useAtom(thumbnailUrlAtom);
   const alarmAt = useAtomValue(alarmAtAtom);
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
@@ -42,6 +44,7 @@ const SaveButton = () => {
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       setUploadUrl('');
+      setThumbnailUrl('');
     },
     onError: () => {
       toast.error('저장에 실패했습니다');
@@ -130,7 +133,7 @@ const SaveButton = () => {
       title: title ?? '제목',
       url: url ?? '',
       memo: memo ?? '',
-      thumbnail: uploadUrl || thumbnail,
+      thumbnail: uploadUrl || thumbnailUrl || '',
       notification: {
         notifyAt: alarmAt ?? '',
       },
