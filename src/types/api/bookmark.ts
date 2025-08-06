@@ -82,7 +82,7 @@ export interface BookmarkSaveRequestProps {
   title: string;
   url: string;
   memo?: string;
-  thumbnail: string;
+  thumbnailUrl: string;
   notification?: {
     notifyAt: string;
   };

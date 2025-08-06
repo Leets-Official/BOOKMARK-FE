@@ -5,7 +5,6 @@ import type { PlatformProps } from './types/api/platform';
 
 // Save Page Atoms
 const uploadUrlAtom = atom<string>('');
-const thumbnailUrlAtom = atom<string | undefined>('');
 const visibleCardAtom = atom(false);
 const visibleCategoryAtom = atom(false);
 const visibleTagAtom = atom(false);
@@ -30,7 +29,6 @@ const scrollBarWidthAtom = atom(0);
 
 export {
   uploadUrlAtom,
-  thumbnailUrlAtom,
   visibleCardAtom,
   visibleCategoryAtom,
   visibleTagAtom,
