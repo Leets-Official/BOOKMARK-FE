@@ -79,7 +79,7 @@ const SaveCardList = () => {
           onClick={() => {
             navigate('/search-result');
           }}
-          className='sm:w-7/10 w-9/10 py-4 bg-white text-[15px] sm:text-base border-1 border-[#BCC0CC] rounded-[10px] active:brightness-95'
+          className='sm:w-7/10 w-9/10 py-4 bg-white text-[15px] sm:text-base border-1 border-[#BCC0CC] rounded-[10px] active:brightness-95 cursor-pointer'
         >
           전체보기
         </Button>
