@@ -170,7 +170,6 @@ const SaveButton = () => {
     const { url, title, platform, image: thumbnail, favicon: faviconUrl, memo, date, time } = data;
 
     const mappedPlatform = platform ? detectPlatform(platform) : 'ETC';
-    console.log('date', date, 'time', time);
     return {
       title: title ?? '제목',
       url: url ?? '',
@@ -198,8 +197,7 @@ const SaveButton = () => {
       const categoryId = await getCategoryId();
       const tagIds = await getTagIds(categoryId);
       const bookmarkData = createBookmarkData(data, categoryId, tagIds);
-      console.log(bookmarkData);
-      // saveBookmarkMutation.mutate(bookmarkData);
+      saveBookmarkMutation.mutate(bookmarkData);
       resetUIState();
     } catch (error) {
       console.error('북마크 저장 중 오류:', error);

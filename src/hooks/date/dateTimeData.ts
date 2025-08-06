@@ -4,14 +4,16 @@ import 'dayjs/locale/ko';
 dayjs.locale('ko');
 
 const dateList = Array.from({ length: 14 }, (_, i) => {
-  const daysLater = i + 1;
+  const daysLater = i;
   const date = dayjs().add(daysLater, 'day');
   const week = date.format('ddd');
 
+  const visableContent = daysLater === 0 ? '오늘' : `${daysLater}일 뒤 (${week})`;
+
   return {
-    id: daysLater,
+    id: daysLater + 1, // id는 1부터 시작(기본 선택이랑 중복방지)
     content: date.format('YYYY-MM-DD'),
-    visableContent: `${daysLater}일 뒤 (${week})`,
+    visableContent,
   };
 });
 

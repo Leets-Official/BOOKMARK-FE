@@ -190,12 +190,12 @@ const Save = ({ type }: SaveInterfaceProps) => {
     console.log('전체 data:', data);
     console.log('date:', data.date, 'time:', data.time);
 
-    // if (type === 'edit') {
-    //   if (!id) return;
-    //   updateLinkData(data, Number(id));
-    // } else {
-    //   saveLinkData(data);
-    // }
+    if (type === 'edit') {
+      if (!id) return;
+      updateLinkData(data, Number(id));
+    } else {
+      saveLinkData(data);
+    }
     setPreviewImage(undefined);
     onPrev();
   };
