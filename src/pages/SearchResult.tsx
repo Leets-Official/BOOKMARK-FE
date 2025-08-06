@@ -202,7 +202,9 @@ const SearchResult = () => {
 
       const uniqueTags = [
         ...new Set(
-          searchResult.data.content.map((bookmark) => bookmark.categoryTagInfos[0].tags[0].tagName),
+          searchResult.data.content.flatMap((bookmark) =>
+            bookmark.categoryTagInfos[0].tags.map((tag) => tag.tagName),
+          ),
         ),
       ];
 
