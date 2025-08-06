@@ -212,7 +212,6 @@ export const useSubmit = () => {
   };
 
   const saveLinkData = async (data: z.infer<typeof saveSchema>) => {
-    console.log('=== saveLinkData 시작 ===');
     try {
       const categoryId = await getCategoryId();
       const tagIds = await getTagIds(categoryId);
