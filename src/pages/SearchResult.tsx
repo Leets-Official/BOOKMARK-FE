@@ -1,7 +1,7 @@
 import CompactCard from '@/components/ui/card/CompactCard';
 import ChipDropDown from '@/components/layout/dropDown/ChipDropDown';
 import ChangeSearchBar from '@/components/layout/searchBar/ChangeSearchBar';
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import type { ChipProps } from '@/types/components/components';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
@@ -33,6 +33,9 @@ const SearchResult = () => {
   const [paramsCategories, setParamsCategories] = useState<SearchCategory[]>([]);
   const [paramsTags, setParamsTags] = useState<SearchTag[]>([]);
   const [paramsPlatforms, setParamsPlatforms] = useState<PlatformProps[]>([]);
+
+  // 초기 로드 여부를 추적하는 상태
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // 검색 결과
   const [bookmarks, setBookmarks] = useState<BookmarkSearchResultProps['content']>([]);
@@ -88,7 +91,7 @@ const SearchResult = () => {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
 
-  const getBookmarkSearchResult = useCallback(() => {
+  const getBookmarkSearchResult = () => {
     const categoryTagRequests = paramsCategories.map((category) => {
       // selectedTags에서 categoryId가 categoryIds 배열에 포함된 태그만 필터링
       const tagList = paramsTags
@@ -115,14 +118,23 @@ const SearchResult = () => {
       size: 9999,
     };
 
+    console.log(requestData);
+
     // POST 요청 보내기
     BookmarkSearchResultMutation(requestData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsCategories, paramsTags, paramsPlatforms, searchContents]);
+  };
 
   // URL 파라미터에서 값을 가져와서 atom에 설정
   useEffect(() => {
+    // hash가 변경될 때마다 파라미터들을 먼저 초기화
+    setSearchContents('');
+    setParamsCategories([]);
+    setParamsTags([]);
+    setParamsPlatforms([]);
+    setIsInitialized(false);
+
     const hash = window.location.hash.slice(1);
+    console.log(hash);
     if (hash) {
       const decoded = atob(hash);
       const queryData = JSON.parse(decodeURIComponent(decoded));
@@ -144,30 +156,24 @@ const SearchResult = () => {
         if (platformsParam) {
           setParamsPlatforms(platformsParam);
         }
+        setIsInitialized(true);
       } catch (error) {
         toast.error('검색 결과를 불러오는데 실패했습니다.');
         console.error('URL 파라미터 파싱 에러:', error);
         navigate('/', { replace: true });
       }
     } else {
-      setSearchContents('');
-      setParamsCategories([]);
-      setParamsTags([]);
-      setParamsPlatforms([]);
+      setIsInitialized(true);
     }
-  }, [
-    location.hash,
-    navigate,
-    setSearchContents,
-    setParamsCategories,
-    setParamsTags,
-    setParamsPlatforms,
-  ]);
+  }, [location.hash, navigate]);
 
   // 파라미터가 변경될 때마다 검색 실행 + 북마크 삭제 후 검색 결과 다시 불러오기
   useEffect(() => {
-    // 파라미터 변경 시 검색 실행
-    getBookmarkSearchResult();
+    // 초기화가 완료된 후에만 검색 실행
+    if (isInitialized) {
+      getBookmarkSearchResult();
+      console.log('execute');
+    }
 
     // 북마크 삭제 이벤트 리스너 등록
     const handleBookmarkDeleted = () => {
@@ -179,7 +185,9 @@ const SearchResult = () => {
     return () => {
       window.removeEventListener('bookmarkDeleted', handleBookmarkDeleted);
     };
-  }, [getBookmarkSearchResult]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramsCategories, paramsTags, paramsPlatforms, searchContents, isInitialized]);
 
   // searchResultData가 변경될 때만 searchResult 업데이트
   useEffect(() => {
