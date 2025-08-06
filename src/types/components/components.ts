@@ -19,6 +19,7 @@ export interface ChipProps {
   type: 'category' | 'tag' | 'suggestion' | 'platform';
   deleteable?: boolean;
   isNew?: boolean;
+  faviconUrl?: string;
 }
 
 export interface CompactCardProps {

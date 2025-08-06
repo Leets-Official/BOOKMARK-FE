@@ -192,7 +192,7 @@ const SearchResult = () => {
   useEffect(() => {
     if (searchResult?.data) {
       setBookmarks(searchResult.data.content);
-
+      console.log('searchResult', searchResult.data.content);
       // 중복 제거
       const uniqueCategories = [
         ...new Set(
@@ -208,9 +208,19 @@ const SearchResult = () => {
         ),
       ];
 
-      const uniquePlatforms = [
+      const uniquePlatformNames = [
         ...new Set(searchResult.data.content.map((bookmark) => bookmark.platform)),
       ];
+
+      // 플랫폼별 첫 번째 faviconUrl을 가져오기 위한 맵
+      const platformFaviconMap = new Map();
+      searchResult.data.content.forEach((bookmark) => {
+        if (!platformFaviconMap.has(bookmark.platform)) {
+          platformFaviconMap.set(bookmark.platform, bookmark.faviconUrl);
+        }
+      });
+
+      console.log('uniquePlatformNames', uniquePlatformNames);
 
       setOptionCategoryList(
         uniqueCategories.map((category, index) => ({
@@ -231,9 +241,10 @@ const SearchResult = () => {
       );
 
       setOptionPlatformList(
-        uniquePlatforms.map((platform, index) => ({
+        uniquePlatformNames.map((platformName, index) => ({
           id: index,
-          content: platform,
+          content: platformName,
+          faviconUrl: platformFaviconMap.get(platformName),
           isSelected: false,
           type: 'platform',
         })),

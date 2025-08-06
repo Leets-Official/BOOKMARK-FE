@@ -78,7 +78,14 @@ const ChipDropDown = ({ title, options, onChange }: ChipDropDownProps) => {
                 <DropDown.Item key={option.id}>
                   <Chip
                     key={option.id}
-                    content={option.content}
+                    content={
+                      <span className='flex items-center gap-1'>
+                        {option.faviconUrl && (
+                          <img src={option.faviconUrl} alt='favicon' className='w-4 h-4' />
+                        )}
+                        <span>{option.content}</span>
+                      </span>
+                    }
                     isSelected={option.isSelected}
                     className='border-lightGrayBlue bg-white'
                     selectedClassName='border-primary bg-lightPrimary'
