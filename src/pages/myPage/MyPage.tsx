@@ -9,6 +9,7 @@ import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getUserInfo } from '@/api/users/user';
+import ensureHttps from '@/hooks/ensureHttps';
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ const MyPage = () => {
           ) : (
             <>
               <Image
-                src={userInfo?.profileImage || ''}
+                src={ensureHttps(userInfo?.profileImage || '')}
                 alt='profile'
                 className='w-[128px] h-[128px] rounded-[40px]'
                 onClick={() => {

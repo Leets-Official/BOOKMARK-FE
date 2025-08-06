@@ -6,6 +6,7 @@ import { isMobile } from 'react-device-detect';
 import Lottie from 'lottie-react';
 import logoAnimation from '@/assets/logoAnimation.json';
 import toast from 'react-hot-toast';
+import ensureHttps from '@/hooks/ensureHttps';
 
 function KakaoCallBack() {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ function KakaoCallBack() {
       const { jwtAccessToken, jwtRefreshToken, profileImage } = res.data;
       localStorage.setItem('accessToken', jwtAccessToken);
       localStorage.setItem('refreshToken', jwtRefreshToken);
-      localStorage.setItem('profileImage', profileImage);
+      localStorage.setItem('profileImage', ensureHttps(profileImage));
       toast.success('로그인 성공');
       navigate('/', { replace: true });
     },
