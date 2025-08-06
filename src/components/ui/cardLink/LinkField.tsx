@@ -182,34 +182,42 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
       <p className='text-sm text-stone font-semibold mt-4'>
         링크 입력<span className='text-redText'>*</span>
       </p>
-      <Controller
-        name='url'
-        control={control}
-        render={({ field, fieldState }) => (
-          <TextField
-            label=''
-            placeholder='링크를 입력해주세요'
-            onChange={(e) => {
-              field.onChange(e);
-              if (e.length === 0) {
-                queryClient.removeQueries({ queryKey: ['bookmarkPreview'] });
-                setValue('title', '');
-                setValue('image', '');
-                setValue('platform', '');
-                setValue('favicon', '');
-                setImage('');
-              }
-            }}
-            onBlur={() => {
-              field.onBlur();
-              handleLink(field.value);
-              handleSetVisible(field.value);
-            }}
-            value={field.value}
-            errorMessage={fieldState.error?.message}
-          />
-        )}
-      />
+      {isEdit ? (
+        <div className='flex items-center relative mt-2 border border-gray rounded-lg'>
+          <p className='w-full text-15 p-4 py-3 leading-5 text-grayText'>
+            {control._formValues.url}
+          </p>
+        </div>
+      ) : (
+        <Controller
+          name='url'
+          control={control}
+          render={({ field, fieldState }) => (
+            <TextField
+              label=''
+              placeholder='링크를 입력해주세요'
+              onChange={(e) => {
+                field.onChange(e);
+                if (e.length === 0) {
+                  queryClient.removeQueries({ queryKey: ['bookmarkPreview'] });
+                  setValue('title', '');
+                  setValue('image', '');
+                  setValue('platform', '');
+                  setValue('favicon', '');
+                  setImage('');
+                }
+              }}
+              onBlur={() => {
+                field.onBlur();
+                handleLink(field.value);
+                handleSetVisible(field.value);
+              }}
+              value={field.value}
+              errorMessage={fieldState.error?.message}
+            />
+          )}
+        />
+      )}
       {visibleCard && (
         <>
           <hr className='border-t-2 border-lightGrayBlue my-4' />

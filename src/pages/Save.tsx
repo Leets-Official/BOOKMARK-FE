@@ -82,11 +82,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
   // 변경사항 추적을 위한 상태
   const [hasChanges, setHasChanges] = useState(false);
 
-  // viewImage 상태 변경 추적
-  useEffect(() => {
-    console.log('viewImage 상태가 변경됨:', viewImage);
-  }, [viewImage]);
-
   // 수정 모드에서 기존 데이터 조회
   const { data: bookmarkData, isPending } = useQuery({
     queryKey: ['bookmark', id],
