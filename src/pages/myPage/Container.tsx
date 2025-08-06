@@ -62,7 +62,10 @@ const MyPage = () => {
   return (
     <div
       className={overlayStyle({ isMobile })}
-      onClick={() => navigate(isSearchResult ? '/search-result' : '/')}
+      onClick={() => {
+        const currentHash = window.location.hash;
+        navigate(isSearchResult ? `/search-result${currentHash}` : `/`);
+      }}
     >
       <div className={modalStyle({ isMobile })} onClick={(e) => e.stopPropagation()}>
         {isMobile ? (
