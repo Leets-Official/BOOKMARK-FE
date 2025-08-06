@@ -4,6 +4,7 @@ import Button from '@/components/common/Button';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
+import Toast from '@/components/common/Toast';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -87,6 +88,7 @@ const Login = () => {
         </div>
       </div>
       <div className='absolute bottom-0 left-0 w-full h-70 bg-gradient-to-t from-blue-200 to-transparent pointer-events-none' />
+      <Toast />
     </div>
   );
 };
