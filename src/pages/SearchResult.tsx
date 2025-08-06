@@ -37,6 +37,9 @@ const SearchResult = () => {
   // 초기 로드 여부를 추적하는 상태
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // 강제 새로고침을 위한 키
+  const [refreshKey, setRefreshKey] = useState(0);
+
   // 검색 결과
   const [bookmarks, setBookmarks] = useState<BookmarkSearchResultProps['content']>([]);
 
@@ -73,7 +76,7 @@ const SearchResult = () => {
     isPending,
     data: searchResult,
   } = useMutation({
-    mutationKey: ['bookmarkSearchResult'],
+    mutationKey: ['bookmarkSearchResult', refreshKey],
     mutationFn: postBookmarkSearchResult,
     onError: (error) => {
       console.error('검색 에러:', error);
@@ -171,6 +174,8 @@ const SearchResult = () => {
 
     // 북마크 변경 이벤트 리스너 등록
     const handleBookmarkChanged = () => {
+      // 강제 새로고침을 위해 refreshKey 업데이트
+      setRefreshKey((prev) => prev + 1);
       getBookmarkSearchResult();
     };
 
@@ -181,7 +186,7 @@ const SearchResult = () => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsCategories, paramsTags, paramsPlatforms, searchContents, isInitialized]);
+  }, [paramsCategories, paramsTags, paramsPlatforms, searchContents, isInitialized, refreshKey]);
 
   // searchResultData가 변경될 때만 searchResult 업데이트
   useEffect(() => {

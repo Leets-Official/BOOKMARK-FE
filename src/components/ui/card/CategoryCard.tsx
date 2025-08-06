@@ -58,11 +58,6 @@ const CategoryCard = ({
   const { mutate: updateCategoryMutation } = useMutation({
     mutationFn: (categoryName: string) => updateCategory(categoryId, categoryName),
     onMutate: async (newCategoryName) => {
-      // 검색 결과 페이지에서 카테고리 수정 시 검색 결과 다시 불러오기
-      if (window.location.pathname.includes('search-result')) {
-        window.dispatchEvent(new Event('bookmarkChanged'));
-      }
-
       // 진행 중인 쿼리 취소
       await queryClient.cancelQueries({ queryKey: ['categoriesWithTags'] });
 
@@ -95,17 +90,17 @@ const CategoryCard = ({
 
       toast.success('카테고리 수정 완료');
       queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+
+      // 검색 결과 페이지에서 카테고리 수정 시 검색 결과 다시 불러오기
+      if (window.location.pathname.includes('search-result')) {
+        window.dispatchEvent(new Event('bookmarkChanged'));
+      }
     },
   });
 
   const { mutate: deleteCategoryMutation } = useMutation({
     mutationFn: (categoryId: number) => deleteCategory(categoryId),
     onMutate: async (categoryId) => {
-      // 검색 결과 페이지에서 카테고리 수정 시 검색 결과 다시 불러오기
-      if (window.location.pathname.includes('search-result')) {
-        window.dispatchEvent(new Event('bookmarkChanged'));
-      }
-
       await queryClient.cancelQueries({ queryKey: ['categoriesWithTags'] });
       const previousCategories = queryClient.getQueryData(['categoriesWithTags']);
       queryClient.setQueryData(['categoriesWithTags'], (old: any) => {
@@ -129,6 +124,11 @@ const CategoryCard = ({
 
       toast.success('카테고리 삭제 완료');
       queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+
+      // 검색 결과 페이지에서 카테고리 수정 시 검색 결과 다시 불러오기
+      if (window.location.pathname.includes('search-result')) {
+        window.dispatchEvent(new Event('bookmarkChanged'));
+      }
     },
   });
 

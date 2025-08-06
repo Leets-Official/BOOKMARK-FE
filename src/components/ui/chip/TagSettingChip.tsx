@@ -39,11 +39,6 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
   const { mutate: updateTagMutation } = useMutation({
     mutationFn: (tagName: string) => updateTag(tagId, tagName),
     onMutate: async (newTagName) => {
-      // 검색 결과 페이지에서 태그 수정 시 검색 결과 다시 불러오기
-      if (window.location.pathname.includes('search-result')) {
-        window.dispatchEvent(new Event('bookmarkChanged'));
-      }
-
       // 진행 중인 쿼리 취소
       await queryClient.cancelQueries({ queryKey: ['categoriesWithTags'] });
 
@@ -85,17 +80,17 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
 
       toast.success('태그 수정 완료');
       queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+
+      // 검색 결과 페이지에서 태그 수정 시 검색 결과 다시 불러오기
+      if (window.location.pathname.includes('search-result')) {
+        window.dispatchEvent(new Event('bookmarkChanged'));
+      }
     },
   });
 
   const { mutate: deleteTagMutation } = useMutation({
     mutationFn: (tagId: number) => deleteTag(tagId),
     onMutate: async (tagId) => {
-      // 검색 결과 페이지에서 태그 삭제 시 검색 결과 다시 불러오기
-      if (window.location.pathname.includes('search-result')) {
-        window.dispatchEvent(new Event('bookmarkChanged'));
-      }
-
       await queryClient.cancelQueries({ queryKey: ['categoriesWithTags'] });
       const previousCategories = queryClient.getQueryData(['categoriesWithTags']);
       queryClient.setQueryData(['categoriesWithTags'], (old: any) => {
@@ -122,6 +117,11 @@ const TagSettingChip = ({ tagId, tagName, allTagNames }: TagSettingChipProps) =>
 
       toast.success('태그 삭제 완료');
       queryClient.invalidateQueries({ queryKey: ['categoriesWithTags'] });
+
+      // 검색 결과 페이지에서 태그 삭제 시 검색 결과 다시 불러오기
+      if (window.location.pathname.includes('search-result')) {
+        window.dispatchEvent(new Event('bookmarkChanged'));
+      }
     },
   });
 
