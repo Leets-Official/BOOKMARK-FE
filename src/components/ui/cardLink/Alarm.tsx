@@ -8,6 +8,7 @@ import type { saveSchema } from '@/schema/save';
 import type { UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
 import { dateOptions, timeOptions } from '@/constants/dateTimeData';
+import { formatDate, formatTime } from '@/constants/formatVisableData';
 
 interface AlarmProps {
   setValue: UseFormSetValue<z.infer<typeof saveSchema>>;
@@ -67,17 +68,19 @@ const Alarm = ({ editDate, editTime, setValue, onDropdownScroll }: AlarmProps) =
     onDropdownScroll(isDropdownOpen);
   }, [isDateDropDownOpen, isTimeDropDownOpen, onDropdownScroll]);
 
-  // ✅ 수정 모드일 경우 ISO 값으로부터 selectedDate/Time 역추출
   useEffect(() => {
     // editDate/editTime이 우선이므로 이 값이 있으면 설정
     if (editDate && editTime) {
-      setSelectedDate({ id: 0, content: editDate, visableContent: editDate });
-      setSelectedTime({ id: 0, content: editTime, visableContent: editTime });
+      setSelectedDate({ id: 0, content: '', visableContent: formatDate(editDate) });
+      setSelectedTime({ id: 0, content: '', visableContent: formatTime(editTime) });
+
+      // 수정 모드일 경우 기존 값 초기화
+      setValue('date', '');
+      setValue('time', '');
       return;
     }
-  }, [editDate, editTime]);
+  }, [editDate, editTime, setValue]);
 
-  // ✅ 선택된 값이 바뀔 때마다 form에 설정 및 ISO 포맷으로 변환 저장
   useEffect(() => {
     setValue('date', selectedDate.content);
     setValue('time', selectedTime.content);

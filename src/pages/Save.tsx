@@ -25,7 +25,6 @@ import { BackArrowIcon } from '@/assets';
 import toast from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import { getBookmark } from '@/api/bookmark/bookmark';
-import { formatDate } from '@/constants/dataFormat';
 
 const SaveButtonClass = tv({
   base: 'bg-blue text-base text-white text-center font-medium p-4 w-[90%] sm:w-[400px] rounded-[10px]',
@@ -120,19 +119,14 @@ const Save = ({ type }: SaveInterfaceProps) => {
 
   useEffect(() => {
     if (id && !isPending && bookmarkData) {
-      let date = '날짜 선택';
-      let time = '시간 선택';
+      let date = '';
+      let time = '';
 
       if (bookmarkData.notificationResponse) {
-        date = formatDate(bookmarkData.notificationResponse.notifyAt);
-        if (date === '날짜 선택') {
-          time = '시간 선택';
-        } else {
-          time = new Date(bookmarkData.notificationResponse.notifyAt).toLocaleTimeString('ko-KR', {
-            hour: 'numeric',
-            hour12: true,
-          });
-        }
+        const AllDate = bookmarkData.notificationResponse.notifyAt;
+        console.log('AllDate', AllDate);
+        date = AllDate.split('T')[0];
+        time = AllDate.split('T')[1];
       }
 
       const newValues = {
