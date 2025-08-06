@@ -35,7 +35,10 @@ export const useSubmit = () => {
       const res = await saveBookmarks(bookmarkData);
       return res;
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
+      if (res.error) {
+        throw new Error(res.message || '저장에 실패했습니다');
+      }
       toast.success('저장되었습니다');
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
@@ -43,6 +46,30 @@ export const useSubmit = () => {
     },
     onError: () => {
       toast.error('저장에 실패했습니다');
+    },
+  });
+
+  const updateBookmarkMutation = useMutation({
+    mutationFn: async ({
+      bookmarkId,
+      data,
+    }: {
+      bookmarkId: number;
+      data: BookmarkSaveRequestProps;
+    }) => {
+      const res = await updateBookmarks(bookmarkId, data);
+      return res;
+    },
+    onSuccess: (res) => {
+      if (res.error) {
+        throw new Error(res.message || '수정에 실패했습니다');
+      }
+      toast.success('수정되었습니다');
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
+    onError: () => {
+      toast.error('수정에 실패했습니다');
     },
   });
 
@@ -69,30 +96,6 @@ export const useSubmit = () => {
         throw new Error(res.message || '태그 생성에 실패했습니다');
       }
       queryClient.invalidateQueries({ queryKey: ['tags'] });
-    },
-  });
-
-  const updateBookmarkMutation = useMutation({
-    mutationFn: async ({
-      bookmarkId,
-      data,
-    }: {
-      bookmarkId: number;
-      data: BookmarkSaveRequestProps;
-    }) => {
-      const res = await updateBookmarks(bookmarkId, data);
-      return res;
-    },
-    onSuccess: (res) => {
-      if (res.error) {
-        throw new Error(res.message || '수정에 실패했습니다');
-      }
-      toast.success('수정되었습니다');
-      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-    },
-    onError: () => {
-      toast.error('수정에 실패했습니다');
     },
   });
 
@@ -191,15 +194,14 @@ export const useSubmit = () => {
   ): BookmarkSaveRequestProps => {
     const { url, title, platform, image: thumbnail, favicon: faviconUrl, memo, date, time } = data;
 
+    const notification = date && time ? { notifyAt: `${date}T${time}Z` } : undefined;
     const mappedPlatform = platform ? detectPlatform(platform) : 'ETC';
     return {
       title: title ?? '제목',
       url: url ?? '',
       memo: memo?.trim() || undefined,
       thumbnailUrl: uploadUrl || thumbnail || '',
-      notification: {
-        notifyAt: `${date}T${time}Z`,
-      },
+      notification: notification,
       platform: mappedPlatform,
       categoryId,
       faviconUrl: faviconUrl ?? '',
