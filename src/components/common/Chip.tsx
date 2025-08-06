@@ -78,7 +78,7 @@ const Chip = ({
       {dropdownEnabled && (
         <motion.div
           animate={{
-            rotate: !isSelected ? 90 : -90,
+            rotate: !isSelected ? -90 : 90,
           }}
           transition={{ duration: 0.2 }}
         >
