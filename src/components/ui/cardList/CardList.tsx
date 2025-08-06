@@ -38,7 +38,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
 
   // 슬라이드 다음으로 이동
   const increaseIndex = () => {
-    if (leaving) return; // 애니메이션 도중에는 무시
+    if (leaving || categories.length === 0) return; // 애니메이션 도중에는 무시
     setDirection('next');
     setLeaving(true); // 슬라이드 애니메이션 시작 시 leaving 상태 true
     setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
@@ -46,7 +46,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
 
   // 슬라이드 이전으로 이동
   const decreaseIndex = () => {
-    if (leaving) return;
+    if (leaving || categories.length === 0) return;
     setDirection('prev');
     setLeaving(true);
     setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
@@ -56,17 +56,21 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
   useEffect(() => {
     const handleResize = () => {
       const newCardsPerSlide = getCardsPerSlide(); // 새 슬라이드당 카드 수
-      const newMaxIndex = Math.floor((categories.length - 1) / newCardsPerSlide); // 새로운 최대 인덱스 계산
+      const newMaxIndex =
+        categories.length === 0 ? 0 : Math.floor((categories.length - 1) / newCardsPerSlide);
+
+      const startPosition = index * cardsPerSlide;
+      const newIndex = Math.floor(startPosition / newCardsPerSlide); // 새로운 최대 인덱스 계산
 
       setCardsPerSlide(newCardsPerSlide); // 카드 개수 업데이트
 
       // index 조정 로직 수정 -> 브라우저 너비에 따라 바뀜
-      setIndex((prevIndex) => (prevIndex > newMaxIndex ? newMaxIndex : prevIndex));
+      setIndex(newIndex > newMaxIndex ? newMaxIndex : newIndex);
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [categories.length]); // 카드 수가 변할 때만 다시 바인딩
+  }, [cardsPerSlide, categories.length, index]); // 카드 수가 변할 때만 다시 바인딩
 
   return (
     <div className='sm:mt-50 mt-25 max-w-[1200px]'>
