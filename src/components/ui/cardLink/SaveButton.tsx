@@ -121,7 +121,7 @@ const SaveButton = () => {
     const selectedSuggestionTags = suggestionList.filter((s) => s.isSelected).map((s) => s.content);
 
     // 임시 태그 중 선택된 태그
-    const selectedTempTags = (tempTags[selectedCategory] || []).filter((tag) =>
+    const selectedTempTags = (tempTags[selectedCategory!] || []).filter((tag) =>
       selectedTag.includes(tag),
     );
 
@@ -151,6 +151,18 @@ const SaveButton = () => {
     return tagIds;
   };
 
+  const detectPlatform = (platform: string): string => {
+    const platformLower = platform.toLowerCase();
+
+    if (platformLower.includes('네이버 블로그')) return 'NAVER_BLOG';
+    if (platformLower.includes('naver')) return 'NAVER';
+    if (platformLower.includes('tistory') || platformLower.includes('티스토리')) return 'TISTORY';
+    if (platformLower.includes('youtube')) return 'YOUTUBE';
+    if (platformLower.includes('instagram')) return 'INSTAGRAM';
+    if (platformLower.includes('velog')) return 'VELOG';
+    return 'ETC'; // 이외에는 ETC
+  };
+
   // 공통 로직: 북마크 데이터 생성
   const createBookmarkData = (
     data: z.infer<typeof saveSchema>,
@@ -158,6 +170,8 @@ const SaveButton = () => {
     tagIds: number[],
   ): BookmarkSaveRequestProps => {
     const { url, title, platform, image: thumbnail, favicon: faviconUrl, memo } = data;
+
+    const mappedPlatform = platform ? detectPlatform(platform) : 'ETC';
 
     return {
       title: title ?? '제목',
@@ -167,7 +181,7 @@ const SaveButton = () => {
       notification: {
         notifyAt: alarmAt ?? '',
       },
-      platform: platform,
+      platform: mappedPlatform,
       categoryId,
       faviconUrl: faviconUrl ?? '',
       tagIds,

@@ -20,6 +20,25 @@ const SaveCard = ({ data, type = 'home' }: { data: BookmarkProps; type?: 'search
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const getPlatformDisplayName = (platform: string): string => {
+    switch (platform) {
+      case 'NAVER_BLOG':
+        return '네이버 블로그';
+      case 'NAVER':
+        return '네이버';
+      case 'TISTORY':
+        return '티스토리';
+      case 'YOUTUBE':
+        return 'YouTube';
+      case 'INSTAGRAM':
+        return 'Instagram';
+      case 'VELOG':
+        return 'velog';
+      default:
+        return 'ETC';
+    }
+  };
+
   const deleteBookmarkMutate = useMutation({
     mutationFn: deleteBookmarks,
     onSuccess: () => {
@@ -112,7 +131,7 @@ const SaveCard = ({ data, type = 'home' }: { data: BookmarkProps; type?: 'search
                   content={
                     <span className='flex items-center gap-1'>
                       <img src={data.faviconUrl} alt='favicon' className='w-4 h-4' />
-                      <span>{data.platform}</span>
+                      <span>{getPlatformDisplayName(data.platform)}</span>
                     </span>
                   }
                   isSelected={false}
@@ -120,7 +139,7 @@ const SaveCard = ({ data, type = 'home' }: { data: BookmarkProps; type?: 'search
                 />
               ) : (
                 <Chip
-                  content={data.platform}
+                  content={getPlatformDisplayName(data.platform)}
                   isSelected={false}
                   className='border-blue text-[15px] px-3 h-[36px] flex-shrink-0'
                 />
