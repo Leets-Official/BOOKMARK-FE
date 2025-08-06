@@ -78,6 +78,9 @@ const MyPage = () => {
                   src={ensureHttps(userInfo?.profileImage || '')}
                   alt='profile'
                   className='w-full h-auto aspect-square rounded-[40px] object-cover'
+                  onClick={() => {
+                  navigate('/my-page/profile-edit', { replace: true });
+                }}
                 />
               </div>
               <div className='flex flex-col justify-center gap-4'>

@@ -34,7 +34,7 @@ const Memo = ({ control }: IMemoProps) => {
                   label=''
                   placeholder='메모를 입력해주세요'
                   maxLength={50}
-                  value={field.value}
+                  value={field.value ?? ''}
                   onBlur={field.onBlur}
                   onChange={(value) => {
                     field.onChange(value);

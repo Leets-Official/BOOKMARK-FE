@@ -86,7 +86,7 @@ const TextField = ({
         {errorMessage && <p className='text-xs text-redText mt-1 ml-1 w-full'>{errorMessage}</p>}
         {maxLength && (
           <p className='text-[12px] text-grayText text-right w-full mt-2'>
-            {value?.length}/{maxLength}
+            {value?.length ?? 0}/{maxLength}
           </p>
         )}
       </div>
