@@ -24,7 +24,7 @@ import clsx from 'clsx';
 import DeleteModal from '@/components/ui/modal/DeleteModal';
 import { BackArrowIcon } from '@/assets';
 import toast from 'react-hot-toast';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getBookmark } from '@/api/bookmark/bookmark';
 
 const SaveButtonClass = tv({
@@ -46,6 +46,13 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { saveLinkData, updateLinkData } = useSubmit();
+  const queryClient = useQueryClient();
+
+  // Save 페이지 진입 시 bookmarkPreview 캐시 삭제
+  useEffect(() => {
+    queryClient.removeQueries({ queryKey: ['bookmarkPreview'] });
+  }, [queryClient]);
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [previewImage, setPreviewImage] = useAtom(previewImageAtom);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
