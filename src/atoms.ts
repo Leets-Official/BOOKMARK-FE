@@ -16,7 +16,6 @@ const tempCategoriesAtom = atom<string[]>([]);
 const tempTagsAtom = atom<Record<string, string[]>>({});
 const selectedCategoryAtom = atom<string>('');
 const selectedTagAtom = atom<string[]>([]);
-const alarmAtAtom = atom<string | null>(null);
 
 // Search Page Atoms
 const searchContentsAtom = atom<string>('');
@@ -45,5 +44,4 @@ export {
   selectedSearchCategoriesAtom,
   selectedSearchTagsAtom,
   selectedSearchPlatformsAtom,
-  alarmAtAtom,
 };

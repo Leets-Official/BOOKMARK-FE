@@ -10,7 +10,8 @@ const dateList = Array.from({ length: 14 }, (_, i) => {
 
   return {
     id: daysLater,
-    name: `${daysLater}일 뒤 (${week})`,
+    content: date.format('YYYY-MM-DD'),
+    visableContent: `${daysLater}일 뒤 (${week})`,
   };
 });
 
@@ -22,11 +23,12 @@ const timeList = Array.from({ length: 24 }, (_, i) => {
 
   return {
     id: i + 1,
-    name: `${isAM ? '오전' : '오후'} ${isHour}시`,
+    content: `T${date.format('HH:mm:ss.SSS')}Z`,
+    visableContent: `${isAM ? '오전' : '오후'} ${isHour}시`,
   };
 });
 
-const dateOptions = [{ id: 0, name: '날짜 선택' }, ...dateList];
-const timeOptions = [{ id: 0, name: '시간 선택' }, ...timeList];
+const dateOptions = [{ id: 0, content: '', visableContent: '날짜 선택' }, ...dateList];
+const timeOptions = [{ id: 0, content: '', visableContent: '시간 선택' }, ...timeList];
 
 export { dateOptions, timeOptions };

@@ -9,7 +9,6 @@ import {
   selectedTagAtom,
   suggestionListAtom,
   uploadUrlAtom,
-  alarmAtAtom,
 } from '@/atoms';
 import { createCategory, getCategories } from '@/api/category/category';
 import { createTag, getTags } from '@/api/tag/tag';
@@ -26,7 +25,6 @@ const SaveButton = () => {
   const selectedTag = useAtomValue(selectedTagAtom);
   const suggestionList = useAtomValue(suggestionListAtom);
   const [uploadUrl, setUploadUrl] = useAtom(uploadUrlAtom);
-  const alarmAt = useAtomValue(alarmAtAtom);
 
   const setVisibleTag = useSetAtom(visibleTagAtom);
   const setVisibleMemoAndAlarm = useSetAtom(visibleMemoAndAlarmAtom);
@@ -169,17 +167,17 @@ const SaveButton = () => {
     categoryId: number,
     tagIds: number[],
   ): BookmarkSaveRequestProps => {
-    const { url, title, platform, image: thumbnail, favicon: faviconUrl, memo } = data;
+    const { url, title, platform, image: thumbnail, favicon: faviconUrl, memo, date, time } = data;
 
     const mappedPlatform = platform ? detectPlatform(platform) : 'ETC';
-
+    console.log('date', date, 'time', time);
     return {
       title: title ?? '제목',
       url: url ?? '',
       memo: memo ?? '',
       thumbnailUrl: uploadUrl || thumbnail || '',
       notification: {
-        notifyAt: alarmAt ?? '',
+        notifyAt: '',
       },
       platform: mappedPlatform,
       categoryId,
@@ -200,8 +198,8 @@ const SaveButton = () => {
       const categoryId = await getCategoryId();
       const tagIds = await getTagIds(categoryId);
       const bookmarkData = createBookmarkData(data, categoryId, tagIds);
-
-      saveBookmarkMutation.mutate(bookmarkData);
+      console.log(bookmarkData);
+      // saveBookmarkMutation.mutate(bookmarkData);
       resetUIState();
     } catch (error) {
       console.error('북마크 저장 중 오류:', error);

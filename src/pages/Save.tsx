@@ -192,13 +192,16 @@ const Save = ({ type }: SaveInterfaceProps) => {
   }, [watchedValues, defaultValues, type]);
 
   const onSubmit = (data: z.infer<typeof schema>) => {
-    if (type === 'edit') {
-      if (!id) return;
-      updateLinkData(data, Number(id));
-    } else {
-      saveLinkData(data);
-    }
-    console.log(data);
+    console.log('=== onSubmit 시작 ===');
+    console.log('전체 data:', data);
+    console.log('date:', data.date, 'time:', data.time);
+
+    // if (type === 'edit') {
+    //   if (!id) return;
+    //   updateLinkData(data, Number(id));
+    // } else {
+    //   saveLinkData(data);
+    // }
     setPreviewImage(undefined);
     onPrev();
   };
