@@ -67,6 +67,8 @@ const Save = ({ type }: SaveInterfaceProps) => {
   const setViewImage = useSetAtom(viewImageAtom);
   const resetTempTags = useSetAtom(tempTagsAtom);
 
+  const setImage = useSetAtom(viewImageAtom);
+
   const [defaultValues, setDefaultValues] = useState<z.infer<typeof saveSchema>>({
     url: '',
     tags: [],
@@ -164,6 +166,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
       setSelectedTag(newValues.tags);
       setViewImage(newValues.image);
       setDefaultValues(newValues);
+      setImage(newValues.image);
     }
   }, [
     id,
@@ -177,6 +180,7 @@ const Save = ({ type }: SaveInterfaceProps) => {
     setVisibleCate,
     setVisibleTag,
     setViewImage,
+    setImage,
   ]);
 
   const watchedValues = watch();
