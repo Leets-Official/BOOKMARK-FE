@@ -2,20 +2,10 @@ import { getCategoriesWithTag } from '@/api/category/category';
 import CommonHeader from '@/components/layout/header/CommonHeader';
 import CategoryCard from '@/components/ui/card/CategoryCard';
 import Loading from '@/components/ui/loading/Loading';
+import { getColorForCategory } from '@/utils/categoryColor';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
-
-const categoryColors = [
-  '#397FFF',
-  '#4828D7',
-  '#80CA14',
-  '#9747FF',
-  '#F835AA',
-  '#FF2C3D',
-  '#FF5A39',
-  '#FFC400',
-];
 
 const CategoryManagement = () => {
   const { data: categoriesWithTag, isPending } = useQuery({
@@ -54,10 +44,10 @@ const CategoryManagement = () => {
         {isPending ? (
           <Loading className='w-[96px] h-[96px] mx-5' />
         ) : (
-          categoriesWithTag?.map((card, index) => (
+          categoriesWithTag?.map((card) => (
             <CategoryCard
               key={card.categoryId}
-              color={categoryColors[index % categoryColors.length]}
+              color={getColorForCategory(card.categoryName)}
               categoryId={card.categoryId}
               categoryName={card.categoryName}
               allCategoryNames={allCategoryNames}

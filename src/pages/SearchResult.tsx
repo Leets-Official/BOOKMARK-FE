@@ -16,6 +16,7 @@ import type { SearchCategory, SearchTag } from '@/types/common/search';
 import type { PlatformProps } from '@/types/api/platform';
 import toast from 'react-hot-toast';
 import type { BookmarkSearchResultProps } from '@/types/api/bookmark';
+import { getColorForCategory } from '@/utils/categoryColor';
 
 const SearchResult = () => {
   const navigate = useNavigate();
@@ -348,6 +349,7 @@ const SearchResult = () => {
                       createdAt: bookmark.createdAt,
                       isNotified: bookmark.notificationResponse?.isNotified === false,
                     }}
+                    color={getColorForCategory(bookmark.categoryTagInfos[0]?.categoryName)}
                   />
                 ))}
               </div>

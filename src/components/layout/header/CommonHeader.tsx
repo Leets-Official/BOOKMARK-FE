@@ -1,16 +1,23 @@
 import { BackArrowIcon } from '@/assets';
 import { Button } from '@/components/common';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { isMobile } from 'react-device-detect';
 
 const CommonHeader = ({ title }: { title: string }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleBackClick = () => {
     // 모바일에서는 안전한 네비게이션을 위해 홈으로 이동
     if (isMobile) {
-      navigate('/');
+      const currentPath = location.pathname;
+
+      if (currentPath === '/my-page/profile-edit') {
+        navigate('/my-page');
+      } else if (currentPath === '/my-page') {
+        navigate('/');
+      }
     } else {
       // PC에서는 기존 방식 유지
       navigate(-1);

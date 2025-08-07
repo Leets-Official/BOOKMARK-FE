@@ -195,6 +195,7 @@ const FolderCard = ({
           )}
           onClick={() => {
             if (!images.length) {
+              toast.dismiss();
               toast.error('저장된 링크가 없습니다');
               return;
             }

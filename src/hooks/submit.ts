@@ -42,6 +42,7 @@ export const useSubmit = () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: () => {
+      toast.error('빈 카테고리와 태그가 생성되었습니다');
       toast.error('저장에 실패했습니다');
     },
   });
@@ -243,7 +244,7 @@ export const useSubmit = () => {
       saveBookmarkMutation.mutate(bookmarkData);
       resetUIState();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : '북마크 저장에 실패했습니다');
+      toast.error(error instanceof Error ? error.message : '저장에 실패했습니다');
       return; // 에러 발생 시 함수 종료
     }
   };
@@ -258,7 +259,7 @@ export const useSubmit = () => {
       queryClient.removeQueries({ queryKey: ['bookmark', bookmarkId] });
     } catch (error) {
       console.error('북마크 수정 중 오류:', error);
-      toast.error(error instanceof Error ? error.message : '북마크 수정에 실패했습니다');
+      toast.error(error instanceof Error ? error.message : '수정에 실패했습니다');
       return; // 에러 발생 시 함수 종료
     }
   };

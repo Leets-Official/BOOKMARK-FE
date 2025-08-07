@@ -8,17 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { postBookmarkSearchResult } from '@/api/bookmark/bookmark';
 import type { BookmarkSearchResultRequestProps } from '@/types/api/bookmark';
 import type { BookmarkProps } from '@/types/components/components';
-
-const categoryColors = [
-  '#397FFF',
-  '#4828D7',
-  '#80CA14',
-  '#9747FF',
-  '#F835AA',
-  '#FF2C3D',
-  '#FF5A39',
-  '#FFC400',
-];
+import { getColorForCategory } from '@/utils/categoryColor';
 
 const SaveCardList = () => {
   const navigate = useNavigate();
@@ -81,12 +71,8 @@ const SaveCardList = () => {
         onSortToggle={() => setSortOrder((prev) => !prev)}
       />
       <div className='w-[95%] max-sm:w-9/10 mx-auto gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-        {bookmarkData.map((card, index) => (
-          <SaveCard
-            key={card.id}
-            data={card}
-            color={categoryColors[index % categoryColors.length]}
-          />
+        {bookmarkData.map((card) => (
+          <SaveCard key={card.id} data={card} color={getColorForCategory(card.category)} />
         ))}
       </div>
       <div className='flex justify-center mt-10'>
