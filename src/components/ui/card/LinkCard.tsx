@@ -3,7 +3,7 @@ import { uploadUrlAtom, viewImageAtom } from '@/atoms';
 import { Button, Image } from '@/components/common';
 import { clsx } from 'clsx';
 import { useAtom, useSetAtom } from 'jotai';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Controller, type Control, type UseFormSetValue } from 'react-hook-form';
 import TextField from '../TextField';
@@ -22,18 +22,6 @@ const LinkCard = ({ control, setValue, platform, isLoading }: CardProps) => {
   const [imageError, setImageError] = useState(false);
   const setUploadUrl = useSetAtom(uploadUrlAtom);
   const [image, setImage] = useAtom(viewImageAtom);
-
-  useEffect(() => {
-    if (imageError) {
-      setValue('image', '', { shouldValidate: true });
-      toast.dismiss();
-      toast.error('올바른 이미지를 선택해주세요');
-    } else {
-      if (image) {
-        setValue('image', image, { shouldValidate: true });
-      }
-    }
-  }, [imageError, image, setValue]);
 
   // 버튼 클릭 시 숨겨진 파일 입력창 엶
   const handleImageUpload = () => {

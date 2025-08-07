@@ -15,7 +15,7 @@ import type { saveSchema } from '@/schema/save';
 import type { BookMarkURLProps } from '@/types/api/bookmark';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Controller, type Control, type UseFormSetValue } from 'react-hook-form';
 import type z from 'zod';
 import { getThumbnailImage } from '@/api/file/thumbnail_api';
@@ -39,51 +39,19 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
 
   const queryClient = useQueryClient();
 
-  const [flag, setFlag] = useState(isEdit);
-
   const [image, setImage] = useAtom(viewImageAtom);
-
-  // 썸네일 이미지 API 호출
-  const { refetch: refetchThumbnailImage, data: thumbnailImage } = useQuery({
-    queryKey: ['thumbnailImage', image],
-    queryFn: async () => {
-      if (!image) return null;
-      const response = await getThumbnailImage(image);
-      if (response.error) {
-        console.error('썸네일 이미지 가져오기 실패:', response.message);
-        toast.error(response.message || '썸네일 이미지 가져오기 실패');
-        throw new Error(response.message || '썸네일 이미지 가져오기 실패');
-      }
-      setImage(response.data);
-      return response.data;
-    },
-    enabled: false,
-    retry: 0,
-  });
-
-  useEffect(() => {
-    // 수정 모드일 때는 썸네일 이미지를 다시 가져오지 않음
-    if (control._formValues.url && !isEdit) {
-      refetchThumbnailImage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [control._formValues.url, isEdit]);
 
   // Blob URL 정리
   useEffect(() => {
     return () => {
-      if (thumbnailImage && thumbnailImage.startsWith('blob:')) {
-        URL.revokeObjectURL(thumbnailImage);
+      if (image && image.startsWith('blob:')) {
+        URL.revokeObjectURL(image);
       }
     };
-  }, [thumbnailImage]);
+  }, [image]);
 
-  const {
-    data: bookmarkUrlData,
-    refetch,
-    isFetching,
-  } = useQuery<BookMarkURLProps[]>({
-    queryKey: ['bookmarkPreview'],
+  const { isFetching } = useQuery<BookMarkURLProps[]>({
+    queryKey: ['bookmarkPreview', control._formValues.url],
     queryFn: async () => {
       const res = await getBookmarksURL(control._formValues.url);
       if (res.error) {
@@ -95,62 +63,58 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
       setValue('title', title, { shouldValidate: true });
       setValue('platform', platform);
       setValue('favicon', faviconUrl);
-      setValue('image', thumbnailUrl);
+      setValue('image', thumbnailUrl); // DB에 저장할 썸네일 URL
+
+      // 썸네일 이미지 가져오기
+      try {
+        const thumbnailResponse = await getThumbnailImage(thumbnailUrl);
+        if (thumbnailResponse.error) {
+          toast.dismiss();
+          toast.error(thumbnailResponse.message || '썸네일 이미지 가져오기 실패');
+          console.error('썸네일 이미지 가져오기 실패:', thumbnailResponse.message);
+        } else {
+          setImage(thumbnailResponse.data);
+        }
+      } catch (error) {
+        toast.dismiss();
+        toast.error('썸네일 이미지 가져오기 실패');
+        console.error('썸네일 이미지 가져오기 실패:', error);
+      }
+
+      // AI 추천 태그 가져오기
+      setIsSuggestionLoading(true);
+      try {
+        const res = await getSuggestionTags(title);
+
+        // API 응답 구조 확인 및 처리
+        if (res.data?.tags && Array.isArray(res.data.tags)) {
+          const suggestionTags = res.data.tags.map((tag: string, index: number) => ({
+            id: index,
+            content: tag,
+            isSelected: false,
+            type: 'suggestion' as const,
+          }));
+          setSuggestionList(suggestionTags);
+        } else {
+          setSuggestionList([]);
+        }
+      } catch (error) {
+        console.error('Failed to get suggestion tags:', error);
+        setSuggestionList([]);
+      } finally {
+        setIsSuggestionLoading(false);
+      }
+
       return res.data;
     },
-    enabled: false,
+    enabled: !!control._formValues.url && control._formValues.url.trim() !== '',
+    retry: 0,
     gcTime: 0, // 즉시 가비지 컬렉션
     staleTime: 0, // 항상 stale로 처리
   });
 
-  useEffect(() => {
-    const handleBookmarkUrlInfo = async () => {
-      // 수정 모드일 때는 처음에 로드 안함
-      if (flag) {
-        setFlag(false);
-        return;
-      }
-
-      if (bookmarkUrlData && bookmarkUrlData.length > 0) {
-        const { title, thumbnailUrl, platform, faviconUrl } = bookmarkUrlData[0];
-        setValue('title', title, { shouldValidate: true });
-        setValue('platform', platform);
-        setValue('favicon', faviconUrl);
-        setImage(thumbnailUrl);
-
-        // AI 추천 태그 가져오기
-        setIsSuggestionLoading(true);
-        try {
-          const res = await getSuggestionTags(title);
-
-          // API 응답 구조 확인 및 처리
-          if (res.data?.tags && Array.isArray(res.data.tags)) {
-            const suggestionTags = res.data.tags.map((tag: string, index: number) => ({
-              id: index,
-              content: tag,
-              isSelected: false,
-              type: 'suggestion' as const,
-            }));
-            setSuggestionList(suggestionTags);
-          } else {
-            setSuggestionList([]);
-          }
-        } catch (error) {
-          console.error('Failed to get suggestion tags:', error);
-          setSuggestionList([]);
-        } finally {
-          setIsSuggestionLoading(false);
-        }
-      }
-    };
-
-    handleBookmarkUrlInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookmarkUrlData, setIsSuggestionLoading, setSuggestionList, setValue]);
-
   const handleLink = (v: string) => {
     if (v.length > 0) {
-      refetch();
       setVisibleCard(true);
       setVisibleCategory(true);
 
@@ -225,7 +189,7 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
             control={control}
             setValue={setValue}
             platform={control._formValues.platform}
-            isLoading={isLoading || isFetching || image === ''}
+            isLoading={isLoading || isFetching}
           />
         </>
       )}

@@ -225,7 +225,7 @@ export const useSubmit = () => {
       notification: notification,
       platform: mappedPlatform,
       categoryId,
-      faviconUrl: faviconUrl ?? '',
+      faviconUrl: faviconUrl || '',
       tagIds,
     };
   };
