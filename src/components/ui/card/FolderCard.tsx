@@ -145,6 +145,8 @@ const FolderCard = ({
 
   const images = category.thumbnailUrls || [];
 
+  if (images.length === 0) return null;
+
   // 이미지 렌더링
   const renderImages = (images: string[]) => {
     if (images.length === 1) {
@@ -191,13 +193,8 @@ const FolderCard = ({
         <div
           className={clsx(
             'w-full aspect-[3/2] rounded-2xl overflow-hidden flex hover:scale-103 duration-400 cursor-pointer',
-            !images.length && 'border border-lightBlueGray',
           )}
           onClick={() => {
-            if (!images.length) {
-              toast.error('저장된 링크가 없습니다');
-              return;
-            }
             const queryData = {
               categories: [
                 {
