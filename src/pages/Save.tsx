@@ -233,7 +233,6 @@ const Save = ({ type }: SaveInterfaceProps) => {
   // 유효하지 않은 데이터 handleSubmit
   const handleSaveError = (errors: FieldErrors<z.infer<typeof schema>>) => {
     let errorMessage = '';
-    console.log('errors', errors);
     if (errors.image) {
       errorMessage = errors.image.message ?? '이미지를 선택해주세요';
     } else {
