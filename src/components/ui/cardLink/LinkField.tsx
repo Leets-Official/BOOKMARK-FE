@@ -63,48 +63,49 @@ const LinkField = ({ isLoading = false, control, setValue, isEdit = false }: ILi
       setValue('title', title, { shouldValidate: true });
       setValue('platform', platform);
       setValue('favicon', faviconUrl);
-      setValue('image', thumbnailUrl); // DB에 저장할 썸네일 URL
+      if (!isEdit) {
+        setValue('image', thumbnailUrl); // DB에 저장할 썸네일 URL
 
-      // 썸네일 이미지 가져오기
-      try {
-        const thumbnailResponse = await getThumbnailImage(thumbnailUrl);
-        if (thumbnailResponse.error) {
+        // 썸네일 이미지 가져오기
+        try {
+          const thumbnailResponse = await getThumbnailImage(thumbnailUrl);
+          if (thumbnailResponse.error) {
+            toast.dismiss();
+            toast.error(thumbnailResponse.message || '썸네일 이미지 가져오기 실패');
+            console.error('썸네일 이미지 가져오기 실패:', thumbnailResponse.message);
+          } else {
+            setImage(thumbnailResponse.data);
+          }
+        } catch (error) {
           toast.dismiss();
-          toast.error(thumbnailResponse.message || '썸네일 이미지 가져오기 실패');
-          console.error('썸네일 이미지 가져오기 실패:', thumbnailResponse.message);
-        } else {
-          setImage(thumbnailResponse.data);
+          toast.error('썸네일 이미지 가져오기 실패');
+          console.error('썸네일 이미지 가져오기 실패:', error);
         }
-      } catch (error) {
-        toast.dismiss();
-        toast.error('썸네일 이미지 가져오기 실패');
-        console.error('썸네일 이미지 가져오기 실패:', error);
-      }
 
-      // AI 추천 태그 가져오기
-      setIsSuggestionLoading(true);
-      try {
-        const res = await getSuggestionTags(title);
+        // AI 추천 태그 가져오기
+        setIsSuggestionLoading(true);
+        try {
+          const res = await getSuggestionTags(title);
 
-        // API 응답 구조 확인 및 처리
-        if (res.data?.tags && Array.isArray(res.data.tags)) {
-          const suggestionTags = res.data.tags.map((tag: string, index: number) => ({
-            id: index,
-            content: tag,
-            isSelected: false,
-            type: 'suggestion' as const,
-          }));
-          setSuggestionList(suggestionTags);
-        } else {
+          // API 응답 구조 확인 및 처리
+          if (res.data?.tags && Array.isArray(res.data.tags)) {
+            const suggestionTags = res.data.tags.map((tag: string, index: number) => ({
+              id: index,
+              content: tag,
+              isSelected: false,
+              type: 'suggestion' as const,
+            }));
+            setSuggestionList(suggestionTags);
+          } else {
+            setSuggestionList([]);
+          }
+        } catch (error) {
+          console.error('Failed to get suggestion tags:', error);
           setSuggestionList([]);
+        } finally {
+          setIsSuggestionLoading(false);
         }
-      } catch (error) {
-        console.error('Failed to get suggestion tags:', error);
-        setSuggestionList([]);
-      } finally {
-        setIsSuggestionLoading(false);
       }
-
       return res.data;
     },
     enabled: !!control._formValues.url && control._formValues.url.trim() !== '',
