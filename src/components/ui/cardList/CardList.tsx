@@ -72,6 +72,8 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [cardsPerSlide, categories.length, index]); // 카드 수가 변할 때만 다시 바인딩
 
+  const isCategories = categories.length !== 0;
+
   return (
     <div className='sm:mt-50 mt-25 max-w-[1200px]'>
       <CardListHeader
@@ -86,7 +88,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        {hovered && (
+        {isCategories && hovered && (
           <button
             onClick={decreaseIndex}
             className='absolute z-10 top-[43%] left-3 -translate-y-1/2 bg-[#696b7499] text-white text-5xl rounded-full w-15 h-15 flex items-center justify-center transition hover:brightness-75'
@@ -96,7 +98,7 @@ const CardList = ({ categories }: { categories: CategoryProps[] }) => {
         )}
 
         {/* 오른쪽 버튼 */}
-        {hovered && (
+        {isCategories && hovered && (
           <button
             onClick={increaseIndex}
             className='absolute z-10 right-3 top-[43%] -translate-y-1/2 bg-[#696b7499] text-white text-5xl rounded-full w-15 h-15 flex items-center justify-center transition hover:brightness-75'

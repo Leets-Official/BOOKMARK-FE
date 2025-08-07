@@ -41,9 +41,6 @@ export const useSubmit = () => {
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
-    onError: () => {
-      toast.error('저장에 실패했습니다');
-    },
   });
 
   const updateBookmarkMutation = useMutation({
@@ -276,15 +273,12 @@ export const useSubmit = () => {
               }
             }),
           );
-          console.log('태그 롤백 완료:', createdTagIds);
         }
 
         if (createdCategoryId) {
           const res = await deleteCategory(createdCategoryId);
           if (res.error) {
             console.error(`카테고리 ${createdCategoryId} 삭제 실패:`, res.message);
-          } else {
-            console.log('카테고리 롤백 완료:', createdCategoryId);
           }
         }
 
@@ -298,8 +292,6 @@ export const useSubmit = () => {
 
       if (error?.response?.status === 400) {
         toast.error(error.response.data?.message || '요청이 올바르지 않습니다');
-      } else {
-        toast.error('북마크 저장에 실패했습니다');
       }
     }
   };
