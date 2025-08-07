@@ -145,8 +145,6 @@ const FolderCard = ({
 
   const images = category.thumbnailUrls || [];
 
-  if (images.length === 0) return null;
-
   // 이미지 렌더링
   const renderImages = (images: string[]) => {
     if (images.length === 1) {

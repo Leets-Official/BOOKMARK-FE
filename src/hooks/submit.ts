@@ -9,8 +9,8 @@ import {
   selectedTagAtom,
   suggestionListAtom,
 } from '@/atoms';
-import { createCategory, getCategories, deleteCategory } from '@/api/category/category';
-import { createTag, getTags, deleteTag } from '@/api/tag/tag';
+import { createCategory, getCategories } from '@/api/category/category';
+import { createTag, getTags } from '@/api/tag/tag';
 import { saveBookmarks, updateBookmarks } from '@/api/bookmark/bookmark';
 import toast from 'react-hot-toast';
 import type { BookmarkSaveRequestProps } from '@/types/api/bookmark';
@@ -31,15 +31,19 @@ export const useSubmit = () => {
   const saveBookmarkMutation = useMutation({
     mutationFn: async (bookmarkData: BookmarkSaveRequestProps) => {
       const res = await saveBookmarks(bookmarkData);
-      if (res.error) {
-        throw new Error(res.message ?? '저장에 실패했습니다');
-      }
-      return res.data;
+      return res;
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
+      if (res.error) {
+        throw new Error(res.message || '저장에 실패했습니다');
+      }
       toast.success('저장되었습니다');
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
+    onError: () => {
+      toast.error('빈 카테고리와 태그가 생성되었습니다');
+      toast.error('저장에 실패했습니다');
     },
   });
 
@@ -169,15 +173,17 @@ export const useSubmit = () => {
 
   const detectPlatform = (platform: string): string => {
     const platformLower = platform.toLowerCase();
+
     if (platformLower.includes('네이버 블로그')) return 'NAVER_BLOG';
     if (platformLower.includes('naver')) return 'NAVER';
     if (platformLower.includes('tistory') || platformLower.includes('티스토리')) return 'TISTORY';
     if (platformLower.includes('youtube')) return 'YOUTUBE';
     if (platformLower.includes('instagram')) return 'INSTAGRAM';
     if (platformLower.includes('velog')) return 'VELOG';
-    return 'ETC';
+    return 'ETC'; // 이외에는 ETC
   };
 
+  // 공통 로직: 북마크 데이터 생성
   const createBookmarkData = (
     data: z.infer<typeof saveSchema>,
     categoryId: number,
@@ -196,6 +202,7 @@ export const useSubmit = () => {
     } = data;
 
     let notification = undefined;
+
     if (date && time) {
       if (notificationId !== 0) {
         notification = {
@@ -212,14 +219,14 @@ export const useSubmit = () => {
     const mappedPlatform = platform ? detectPlatform(platform) : 'ETC';
 
     return {
-      title: title || '제목',
-      url: url || '',
+      title: title ?? '제목',
+      url: url ?? '',
       memo: memo?.trim() || undefined,
       thumbnailUrl: thumbnail || '',
       notification: notification,
       platform: mappedPlatform,
       categoryId,
-      faviconUrl: faviconUrl || '',
+      faviconUrl: faviconUrl ?? '',
       tagIds,
     };
   };
@@ -230,69 +237,15 @@ export const useSubmit = () => {
   };
 
   const saveLinkData = async (data: z.infer<typeof saveSchema>) => {
-    let createdCategoryId: number | null = null;
-    let createdTagIds: number[] = [];
-
     try {
-      // 카테고리와 태그를 먼저 생성/준비
       const categoryId = await getCategoryId();
       const tagIds = await getTagIds(categoryId);
-
-      // 새로 생성된 것들 추적
-      if (tempCategories.includes(selectedCategory!)) {
-        createdCategoryId = categoryId;
-      }
-
-      // 새로 생성된 태그들 확인 (기존 로직에서 생성된 태그들)
-      const selectedSuggestionTags = suggestionList
-        .filter((s) => s.isSelected)
-        .map((s) => s.content);
-      const selectedTempTags = tempTags[selectedCategory!] || [];
-      const newTagNames = [...selectedSuggestionTags, ...selectedTempTags];
-
-      if (newTagNames.length > 0) {
-        const res = await getTags(categoryId);
-        const newTags = (res.data || []).filter((t) => newTagNames.includes(t.tagName));
-        createdTagIds = newTags.map((t) => t.tagId);
-      }
-
-      // 완전한 데이터로 북마크 저장
       const bookmarkData = createBookmarkData(data, categoryId, tagIds);
-      await saveBookmarkMutation.mutateAsync(bookmarkData);
-
+      saveBookmarkMutation.mutate(bookmarkData);
       resetUIState();
-    } catch (error: any) {
-      // 북마크 저장 실패 시 생성된 카테고리/태그 롤백
-      try {
-        if (createdTagIds.length > 0) {
-          await Promise.all(
-            createdTagIds.map(async (tagId) => {
-              const res = await deleteTag(tagId);
-              if (res.error) {
-                console.error(`태그 ${tagId} 삭제 실패:`, res.message);
-              }
-            }),
-          );
-        }
-
-        if (createdCategoryId) {
-          const res = await deleteCategory(createdCategoryId);
-          if (res.error) {
-            console.error(`카테고리 ${createdCategoryId} 삭제 실패:`, res.message);
-          }
-        }
-
-        // 쿼리 무효화 (삭제된 데이터 반영)
-        queryClient.invalidateQueries({ queryKey: ['categories'] });
-        queryClient.invalidateQueries({ queryKey: ['tags'] });
-      } catch (rollbackError) {
-        console.error('롤백 중 오류:', rollbackError);
-        toast.error('데이터 정리 중 문제가 발생했습니다');
-      }
-
-      if (error?.response?.status === 400) {
-        toast.error(error.response.data?.message || '요청이 올바르지 않습니다');
-      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : '저장에 실패했습니다');
+      return; // 에러 발생 시 함수 종료
     }
   };
 
@@ -306,10 +259,13 @@ export const useSubmit = () => {
       queryClient.removeQueries({ queryKey: ['bookmark', bookmarkId] });
     } catch (error) {
       console.error('북마크 수정 중 오류:', error);
-      toast.error(error instanceof Error ? error.message : '북마크 수정에 실패했습니다');
+      toast.error(error instanceof Error ? error.message : '수정에 실패했습니다');
       return; // 에러 발생 시 함수 종료
     }
   };
 
-  return { saveLinkData, updateLinkData };
+  return {
+    saveLinkData,
+    updateLinkData,
+  };
 };
