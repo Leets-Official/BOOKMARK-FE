@@ -1,5 +1,5 @@
 # 🔖 INSIGHT BOX
-> **Leets 5기 최종 프로젝트 개발 기간: 2025.6.17 ~ 2024.8.7** <br/>
+> **Leets 5기 최종 프로젝트 개발 기간: 2025.6.17 ~ 2025.8.7** <br/>
 <img width="1496" height="844" src="https://github.com/user-attachments/assets/6ae317a6-3204-4fb1-a0f7-ed9105a083e0" />
 
 <br><br>
